@@ -30,52 +30,37 @@ const AfterTest = ({ username, score, age, correctWords, incorrectWords }) => {
   console.log('Received props:', { username, score, age, correctWords, incorrectWords });
   const navigate = useNavigate();
 
-  // Debugging: Check received props
-  useEffect(() => {
-    console.log("Received props:", { username, score, age, correctWords, incorrectWords });
-  }, [username, score, age, correctWords, incorrectWords]);
-
-  // Calculate tableData without continuous sequence
-  const tableData = useMemo(() => {
-    console.log("Table Data Calculation:", { correctWords, incorrectWords, score });
-    return {
-      correctWords,
-      incorrectWords,
-      score: score,
-    };
-  }, [correctWords, incorrectWords, score]);
-
-  // Debugging: Check tableData
-  useEffect(() => {
-    console.log("Table Data:", tableData);
-  }, [tableData]);
+  // Format words with numbers
+  const formatWordsWithNumbers = (words) => 
+      words.map(({ word, position }) => `${word} (${position})`).join(", ");
 
   return (
-    <div className={styles.resultsContainer}>
-      <div className={styles.results}>
-        <h1>Name: <span>{username}</span></h1>
-        <h1>Score: <span>{score}</span></h1>
-        <h1>Reading Age: <span>{age}</span></h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Correct Words</th>
-              <th>Incorrect Words</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{tableData.correctWords.join(", ")}</td>
-              <td>{tableData.incorrectWords.join(", ")}</td>
-              <td>{tableData.score}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button onClick={() => navigate("/home")}>Go back</button>
+      <div className={styles.resultsContainer}>
+          <div className={styles.results}>
+              <h1>Name: <span>{username}</span></h1>
+              <h1>Score: <span>{score.toFixed(2)}%</span></h1>
+              <h1>Reading Age: <span>{age}</span></h1>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Correct Words</th>
+                          <th>Incorrect Words</th>
+                          <th>Score</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>{formatWordsWithNumbers(correctWords)}</td>
+                          <td>{formatWordsWithNumbers(incorrectWords)}</td>
+                          <td>{score.toFixed(2)}%</td>
+                      </tr>
+                  </tbody>
+              </table>
+              <button onClick={() => navigate("/home")}>Go back</button>
+          </div>
       </div>
-    </div>
   );
-}
+};
+
 
 export default AfterTest;

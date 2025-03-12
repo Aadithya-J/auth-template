@@ -296,79 +296,44 @@ function Test() {
 
   const handleSubmit = async () => {
     if (!transcriptionReady) {
-      console.log("Transcription is not ready yet. Please wait...");
-      return;
+        console.log("Transcription is not ready yet. Please wait...");
+        return;
     }
 
-    const wordsArray = transcript
-      .split(" ")
-      .map((word) => word.toLowerCase().replace(/[^a-z]/g, ""));
-
-    const { score, age, correctWords, incorrectWords } = await checkWords(wordsArray);
-
-    const childId = localStorage.getItem('childId');  // Fetching childId from localStorage
-    const token = localStorage.getItem('token');  // Fetching token from localStorage
+    const spokenWords = transcript.trim().toLowerCase();  // Send raw transcript to backend
+    const childId = localStorage.getItem('childId');  
+    const token = localStorage.getItem('token');
 
     try {
-      const responseFromApi = await axios.post(
-        `${backendURL}/addTest`,
-        {
-          childId,
-          test_name: "Test 6: Schonells Test",
-          reading_age: age,
-          score,
-          correctWords,
-          incorrectWords,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        const responseFromApi = await axios.post(
+            `${backendURL}/addTest6`,  // Updated to use new API endpoint
+            { childId, spokenWords },  // Only sending the spoken words, backend will process them
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (responseFromApi.status === 201) {
+            const { score, incorrectWords } = responseFromApi.data; 
+
+            toast.success(`Test submitted! Score: ${score}, Incorrect words: ${incorrectWords.join(', ')}`, {
+                position: "top-center",
+                onClose: () => navigate('/'),  
+            });
+        } else {
+            toast.error("Failed to submit test. Please try again.", {
+                position: "top-center",
+            });
         }
-      );
-
-      if (responseFromApi.status === 201) {
-        toast.success("Test submitted successfully!", {
-          position: "top-center",  // Position the toast
-          onClose: () => navigate('/'),  // Redirect to homepage on toast close
-        });
-      } else {
-        toast.error("Failed to submit test. Please try again.", {
-          position: "top-center",
-        });
-      }
     } catch (error) {
-      console.error("Error submitting test results:", error);
-      toast.error("An error occurred while submitting the test.", {
-        position: "top-center",
-      });
+        console.error("Error submitting test:", error);
+        toast.error("An error occurred while submitting the test.", {
+            position: "top-center",
+        });
     }
-  };
-
-  const checkWords = async (words) => {
-    let score = 0;
-    let correctWords = [];
-    let incorrectWords = [];
-
-    const flatWordsGrid = wordsGrid.flat();
-
-    for (let word of words) {
-      if (flatWordsGrid.includes(word)) {
-        score++;
-        correctWords.push(word);
-      } else {
-        incorrectWords.push(word);
-      }
-    }
-
-    const tempAge = getReadingAge(score);
-    return { score, age: tempAge, correctWords, incorrectWords };
-  };
-
-  const getReadingAge = (score) => {
-    const match = readingAgeMap.find((entry) => entry.score === score);
-    return match ? match.age : "N/A";
-  };
+};
 
   return (
     <>

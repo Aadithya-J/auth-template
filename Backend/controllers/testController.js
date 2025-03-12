@@ -1,30 +1,84 @@
 const Test = require('../models/test');
 const Child = require('../models/child');
 
-exports.addTest = async (req, res) => {
-    const { childId, test_name, reading_age, score, correctWords, incorrectWords } = req.body; // Add correctWords and incorrectWords to the body
+// exports.addTest = async (req, res) => {
+//     const { childId, test_name, reading_age, score, correctWords, incorrectWords } = req.body; // Add correctWords and incorrectWords to the body
+
+//     try {
+//         const test = new Test({
+//             child_id: childId,
+//             test_name,
+//             reading_age,
+//             score,
+//             correct_words: correctWords,  // Assuming you want to store these as well
+//             incorrect_words: incorrectWords,  // Assuming you want to store these as well
+//         });
+//         await test.save();
+
+//         // Increment the number of tests taken by the child
+//         await Child.findByIdAndUpdate(childId, {
+//             $inc: { tests_taken: 1 }
+//         });
+
+//         res.status(201).json({ message: 'Test added successfully', test });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// };
+
+exports.addTest6 = async (req, res) => {
+    const { childId, spokenWords } = req.body;
 
     try {
-        const test = new Test({
-            child_id: childId,
-            test_name,
-            reading_age,
-            score,
-            correct_words: correctWords,  // Assuming you want to store these as well
-            incorrect_words: incorrectWords,  // Assuming you want to store these as well
-        });
-        await test.save();
+        // Fetch the latest correct stored text from Supabase
+        const { data: testData, error: fetchError } = await supabase
+            .from('Tests') // Assuming 'Tests' stores correct texts
+            .select('stored_text')
+            .eq('child_id', childId)
+            .order('created_at', { ascending: false }) // Get latest entry
+            .limit(1)
+            .single();
 
-        // Increment the number of tests taken by the child
-        await Child.findByIdAndUpdate(childId, {
-            $inc: { tests_taken: 1 }
+        if (fetchError || !testData) {
+            return res.status(400).json({ message: 'Test data not found', error: fetchError });
+        }
+
+        const storedText = testData.stored_text.split(' ').map((word, index) => ({ word: word.toLowerCase(), position: index + 1 }));
+        const spokenArray = spokenWords.split(' ').map((word, index) => ({ word: word.toLowerCase(), position: index + 1 }));
+
+        // Compare spoken words with stored text
+        const correctWords = spokenArray.filter(({ word }) => storedText.some(({ word: storedWord }) => storedWord === word));
+        const incorrectWords = spokenArray.filter(({ word }) => !storedText.some(({ word: storedWord }) => storedWord === word));
+
+        const score = ((storedText.length - incorrectWords.length) / storedText.length) * 100;
+
+        // Save test result in Supabase (Results table)
+        const { error: insertError } = await supabase
+            .from('Results') // Assuming 'Results' stores test results
+            .insert([{ 
+                child_id: childId, 
+                spoken_words: spokenWords, 
+                correct_words: JSON.stringify(correctWords), // Store as JSON
+                incorrect_words: JSON.stringify(incorrectWords), // Store as JSON
+                score 
+            }]);
+
+        if (insertError) throw insertError;
+
+        res.status(201).json({ 
+            message: 'Test6 added successfully', 
+            score, 
+            correctWords, 
+            incorrectWords 
         });
 
-        res.status(201).json({ message: 'Test added successfully', test });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+
+
 
 
 // Get all tests for a specific child
