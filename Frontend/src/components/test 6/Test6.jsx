@@ -302,7 +302,7 @@ function Test() {
 
     const spokenWords = transcript.trim().toLowerCase();  // Send raw transcript to backend
     const childId = localStorage.getItem('childId');  
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
 
     try {
         const responseFromApi = await axios.post(

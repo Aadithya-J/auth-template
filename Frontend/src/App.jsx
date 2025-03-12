@@ -31,7 +31,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     7;
     if (token) {
       verifyToken(token);

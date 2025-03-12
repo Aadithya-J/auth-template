@@ -18,6 +18,8 @@ const register = async (req, res) => {
       user: data.user,
       session: data.session 
     });
+
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
