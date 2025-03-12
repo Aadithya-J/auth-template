@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Login.module.css";
-import { backendURL } from "../definedURL";  // Ensure this is defined
+import { backendURL } from "../definedURL";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -25,13 +25,24 @@ const Login = ({ onLogin }) => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token);  // Store the token in localStorage
-        onLogin();  // Call onLogin to update isAuthenticated and navigate to home
+        
+        localStorage.setItem("access_token", data.session.access_token);
+        localStorage.setItem("refresh_token", data.session.refresh_token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        const defaultHeaders = {
+          Authorization: `Bearer ${data.session.access_token}`,
+          "Content-Type": "application/json",
+        };
+        
+        onLogin(defaultHeaders);
+        navigate("/");
       } else {
         const errorData = await response.json();
         alert(errorData.message || "Login failed. Please try again.");
       }
     } catch (error) {
+      console.log(error)
       alert("An error occurred while logging in. Please try again.");
     }
   };
