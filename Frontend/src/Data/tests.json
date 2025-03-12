@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "testName": "Schonell Test",
+    "About": "The Schonell Test measures a child's reading level by assessing their ability to read and pronounce words of increasing difficulty. It identifies a child's 'reading age' and helps tailor educational strategies, especially for those needing extra support. The relaxed test environment ensures accurate assessment of true reading skills. Scoring is based on correctly read words, with norms to classify the child's reading age and academic needs."
+  },
+  {
+    "id": 2,
+    "testName": "Visual Discrimination",
+    "About": "This test measures a child's ability to distinguish between similar visual items, crucial for reading and writing. Children match letters and words with their identical pairs, helping improve reading skills. It's especially important for children with dyslexia to differentiate confusing letters or numbers, enhancing fluency and academic success."
+  },
+  {
+    "id": 3,
+    "testName": "Sound Discrimination",
+    "About": "This test evaluates a child's ability to hear differences between similar-sounding words, vital for reading and spelling. Level 1 focuses on children aged 5 to 7, and Level 2 targets older children with more complex distinctions. Scoring is based on correct identification, helping highlight phonetic weaknesses that may affect literacy."
+  }
+]
