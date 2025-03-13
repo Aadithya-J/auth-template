@@ -22,6 +22,7 @@ import ClassPage from "./pages/ClassPage";
 import PrivateRoute from "./components/PrivateRoute";
 import testsData from "./Data/tests.json"; // Use dynamic import if needed
 import { backendURL } from "./definedURL"; // Ensure this import is correct
+import { clearAuth } from "./utils/authHelper";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -95,7 +96,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearAuth();
     setIsAuthenticated(false);
     navigate("/login");
   };

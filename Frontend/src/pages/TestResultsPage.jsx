@@ -17,7 +17,7 @@ const TestResultsTable = () => {
   const [visualTestData, setVisualTestData] = useState([]);
 
   const childId = localStorage.getItem("childId");
-  const tokenId = localStorage.getItem("token");
+  const tokenId = localStorage.getItem("access_token");
 
   useEffect(() => {
     const fetchData = async () => {
