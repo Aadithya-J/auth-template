@@ -1,213 +1,4 @@
-// import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import WordGrid from "./WordGrid";
-// import styles from "../../styles/Test.module.css";
-// import AfterTest from "./AfterTest";
-// import { backendURL } from "../../definedURL";
-// import { pythonURL } from "../../definedURL";
-// import { FaRegCirclePlay } from "react-icons/fa6";
-// import { FaRegStopCircle } from "react-icons/fa";
-// import { PiDotsThreeBold } from "react-icons/pi";
-// import { MdOutlineArrowCircleRight } from "react-icons/md";
-// import axios from 'axios';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';  // Import Toast styles
-
-// function Test() {
-//   const [givingTest, setGivingTest] = useState(true);
-//   const [transcript, setTranscript] = useState("");
-//   const [username, setUsername] = useState("");
-//   const [response, setResponse] = useState(null);
-//   const [audioChunks, setAudioChunks] = useState([]);
-//   const [isTranscribing, setIsTranscribing] = useState(false);
-//   const [transcriptionReady, setTranscriptionReady] = useState(false);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     navigator.mediaDevices.getUserMedia({ audio: true })
-//       .then((stream) => {
-//         window.stream = stream;
-//       })
-//       .catch((error) => {
-//         console.error("Error accessing media devices.", error);
-//       });
-//   }, [navigate]);
-
-//   const startListening = () => {
-//     if (window.stream) {
-//       let localAudioChunks = [];
-//       const newMediaRecorder = new MediaRecorder(window.stream);
-
-//       newMediaRecorder.ondataavailable = (event) => {
-//         if (event.data.size > 0) {
-//           localAudioChunks.push(event.data);
-//         }
-//       };
-
-//       newMediaRecorder.onstop = async () => {
-//         if (localAudioChunks.length > 0) {
-//           const audioBlob = new Blob(localAudioChunks, { type: "audio/wav" });
-//           const file = new File([audioBlob], "user_audio.wav", { type: "audio/wav" });
-//           const formData = new FormData();
-//           formData.append("file", file);
-
-//           try {
-//             setIsTranscribing(true);
-//             const response = await fetch(`${pythonURL}/transcribe`, {
-//               method: "POST",
-//               body: formData,
-//             });
-
-//             if (response.ok) {
-//               const result = await response.json();
-//               setTranscript(result.transcription);
-//               setTranscriptionReady(true);
-//               console.log("Transcription Result", result);
-//             } else {
-//               console.error("Error during transcription:", response.statusText);
-//             }
-//           } catch (error) {
-//             console.error("Error uploading audio:", error);
-//           } finally {
-//             setIsTranscribing(false);
-//           }
-//         }
-//       };
-
-//       newMediaRecorder.start();
-//     } else {
-//       console.error("Media stream not initialized.");
-//     }
-//   };
-
-//   const stopListening = () => {
-//     if (window.stream) {
-//       const tracks = window.stream.getTracks();
-//       tracks.forEach((track) => track.stop());
-//     } else {
-//       console.error("Media stream not initialized.");
-//     }
-//   };
-
-//   const handleSubmit = async () => {
-//     if (!transcriptionReady) {
-//       console.log("Transcription is not ready yet. Please wait...");
-//       return;
-//     }
-
-//     setGivingTest(false);
-
-//     const wordsArray = transcript
-//       .split(" ")
-//       .map((word) => word.toLowerCase().replace(/[^a-z]/g, ""));
-
-//     const { score, age, correctWords, incorrectWords } = await checkWords(wordsArray);
-
-//     setResponse({ score, age, correctWords, incorrectWords });
-
-//     const childId = localStorage.getItem('childId');  // Fetching childId from localStorage
-//     const token = localStorage.getItem('token');  // Fetching token from localStorage
-
-//     try {
-//       const responseFromApi = await axios.post(
-//         `${backendURL}/addTest`,
-//         {
-//           childId,
-//           test_name: "Test 6: Schonells Test",
-//           reading_age: age,
-//           score,
-//           correctWords,
-//           incorrectWords,
-//         },
-//         {
-//           headers: {
-//             'Authorization': `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       if (responseFromApi.status === 201) {
-//         toast.success("Test submitted successfully!", {
-//           position: "top-center",  // Position the toast
-//           onClose: () => navigate('/'),  // Redirect to homepage on toast close
-//         });
-//       } else {
-//         toast.error("Failed to submit test. Please try again.", {
-//           position: "top-center",
-//         });
-//       }
-//     } catch (error) {
-//       console.error("Error submitting test results:", error);
-//       toast.error("An error occurred while submitting the test.", {
-//         position: "top-center",
-//       });
-//     }
-//   };
-
-//   const checkWords = async (words) => {
-//     let score = 0;
-//     let correctWords = [];
-//     let incorrectWords = [];
-
-//     const flatWordsGrid = wordsGrid.flat();
-
-//     for (let word of words) {
-//       if (flatWordsGrid.includes(word)) {
-//         score++;
-//         correctWords.push(word);
-//       } else {
-//         incorrectWords.push(word);
-//       }
-//     }
-
-//     const tempAge = getReadingAge(score);
-//     return { score, age: tempAge, correctWords, incorrectWords };
-//   };
-
-//   const getReadingAge = (score) => {
-//     const match = readingAgeMap.find((entry) => entry.score === score);
-//     return match ? match.age : "N/A";
-//   };
-
-//   return (
-//     <>
-//       {givingTest ? (
-//         <div className={`${styles.container} ${givingTest ? styles.giveHeight : ''}`}>
-//           <div className={styles.testBox}>
-//             <WordGrid />
-//             <div className={styles.buttonBox}>
-//               <FaRegCirclePlay onClick={startListening} className={styles.iconButton} />
-//               <FaRegStopCircle onClick={stopListening} className={styles.iconButton} />
-//               {isTranscribing ? (
-//                 <PiDotsThreeBold className={styles.iconButton} />
-//               ) : (
-//                 <MdOutlineArrowCircleRight onClick={handleSubmit} disabled={!transcriptionReady} className={styles.iconButtonsubmit} />
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       ) : (
-//         <AfterTest
-//           username={username}
-//           score={response ? response.score : 0}
-//           age={response ? response.age : 0}
-//           correctWords={response ? response.correctWords : []}
-//           incorrectWords={response ? response.incorrectWords : []}
-//         />
-//       )}
-//       <ToastContainer />  {/* Toast container to display notifications */}
-//     </>
-//   );
-// }
-
-// export default Test;
-
-
-
-
-
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import WordGrid from "./WordGrid";
 import styles from "../../styles/Test.module.css";
@@ -217,19 +8,31 @@ import { FaRegCirclePlay } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { PiDotsThreeBold } from "react-icons/pi";
 import { MdOutlineArrowCircleRight } from "react-icons/md";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';  // Import Toast styles
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import Toast styles
+
+import { Play, StopCircle, Mic, ArrowRightCircle, UploadCloud, Loader } from 'lucide-react';
+import { CiPlay1 } from "react-icons/ci";
+import {  MicOff } from "lucide-react";
+
+
+
 
 function Test() {
   const [givingTest, setGivingTest] = useState(true);
   const [transcript, setTranscript] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptionReady, setTranscriptionReady] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const mediaRecorderRef = useRef(null);
   const navigate = useNavigate();
+  const [testResults, setTestResults] = useState([]);
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ audio: true })
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
       .then((stream) => {
         window.stream = stream;
       })
@@ -239,135 +42,253 @@ function Test() {
   }, [navigate]);
 
   const startListening = () => {
-    if (window.stream) {
-      let localAudioChunks = [];
-      const newMediaRecorder = new MediaRecorder(window.stream);
+    setIsRecording(true);
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        window.stream = stream;
+        let localAudioChunks = [];
+        const newMediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = newMediaRecorder;
 
-      newMediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          localAudioChunks.push(event.data);
-        }
-      };
-
-      newMediaRecorder.onstop = async () => {
-        if (localAudioChunks.length > 0) {
-          const audioBlob = new Blob(localAudioChunks, { type: "audio/wav" });
-          const file = new File([audioBlob], "user_audio.wav", { type: "audio/wav" });
-          const formData = new FormData();
-          formData.append("file", file);
-
-          try {
-            setIsTranscribing(true);
-            const response = await fetch(`${pythonURL}/transcribe`, {
-              method: "POST",
-              body: formData,
-            });
-
-            if (response.ok) {
-              const result = await response.json();
-              setTranscript(result.transcription);
-              setTranscriptionReady(true);
-              console.log("Transcription Result", result);
-            } else {
-              console.error("Error during transcription:", response.statusText);
-            }
-          } catch (error) {
-            console.error("Error uploading audio:", error);
-          } finally {
-            setIsTranscribing(false);
+        newMediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            localAudioChunks.push(event.data);
           }
-        }
-      };
+        };
 
-      newMediaRecorder.start();
-    } else {
-      console.error("Media stream not initialized.");
-    }
+        newMediaRecorder.onstop = async () => {
+          setIsRecording(false);
+          if (localAudioChunks.length > 0) {
+            const audioBlob = new Blob(localAudioChunks, { type: "audio/wav" });
+            await uploadAudio(audioBlob);
+          }
+        };
+
+        newMediaRecorder.start();
+      })
+      .catch((error) => {
+        console.error("Error accessing microphone:", error);
+        setIsRecording(false);
+      });
   };
 
   const stopListening = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+    }
     if (window.stream) {
-      const tracks = window.stream.getTracks();
-      tracks.forEach((track) => track.stop());
-    } else {
-      console.error("Media stream not initialized.");
+      window.stream.getTracks().forEach((track) => track.stop());
+    }
+  };
+
+  const uploadAudio = async (audioBlob) => {
+    const file = new File([audioBlob], "user_audio.wav", { type: "audio/wav" });
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setIsTranscribing(true);
+      const response = await fetch(`${pythonURL}/transcribe`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setTranscript(result.transcription);
+        setTranscriptionReady(true);
+      } else {
+        console.error("Error during transcription:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      await uploadAudio(file);
     }
   };
 
   const handleSubmit = async () => {
     if (!transcriptionReady) {
-        console.log("Transcription is not ready yet. Please wait...");
-        return;
+      console.log("Transcription is not ready yet. Please wait...");
+      return;
     }
 
-    const spokenWords = transcript.trim().toLowerCase();  // Send raw transcript to backend
-    const childId = localStorage.getItem('childId');  
-    const token = localStorage.getItem('access_token');
+    const spokenWords = transcript.trim().toLowerCase();
+    const childId = localStorage.getItem("childId") || null;
+    const token = localStorage.getItem("access_token");
 
     try {
-        const responseFromApi = await axios.post(
-            `${backendURL}/addTest6`,  // Updated to use new API endpoint
-            { childId, spokenWords },  // Only sending the spoken words, backend will process them
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            }
-        );
+      const responseFromApi = await axios.post(
+        "http://localhost:3000/addTest6",
+        { childId, spokenWords },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-        if (responseFromApi.status === 201) {
-            const { score, incorrectWords } = responseFromApi.data; 
+      if (responseFromApi.status === 201) {
+        const { score, correctGroups, errorWords } = responseFromApi.data;
 
-            toast.success(`Test submitted! Score: ${score}, Incorrect words: ${incorrectWords.join(', ')}`, {
-                position: "top-center",
-                onClose: () => navigate('/'),  
-            });
-        } else {
-            toast.error("Failed to submit test. Please try again.", {
-                position: "top-center",
-            });
-        }
-    } catch (error) {
-        console.error("Error submitting test:", error);
-        toast.error("An error occurred while submitting the test.", {
-            position: "top-center",
+        // Ensure correctGroups and errorWords are arrays of arrays
+        const validCorrectGroups = Array.isArray(correctGroups)
+          ? correctGroups.map((group) =>
+              Array.isArray(group) ? group : [group]
+            )
+          : [];
+        const validErrorWords = Array.isArray(errorWords)
+          ? errorWords.map((word) => (Array.isArray(word) ? word : [word]))
+          : [];
+
+        const tableData = validCorrectGroups.map((group, index) => ({
+          continuousCorrectWords: group.join(" "), // Join words into a string
+          errorWords: validErrorWords[index]?.join(" ") || "-", // Handle missing data
+        }));
+
+        setTestResults(tableData); // Store results locally
+
+        toast.success(`Test submitted! Score: ${score}%`, {
+          position: "top-center",
+          onClose: () =>
+            navigate("/results", {
+              state: { score, tableData }, // 🔹 Pass test results to AfterTest
+            }),
         });
+      } else {
+        toast.error("Failed to submit test. Please try again.", {
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting test:", error);
+      toast.error("An error occurred while submitting the test.", {
+        position: "top-center",
+      });
     }
-};
+  };
 
   return (
-    <>
-      {givingTest && (
-        <div className={`${styles.container} ${givingTest ? styles.giveHeight : ''}`}>
-          <div className={styles.testBox}>
-            <WordGrid />
-            <div className={styles.buttonBox}>
-              <FaRegCirclePlay onClick={startListening} className={styles.iconButton} />
-              <FaRegStopCircle onClick={stopListening} className={styles.iconButton} />
+    <div className="animate-fade-in w-full max-w-4xl mx-auto p-8 rounded-2xl glass-panel">
+      <div className="flex flex-col space-y-8">
+      <WordGrid/>
+              <div className="animate-slide-up transition-all duration-300">
+          <div className="WordGrid" />
+        </div>
+
+        {/* Controls Panel */}
+        <div className="animate-slide-up transition-transform delay-100 rounded-xl bg-secondary/50 backdrop-blur-sm border border-muted p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {/* Recording controls */}
+            <div className="flex items-center gap-4">
+  {/* Start Recording Button */}
+  <div className="relative">
+    <button
+      onClick={startListening}
+      disabled={isRecording}
+      className={`rounded-full h-14 w-14 flex items-center justify-center transition-all duration-300 ${
+        isRecording
+          ? "opacity-50 cursor-not-allowed bg-gray-300"
+          : "bg-white border border-gray-600 hover:shadow-lg active:scale-95"
+      }`}
+      aria-label="Start recording"
+    >
+      <Mic className="h-6 w-6 text-green-600 transition-transform duration-300 ease-out" />
+    </button>
+
+    {/* Recording Indicator */}
+    {isRecording && (
+      <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+    )}
+  </div>
+
+  {/* Stop Recording Button */}
+  <button
+    onClick={stopListening}
+    disabled={!isRecording}
+    className={`rounded-full h-14 w-14 flex items-center justify-center transition-all duration-300 ${
+      !isRecording
+        ? "opacity-50 cursor-not-allowed bg-gray-300"
+        : "bg-white border border-black hover:shadow-lg active:scale-95"
+    }`}
+    aria-label="Stop recording"
+  >
+    <MicOff className="h-6 w-6 text-red-500 transition-transform duration-300 ease-out" />
+  </button>
+
+  {/* Recording Status */}
+  {isRecording && (
+    <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md text-red-600 rounded-full border border-red-100 shadow-sm animate-fade-in">
+      <Mic className="h-4 w-4" />
+      <span className="text-sm font-medium">Recording</span>
+      <span className="inline-flex gap-0.5">
+        <span className="animate-fade-in-out delay-0">.</span>
+        <span className="animate-fade-in-out delay-300">.</span>
+        <span className="animate-fade-in-out delay-600">.</span>
+      </span>
+    </div>
+  )}
+</div>;
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              {/* File upload */}
+              <div className="relative w-full sm:w-auto">
+                <input
+                  type="file"
+                  accept="audio/mp3"
+                  onChange={handleFileUpload}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  aria-label="Upload audio file"
+                />
+                <button className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 text-sm font-medium text-gray-700">
+                  <UploadCloud className="h-4 w-4" />
+                  <span>Upload Audio</span>
+                </button>
+              </div>
+
+              {/* Submit button or loading indicator */}
               {isTranscribing ? (
-                <PiDotsThreeBold className={styles.iconButton} />
+                <button
+                  disabled
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-500 rounded-lg border border-gray-200"
+                >
+                  <Loader className="h-4 w-4 animate-spin" />
+                  <span className="text-sm font-medium">Transcribing</span>
+                </button>
               ) : (
-                <MdOutlineArrowCircleRight onClick={handleSubmit} disabled={!transcriptionReady} className={styles.iconButtonsubmit} />
+                <button
+                  onClick={handleSubmit}
+                  disabled={!transcriptionReady}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium ${
+                    transcriptionReady
+                      ? 'bg-primary text-white shadow-md hover:shadow-lg hover:bg-primary/90 active:bg-primary/95' 
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  <span>Submit</span>
+                  <ArrowRightCircle className="h-4 w-4" />
+                </button>
               )}
             </div>
           </div>
         </div>
-      )}
-      <ToastContainer />  {/* Toast container to display notifications */}
-    </>
+      </div>
+    </div>
   );
-}
+};
 
 export default Test;
 
-
-
-
 // The readingAgeMap and wordsGrid remain unchanged.
 
-
 // ... The readingAgeMap and wordsGrid are unchanged
-
 
 const readingAgeMap = [
   { score: 0, age: "6.0 minus" },
@@ -474,28 +395,24 @@ const readingAgeMap = [
 ];
 
 const wordsGrid = [
-  ["tree", "little", "milk", "egg", "book"],            // Row 1
-  ["school", "sit", "frog", "playing", "bun"],          // Row 2
-  ["flower", "road", "clock", "train", "light"],        // Row 3
-  ["picture", "think", "summer", "people", "something"],// Row 4
+  ["tree", "little", "milk", "egg", "book"], // Row 1
+  ["school", "sit", "frog", "playing", "bun"], // Row 2
+  ["flower", "road", "clock", "train", "light"], // Row 3
+  ["picture", "think", "summer", "people", "something"], // Row 4
   ["dream", "downstairs", "biscuit", "shepherd", "thirsty"], // Row 5
-  ["crowd", "sandwich", "beginning", "postage", "island"],   // Row 6
-  ["saucer", "angel", "sailing", "appeared", "knife"],       // Row 7
-  ["canary", "attractive", "imagine", "nephew", "gradually"],// Row 8
+  ["crowd", "sandwich", "beginning", "postage", "island"], // Row 6
+  ["saucer", "angel", "sailing", "appeared", "knife"], // Row 7
+  ["canary", "attractive", "imagine", "nephew", "gradually"], // Row 8
   ["smoulder", "applaud", "disposal", "nourished", "diseased"], // Row 9
   ["university", "orchestra", "knowledge", "audience", "situated"], // Row 10
   ["physics", "campaign", "choir", "intercede", "fascinate"], // Row 11
-  ["forfeit", "siege", "pavement", "plausible", "prophecy"],  // Row 12
+  ["forfeit", "siege", "pavement", "plausible", "prophecy"], // Row 12
   ["colonel", "soloist", "systematic", "slovenly", "classification"], // Row 13
   ["genuine", "institution", "pivot", "conscience", "heroic"], // Row 14
-  ["pneumonia", "preliminary", "antique", "susceptible", "enigma"],   // Row 15
-  ["oblivion", "scintillate", "satirical", "sabre", "beguile"],  // Row 16
+  ["pneumonia", "preliminary", "antique", "susceptible", "enigma"], // Row 15
+  ["oblivion", "scintillate", "satirical", "sabre", "beguile"], // Row 16
   ["terrestrial", "belligerent", "adamant", "sepulchre", "statistics"], // Row 17
   ["miscellaneous", "procrastinate", "tyrannical", "evangelical", "grotesque"], // Row 18
   ["ineradicable", "judicature", "preferential", "homonym", "fictitious"], // Row 19
-  ["rescind", "metamorphosis", "somnambulist", "bibliography", "idiosyncrasy"]  // Row 20
+  ["rescind", "metamorphosis", "somnambulist", "bibliography", "idiosyncrasy"], // Row 20
 ];
-
-
-
-

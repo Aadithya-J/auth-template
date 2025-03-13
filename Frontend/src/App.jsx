@@ -23,6 +23,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import testsData from "./Data/tests.json"; // Use dynamic import if needed
 import { backendURL } from "./definedURL"; // Ensure this import is correct
 import { clearAuth } from "./utils/authHelper";
+import AfterTest from "./components/test 6/AfterTest";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -186,6 +187,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Test />
+              </PrivateRoute>
+            }
+          />
+            <Route
+            path="/results"
+            element={
+              <PrivateRoute>
+                <AfterTest/>
               </PrivateRoute>
             }
           />
