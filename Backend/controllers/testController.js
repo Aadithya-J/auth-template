@@ -1,5 +1,3 @@
-const Test = require('../models/test');
-const Child = require('../models/child');
 
 // exports.addTest = async (req, res) => {
 //     const { childId, test_name, reading_age, score, correctWords, incorrectWords } = req.body; // Add correctWords and incorrectWords to the body
@@ -26,7 +24,7 @@ const Child = require('../models/child');
 //     }
 // };
 
-exports.addTest6 = async (req, res) => {
+export async function addTest6(req, res) {
     const { childId, spokenWords } = req.body;
 
     try {
@@ -75,14 +73,14 @@ exports.addTest6 = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
-};
+}
 
 
 
 
 
 // Get all tests for a specific child
-exports.getTestsByChild = async (req, res) => {
+export async function getTestsByChild(req, res) {
     const { childId } = req.params;
 
     try {
@@ -91,4 +89,4 @@ exports.getTestsByChild = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
-};
+}
