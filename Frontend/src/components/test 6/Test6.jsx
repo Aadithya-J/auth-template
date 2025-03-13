@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import WordGrid from "./WordGrid";
-import { pythonURL } from "../../definedURL";
+import { pythonURL,backendURL } from "../../definedURL";
+
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -127,7 +128,7 @@ function Test6() {
 
     try {
       const responseFromApi = await axios.post(
-        "http://localhost:3000/addTest6",
+        `${backendURL}/addTest6`,
         { childId, spokenWords },
         { headers: { Authorization: `Bearer ${token}` } }
       );
