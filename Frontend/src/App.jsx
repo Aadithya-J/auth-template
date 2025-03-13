@@ -71,7 +71,9 @@ function App() {
   const fetchData = async () => {
     try {
       const studentRes = await fetch(`${backendURL}/getChildrenByTeacher`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
       });
 
       if (!studentRes.ok) {

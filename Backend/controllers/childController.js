@@ -10,8 +10,6 @@ export async function addChild(req, res) {
     return res.status(401).json({ message: "User not authenticated" });
 
   const teacherId = user.id;
-  console.log(user);
-  console.log(teacherId);
   const { data, error } = await supabase
     .from("children")
     .insert([{ name, rollno, age, teacher_id: teacherId }])
@@ -44,7 +42,14 @@ export async function getChild(req, res) {
 }
 
 export async function getChildrenByTeacher(req, res) {
-  const teacherId = req.userId;
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser(req.headers["authorization"]?.split(" ")[1]);
+  if (userError || !user)
+    return res.status(401).json({ message: "User not authenticated" });
+
+  const teacherId = user.id;
 
   try {
     const { data: children, error } = await supabase
