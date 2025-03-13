@@ -89,7 +89,23 @@ export async function addTest6(req, res) {
         // console.log("Correct Groups:", formattedCorrectGroups);
         // console.log("Error Words:", formattedErrorWords);
         // console.log(`Score: ${score.toFixed(2)}`);
+        // Insert test results
+        const { error } = await supabase
+            .from("test_results")
+            .insert([{ 
+                child_id : childId, 
+                spoken_words: spokenWords, 
+                correct_words: JSON.stringify(formattedCorrectGroups),
+                incorrect_words: JSON.stringify(errorWords),
+                score: score.toFixed(2)
+            }]);
 
+        const { error: updateError } = await supabase
+            .rpc('increment_tests_taken', { child_id_param: childId });
+        
+        if (error || updateError) {
+            throw error || updateError;
+        }
         // Send response to frontend
         res.status(201).json({
             message: "Test6 processed successfully",
