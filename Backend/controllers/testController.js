@@ -6,7 +6,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function addTest6(req, res) {
     try {
-        console.log("Received request body:", req.body);
+        // console.log("Received request body:", req.body);
 
         let { childId, spokenWords } = req.body;
 
@@ -86,9 +86,9 @@ export async function addTest6(req, res) {
         const score = (totalCorrectWords / correctWordsList.length) * 100;
 
         // Log output in server console
-        console.log("Correct Groups:", formattedCorrectGroups);
-        console.log("Error Words:", formattedErrorWords);
-        console.log(`Score: ${score.toFixed(2)}`);
+        // console.log("Correct Groups:", formattedCorrectGroups);
+        // console.log("Error Words:", formattedErrorWords);
+        // console.log(`Score: ${score.toFixed(2)}`);
 
         // Send response to frontend
         res.status(201).json({

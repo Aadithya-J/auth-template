@@ -1,11 +1,11 @@
 import React from "react";
 import Button from "./Button";
 
-const StudentCard = ({ student, buttonLabel, onButtonClick }) => {
+const StudentCard = ({ student = {}, buttonLabel = "Click Me", onButtonClick = () => {} }) => {
   return (
     <div className="relative w-100 h-80 group bg-black rounded-xl">
       <div className="absolute top-0 left-0 w-full h-full shadow-[8px_8px_0px_rgba(0,0,0,1)] rounded-xl opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-0"></div>
-      <article className="w-55 h-80 p-2 bg-white transition-transform duration-300 ease-out transform group-hover:bg-[#ff937a] group-hover:-translate-x-1 group-hover:-translate-y-1 border-2 border-black rounded-xl group-hover:bg-[#fafafa]">
+      <article className="w-55 h-80 p-2 bg-white transition-transform duration-300 ease-out transform group-hover:bg-[#ff937a] group-hover:-translate-x-1 group-hover:-translate-y-1 border-2 border-black rounded-xl">
         <div className="flex flex-col items-center pb-2">
           <img
             src={student.imageUrl || "/defaultphp.jpg"}

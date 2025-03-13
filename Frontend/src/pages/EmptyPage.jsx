@@ -63,10 +63,10 @@ const Home = ({ students, tests }) => {
             {students.length > 0 ? (
               students.slice(0, 10).map((student) => (
                 <StudentList
-                  key={student._id}
+                  key={student.id}
                   student={student}
                   buttonLabel="View Results"
-                  onButtonClick={() => handleStudentClick(student._id)}
+                  onButtonClick={() => handleStudentClick(student.id)}
                 />
               ))
             ) : (
