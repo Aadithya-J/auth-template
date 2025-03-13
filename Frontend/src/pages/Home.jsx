@@ -16,7 +16,9 @@ const Home = ({ students = [], tests = [] }) => {
   const handleAddChildClick = () => setShowPopup(true);
   const handleClose = () => setShowPopup(false);
 
-  const userDetails = { name: "RAHUL MAHESH", email: "u@gmail.com" };
+  const userDetails = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : { name: "user", email: "u@gmail.com" };  // const userDetails = { name: "user", email: "
+
+  // const userDetails = { name: "user", email: "u@gmail.com" };
 
   const handleStudentClick = (studentId) => {
     const storedId = localStorage.getItem("childId");

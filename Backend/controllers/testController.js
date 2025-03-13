@@ -1,80 +1,109 @@
+import { createClient } from '@supabase/supabase-js';
 
-// exports.addTest = async (req, res) => {
-//     const { childId, test_name, reading_age, score, correctWords, incorrectWords } = req.body; // Add correctWords and incorrectWords to the body
-
-//     try {
-//         const test = new Test({
-//             child_id: childId,
-//             test_name,
-//             reading_age,
-//             score,
-//             correct_words: correctWords,  // Assuming you want to store these as well
-//             incorrect_words: incorrectWords,  // Assuming you want to store these as well
-//         });
-//         await test.save();
-
-//         // Increment the number of tests taken by the child
-//         await Child.findByIdAndUpdate(childId, {
-//             $inc: { tests_taken: 1 }
-//         });
-
-//         res.status(201).json({ message: 'Test added successfully', test });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server error', error });
-//     }
-// };
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function addTest6(req, res) {
-    const { childId, spokenWords } = req.body;
-
     try {
-        // Fetch the latest correct stored text from Supabase
-        const { data: testData, error: fetchError } = await supabase
-            .from('Tests') // Assuming 'Tests' stores correct texts
-            .select('stored_text')
-            .eq('child_id', childId)
-            .order('created_at', { ascending: false }) // Get latest entry
-            .limit(1)
-            .single();
+        console.log("Received request body:", req.body);
 
-        if (fetchError || !testData) {
-            return res.status(400).json({ message: 'Test data not found', error: fetchError });
+        let { childId, spokenWords } = req.body;
+
+        // Generate a random 6-digit childId if missing
+        if (!childId || childId.trim() === "" || childId === "undefined") {
+            childId = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log(`Generated random childId: ${childId}`);
         }
 
-        const storedText = testData.stored_text.split(' ').map((word, index) => ({ word: word.toLowerCase(), position: index + 1 }));
-        const spokenArray = spokenWords.split(' ').map((word, index) => ({ word: word.toLowerCase(), position: index + 1 }));
+        if (!spokenWords || typeof spokenWords !== "string") {
+            return res.status(400).json({ message: "Invalid or missing spokenWords" });
+        }
 
-        // Compare spoken words with stored text
-        const correctWords = spokenArray.filter(({ word }) => storedText.some(({ word: storedWord }) => storedWord === word));
-        const incorrectWords = spokenArray.filter(({ word }) => !storedText.some(({ word: storedWord }) => storedWord === word));
+        // Ensure spokenWords are properly formatted (remove commas)
+        spokenWords = spokenWords.replace(/,/g, "").trim();
 
-        const score = ((storedText.length - incorrectWords.length) / storedText.length) * 100;
+        // Define correct words list
+        const correctWordsList = `tree little milk egg book
+        school sit frog playing bun
+        flower road clock train light
+        picture think summer people something
+        dream downstairs biscuit shepherd thirsty
+        crowd sandwich beginning postage island
+        saucer angel ceiling appeared gnome
+        canary attractive imagine nephew gradually
+        smolder applaud disposal nourished diseased
+        university orchestra knowledge audience situated
+        physics campaign choir intercede fascinate
+        forfeit siege recent plausible prophecy
+        colonel soloist systematic slovenly classification
+        genuine institution pivot conscience heroic
+        pneumonia preliminary antique susceptible enigma
+        oblivion scintillate satirical sabre beguile`
+        .split(/\s+/)
+        .map(word => word.toLowerCase());
 
-        // Save test result in Supabase (Results table)
-        const { error: insertError } = await supabase
-            .from('Results') // Assuming 'Results' stores test results
-            .insert([{ 
-                child_id: childId, 
-                spoken_words: spokenWords, 
-                correct_words: JSON.stringify(correctWords), // Store as JSON
-                incorrect_words: JSON.stringify(incorrectWords), // Store as JSON
-                score 
-            }]);
+        // Convert spoken words into an array with positions
+        const spokenArray = spokenWords.split(/\s+/).map((word, index) => ({
+            word: word.toLowerCase(),
+            position: index + 1  // Start numbering from 1
+        }));
 
-        if (insertError) throw insertError;
+        let correctGroups = [];
+        let errorWords = [];
+        let currentCorrectGroup = [];
 
-        res.status(201).json({ 
-            message: 'Test6 added successfully', 
-            score, 
-            correctWords, 
-            incorrectWords 
+        // Process spoken words to group continuous correct words
+        spokenArray.forEach(({ word, position }, idx) => {
+            if (correctWordsList.includes(word)) {
+                // Add word to current correct group
+                currentCorrectGroup.push({ word, position });
+            } else {
+                // If an incorrect word is encountered
+                if (currentCorrectGroup.length > 0) {
+                    correctGroups.push(currentCorrectGroup); // Save the correct group
+                    currentCorrectGroup = []; // Reset for the next correct group
+                }
+                errorWords.push({ word, position }); // Store error word
+            }
+
+            // If last word is correct, add it to the correct groups
+            if (idx === spokenArray.length - 1 && currentCorrectGroup.length > 0) {
+                correctGroups.push(currentCorrectGroup);
+            }
+        });
+
+        // Convert correct word groups to readable format
+        const formattedCorrectGroups = correctGroups.map(group =>
+            group.map(({ word, position }) => `${word}(${position})`).join(" ")
+        );
+
+        // Convert error words to readable format
+        const formattedErrorWords = errorWords.map(({ word, position }) => `${word}(${position})`);
+
+        // Calculate score (percentage of correct words)
+        const totalCorrectWords = correctGroups.reduce((acc, group) => acc + group.length, 0);
+        const score = (totalCorrectWords / correctWordsList.length) * 100;
+
+        // Log output in server console
+        console.log("Correct Groups:", formattedCorrectGroups);
+        console.log("Error Words:", formattedErrorWords);
+        console.log(`Score: ${score.toFixed(2)}`);
+
+        // Send response to frontend
+        res.status(201).json({
+            message: "Test6 processed successfully",
+            childId,
+            score: score.toFixed(2),
+            correctGroups: formattedCorrectGroups,
+            errorWords: formattedErrorWords
         });
 
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.error("Server error:", error);
+        res.status(500).json({ message: "Server error", error });
     }
 }
-
 
 
 

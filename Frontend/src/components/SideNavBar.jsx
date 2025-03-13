@@ -11,10 +11,12 @@ export default function SideNavBar({ children, onToggle, handleLogout }) {
   const [activeItem, setActiveItem] = useState("/");
   const navigate = useNavigate();
 
-  const userDetails = {
-    name: "Rahul Mahesh",
-    email: "rahul_mahesh@gmail.com",
-  };
+  // const userDetails = {
+  //   name: "Rahul Mahesh",
+  //   email: "rahul_mahesh@gmail.com",
+  // };
+
+  const userDetails = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : { name: "user", email: "u@gmail.com" };  // const userDetails = { name: "user", email: "
 
   const handleClick = () => {
     navigate("/userprofile", { state: { userDetails } });
@@ -61,6 +63,7 @@ export default function SideNavBar({ children, onToggle, handleLogout }) {
               className="w-10 h-10 rounded-full"
             />
             <div className={`overflow-hidden transition-all duration-300 ${expand ? "w-48 ml-3" : "w-0"}`}>
+              <span className="text-gray-300 text-sm ">Logged in as </span>
               <h4 className="font-semibold text-gray-300 " >{userDetails.name}</h4>
               <span className="text-xs text-gray-300 ">{userDetails.email}</span>
             </div>

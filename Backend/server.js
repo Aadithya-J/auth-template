@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 import authRoutes from "./routes/authRoutes.js";
+import testRoutes from "./routes/testRoutes.js";
 
 
 // Enable CORS
@@ -24,6 +25,7 @@ app.use(express.json());
 // Use routes
 app.use("/", authRoutes);
 app.use("/",childRoutes);
+app.use("/",testRoutes);
 
 // Start server
 app.listen(PORT, () => {
