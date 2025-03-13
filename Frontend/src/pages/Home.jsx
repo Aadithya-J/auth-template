@@ -1,46 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentCard from "../components/StudentCard";
-import TestCard from "../components/TestCard"; // Assuming you keep the original TestCard
+import TestCard from "../components/TestCard";
 import { MdOutlineEventNote } from "react-icons/md";
 import { RiGraduationCapFill } from "react-icons/ri";
 import { CiCirclePlus } from "react-icons/ci";
-import { useState } from "react";
 import PopupForm from "../components/PopupForm";
 import StudentList from "../components/StudentList";
-import img1 from "../assets/grid.jpg"; // Importing the background image
+import img1 from "../assets/grid.jpg";
 
-const Home = ({ students, tests }) => {
+const Home = ({ students = [], tests = [] }) => {
   const navigate = useNavigate();
-
   const [showPopup, setShowPopup] = useState(false);
 
-  // Toggle the popup on button click
-  const handleAddChildClick = () => {
-    setShowPopup(true);
-  };
+  const handleAddChildClick = () => setShowPopup(true);
+  const handleClose = () => setShowPopup(false);
 
-  const handleClose = () => {
-    setShowPopup(false);
-  };
+  const userDetails = { name: "RAHUL MAHESH", email: "u@gmail.com" };
 
-  const userDetails = {
-    name: "RAHUL MAHESH",
-    email: "u@gmail.com",
-  };
-
-  // Handle click on a specific student
   const handleStudentClick = (studentId) => {
     const storedId = localStorage.getItem("childId");
-    if (studentId !== storedId) {
-      localStorage.setItem("childId", studentId);
-    }
-    navigate(`/testreports`); // Navigate to student details page
+    if (studentId !== storedId) localStorage.setItem("childId", studentId);
+    navigate(`/testreports`);
   };
 
   return (
     <div style={{ position: "relative", height: "100vh" }}>
-      {/* Background image with fixed positioning */}
       <div
         style={{
           position: "fixed",
@@ -55,14 +40,11 @@ const Home = ({ students, tests }) => {
         }}
       />
 
-      {/* Scrollable content */}
       <div className="p-7 overflow-auto h-full">
-        <h2 className="text-[30px] mb-[0.5] font-bold font-roboto pl-5">
-          Welcome,
-        </h2>
+        <h2 className="text-[30px] mb-[0.5] font-bold font-roboto pl-5">Welcome,</h2>
         <h2
           className="text-[35px] mb-[0.5] font-extrabold font-roboto pl-5"
-          style={{ textShadow: '2px 2px 0 #ff937a' }} // Example shadow with color #ff937a
+          style={{ textShadow: "2px 2px 0 #ff937a" }}
         >
           {userDetails.name}
         </h2>
@@ -71,22 +53,23 @@ const Home = ({ students, tests }) => {
 
         <div className="flex-grow overflow-auto">
           <div className="flex flex-wrap justify-start">
-            {tests.length > 0 ? (
+            {Array.isArray(tests) && tests.length > 0 ? (
               tests.map((test) => (
                 <TestCard
                   key={test.id}
                   test={test}
-                  onClick={() => handleStudentClick(test.id)} // Pass click handler to TestCard
+                  onClick={() => handleStudentClick(test.id)}
                 />
               ))
             ) : (
               <p>No tests available</p>
             )}
           </div>
+
           <hr className="border-t-2 border-gray-800 mt-5 ml-5 mr-5 mb-3" />
+
           <div className="space-y-2 p-5">
-            {students.length > 0 ? (
-              // First reverse the students array, then slice to get the first 10
+            {Array.isArray(students) && students.length > 0 ? (
               students
                 .slice()
                 .reverse()
@@ -104,12 +87,13 @@ const Home = ({ students, tests }) => {
             )}
           </div>
         </div>
-        {showPopup && (
-          <PopupForm showPopup={showPopup} handleClose={handleClose} />
-        )}
+
+        {showPopup && <PopupForm showPopup={showPopup} handleClose={handleClose} />}
       </div>
     </div>
   );
 };
+
+Home.defaultProps = { students: [], tests: [] };
 
 export default Home;
