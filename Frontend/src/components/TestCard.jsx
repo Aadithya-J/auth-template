@@ -38,29 +38,25 @@ const TestCard = ({ test }) => {
   };
 
   return (
-    <div className="p-2 pl-5" onClick={() => handleTestClick(test.id)}>
-      <div className="relative w-[336px] h-[290px] group bg-black rounded-xl">
-        <div className="absolute top-0 left-0 w-full h-full shadow-[8px_8px_0px_rgba(0,0,0,1)] rounded-xl opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-0"></div>
-        <div className="block cursor-pointer relative z-10 group">
-          <article className="w-full h-[290px] transition-transform duration-300 ease-out transform group-hover:-translate-x-1 group-hover:-translate-y-1 border-2 border-black rounded-xl group-hover:bg-[#ff937a]">
-            <figure className="w-full h-[75%] border-black border-b-2">
-              <img
-                src={getImageForTest(test.id)} // Using function to determine the image
-                alt="thumbnail"
-                className="w-full h-full object-cover rounded-t-xl"
-              />
-            </figure>
-            <div className="px-6 py-5 text-left h-[25%] flex flex-col justify-center rounded-b-xl bg-[#fafafa] text-black group-hover:bg-[#ff937a]">
-            <h1 className="text-[20px] mb-[0.5] font-bold font-roboto"> {getnameForTest(test.id)}</h1>
+    <div
+      className="p-2 w-full cursor-pointer"
+      onClick={() => handleTestClick(test.id)}
+    >
+      <div className="flex items-center bg-white shadow-md rounded-lg p-3 border border-gray-200 hover:bg-gray-100 transition duration-300">
+        {/* Image on the Left */}
+        <img
+          src={getImageForTest(test.id)}
+          alt="Test Thumbnail"
+          className="w-20 h-20 object-cover rounded-md border border-gray-300"
+        />
 
-<div className="flex items-center space-x-1">
-                <h2 className="text-[12px] pr-[0] font-roboto text-gray-500 group-hover:text-black">Take Test</h2>
-                <div className="p-0 rounded-full mt-[0px]">
-                  <IoIosArrowRoundForward className="text-[25px] mb-[1px] text-gray-500 group-hover:text-black" />
-                </div>
-              </div>
-            </div>
-          </article>
+        {/* Text Content on the Right */}
+        <div className="ml-4 flex-1">
+          <h1 className="text-lg font-semibold text-gray-900">{getnameForTest(test.id)}</h1>
+          <div className="flex items-center text-gray-500 text-sm mt-1">
+            <span>Take Test</span>
+            <IoIosArrowRoundForward className="text-xl ml-1" />
+          </div>
         </div>
       </div>
     </div>
@@ -68,3 +64,4 @@ const TestCard = ({ test }) => {
 };
 
 export default TestCard;
+
