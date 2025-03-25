@@ -15,7 +15,7 @@ const TestResultsTable = () => {
   const [isLatestActive, setIsLatestActive] = useState(false); // For sorting by latest
 
   const [visualTestData, setVisualTestData] = useState([]);
-
+  const [soundTestData, setSoundTestData] = useState([]);
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
 
@@ -57,10 +57,31 @@ const TestResultsTable = () => {
         console.error("Error fetching data:", error);
       }
     };
+    const fetchSoundTestData = async () => {
+      if (!childId || !tokenId) return;
+      try {
+        const response = await axios.get(
+          `${backendURL}/getSoundTestByChild/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        console.log(response);
+  
+        const fetchedData = response.data.tests;
+        setSoundTestData(fetchedData);
+        // setSortedData(fetchedData); // Initially, set sorted data to fetched data
+        // console.log("Tests by child", fetchedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
     fetchData();
     fetchVisualTestData();
+    fetchSoundTestData();
   }, [childId, tokenId]);
+
 
   useEffect(() => {
     const fetchChildDetails = async () => {
@@ -136,6 +157,31 @@ const TestResultsTable = () => {
             testName={testName} // Pass the test name to PopupWindow
             score={score}
             student_age={childDetails.age} // Use childDetails.age here
+          />
+        </td>
+      </tr>
+    );
+  };
+
+  const TableRowSound = ({ testName, dateTaken, score }) => {
+    const { datePart, timePart } = formatDateTime(dateTaken);
+    
+    return (
+      <tr className="group hover:bg-[#ff937a] transition cursor-pointer">
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {testName}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {timePart}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {datePart}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          <PopupWindow
+            testName={testName}
+            score={score}
+            student_age={childDetails.age}
           />
         </td>
       </tr>
@@ -235,9 +281,9 @@ const TestResultsTable = () => {
                   {filteredData.length > 0 &&
                     filteredData.map((test, index) => (
                       <TableRow
-                        key={index}
+                        key={`reading-${index}`}
                         testName={test.test_name}
-                        dateTaken={test.date_taken}
+                        dateTaken={test.created_at}
                         readingAge={test.reading_age}
                         score={test.score}
                       />
@@ -245,13 +291,22 @@ const TestResultsTable = () => {
                   {visualTestData.length > 0 &&
                     visualTestData.map((test, index) => (
                       <TableRowVisual
-                        key={index}
+                        key={`visual-${index}`}
                         testName={test.test_name}
                         dateTaken={test.date_taken}
                         score={test.options}
                       />
                     ))}
-                  {visualTestData.length === 0 && filteredData.length === 0 && (
+                  {soundTestData.length > 0 &&
+                    soundTestData.map((test, index) => (
+                      <TableRowSound
+                        key={`sound-${index}`}
+                        testName={test.test_name}
+                        dateTaken={test.created_at}
+                        score={test.score}
+                      />
+                    ))}
+                  {visualTestData.length === 0 && filteredData.length === 0 && soundTestData.length === 0 && (
                     <tr>
                       <td
                         colSpan="4"

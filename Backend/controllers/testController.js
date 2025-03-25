@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import supabase from "../utils/supabaseClient.js";
 
 export async function addTest6(req, res) {
     try {
@@ -91,8 +87,8 @@ export async function addTest6(req, res) {
         // console.log(`Score: ${score.toFixed(2)}`);
         // Insert test results
         const { error } = await supabase
-            .from("test_results")
-            .insert([{ 
+            .from("schonell_test_results")
+            .insert([{
                 child_id : childId, 
                 spoken_words: spokenWords, 
                 correct_words: JSON.stringify(formattedCorrectGroups),
@@ -129,9 +125,76 @@ export async function getTestsByChild(req, res) {
     const { childId } = req.params;
 
     try {
-        const tests = await Test.find({ child_id: childId });
-        res.status(200).json({ tests });
+        // Query the "test_results" table for the given childId
+        const { data: tests, error } = await supabase
+            .from('schonell_test_results')
+            .select('*')
+            .eq('child_id', childId);  // Assuming "child_id" is the column name in your "test_results" table
+
+        if (error) {
+            throw error;
+        }
+
+        const testsWithNames = tests.map(test => ({
+            ...test,
+            test_name: "Schonell Test"
+        }));
+
+        res.status(200).json({ tests: testsWithNames });
     } catch (error) {
+        console.error('Error fetching tests:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+
+export async function addTest16(req, res) {
+    //Sound Discrimination Test
+    let { childId, score } = req.body;
+    try {
+        const { data : tests, error } = await supabase
+            .from('sound_discrimination_test_results')
+            .insert([{
+                child_id: childId,
+                score: score
+            }]);
+        if (error) {
+            throw error;
+        }
+        const { error: updateError } = await supabase
+            .rpc('increment_tests_taken', { child_id_param: childId });
+        if(updateError){
+            throw updateError;
+        }
+        res.status(201).json({ message: "Test16 processed successfully", childId, score });
+    } catch (error){
+        console.error("Server error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+    
+}
+
+export async function getSoundTestByChild(req, res){
+    console.log("sound test fetch")
+    let { childId } = req.params;
+    try {
+        const { data: tests, error } = await supabase
+            .from('sound_discrimination_test_results')
+            .select('*')
+            .eq('child_id', childId);
+
+        if (error) {
+            throw error;
+        }
+
+        const testsWithNames = tests.map(test => ({
+            ...test,
+            test_name: "Sound Discrimination Test"
+        }));
+
+        res.status(200).json({ tests: testsWithNames });
+    } catch (error) {
+        console.error('Error fetching tests:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 }

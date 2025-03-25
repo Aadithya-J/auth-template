@@ -84,7 +84,7 @@ const SoundDiscriminationTest = () => {
     }
 
     try {
-      const response = await axios.post(`${backendURL}/addTest`, 
+      const response = await axios.post(`${backendURL}/addTest16`, 
         {
           childId: childId,
           test_name: "Test 16: Sound Discrimination",
