@@ -165,9 +165,9 @@ export default function SideNavBar({ onToggle, handleLogout }) {
       <ul className="flex-1 space-y-2">
         <SideNavBarItem icon={<MdDashboard size={20} />} text="Dashboard" route="/" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
         <SideNavBarItem icon={<RiGraduationCapLine size={20} />} text="Classroom" route="/myclass" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
-        <SideNavBarItem icon={<HiOutlineClipboardList size={20} />} text="Tests" route="/test" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
+        <SideNavBarItem icon={<HiOutlineClipboardList size={20} />} text="Tests" route="/taketests" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
         <SideNavBarItem icon={<BiBarChartAlt2 size={20} />} text="Analytics" route="/analytics" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
-        <SideNavBarItem icon={<FaUserFriends size={20} />} text="Students" route="/students" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
+        <SideNavBarItem icon={<FaUserFriends size={20} />} text="Students" route="/selectstudent" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
       </ul>
 
       {/* Profile & Logout */}
