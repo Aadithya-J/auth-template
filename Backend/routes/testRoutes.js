@@ -1,13 +1,11 @@
-const express = require('express');
-const { addTest, getTestsByChild } = require('../controllers/testController');
-const { verifyToken } = require('../middlewares/authMiddleware');
+import express from 'express';
+import { getTestsByChild, addTest6 } from '../controllers/testController.js';
+// import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Add a test for a child
-router.post('/addTest', verifyToken, addTest);
+router.get('/getTestsByChild/:childId', getTestsByChild);
+router.post('/addTest6', addTest6);
 
-// Get all tests for a specific child
-router.get('/getTestsByChild/:childId', verifyToken, getTestsByChild);
-
-module.exports = router;
+export default router; // ✅ Make sure to export as 'default'
+// Compare this snippet from Backend/controllers/userController.js:

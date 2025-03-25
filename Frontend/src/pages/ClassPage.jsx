@@ -14,11 +14,9 @@ export default function ClassPage({ students }) {
   const handleStudentClick = (studentId) => {
     const storedId = localStorage.getItem('childId');
     const selectedTestId = localStorage.getItem('selectedTestId'); // Retrieve selectedTestId from localStorage
-  
-    if (studentId !== storedId) {
+    if (studentId !== storedId || storedId == undefined) {
       localStorage.setItem('childId', studentId);
     }
-  
     // Check the selectedTestId and navigate accordingly
     if (selectedTestId === '1') {
       navigate('/test6');
@@ -43,7 +41,6 @@ export default function ClassPage({ students }) {
   const filteredStudents = (students || []).filter(student =>
     student?.name?.toLowerCase().includes(searchTerm)
   );
-
   return (
     <div style={{ position: "relative", height: "100vh" }}>
       <div
@@ -82,10 +79,10 @@ export default function ClassPage({ students }) {
           {filteredStudents.length > 0 ? (
             filteredStudents.map((student) => (
               <StudentCard
-                key={student._id}
+                key={student.id}
                 student={student}
                 buttonLabel="Select Student"
-                onButtonClick={() => handleStudentClick(student._id)} // Pass the click handler
+                onButtonClick={() => handleStudentClick(student.id)} // Pass the click handler
               />
             ))
           ) : (

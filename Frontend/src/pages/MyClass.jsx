@@ -35,7 +35,6 @@ export default function MyClass({ students }) {
   const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   ); // Filtering students based on the search term
-
   return (
     <div className="pt-4" style={{ position: "relative", height: "100vh" }}>
       <div
@@ -73,10 +72,10 @@ export default function MyClass({ students }) {
           {filteredStudents.length > 0 ? (
             filteredStudents.map((student) => (
               <StudentCard
-                key={student._id}
+                key={student.id}
                 student={student}
                 buttonLabel="View Test Report"
-                onButtonClick={() => handleChildClick(student._id)}
+                onButtonClick={() => handleChildClick(student.id)}
               />
             ))
           ) : (
