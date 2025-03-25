@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import Popup from "reactjs-popup";
 import { backendURL } from "../definedURL";
 
-export default function PopupForm({ showPopup, handleClose }) {
+export default function PopupForm({ showPopup, handleClose, onNewStudent }) {
   const [formData, setFormData] = useState({
     name: "",
     rollno: "",
     age: "",
   });
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -17,7 +16,6 @@ export default function PopupForm({ showPopup, handleClose }) {
     });
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -32,8 +30,11 @@ export default function PopupForm({ showPopup, handleClose }) {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        setFormData({ name: "", rollno: "", age: "" }); // Reset form after submission
-        handleClose(); // Call the handleClose prop to close the popup
+        if (data && data.data) {
+          onNewStudent(data.data[0]); // Notify parent with the new student
+        }
+        setFormData({ name: "", rollno: "", age: "" }); // Reset form
+        handleClose(); // Close the popup
       })
       .catch((error) => {
         console.error("Error:", error);
