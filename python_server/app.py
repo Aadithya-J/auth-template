@@ -117,10 +117,12 @@ def transcribe_audio():
 
     try:
         # Transcribe the audio using Whisper
-        result = model.transcribe(file_path)
+        result = model.transcribe(file_path, fp16=False, language="en")
         # Optionally remove the uploaded file after transcription
         os.remove(file_path)
         return jsonify({"transcription": result['text']}), 200
+        #test return
+        # return jsonify({"transcription": "tree little milk egg book school sit frog plaing bin fower road clack"}), 200
     except Exception as e:
         # Catch any errors from Whisper/FFmpeg
         return jsonify({"error": str(e)}), 500

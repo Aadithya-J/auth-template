@@ -62,7 +62,7 @@ const AudioQuiz = () => {
   };
 
   const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     const childId = localStorage.getItem("childId");
 
     if (!childId) {

@@ -1,15 +1,12 @@
-const express = require('express');
-const { addChild, getChild, getChildrenByTeacher } = require('../controllers/childController');
-const { verifyToken } = require('../middlewares/authMiddleware');
+import { Router } from 'express';
+import { addChild, getChild, getChildrenByTeacher } from '../controllers/childController.js';
 
-const router = express.Router();
+const router = Router();
 
-// Add a child
-router.post('/addChild', verifyToken, addChild);
+router.post('/addChild', addChild);
 
-router.get("/getChild/:childId", verifyToken, getChild);
+router.get("/getChild/:childId", getChild);
 
-// Get all children for a teacher
-router.get('/getChildrenByTeacher', verifyToken, getChildrenByTeacher);
+router.get('/getChildrenByTeacher', getChildrenByTeacher);
 
-module.exports = router;
+export default router;
