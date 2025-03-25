@@ -1,13 +1,11 @@
-const express = require('express');
-const { addVisual, getVisualByChild } = require('../controllers/visualController');
-const { verifyToken } = require('../middlewares/authMiddleware');
+import { Router } from 'express';
+import { addVisual, getVisualByChild, } from '../controllers/visualController.js';
 
-const router = express.Router();
+const router = Router();
 
 // Add a test for a child
-router.post('/addVisual', verifyToken, addVisual);
+router.post('/addVisual',addVisual);
 
 // Get all tests for a specific child
-router.get('/getVisualByChild/:childId', verifyToken, getVisualByChild);
-
-module.exports = router;
+router.get('/getVisualByChild/:childId',getVisualByChild);
+export default router;
