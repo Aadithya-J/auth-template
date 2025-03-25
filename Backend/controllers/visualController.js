@@ -1,40 +1,44 @@
-const Test = require('../models/test');
-const Child = require('../models/child');
-const Visual = require("../models/visual")
+import supabase from '../utils/supabaseClient.js';
 
-exports.addVisual = async (req, res) => {
-    const { child_id, options } = req.body; // Add correctWords and incorrectWords to the body
-    // console.log(child_id, options);
-    
+export async function addVisual(req, res) {
+    const { child_id, options } = req.body;
+    console.log(options);
     try {
-        const test = new Visual({
-            child_id,
-            options
-        });
+        // Insert new test result
+        const { data, error } = await supabase
+            .from('visual_test_results')
+            .insert([{ child_id, options }])
+            .select('*');
         
-        await test.save();
+        if (error) throw error;
         
         // Increment the number of tests taken by the child
-        await Child.findByIdAndUpdate(child_id, {
-            $inc: { tests_taken: 1 }
-        });
+        const { error: updateError } = await supabase
+            .rpc('increment_tests_taken', { child_id_param: child_id });
         
-        // console.log(test);
-        res.status(201).json({ message: 'Visual Discrimination Test added successfully', test });
+        if (updateError) throw updateError;
+        
+        res.status(201).json({ message: 'Visual Discrimination Test added successfully', test: data });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.log(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
-
+}
 
 // Get all tests for a specific child
-exports.getVisualByChild = async (req, res) => {
+export async function getVisualByChild(req, res) {
     const { childId } = req.params;
-
+    
     try {
-        const tests = await Visual.find({ child_id: childId });
-        res.status(200).json({ tests });
+        const { data, error } = await supabase
+            .from('visual_test_results')
+            .select('*')
+            .eq('child_id', childId);
+        
+        if (error) throw error;
+        
+        res.status(200).json({ tests: data });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
+}
