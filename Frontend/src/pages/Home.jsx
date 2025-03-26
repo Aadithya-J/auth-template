@@ -100,11 +100,13 @@
 // export default Home;
 
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentList from "../components/StudentList";
 import TestCard from "../components/TestCard";
 import PopupForm from "../components/PopupForm";
 import SearchbyName from "../components/SearchbyName";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -115,6 +117,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { backendURL } from "../definedURL.js";
 
 const Home = ({ students = [], tests = [] }) => {
   const navigate = useNavigate();
@@ -122,6 +125,72 @@ const Home = ({ students = [], tests = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const handleAddChildClick = () => setShowPopup(true);
   const handleClose = () => setShowPopup(false);
+  const [visualTestData, setVisualTestData] = useState([]);
+  const [soundTestData, setSoundTestData] = useState([]);
+  const childId = localStorage.getItem("childId");
+  const tokenId = localStorage.getItem("access_token");
+  const [data, setData] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+  const [totalScoresByChild, setTotalScoresByChild] = useState({}); // For storing the total scores for each student
+  const [averageScore, setAverageScore] = useState(0);
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      if (!students || students.length === 0) return;
+
+      let totalSum = 0;
+      let totalStudents = 0;
+      let totalTests = 0;
+      const scores = {};
+
+      for (let student of students) {
+        const studentId = student.id;
+
+        const visualTestResponse = await axios.get(
+          `${backendURL}/getVisualByChild/${studentId}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const visualTests = visualTestResponse.data.tests;
+        const visualTotalScore = visualTests.reduce(
+          (sum, test) => sum + (test.score || 0),
+          0
+        );
+
+        const soundTestResponse = await axios.get(
+          `${backendURL}/getSoundTestByChild/${studentId}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const soundTests = soundTestResponse.data.tests;
+        const soundTotalScore = soundTests.reduce(
+          (sum, test) => sum + (test.score || 0),
+          0
+        );
+        const totalScore = visualTotalScore + soundTotalScore;
+
+        scores[studentId] = totalScore;
+
+        totalSum += totalScore;
+        totalStudents += 1;
+        totalTests += visualTests.length + soundTests.length;
+      }
+
+      setTotalScoresByChild(scores);
+
+      const average =
+        totalStudents > 0 ? (totalSum / totalStudents).toFixed(1) : 0;
+      setAverageScore(average);
+    };
+
+    fetchScores();
+  }, [students]);
 
   const userDetails = JSON.parse(localStorage.getItem("user")) || {
     name: "User",
@@ -144,11 +213,6 @@ const Home = ({ students = [], tests = [] }) => {
     { month: "May", highest: 97, average: 84, lowest: 65 },
     { month: "Jun", highest: 98, average: 86, lowest: 67 },
   ];
-
-  // Calculate Average Score
-  const totalScores = tests.reduce((sum, test) => sum + (test.score || 0), 0);
-  const averageScore =
-    tests.length > 0 ? (totalScores / tests.length).toFixed(1) : "N/A";
 
   // Placeholder for Dyslexia Likelihood (Modify with real data logic)
   const dyslexiaLikelihood = "Low";
@@ -177,7 +241,7 @@ const Home = ({ students = [], tests = [] }) => {
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Avg. Student Score</p>
-          <h3 className="text-xl font-bold text-blue-800">86.2%</h3>
+          <h3 className="text-xl font-bold text-blue-800">{averageScore}</h3>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Dyslexia Likelihood</p>
