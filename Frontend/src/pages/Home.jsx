@@ -98,9 +98,7 @@
 // Home.defaultProps = { students: [], tests: [] };
 
 // export default Home;
-
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentList from "../components/StudentList";
 import TestCard from "../components/TestCard";
@@ -131,8 +129,9 @@ const Home = ({ students = [], tests = [] }) => {
   const tokenId = localStorage.getItem("access_token");
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
-  const [totalScoresByChild, setTotalScoresByChild] = useState({}); // For storing the total scores for each student
+  const [totalScoresByChild, setTotalScoresByChild] = useState({});
   const [averageScore, setAverageScore] = useState(0);
+  const [performanceData, setPerformanceData] = useState([]);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -142,10 +141,13 @@ const Home = ({ students = [], tests = [] }) => {
       let totalStudents = 0;
       let totalTests = 0;
       const scores = {};
+      let allScores = []; // All scores across all tests
+      const groupedByMonth = {}; // To group data by months
 
       for (let student of students) {
         const studentId = student.id;
 
+        // Fetching the visual test scores
         const visualTestResponse = await axios.get(
           `${backendURL}/getVisualByChild/${studentId}`,
           {
@@ -155,11 +157,8 @@ const Home = ({ students = [], tests = [] }) => {
           }
         );
         const visualTests = visualTestResponse.data.tests;
-        const visualTotalScore = visualTests.reduce(
-          (sum, test) => sum + (test.score || 0),
-          0
-        );
 
+        // Fetching the sound test scores
         const soundTestResponse = await axios.get(
           `${backendURL}/getSoundTestByChild/${studentId}`,
           {
@@ -169,50 +168,98 @@ const Home = ({ students = [], tests = [] }) => {
           }
         );
         const soundTests = soundTestResponse.data.tests;
-        const soundTotalScore = soundTests.reduce(
+
+        // Fetching the Schonell test scores
+        const schonellTestResponse = await axios.get(
+          `${backendURL}/getTestsByChild/${studentId}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const schonellTests = schonellTestResponse.data.tests;
+
+        // Calculate individual test scores and group by month
+        const allTests = [...visualTests, ...soundTests, ...schonellTests];
+        const totalScore = allTests.reduce(
           (sum, test) => sum + (test.score || 0),
           0
         );
-        const totalScore = visualTotalScore + soundTotalScore;
-
         scores[studentId] = totalScore;
 
         totalSum += totalScore;
         totalStudents += 1;
-        totalTests += visualTests.length + soundTests.length;
+        totalTests += allTests.length;
+
+        // Adding scores for min/max calculation
+        allScores = allScores.concat(allTests.map((test) => test.score));
+
+        // Group by month using created_at date
+        allTests.forEach((test) => {
+          const month = new Date(test.created_at).toLocaleString("default", {
+            month: "short",
+          }); // e.g. "Jan"
+          if (!groupedByMonth[month])
+            groupedByMonth[month] = { scores: [], totalScore: 0 };
+          groupedByMonth[month].scores.push(test.score);
+          groupedByMonth[month].totalScore += test.score || 0;
+        });
       }
 
-      setTotalScoresByChild(scores);
-
+      // Calculate performanceData after fetching all scores
+      const highestScore = Math.max(
+        ...allScores.filter((score) => score !== undefined)
+      );
+      const lowestScore = Math.min(
+        ...allScores.filter((score) => score !== undefined)
+      );
       const average =
         totalStudents > 0 ? (totalSum / totalStudents).toFixed(1) : 0;
+
+      const performanceData = Object.keys(groupedByMonth).map((month) => {
+        const monthlyScores = groupedByMonth[month].scores;
+        const monthHighest = Math.max(
+          ...monthlyScores.filter((score) => score !== undefined)
+        );
+        const monthLowest = Math.min(
+          ...monthlyScores.filter((score) => score !== undefined)
+        );
+        const monthAverage =
+          monthlyScores.length > 0
+            ? (groupedByMonth[month].totalScore / monthlyScores.length).toFixed(
+                1
+              )
+            : 0;
+
+        return {
+          month: month,
+          highest: monthHighest,
+          average: monthAverage,
+          lowest: monthLowest,
+        };
+      });
+
+      setPerformanceData(performanceData);
+      setTotalScoresByChild(scores);
       setAverageScore(average);
     };
 
     fetchScores();
-  }, [students]);
+  }, [students, backendURL]);
 
   const userDetails = JSON.parse(localStorage.getItem("user")) || {
     name: "User",
   };
+
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
+
   const handleStudentClick = (studentId) => {
     localStorage.setItem("childId", studentId);
-    console.log("Navigating to /testreports");
     navigate(`/testreports`);
   };
-
-  // Sample Data for the Chart
-  const performanceData = [
-    { month: "Jan", highest: 95, average: 80, lowest: 60 },
-    { month: "Feb", highest: 92, average: 78, lowest: 58 },
-    { month: "Mar", highest: 93, average: 79, lowest: 59 },
-    { month: "Apr", highest: 96, average: 82, lowest: 62 },
-    { month: "May", highest: 97, average: 84, lowest: 65 },
-    { month: "Jun", highest: 98, average: 86, lowest: 67 },
-  ];
 
   // Placeholder for Dyslexia Likelihood (Modify with real data logic)
   const dyslexiaLikelihood = "Low";
@@ -236,7 +283,7 @@ const Home = ({ students = [], tests = [] }) => {
           <h3 className="text-xl font-bold text-blue-600">{students.length}</h3>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Completed Tests</p>
+          <p className="text-sm font-medium">Total Tests</p>
           <h3 className="text-xl font-bold text-blue-600">{tests.length}</h3>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
@@ -256,7 +303,6 @@ const Home = ({ students = [], tests = [] }) => {
         {/* Left Column - Class Performance Graph */}
         <div className="flex-1 bg-white shadow-sm rounded-lg p-3">
           <h3 className="text-md font-bold text-blue-600">Class Performance</h3>
-          {/* <p className="text-gray-500 text-sm">Class performance over time</p> */}
           <div className="w-full mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={performanceData}>
