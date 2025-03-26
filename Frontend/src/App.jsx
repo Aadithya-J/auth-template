@@ -115,7 +115,7 @@ function App() {
         <SideNavBar onToggle={handleSidebarToggle} handleLogout={handleLogout}>
           <SideNavBarItem
             icon={<GrHomeRounded className="text-grey" size={21} />}
-            text="Home"
+            text="Dashboard"
             route="/"
           />
           <SideNavBarItem
