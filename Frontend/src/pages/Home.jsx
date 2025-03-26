@@ -197,9 +197,10 @@ const Home = ({ students = [], tests = [] }) => {
 
         // Group by month using created_at date
         allTests.forEach((test) => {
-          const month = new Date(test.created_at).toLocaleString("default", {
-            month: "short",
-          }); // e.g. "Jan"
+          const createdAt = new Date(test.created_at);
+          if (isNaN(createdAt)) return; // Skip invalid dates
+          const month = createdAt.toLocaleString("default", { month: "short" }); // e.g. "Jan"
+
           if (!groupedByMonth[month])
             groupedByMonth[month] = { scores: [], totalScore: 0 };
           groupedByMonth[month].scores.push(test.score);
@@ -209,36 +210,44 @@ const Home = ({ students = [], tests = [] }) => {
 
       // Calculate performanceData after fetching all scores
       const highestScore = Math.max(
-        ...allScores.filter((score) => score !== undefined)
+        ...allScores.filter((score) => score !== undefined && score !== null)
       );
       const lowestScore = Math.min(
-        ...allScores.filter((score) => score !== undefined)
+        ...allScores.filter((score) => score !== undefined && score !== null)
       );
       const average =
         totalStudents > 0 ? (totalSum / totalStudents).toFixed(1) : 0;
 
-      const performanceData = Object.keys(groupedByMonth).map((month) => {
-        const monthlyScores = groupedByMonth[month].scores;
-        const monthHighest = Math.max(
-          ...monthlyScores.filter((score) => score !== undefined)
-        );
-        const monthLowest = Math.min(
-          ...monthlyScores.filter((score) => score !== undefined)
-        );
-        const monthAverage =
-          monthlyScores.length > 0
-            ? (groupedByMonth[month].totalScore / monthlyScores.length).toFixed(
-                1
-              )
-            : 0;
+      const performanceData = Object.keys(groupedByMonth)
+        .map((month) => {
+          const monthlyScores = groupedByMonth[month].scores;
+          if (monthlyScores.length === 0) return null; // Skip months with no data
 
-        return {
-          month: month,
-          highest: monthHighest,
-          average: monthAverage,
-          lowest: monthLowest,
-        };
-      });
+          const monthHighest = Math.max(
+            ...monthlyScores.filter(
+              (score) => score !== undefined && score !== null
+            )
+          );
+          const monthLowest = Math.min(
+            ...monthlyScores.filter(
+              (score) => score !== undefined && score !== null
+            )
+          );
+          const monthAverage =
+            monthlyScores.length > 0
+              ? (
+                  groupedByMonth[month].totalScore / monthlyScores.length
+                ).toFixed(1)
+              : 0;
+
+          return {
+            month: month,
+            highest: monthHighest,
+            average: monthAverage,
+            lowest: monthLowest,
+          };
+        })
+        .filter((data) => data !== null); // Remove null months
 
       setPerformanceData(performanceData);
       setTotalScoresByChild(scores);
