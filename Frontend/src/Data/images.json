@@ -1,0 +1,14 @@
+[
+  { "id": 0, "imageUrl": "yellow.jpg", "correctAnswer": "Yellow" },
+
+  { "id": 1, "imageUrl": "apple.jpg", "correctAnswer": "Apple" },
+  { "id": 2, "imageUrl": "cat.jpg", "correctAnswer": "Cat" },
+  { "id": 3, "imageUrl": "deer.jpg", "correctAnswer": "Deer" },
+  { "id": 4, "imageUrl": "flower.jpg", "correctAnswer": "Flower" },
+  { "id": 5, "imageUrl": "lion.jpg", "correctAnswer": "Lion" },
+  { "id": 6, "imageUrl": "elephant.jpg", "correctAnswer": "Elephant" },
+  { "id": 7, "imageUrl": "tiger.jpg", "correctAnswer": "Tiger" },
+  { "id": 8, "imageUrl": "panda.jpg", "correctAnswer": "Panda" },
+  { "id": 9, "imageUrl": "monkey.jpg", "correctAnswer": "Monkey" }
+
+]
