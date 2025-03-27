@@ -24,6 +24,7 @@ import testsData from "./Data/tests.json"; // Use dynamic import if needed
 import { backendURL } from "./definedURL"; // Ensure this import is correct
 import { clearAuth } from "./utils/authHelper";
 import AfterTest from "./components/test 6/AfterTest";
+import PictureRecognition from "./components/test 7/Test7";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -32,6 +33,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     7;
@@ -40,8 +42,6 @@ function App() {
     } else {
       navigate("/login");
     }
-
-    // Load tests.json data into the state
     setTests(testsData);
   }, [navigate]);
 
@@ -187,6 +187,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Test />
+              </PrivateRoute>
+            }
+          />
+            <Route
+            path="/test7"
+            element={
+              <PrivateRoute>
+                <PictureRecognition />
               </PrivateRoute>
             }
           />
