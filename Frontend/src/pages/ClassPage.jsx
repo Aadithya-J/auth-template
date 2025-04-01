@@ -12,24 +12,26 @@ export default function ClassPage({ students }) {
 
   // Handle clicking on a student card
   const handleStudentClick = (studentId) => {
-    const storedId = localStorage.getItem('childId');
-    const selectedTestId = localStorage.getItem('selectedTestId'); // Retrieve selectedTestId from localStorage
+    const storedId = localStorage.getItem("childId");
+    const selectedTestId = localStorage.getItem("selectedTestId"); // Retrieve selectedTestId from localStorage
     if (studentId !== storedId || storedId == undefined) {
-      localStorage.setItem('childId', studentId);
+      localStorage.setItem("childId", studentId);
     }
     // Check the selectedTestId and navigate accordingly
-    if (selectedTestId === '1') {
-      navigate('/test6');
-    } else if (selectedTestId === '2') {
-      navigate('/test8');
+    if (selectedTestId === "1") {
+      navigate("/test6");
+    } else if (selectedTestId === "2") {
+      navigate("/test8");
+    } else if (selectedTestId === "3") {
+      navigate("/test16"); // Default or if selectedTestId is 3
     } else {
-      navigate('/test16');  // Default or if selectedTestId is 3
+      navigate("/test7"); // Default or if selectedTestId is not recognized
     }
   };
 
   // Handle clicking the 'Add Child' button
   const handleClick = () => {
-    navigate('/empty');
+    navigate("/empty");
   };
 
   // Handle search term updates
@@ -38,7 +40,7 @@ export default function ClassPage({ students }) {
   };
 
   // Filter students based on search term
-  const filteredStudents = (students || []).filter(student =>
+  const filteredStudents = (students || []).filter((student) =>
     student?.name?.toLowerCase().includes(searchTerm)
   );
   return (
@@ -56,18 +58,21 @@ export default function ClassPage({ students }) {
           zIndex: -1,
         }}
       />
-      <div className="p-6 overflow-auto h-full" style={{ backgroundColor: "rgba(255, 255, 255, 0)" }}>
+      <div
+        className="p-6 overflow-auto h-full"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0)" }}
+      >
         <div className="pl-7 pr-7 pt-2">
           <div className="flex justify-center items-center">
-          <h2
-            className="text-[30px] pt-0 mb-[0.5] font-extrabold font-roboto  "
-            style={{ textShadow: '2px 2px 0 #ff937a' }} // Example shadow with color #ff937a
-          >
-            SELECT A STUDENT
-          </h2>
-          
-          {/* SearchBar Component Integration */}
-          <SearchbyName onSearch={handleSearch} />
+            <h2
+              className="text-[30px] pt-0 mb-[0.5] font-extrabold font-roboto  "
+              style={{ textShadow: "2px 2px 0 #ff937a" }} // Example shadow with color #ff937a
+            >
+              SELECT A STUDENT
+            </h2>
+
+            {/* SearchBar Component Integration */}
+            <SearchbyName onSearch={handleSearch} />
           </div>
           <hr className="flex justify-between border-t-2 border-gray-800 mt-4 ml-0 mb-7 mr-0" />
         </div>
