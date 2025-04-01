@@ -1,13 +1,12 @@
-import React from 'react';
-import Button from './Button';
-import { useNavigate } from 'react-router-dom';
-import defaulttest1 from '../assets/default-test.png';
-import { IoIosArrowRoundForward } from 'react-icons/io';
-import defaulttest2 from '../assets/default-profile.jpg';
+import React from "react";
+import Button from "./Button";
+import { useNavigate } from "react-router-dom";
+import defaulttest1 from "../assets/default-test.png";
+import { IoIosArrowRoundForward } from "react-icons/io";
+import defaulttest2 from "../assets/default-profile.jpg";
 import books from "../assets/b.jpg";
-import mag from "../assets/mag.jpeg.jpg"
-import speak from "../assets/s.jpg"
-
+import mag from "../assets/mag.jpeg.jpg";
+import speak from "../assets/s.jpg";
 
 const TestCard = ({ test }) => {
   const navigate = useNavigate();
@@ -19,7 +18,10 @@ const TestCard = ({ test }) => {
     if (id === 2) {
       return speak;
     }
-    return books; // Fallback image
+    if (id === 3) {
+      return books;
+    }
+    return books;
   };
 
   const getnameForTest = (id) => {
@@ -29,12 +31,15 @@ const TestCard = ({ test }) => {
     if (id === 2) {
       return "Visual Discrimination";
     }
-    return "Sound Discrimination"; // Fallback image
+    if (id === 3) {
+      return "Sound Discrimination Test";
+    }
+    return "Picture Recognition";
   };
 
   const handleTestClick = (testId) => {
-    localStorage.setItem('selectedTestId', testId);
-    navigate('/selectstudent');
+    localStorage.setItem("selectedTestId", testId);
+    navigate("/selectstudent");
   };
 
   return (
@@ -52,7 +57,9 @@ const TestCard = ({ test }) => {
 
         {/* Text Content on the Right */}
         <div className="ml-4 flex-1">
-          <h1 className="text-lg font-semibold text-gray-900">{getnameForTest(test.id)}</h1>
+          <h1 className="text-lg font-semibold text-gray-900">
+            {getnameForTest(test.id)}
+          </h1>
           <div className="flex items-center text-gray-500 text-sm mt-1">
             <span>Take Test</span>
             <IoIosArrowRoundForward className="text-xl ml-1" />
@@ -64,4 +71,3 @@ const TestCard = ({ test }) => {
 };
 
 export default TestCard;
-
