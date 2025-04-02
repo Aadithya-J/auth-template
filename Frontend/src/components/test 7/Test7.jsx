@@ -7,6 +7,25 @@ import images from "../../Data/imageData";
 import axios from "axios";
 import { backendURL } from "../../definedURL";
 import "react-toastify/dist/ReactToastify.css";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI("AIzaSyB6iES1Hl5V3qEm5LQCxpt-thLce1HiYcY"); // Replace with your actual API key
+
+const evaluateResponse = async (userInput, questionType, image) => {
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const prompt = `Evaluate if the student's ${questionType} for an image of '${image.correctAnswer}' is correct. User Input: '${userInput}'`;
+  
+  try {
+    const result = await model.generateContent({
+      contents: [{ parts: [{ text: prompt }] }]
+    });
+    console.log(result);
+    return result.response.text();
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    return "N|Error validating response";
+  }
+};
 
 const PictureRecognition = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,7 +37,7 @@ const PictureRecognition = () => {
   const [feedback, setFeedback] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const currentImage = images[currentIndex];
-
+  
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);
@@ -62,11 +81,12 @@ const PictureRecognition = () => {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step === 2 && answer.trim()) {
       setStep(3);
-      speakText("Now, tell me about the picture.");
     } else if (step === 3 && description.trim()) {
+      const evaluation = await evaluateResponse(description, "description", currentImage);
+      setFeedback(evaluation);
       handleSubmit();
     } else {
       setFeedback("Please complete this step before proceeding.");
@@ -148,7 +168,7 @@ const PictureRecognition = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 p-6">
+    <div className="min-h-screen  flex items-center justify-center bg-gradient-to-b from-white to-blue-100 p-6">
       <div className="max-w-2xl scale-75 mb-16 w-full bg-white shadow-lg rounded-2xl p-6">
         <ProgressTracker
           currentStep={currentIndex + 1}
@@ -239,3 +259,160 @@ const PictureRecognition = () => {
 };
 
 export default PictureRecognition;
+// //in the question what is the picture aout i need to i i need to integrate it with gemini or anyother api, to check if the image description is done right by the student 
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { motion } from "framer-motion";
+// import { toast } from "sonner";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+// import axios from "axios";
+// import PictureCard from "./PictureCard";
+// import ProgressTracker from "./ProgressTracker";
+// import images from "../../Data/imageData";
+// import { backendURL } from "../../definedURL";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const GEMINI_API_KEY = "AIzaSyB6iES1Hl5V3qEm5LQCxpt-thLce1HiYcY"; 
+// const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+
+// const PictureRecognition = () => {
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [canSee, setCanSee] = useState(null);
+//   const [answer, setAnswer] = useState("");
+//   const [description, setDescription] = useState("");
+//   const [step, setStep] = useState(1);
+//   const [score, setScore] = useState(0);
+//   const [feedback, setFeedback] = useState("");
+//   const [isRecording, setIsRecording] = useState(false);
+//   const currentImage = images[currentIndex];
+
+//   const speakText = (text) => {
+//     if ("speechSynthesis" in window) {
+//       const speech = new SpeechSynthesisUtterance(text);
+//       speech.rate = 0.9;
+//       speech.pitch = 1.2;
+//       window.speechSynthesis.speak(speech);
+//     }
+//   };
+
+//   const startRecording = (setTextCallback) => {
+//     if (!("webkitSpeechRecognition" in window)) {
+//       alert("Speech Recognition is not supported in this browser.");
+//       return;
+//     }
+
+//     const recognition = new window.webkitSpeechRecognition();
+//     recognition.continuous = false;
+//     recognition.interimResults = false;
+//     recognition.lang = "en-US";
+
+//     recognition.onstart = () => setIsRecording(true);
+
+//     recognition.onresult = (event) => {
+//       const transcript = event.results[0][0].transcript;
+//       setTextCallback(transcript);
+//       toast.success(`I heard: ${transcript}`);
+//     };
+
+//     recognition.onend = () => setIsRecording(false);
+//     recognition.start();
+//   };
+
+//   const evaluateResponse = async (userInput, questionType) => {
+//   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+//   const prompt = `Evaluate if the student's ${questionType} for an image of '${currentImage.correctAnswer}' is correct. User Input: '${userInput}'`;
+  
+//   try {
+//     const result = await model.generateContent({
+//       contents: [{ parts: [{ text: prompt }] }]
+//     });
+//     return result.response.text();
+//   } catch (error) {
+//     console.error("Gemini API Error:", error);
+//     return "N|Error validating response";
+//   }
+// };
+
+
+
+//   const handleCanSeeSelection = (selection) => {
+//     setCanSee(selection);
+//     if (selection) {
+//       setStep(2);
+//       speakText("Great! Can you tell me what it is?");
+//     } else {
+//       nextImage();
+//     }
+//   };
+
+//   const handleNext = async () => {
+//     const userInput = step === 2 ? answer : description;
+//     if (!userInput.trim()) {
+//       setFeedback("Please complete this step before proceeding.");
+//       return;
+//     }
+//     const response = await evaluateResponse(userInput, step === 2 ? "identification" : "description");
+//     const isValid = response.startsWith("Y");
+//     setFeedback(response.split("|")[1]);
+    
+//     if (isValid) {
+//       if (step === 3) handleSubmit();
+//       else setStep(3);
+//     }
+//   };
+
+//   const handleSubmit = async () => {
+//     setScore((prev) => prev + (currentImage.score || 1));
+//     submitFinalScore();
+//     setTimeout(nextImage, 2000);
+//   };
+
+//   const nextImage = () => {
+//     if (currentIndex < images.length - 1) {
+//       setCurrentIndex((prev) => prev + 1);
+//       setStep(1);
+//       setAnswer("");
+//       setDescription("");
+//       setCanSee(null);
+//       setFeedback("");
+//     } else {
+//       setFeedback(`Game Over! Your score: ${score}/${images.length}`);
+//     }
+//   };
+
+//   useEffect(() => {
+//     speakText("Can you see this picture?");
+//   }, []);
+
+//   return (
+//     <div className="h-[50%] scale-75 flex items-start justify-start bg-gradient-to-b from-white to-blue-100 p-6">
+//       <div className="max-w-2xl scale-75 mb-[0rem] w-full bg-white shadow-lg rounded-2xl p-6">
+//         <ProgressTracker currentStep={currentIndex + 1} totalSteps={images.length} />
+//         <div className="text-center space-y-6">
+//           <motion.h1 className="text-2xl font-bold text-gray-800">{step === 1 ? "Can you see this picture?" : step === 2 ? "What is it?" : "What is the picture about?"}</motion.h1>
+//           <PictureCard imageName={currentImage.imageUrl} />
+
+//           {step === 1 && (
+//             <div className="flex justify-center space-x-4">
+//               <button onClick={() => handleCanSeeSelection(true)}>Yes</button>
+//               <button onClick={() => handleCanSeeSelection(false)}>No</button>
+//             </div>
+//           )}
+
+//           {step === 2 && (
+//             <div className="space-y-4">
+//               <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="Type your answer..." />
+//               <button onClick={() => startRecording(setAnswer)}>Use Voice</button>
+//               <button onClick={handleNext}>Next</button>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PictureRecognition;
