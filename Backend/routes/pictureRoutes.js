@@ -1,12 +1,13 @@
 import { Router } from "express";
 import {
-  addPicture,
+  evaluateDescriptionAndStore,
   getPictureByChild,
+  getPictureTestResults,
 } from "../controllers/pictureController.js";
 const router = Router();
 
-router.post("/addPicture", addPicture);
-
 router.get("/getPictureByChild/:childId", getPictureByChild);
+router.post("/evaluate-picture-test", evaluateDescriptionAndStore);
+router.get("/picture-test-results/:id", getPictureTestResults);
 
 export default router;

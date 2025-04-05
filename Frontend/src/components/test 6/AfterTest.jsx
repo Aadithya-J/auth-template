@@ -5,7 +5,6 @@ const TestResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Ensure score is a valid number, defaulting to 0
   const score = Number(location.state?.score) || 0;
   const tableData = location.state?.tableData || [];
 
@@ -23,7 +22,9 @@ const TestResults = () => {
             </button>
 
             <div className="flex flex-col items-end">
-              <span className="text-sm text-[#999] font-medium">Your Score</span>
+              <span className="text-sm text-[#999] font-medium">
+                Your Score
+              </span>
               <span className="text-3xl font-semibold text-[#111]">
                 {score.toFixed(2)}%
               </span>
@@ -53,12 +54,21 @@ const TestResults = () => {
                 <tbody>
                   {tableData.length > 0 ? (
                     tableData.map((row, index) => (
-                      <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-[#fafafa]"}>
+                      <tr
+                        key={index}
+                        className={
+                          index % 2 === 0 ? "bg-white" : "bg-[#fafafa]"
+                        }
+                      >
                         <td className="py-4 px-6 text-sm text-[#333] border-t border-r border-[#e6e6e6]">
-                          {row.continuousCorrectWords ? row.continuousCorrectWords.split(" ").join(", ") : "-"}
+                          {row.continuousCorrectWords
+                            ? row.continuousCorrectWords.split(" ").join(", ")
+                            : "-"}
                         </td>
                         <td className="py-4 px-6 text-sm text-[#333] border-t border-r border-[#e6e6e6]">
-                          {row.errorWords ? row.errorWords.split(" ").join(", ") : "-"}
+                          {row.errorWords
+                            ? row.errorWords.split(" ").join(", ")
+                            : "-"}
                         </td>
                         <td className="py-4 px-6 text-sm text-[#333] border-t border-[#e6e6e6]">
                           {row.score || "-"}
@@ -67,7 +77,10 @@ const TestResults = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={3} className="py-4 px-6 text-center text-sm text-[#999] border-t">
+                      <td
+                        colSpan={3}
+                        className="py-4 px-6 text-center text-sm text-[#999] border-t"
+                      >
                         No data available
                       </td>
                     </tr>
@@ -75,10 +88,15 @@ const TestResults = () => {
 
                   {/* Row to display overall score */}
                   <tr className="bg-[#f5f5f7] font-semibold border-t border-[#e6e6e6]">
-                    <td colSpan={2} className="py-4 px-6 text-left text-sm text-[#111] border-r border-[#e6e6e6]">
+                    <td
+                      colSpan={2}
+                      className="py-4 px-6 text-left text-sm text-[#111] border-r border-[#e6e6e6]"
+                    >
                       Total Score
                     </td>
-                    <td className="py-4 px-6 text-sm text-[#111]">{score.toFixed(2)}%</td>
+                    <td className="py-4 px-6 text-sm text-[#111]">
+                      {score.toFixed(2)}%
+                    </td>
                   </tr>
                 </tbody>
               </table>
