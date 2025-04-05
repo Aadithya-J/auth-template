@@ -67,7 +67,7 @@ const TestResultsTable = () => {
           }
         );
         console.log(response);
-  
+
         const fetchedData = response.data.tests;
         setSoundTestData(fetchedData);
         // setSortedData(fetchedData); // Initially, set sorted data to fetched data
@@ -81,7 +81,6 @@ const TestResultsTable = () => {
     fetchVisualTestData();
     fetchSoundTestData();
   }, [childId, tokenId]);
-
 
   useEffect(() => {
     const fetchChildDetails = async () => {
@@ -139,8 +138,8 @@ const TestResultsTable = () => {
   };
   const TableRowVisual = ({ testName, dateTaken, score }) => {
     const { datePart, timePart } = formatDateTime(dateTaken);
-    console.log("score",score);
-    
+    console.log("score", score);
+
     return (
       <tr className="group hover:bg-[#ff937a] transition cursor-pointer">
         <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
@@ -165,7 +164,7 @@ const TestResultsTable = () => {
 
   const TableRowSound = ({ testName, dateTaken, score }) => {
     const { datePart, timePart } = formatDateTime(dateTaken);
-    
+
     return (
       <tr className="group hover:bg-[#ff937a] transition cursor-pointer">
         <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
@@ -293,7 +292,7 @@ const TestResultsTable = () => {
                       <TableRowVisual
                         key={`visual-${index}`}
                         testName={test.test_name}
-                        dateTaken={test.date_taken}
+                        dateTaken={test.created_at}
                         score={test.options}
                       />
                     ))}
@@ -306,16 +305,18 @@ const TestResultsTable = () => {
                         score={test.score}
                       />
                     ))}
-                  {visualTestData.length === 0 && filteredData.length === 0 && soundTestData.length === 0 && (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="p-5 text-center rounded-b-xl border-transparent"
-                      >
-                        No Test Results Found
-                      </td>
-                    </tr>
-                  )}
+                  {visualTestData.length === 0 &&
+                    filteredData.length === 0 &&
+                    soundTestData.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="p-5 text-center rounded-b-xl border-transparent"
+                        >
+                          No Test Results Found
+                        </td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>
