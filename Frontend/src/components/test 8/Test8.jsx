@@ -4,15 +4,16 @@ import { backendURL } from "../../definedURL";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import TestResultPopup from "./TestResultPopup";
 
 const AudioQuiz = () => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [skippedQuestions, setSkippedQuestions] = useState(Array(10).fill(false));
   const [selectedOptions, setSelectedOptions] = useState(Array(10).fill(null));
+  const [showResult, setShowResult] = useState(false);
   const navigate = useNavigate();
 
-  // Removed audioSrc property from questions
   const questions = [
     { word: "ο", options: ["c", "a", "o", "d", "e", "p"], correct: "o" },
     { word: "f", options: ["k", "h", "f", "j", "t", "g"], correct: "f" },
@@ -71,7 +72,6 @@ const AudioQuiz = () => {
     }
 
     try {
-      // Send selectedOptions array as the options field in the payload
       const response = await axios.post(
         `${backendURL}/addVisual`,
         {
@@ -89,7 +89,8 @@ const AudioQuiz = () => {
       if (response.status === 201) {
         toast.success("Test submitted successfully!", {
           position: "top-center",
-          onClose: () => navigate('/'),
+          autoClose: 2000,
+          onClose: () => setShowResult(true),
         });
       } else {
         toast.error("Failed to submit test. Please try again.");
@@ -168,6 +169,18 @@ const AudioQuiz = () => {
         </div>
       </div>
       <ToastContainer />
+
+      {showResult && (
+        <TestResultPopup
+          questions={questions}
+          selectedOptions={selectedOptions}
+          skippedQuestions={skippedQuestions}
+          onClose={() => {
+            setShowResult(false);
+            navigate("/");
+          }}
+        />
+      )}
     </div>
   );
 };

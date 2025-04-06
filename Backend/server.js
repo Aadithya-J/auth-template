@@ -1,14 +1,15 @@
 import express from "express";
-import cors from "cors";
+import cors from "cors"
 import dotenv from "dotenv";
+import childRoutes from "./routes/childRoutes.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-import childRoutes from "./routes/childRoutes.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import visualRoutes from "./routes/visualRoute.js";
-import pictureRoutes from "./routes/pictureRoutes.js";
+
 
 // Enable CORS
 app.use(
@@ -24,10 +25,10 @@ app.use(express.json());
 
 // Use routes
 app.use("/", authRoutes);
-app.use("/", childRoutes);
-app.use("/", testRoutes);
+app.use("/",childRoutes);
+app.use("/",testRoutes);
 app.use("/", visualRoutes);
-app.use("/", pictureRoutes);
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
