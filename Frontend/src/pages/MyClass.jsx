@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import StudentCard from "../components/StudentCard";
-import { RiGraduationCapFill } from "react-icons/ri";
 import { CiCirclePlus } from "react-icons/ci";
-import PopupForm from "../components/PopupForm";
+import { useNavigate } from "react-router-dom";
 import img1 from "../assets/grid.jpg"; // Importing the background image
+import PopupForm from "../components/PopupForm";
 import SearchbyName from "../components/SearchbyName"; // Importing the SearchBar
+import StudentCard from "../components/StudentCard";
 
 export default function MyClass({ students: initialStudents }) {
   const navigate = useNavigate();

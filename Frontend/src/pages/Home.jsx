@@ -280,31 +280,31 @@ const Home = ({ students = [], tests = [] }) => {
         <span className="text-sm font-normal text-gray-600">
           Your Students' performance overview.
         </span>
-        <h2 className="text-xl font-extrabold text-blue-600">{userDetails.name}</h2>
+        <h3 className="text-xl font-extrabold text-blue-600">{userDetails.name}</h3>
       </div>
   
       <div className="mt-3 flex flex-wrap gap-3 md:flex-nowrap">
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Total Students</p>
-          <h3 className="text-xl font-bold text-blue-600">{students.length}</h3>
+          <h2 className="text-xl font-bold text-blue-600">{students.length}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Total Tests</p>
-          <h3 className="text-xl font-bold text-blue-600">{tests.length}</h3>
+          <h2 className="text-xl font-bold text-blue-600">{tests.length}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Avg. Student Score</p>
-          <h3 className="text-xl font-bold text-blue-800">{averageScore}</h3>
+          <h2 className="text-xl font-bold text-blue-800">{averageScore}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
           <p className="text-sm font-medium">Dyslexia Likelihood</p>
-          <h3 className="text-xl font-bold text-blue-600">{dyslexiaLikelihood}</h3>
+          <h2 className="text-xl font-bold text-blue-600">{dyslexiaLikelihood}</h2>
         </div>
       </div>
   
       <div className="flex flex-col md:flex-row gap-4 mt-4">
         <div className="flex-1 bg-white shadow-sm rounded-lg p-3">
-          <h3 className="text-md font-bold text-blue-600">Class Performance</h3>
+          <h2 className="text-md font-bold text-blue-600">Class Performance</h2>
           <div className="w-full mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={performanceData}>
@@ -322,7 +322,7 @@ const Home = ({ students = [], tests = [] }) => {
         </div>
   
         <div className="w-full md:w-1/3 bg-white shadow-sm rounded-lg p-3">
-          <h3 className="text-md font-bold">Recent Tests</h3>
+          <h2 className="text-md font-bold">Recent Tests</h2>
           <div className="space-y-2 mt-2 overflow-y-auto max-h-64">
             {tests.length > 0 ? (
               tests.slice(0, 5).map((test) => (
@@ -338,7 +338,7 @@ const Home = ({ students = [], tests = [] }) => {
       <div className="mt-3 bg-white shadow-sm rounded-lg p-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold">Students</h3>
+            <h2 className="text-lg font-bold">Students</h2>
             <h3 className="text-sm mt-1 text-gray-700 font-normal">
               Select a student to view their report
             </h3>
@@ -358,12 +358,12 @@ const Home = ({ students = [], tests = [] }) => {
               .slice(0, 10)
               .map((student) => (
                 <StudentList
-                  key={student.id}
-                  student={student}
-                  buttonLabel="View Results"
-                  onButtonClick={() => handleStudentClick(student.id)}
-                  buttonClassName="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-                />
+  key={student.id}
+  student={student}
+  buttonLabel="View Results"
+  onButtonClick={() => handleStudentClick(student.id)}
+  buttonClassName="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+/>
               ))
           ) : (
             <p>No students available</p>

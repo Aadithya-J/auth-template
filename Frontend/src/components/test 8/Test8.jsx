@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import axios from "axios";
-import { backendURL } from "../../definedURL";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { backendURL } from "../../definedURL";
 
 const AudioQuiz = () => {
   const [score, setScore] = useState(0);
@@ -129,10 +129,10 @@ const AudioQuiz = () => {
                     key={optionIndex}
                     className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
                       skippedQuestions[index]
-                        ? "border-2 border-gray-400 text-gray-400"
+                        ? "border-2 border-gray-700 text-gray-700"
                         : selectedOptions[index] === option
-                        ? "border-2 border-gray-600 text-black bg-[#ff937a]"
-                        : "border-2 border-gray-600 text-gray-600 hover:bg-[#ff937a] hover:text-black hover:translate-y-[-2px]"
+                        ? "border-2 border-gray-800 text-black bg-[#ff937a]"
+                        : "border-2 border-gray-800 text-gray-800 hover:bg-[#ff937a] hover:text-black hover:translate-y-[-2px]"
                     }`}
                     onClick={() => handleAnswer(index, option)}
                     disabled={skippedQuestions[index]}
@@ -143,12 +143,12 @@ const AudioQuiz = () => {
               </div>
 
               <div className="flex justify-end flex-grow">
-                <button
-                  className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
-                    skippedQuestions[index]
-                      ? "border-2 border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white"
-                      : "border-2 border-gray-400 text-gray-400 hover:bg-white hover:text-gray-700 hover:border-gray-700"
-                  }`}
+              <button
+              className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
+                skippedQuestions[index]
+                ? "border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
+                : "border-2 border-gray-700 text-gray-700 hover:bg-gray-100 hover:text-black"
+              }`}
                   onClick={() => handleSkip(index)}
                 >
                   {skippedQuestions[index] ? "Attempt" : "Skip"}
@@ -161,7 +161,7 @@ const AudioQuiz = () => {
         <div className="flex justify-center mt-8">
           <button
             onClick={handleSubmit}
-            className="bg-green-500 text-white font-bold py-3 px-6 rounded-md text-lg transition transform duration-200 hover:bg-green-700 hover:translate-y-[-2px] shadow-lg"
+            className="bg-green-600 text-white font-bold py-3 px-6 rounded-md text-lg transition transform duration-200 hover:bg-green-700 hover:translate-y-[-2px] shadow-lg"
           >
             Submit Test
           </button>
