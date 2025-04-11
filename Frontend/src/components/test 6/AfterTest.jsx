@@ -23,7 +23,7 @@ const TestResults = () => {
               </button>
   
               <div className="flex flex-col items-end">
-                <span className="text-sm text-[#999] font-medium">
+                <span className="text-sm text-gray-700   font-medium">
                   Your Score
                 </span>
                 <span className="text-3xl font-semibold text-[#111]">

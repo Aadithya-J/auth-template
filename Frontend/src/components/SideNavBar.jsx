@@ -121,13 +121,13 @@
 
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FiLogOut, FiSettings, FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
-import { MdDashboard } from "react-icons/md";
-import { RiGraduationCapLine } from "react-icons/ri";
-import { HiOutlineClipboardList } from "react-icons/hi";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { FaUserFriends } from "react-icons/fa";
+import { FiChevronsLeft, FiChevronsRight, FiLogOut, FiSettings } from "react-icons/fi";
+import { HiOutlineClipboardList } from "react-icons/hi";
+import { MdDashboard } from "react-icons/md";
+import { RiGraduationCapLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/daira-logo.png";
 import profile from "../assets/default-profile.jpg";
 
@@ -156,7 +156,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           <img src={logo} alt="Logo" className="w-8 h-8" />
           {expand && <h1 className="text-lg font-bold text-gray-900 ml-2">Daira</h1>}
         </div>
-        <button onClick={handleToggle} className="text-gray-600">
+        <button onClick={handleToggle} className="text-gray-600" aria-label={expand ? "Collapse sidebar" : "Expand sidebar"}>
           {expand ? <FiChevronsLeft size={20} /> : <FiChevronsRight size={20} />}
         </button>
       </div>
@@ -175,14 +175,22 @@ export default function SideNavBar({ onToggle, handleLogout }) {
         <img src={profile} alt="Profile" className="w-10 h-10 rounded-full" />
         {expand && (
           <div className="ml-3 text-sm">
-            <h4 className="font-semibold text-gray-900">{userDetails.name}</h4>
+            <h2 className="font-semibold text-gray-900">{userDetails.name}</h2>
             <span className="text-gray-500 text-xs">{userDetails.email}</span>
           </div>
         )}
       </div>
       <div className="mt-4">
-        <SideNavBarItem icon={<FiSettings size={20} />} text="Settings" route="/settings" expand={expand} activeItem={activeItem} onClick={handleItemClick} />
-        <button onClick={handleLogout} className="flex items-center text-gray-600 hover:text-red-500 p-2 w-full">
+  <ul className="space-y-2">
+    <SideNavBarItem
+      icon={<FiSettings size={20} />}
+      text="Settings"
+      route="/settings"
+      expand={expand}
+      activeItem={activeItem}
+      onClick={handleItemClick}
+    />
+  </ul>  <button onClick={handleLogout} className="flex items-center text-gray-600 hover:text-red-500 p-2 w-full"   aria-label="Logout">
           <FiLogOut size={20} />
           {expand && <span className="ml-3">Logout</span>}
         </button>

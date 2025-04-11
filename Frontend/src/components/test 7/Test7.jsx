@@ -243,7 +243,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0 ? "text-red-500" : "text-green-500"
+                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.userAnswer || "No Answer"}
@@ -253,7 +253,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0 ? "text-red-500" : "text-green-500"
+                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.answerScore}
@@ -263,7 +263,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.descriptionScore === 0 ? "text-red-500" : "text-green-500"
+                            response.descriptionScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.descriptionScore}
@@ -276,8 +276,8 @@ const PictureRecognition = () => {
                             response.totalForThisImage === 0
                               ? "text-red-500"
                               : response.totalForThisImage === 2
-                              ? "text-green-500"
-                              : "text-yellow-500"
+                              ? "text-green-700"
+                              : "text-yellow-900"
                           }`}
                         >
                           {response.totalForThisImage}/2
