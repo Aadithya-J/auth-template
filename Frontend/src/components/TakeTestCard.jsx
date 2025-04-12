@@ -20,6 +20,12 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     if (id === 3) {
       return books;
     }
+    if (id === 4) {
+      return books;
+    }
+    if (id === 5) {
+      return books;
+    }
     return books;
   };
 
@@ -33,7 +39,12 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     if (id === 3) {
       return "Sound Discrimination Test";
     }
-    return "Picture Recognition";
+    if (id == 4) {
+      return "Picture Recognition";
+    }
+    if (id == 5) {
+      return "Grapheme/Phoneme Correspondence";
+    }
   };
 
   const handleButtonClick = (e) => {

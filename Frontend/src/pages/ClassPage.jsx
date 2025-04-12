@@ -23,9 +23,11 @@ export default function ClassPage({ students }) {
     } else if (selectedTestId === "2") {
       navigate("/test8");
     } else if (selectedTestId === "3") {
-      navigate("/test16"); // Default or if selectedTestId is 3
-    } else {
-      navigate("/test7"); // Default or if selectedTestId is not recognized
+      navigate("/test16");
+    } else if (selectedTestId === "4") {
+      navigate("/test7");
+    } else if (selectedTestId === "5") {
+      navigate("/test5");
     }
   };
 

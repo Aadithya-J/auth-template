@@ -9,8 +9,8 @@ import authRoutes from "./routes/authRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import visualRoutes from "./routes/visualRoute.js";
 import pictureRoutes from "./routes/pictureRoutes.js";
+import graphemeRoutes from "./routes/graphemeRoutes.js";
 
-// Enable CORS
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -19,16 +19,15 @@ app.use(
   })
 );
 
-// Body parsing middleware
 app.use(express.json());
 
-// Use routes
 app.use("/", authRoutes);
 app.use("/", childRoutes);
 app.use("/", testRoutes);
 app.use("/", visualRoutes);
 app.use("/", pictureRoutes);
-// Start server
+app.use("/", graphemeRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
