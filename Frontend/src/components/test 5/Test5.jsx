@@ -7,7 +7,61 @@ import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 
 const GraphemeTest = () => {
-  const [letters] = useState(["A", "B", "C", "D", "E"]);
+  const [letters] = useState([
+    "w",
+    "a",
+    "j",
+    "c",
+    "e",
+    "i",
+    "x",
+    "o",
+    "z",
+    "l",
+    "s",
+    "h",
+    "v",
+    "k",
+    "u",
+    "t",
+    "r",
+    "f",
+    "n",
+    "p",
+    "m",
+    "d",
+    "y",
+    "b",
+    "g",
+    "q",
+    "A",
+    "L",
+    "G",
+    "Z",
+    "U",
+    "B",
+    "H",
+    "I",
+    "O",
+    "S",
+    "N",
+    "D",
+    "K",
+    "T",
+    "R",
+    "V",
+    "M",
+    "Q",
+    "F",
+    "X",
+    "P",
+    "Y",
+    "J",
+    "E",
+    "C",
+    "W",
+  ]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [timeLeft, setTimeLeft] = useState(5);
@@ -135,31 +189,31 @@ const GraphemeTest = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-6">
       {showResults && (
         <Confetti width={width} height={height} recycle={false} />
       )}
 
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-purple-600">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-purple-600">
             Letter Challenge
           </h1>
-          <p className="text-gray-600">Say the letter you see!</p>
+          <p className="text-lg text-gray-600">Say the letter you see!</p>
         </div>
 
-        <div className="mb-6">
-          <div className="flex justify-between mb-1">
-            <span className="text-sm font-medium text-purple-700">
+        <div className="mb-8">
+          <div className="flex justify-between mb-2">
+            <span className="text-md font-medium text-purple-700">
               Progress: {currentIndex}/{letters.length}
             </span>
-            <span className="text-sm font-medium text-purple-700">
+            <span className="text-md font-medium text-purple-700">
               {Math.round((currentIndex / letters.length) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className="bg-purple-600 h-2.5 rounded-full transition-all duration-300"
+              className="bg-purple-600 h-3 rounded-full transition-all duration-300"
               style={{ width: `${(currentIndex / letters.length) * 100}%` }}
             ></div>
           </div>
@@ -174,14 +228,14 @@ const GraphemeTest = () => {
             className="flex flex-col items-center"
           >
             <div className="relative">
-              <div className="w-48 h-48 bg-purple-100 rounded-xl flex items-center justify-center shadow-md mb-6">
-                <span className="text-8xl font-bold text-purple-800">
+              <div className="w-64 h-64 bg-purple-100 rounded-2xl flex items-center justify-center shadow-lg mb-8">
+                <span className="text-9xl font-extrabold text-purple-800">
                   {letters[currentIndex]}
                 </span>
               </div>
 
-              <div className="absolute -top-4 -right-4">
-                <div className="relative w-16 h-16">
+              <div className="absolute -top-5 -right-5">
+                <div className="relative w-20 h-20">
                   <svg className="w-full h-full" viewBox="0 0 36 36">
                     <path
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -199,7 +253,7 @@ const GraphemeTest = () => {
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-lg font-bold text-purple-800">
+                    <span className="text-xl font-bold text-purple-800">
                       {timeLeft}s
                     </span>
                   </div>
@@ -209,11 +263,11 @@ const GraphemeTest = () => {
 
             <div className="flex items-center mb-6">
               <div
-                className={`w-4 h-4 rounded-full mr-2 ${
+                className={`w-5 h-5 rounded-full mr-2 ${
                   isRecording ? "bg-red-500 animate-pulse" : "bg-gray-400"
                 }`}
               ></div>
-              <span className="text-gray-600">
+              <span className="text-lg text-gray-600">
                 {isRecording ? "Recording..." : "Ready"}
               </span>
             </div>
