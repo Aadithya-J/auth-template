@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PopupWindow from "../components/PopupWindow.jsx";
 import PopupWindowVisual from "../components/PopupWindowVisual.jsx";
 import DropDown from "../components/DropDown.jsx";
 import { backendURL } from "../definedURL.js";
 import img1 from "../assets/grid.jpg";
+import PropTypes from 'prop-types';
 
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
@@ -16,6 +17,7 @@ const TestResultsTable = () => {
 
   const [visualTestData, setVisualTestData] = useState([]);
   const [soundTestData, setSoundTestData] = useState([]);
+  const [auditoryTestData, setAuditoryTestData] = useState([]); // New state for test13 results
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
 
@@ -31,7 +33,7 @@ const TestResultsTable = () => {
         );
         const fetchedData = response.data.tests;
         setData(fetchedData);
-        setSortedData(fetchedData); // Initially, set sorted data to fetched data
+        setSortedData(fetchedData);
         console.log("Tests by child", fetchedData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -47,16 +49,13 @@ const TestResultsTable = () => {
             headers: { authorization: `Bearer ${tokenId}` },
           }
         );
-        console.log(response);
-
         const fetchedData = response.data.tests;
         setVisualTestData(fetchedData);
-        // setSortedData(fetchedData); // Initially, set sorted data to fetched data
-        // console.log("Tests by child", fetchedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
     const fetchSoundTestData = async () => {
       if (!childId || !tokenId) return;
       try {
@@ -66,20 +65,33 @@ const TestResultsTable = () => {
             headers: { authorization: `Bearer ${tokenId}` },
           }
         );
-        console.log(response);
-
         const fetchedData = response.data.tests;
         setSoundTestData(fetchedData);
-        // setSortedData(fetchedData); // Initially, set sorted data to fetched data
-        // console.log("Tests by child", fetchedData);
       } catch (error) {
         console.error("Error fetching data:", error);
+      }
+    };
+
+    const fetchAuditoryTestData = async () => {
+      if (!childId || !tokenId) return;
+      try {
+        const response = await axios.get(
+          `${backendURL}/getTest13ByChild/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        const fetchedData = response.data.tests;
+        setAuditoryTestData(fetchedData);
+      } catch (error) {
+        console.error("Error fetching auditory test data:", error);
       }
     };
 
     fetchData();
     fetchVisualTestData();
     fetchSoundTestData();
+    fetchAuditoryTestData();
   }, [childId, tokenId]);
 
   useEffect(() => {
@@ -127,15 +139,23 @@ const TestResultsTable = () => {
         </td>
         <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
           <PopupWindow
-            testName={testName} // Pass the test name to PopupWindow
+            testName={testName}
             reading_age={readingAge}
             score={score}
-            student_age={childDetails.age} // Use childDetails.age here
+            student_age={childDetails.age}
           />
         </td>
       </tr>
     );
   };
+
+  TableRow.propTypes = {
+    testName: PropTypes.string.isRequired,
+    dateTaken: PropTypes.string.isRequired,
+    readingAge: PropTypes.string,
+    score: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
+
   const TableRowVisual = ({ testName, dateTaken, score }) => {
     const { datePart, timePart } = formatDateTime(dateTaken);
     console.log("score", score);
@@ -153,13 +173,19 @@ const TestResultsTable = () => {
         </td>
         <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black ">
           <PopupWindowVisual
-            testName={testName} // Pass the test name to PopupWindow
+            testName={testName}
             score={score}
-            student_age={childDetails.age} // Use childDetails.age here
+            student_age={childDetails.age}
           />
         </td>
       </tr>
     );
+  };
+
+  TableRowVisual.propTypes = {
+    testName: PropTypes.string.isRequired,
+    dateTaken: PropTypes.string.isRequired,
+    score: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   const TableRowSound = ({ testName, dateTaken, score }) => {
@@ -185,6 +211,46 @@ const TestResultsTable = () => {
         </td>
       </tr>
     );
+  };
+
+  TableRowSound.propTypes = {
+    testName: PropTypes.string.isRequired,
+    dateTaken: PropTypes.string.isRequired,
+    score: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
+
+  const TableRowAuditory = ({ testName, dateTaken, score, forwardCorrect, reverseCorrect }) => {
+    const { datePart, timePart } = formatDateTime(dateTaken);
+    return (
+      <tr className="group hover:bg-[#ff937a] transition cursor-pointer">
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {testName}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {timePart}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          {datePart}
+        </td>
+        <td className="border-b font-roboto text-gray-700 p-3 font-semibold text-sm group-hover:text-black">
+          <PopupWindow
+            testName={testName}
+            score={score}
+            student_age={childDetails.age}
+            forwardCorrect={forwardCorrect}
+            reverseCorrect={reverseCorrect}
+          />
+        </td>
+      </tr>
+    );
+  };
+
+  TableRowAuditory.propTypes = {
+    testName: PropTypes.string.isRequired,
+    dateTaken: PropTypes.string.isRequired,
+    score: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    forwardCorrect: PropTypes.number,
+    reverseCorrect: PropTypes.number
   };
 
   // Sorting tests by latest submission
@@ -305,9 +371,21 @@ const TestResultsTable = () => {
                         score={test.score}
                       />
                     ))}
+                  {auditoryTestData.length > 0 &&
+                    auditoryTestData.map((test, index) => (
+                      <TableRowAuditory
+                        key={`auditory-${index}`}
+                        testName={test.test_name}
+                        dateTaken={test.created_at}
+                        score={test.score}
+                        forwardCorrect={test.forward_correct}
+                        reverseCorrect={test.reverse_correct}
+                      />
+                    ))}
                   {visualTestData.length === 0 &&
                     filteredData.length === 0 &&
-                    soundTestData.length === 0 && (
+                    soundTestData.length === 0 &&
+                    auditoryTestData.length === 0 && (
                       <tr>
                         <td
                           colSpan="4"

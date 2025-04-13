@@ -25,6 +25,7 @@ import { backendURL } from "./definedURL"; // Ensure this import is correct
 import { clearAuth } from "./utils/authHelper";
 import AfterTest from "./components/test 6/AfterTest";
 import PictureRecognition from "./components/test 7/Test7";
+import DigitSpanTest from "./components/test 13/Test13";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -254,6 +255,12 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/test13" 
+            element={
+              <PrivateRoute>
+                <DigitSpanTest />
+              </PrivateRoute>
+            } />
         </Routes>
       </main>
     </div>

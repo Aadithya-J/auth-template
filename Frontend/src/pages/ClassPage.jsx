@@ -24,6 +24,8 @@ export default function ClassPage({ students }) {
       navigate("/test8");
     } else if (selectedTestId === "3") {
       navigate("/test16"); // Default or if selectedTestId is 3
+    } else if (selectedTestId === "5"){
+      navigate("/test13")
     } else {
       navigate("/test7"); // Default or if selectedTestId is not recognized
     }

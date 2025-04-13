@@ -1,15 +1,12 @@
-import React from "react";
 import Button from "./Button";
-import img1 from "../assets/default-test.png";
-import defaulttest2 from "../assets/default-profile.jpg";
 import { useNavigate } from "react-router-dom";
 import books from "../assets/b.jpg";
 import mag from "../assets/mag.jpeg.jpg";
 import speak from "../assets/s.jpg";
+import PropTypes from 'prop-types';
 
 const TakeTestCard = ({ test, buttonLabel }) => {
   const navigate = useNavigate();
-
   const getImageForTest = (id) => {
     if (id === 1) {
       return mag;
@@ -20,20 +17,10 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     if (id === 3) {
       return books;
     }
+    if(id === 5){
+      return speak;
+    }
     return books;
-  };
-
-  const getnameForTest = (id) => {
-    if (id === 1) {
-      return "Schonell Test";
-    }
-    if (id === 2) {
-      return "Visual Discrimination";
-    }
-    if (id === 3) {
-      return "Sound Discrimination Test";
-    }
-    return "Picture Recognition";
   };
 
   const handleButtonClick = (e) => {
@@ -76,6 +63,15 @@ const TakeTestCard = ({ test, buttonLabel }) => {
       </div>
     </div>
   );
+};
+
+TakeTestCard.propTypes = {
+  test: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    testName: PropTypes.string.isRequired,
+    About: PropTypes.string.isRequired
+  }).isRequired,
+  buttonLabel: PropTypes.string.isRequired
 };
 
 export default TakeTestCard;
