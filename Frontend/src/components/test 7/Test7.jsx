@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
 import { toast } from "sonner";
+import images from "../../Data/imageData";
+import { backendURL } from "../../definedURL";
 import PictureCard from "./PictureCard";
 import ProgressTracker from "./ProgressTracker";
-import images from "../../Data/imageData";
-import axios from "axios";
-import { backendURL } from "../../definedURL";
-import "react-toastify/dist/ReactToastify.css";
 
 const PictureRecognition = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -209,42 +209,26 @@ const PictureRecognition = () => {
 
   if (showResults) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 p-6">
-        <div className="max-w-5xl w-full bg-white shadow-lg rounded-2xl p-6">
+      <div className="h-screen overflow-y-auto bg-gradient-to-b from-white to-blue-100 p-6">
+        <div className="max-w-5xl w-full mx-auto bg-white shadow-lg rounded-2xl p-6">
           <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
             {testResults ? "Test Results" : "Loading Results..."}
           </h1>
-
+    
           {testResults ? (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse border border-gray-300">
                   <thead>
                     <tr className="bg-gray-200">
-                      <th className="border border-gray-300 px-4 py-2">
-                        Image
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Your Answer
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Correct Answer
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Answer Score
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Description
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Description Score
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Feedback
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2">
-                        Total
-                      </th>
+                      <th className="border border-gray-300 px-4 py-2">Image</th>
+                      <th className="border border-gray-300 px-4 py-2">Your Answer</th>
+                      <th className="border border-gray-300 px-4 py-2">Correct Answer</th>
+                      <th className="border border-gray-300 px-4 py-2">Answer Score</th>
+                      <th className="border border-gray-300 px-4 py-2">Description</th>
+                      <th className="border border-gray-300 px-4 py-2">Description Score</th>
+                      <th className="border border-gray-300 px-4 py-2">Feedback</th>
+                      <th className="border border-gray-300 px-4 py-2">Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -259,9 +243,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0
-                              ? "text-red-500"
-                              : "text-green-500"
+                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.userAnswer || "No Answer"}
@@ -271,9 +253,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0
-                              ? "text-red-500"
-                              : "text-green-500"
+                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.answerScore}
@@ -283,9 +263,7 @@ const PictureRecognition = () => {
                         </td>
                         <td
                           className={`border border-gray-300 px-4 py-2 ${
-                            response.descriptionScore === 0
-                              ? "text-red-500"
-                              : "text-green-500"
+                            response.descriptionScore === 0 ? "text-red-800" : "text-green-700"
                           }`}
                         >
                           {response.descriptionScore}
@@ -298,8 +276,8 @@ const PictureRecognition = () => {
                             response.totalForThisImage === 0
                               ? "text-red-500"
                               : response.totalForThisImage === 2
-                              ? "text-green-500"
-                              : "text-yellow-500"
+                              ? "text-green-700"
+                              : "text-yellow-900"
                           }`}
                         >
                           {response.totalForThisImage}/2
@@ -309,10 +287,10 @@ const PictureRecognition = () => {
                   </tbody>
                 </table>
               </div>
+    
               <div className="text-center mt-6">
                 <h2 className="text-xl font-bold mb-4">
-                  Total Score: {testResults.score}/
-                  {testResults.responses.length * 2}
+                  Total Score: {testResults.score}/{testResults.responses.length * 2}
                 </h2>
                 <div className="flex justify-center space-x-4">
                   <button
@@ -332,11 +310,12 @@ const PictureRecognition = () => {
         </div>
       </div>
     );
+    
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 p-6">
-      <div className="max-w-2xl scale-75 mb-16 w-full bg-white shadow-lg rounded-2xl p-6">
+    <div className="h-screen overflow-y-scroll bg-gradient-to-b from-white to-blue-100 p-6">
+      <div className="max-w-2xl scale-75 mb-16 w-full bg-white shadow-lg rounded-2xl p-6 mx-auto">
         <ProgressTracker
           currentStep={currentIndex + 1}
           totalSteps={images.length}
@@ -355,11 +334,11 @@ const PictureRecognition = () => {
               ? "What is it?"
               : "What is the picture about?"}
           </motion.h1>
-
+  
           <div className="flex justify-center">
             <PictureCard imageName={currentImage.imageUrl} />
           </div>
-
+  
           {step === 1 && (
             <div className="flex justify-center space-x-6">
               <button
@@ -376,7 +355,7 @@ const PictureRecognition = () => {
               </button>
             </div>
           )}
-
+  
           {step > 1 && (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -405,7 +384,7 @@ const PictureRecognition = () => {
                   {isRecording ? "Listening..." : "Use Voice"}
                 </button>
               </div>
-
+  
               <div className="flex justify-center space-x-4">
                 <button
                   className={`${
@@ -424,6 +403,7 @@ const PictureRecognition = () => {
       </div>
     </div>
   );
+  
 };
 
 export default PictureRecognition;
