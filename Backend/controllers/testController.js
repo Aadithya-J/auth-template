@@ -175,7 +175,6 @@ export async function addTest16(req, res) {
 }
 
 export async function getSoundTestByChild(req, res){
-    console.log("sound test fetch")
     let { childId } = req.params;
     try {
         const { data: tests, error } = await supabase
@@ -190,6 +189,65 @@ export async function getSoundTestByChild(req, res){
         const testsWithNames = tests.map(test => ({
             ...test,
             test_name: "Sound Discrimination Test"
+        }));
+
+        res.status(200).json({ tests: testsWithNames });
+    } catch (error) {
+        console.error('Error fetching tests:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+export async function addTest13(req, res) {
+    let { childId, score, forwardCorrect, reverseCorrect } = req.body;
+
+    try {
+        const { data: tests, error } = await supabase
+            .from('auditory_memory_test_results')
+            .insert([{
+                child_id: childId,
+                score: score,
+                forward_correct: forwardCorrect,
+                reverse_correct: reverseCorrect
+            }]);
+        if (error) {
+            console.log(error);
+            throw error;
+        }
+        const { error: updateError } = await supabase
+            .rpc('increment_tests_taken', { child_id_param: childId });
+        if(updateError){
+            console.log(updateError);
+            throw updateError;
+        }
+        res.status(201).json({ 
+            message: "Test13 processed successfully", 
+            childId, 
+            score,
+            forwardCorrect,
+            reverseCorrect
+        });
+    } catch (error){
+        console.error("Server error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+}
+
+export async function getTest13ByChild(req, res) {
+    let { childId } = req.params;
+    try {
+        const { data: tests, error } = await supabase
+            .from('auditory_memory_test_results')
+            .select('*')
+            .eq('child_id', childId);
+
+        if (error) {
+            throw error;
+        }
+
+        const testsWithNames = tests.map(test => ({
+            ...test,
+            test_name: "Auditory Sequential Memory Test"
         }));
 
         res.status(200).json({ tests: testsWithNames });
