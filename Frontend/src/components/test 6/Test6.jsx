@@ -7,12 +7,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import {
-  ArrowRightCircle,
-  Mic,
-  MicOff,
-  UploadCloud,
-} from "lucide-react";
+import { ArrowRightCircle, Mic, MicOff, UploadCloud } from "lucide-react";
 
 function Test6() {
   const [transcript, setTranscript] = useState("");
@@ -81,7 +76,9 @@ function Test6() {
     if (audioBlob instanceof File) {
       formData.append("file", audioBlob);
     } else {
-      const file = new File([audioBlob], "user_audio.wav", { type: "audio/wav" });
+      const file = new File([audioBlob], "user_audio.wav", {
+        type: "audio/wav",
+      });
       formData.append("file", file);
     }
 
@@ -132,7 +129,7 @@ function Test6() {
         { childId, spokenWords },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       if (responseFromApi.status === 201) {
         const { score, correctGroups, errorWords } = responseFromApi.data;
         // Ensure correctGroups and errorWords are arrays of arrays
@@ -172,7 +169,7 @@ function Test6() {
         <ToastContainer position="top-center" />
         <div className="flex flex-col space-y-8">
           <WordGrid />
-  
+
           {/* Controls Panel */}
           <div className="animate-slide-up transition-transform delay-100 rounded-xl bg-secondary/50 backdrop-blur-sm border border-muted p-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -192,13 +189,13 @@ function Test6() {
                   >
                     <Mic className="h-6 w-6 text-green-600 transition-transform duration-300 ease-out" />
                   </button>
-  
+
                   {/* Recording Indicator */}
                   {isRecording && (
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                   )}
                 </div>
-  
+
                 {/* Stop Recording Button */}
                 <button
                   onClick={stopListening}
@@ -212,7 +209,7 @@ function Test6() {
                 >
                   <MicOff className="h-6 w-6 text-red-500 transition-transform duration-300 ease-out" />
                 </button>
-  
+
                 {/* Recording Status */}
                 {isRecording && (
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md text-red-600 rounded-full border border-red-100 shadow-sm animate-fade-in">
@@ -226,7 +223,7 @@ function Test6() {
                   </div>
                 )}
               </div>
-  
+
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 {/* File upload */}
                 <div className="relative w-full sm:w-auto">
@@ -242,7 +239,7 @@ function Test6() {
                     <span>Upload Audio</span>
                   </button>
                 </div>
-  
+
                 {/* Submit button or loading indicator */}
                 {isTranscribing ? (
                   <button

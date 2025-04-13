@@ -65,6 +65,8 @@ const TestResultsTable = () => {
             headers: { authorization: `Bearer ${tokenId}` },
           }
         );
+        console.log(response);
+  
         const fetchedData = response.data.tests;
         setSoundTestData(fetchedData);
       } catch (error) {
@@ -383,18 +385,20 @@ const TestResultsTable = () => {
                       />
                     ))}
                   {visualTestData.length === 0 &&
+                   
                     filteredData.length === 0 &&
+                   
                     soundTestData.length === 0 &&
                     auditoryTestData.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan="4"
-                          className="p-5 text-center rounded-b-xl border-transparent"
-                        >
-                          No Test Results Found
-                        </td>
-                      </tr>
-                    )}
+                        <tr>
+                          <td
+                            colSpan="4"
+                            className="p-5 text-center rounded-b-xl border-transparent"
+                          >
+                            No Test Results Found
+                          </td>
+                        </tr>
+                      )}
                 </tbody>
               </table>
             </div>

@@ -1,9 +1,12 @@
+import React from "react";
+import PropTypes from 'prop-types';
 import Button from "./Button";
+import img1 from "../assets/default-test.png";
+import defaulttest2 from "../assets/default-profile.jpg";
 import { useNavigate } from "react-router-dom";
 import books from "../assets/b.jpg";
 import mag from "../assets/mag.jpeg.jpg";
 import speak from "../assets/s.jpg";
-import PropTypes from 'prop-types';
 
 const TakeTestCard = ({ test, buttonLabel }) => {
   const navigate = useNavigate();
@@ -17,10 +20,34 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     if (id === 3) {
       return books;
     }
-    if(id === 5){
+    if (id === 4) {
+      return books;
+    }
+    if (id === 5) {
+      return books;
+    }
+    if( id === 6){
       return speak;
     }
     return books;
+  };
+
+  const getnameForTest = (id) => {
+    if (id === 1) {
+      return "Schonell Test";
+    }
+    if(id === 5){
+      return speak;
+    }
+    if (id === 3) {
+      return "Sound Discrimination Test";
+    }
+    if (id == 4) {
+      return "Picture Recognition";
+    }
+    if (id == 5) {
+      return "Grapheme/Phoneme Correspondence";
+    }
   };
 
   const handleButtonClick = (e) => {
