@@ -13,7 +13,7 @@ import graphemeRoutes from "./routes/graphemeRoutes.js";
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["https://jiveesha.onrender.com", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
