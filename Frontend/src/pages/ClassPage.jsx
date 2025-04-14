@@ -30,6 +30,8 @@ export default function ClassPage({ students }) {
       navigate("/test5");
     } else if (selectedTestId === "6") {
       navigate("/test13");
+    } else if(selectedTestId === "7"){
+      navigate("/test9");
     }
   };
 

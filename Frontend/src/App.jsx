@@ -27,7 +27,7 @@ import AfterTest from "./components/test 6/AfterTest";
 import PictureRecognition from "./components/test 7/Test7";
 import GraphemeTest from "./components/test 5/Test5";
 import DigitSpanTest from "./components/test 13/Test13";
-
+import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
 
 function App() {
   const [students, setStudents] = useState([]);

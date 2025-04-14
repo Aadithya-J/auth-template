@@ -775,7 +775,6 @@ function Test13() {
       </motion.div>
     );
   };
-
   return (
     <div className="min-h-screen overflow-y-auto bg-gray-50 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
