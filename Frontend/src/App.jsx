@@ -25,6 +25,7 @@ import { backendURL } from "./definedURL"; // Ensure this import is correct
 import { clearAuth } from "./utils/authHelper";
 import AfterTest from "./components/test 6/AfterTest";
 import PictureRecognition from "./components/test 7/Test7";
+import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -195,6 +196,14 @@ function App() {
             element={
               <PrivateRoute>
                 <PictureRecognition />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/test9"
+            element={
+              <PrivateRoute>
+                <Test7/>
               </PrivateRoute>
             }
           />

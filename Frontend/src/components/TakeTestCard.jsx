@@ -33,7 +33,13 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     if (id === 3) {
       return "Sound Discrimination Test";
     }
-    return "Picture Recognition";
+    if (id === 4) {
+      return "Picture Recognition";
+    }
+
+    if (id === 5) {
+      return "Sequence Arrangement";
+    }
   };
 
   const handleButtonClick = (e) => {
