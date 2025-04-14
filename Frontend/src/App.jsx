@@ -209,6 +209,14 @@ function App() {
             }
           />
           <Route
+            path="/test9"
+            element={
+              <PrivateRoute>
+                <Test7/>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/results"
             element={
               <PrivateRoute>

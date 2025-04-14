@@ -31,25 +31,7 @@ const TakeTestCard = ({ test, buttonLabel }) => {
     }
     return books;
   };
-
-  const getnameForTest = (id) => {
-    if (id === 1) {
-      return "Schonell Test";
-    }
-    if(id === 5){
-      return speak;
-    }
-    if (id === 3) {
-      return "Sound Discrimination Test";
-    }
-    if (id == 4) {
-      return "Picture Recognition";
-    }
-    if (id == 5) {
-      return "Grapheme/Phoneme Correspondence";
-    }
-  };
-
+  
   const handleButtonClick = (e) => {
     e.stopPropagation();
     localStorage.setItem("selectedTestId", test.id);

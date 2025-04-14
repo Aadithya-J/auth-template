@@ -49,8 +49,14 @@ const TestCard = ({ test }) => {
     if (id == 5) {
       return "Grapheme/Phoneme Correspondence";
     }
-  };
+    if( id == 6){
+      return "Auditory Sequence Memory Test"
+    }
+    if(id == 7){
+      return "Sequence Arrangement";
+    }
 
+  };
   const handleTestClick = (testId) => {
     localStorage.setItem("selectedTestId", testId);
     navigate("/selectstudent");
@@ -72,7 +78,7 @@ const TestCard = ({ test }) => {
         {/* Text Content on the Right */}
         <div className="ml-4 flex-1">
           <h1 className="text-lg font-semibold text-gray-900">
-            {getnameForTest(test.id)}
+            { getnameForTest(test.id)}
           </h1>
           <div className="flex items-center text-gray-500 text-sm mt-1">
             <span>Take Test</span>
