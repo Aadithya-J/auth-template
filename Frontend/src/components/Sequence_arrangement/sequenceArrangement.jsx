@@ -1,171 +1,6 @@
-// import React, { useState, useEffect } from 'react';
-// // import { button } from '@/components/ui/button';
-// import { Card } from '../ui/Card.jsx';
-// import { CardContent } from '../ui/CardContent.jsx';
-
-// import { Progress } from '../ui/CardContent.jsx';
-// import { motion } from 'framer-motion';
-
-// const cuteEmojis = {
-//   fish: '🐟',
-//   mouse: '🐭'
-// };
-
-// const Test7 = () => {
-//   const practiceItems = [
-//     { id: 1, name: 'fish', orientation: 'left' },
-//     { id: 2, name: 'fish', orientation: 'right' },
-//     { id: 3, name: 'mouse', orientation: 'left' },
-//     { id: 4, name: 'mouse', orientation: 'right' }
-//   ];
-
-//   const testItems = [
-//     {
-//       id: 1,
-//       correctSequence: [
-//         { id: 1, name: 'fish', orientation: 'left' },
-//         { id: 3, name: 'mouse', orientation: 'left' },
-//         { id: 2, name: 'fish', orientation: 'right' },
-//         { id: 4, name: 'mouse', orientation: 'right' }
-//       ]
-//     }
-//     // Add more test items here
-//   ];
-
-//   const [phase, setPhase] = useState('instructions');
-//   const [index, setIndex] = useState(0);
-//   const [showCards, setShowCards] = useState(false);
-//   const [selections, setSelections] = useState([]);
-//   const [feedback, setFeedback] = useState('');
-//   const [timer, setTimer] = useState(5);
-//   const [score, setScore] = useState({ sequence: 0, orientation: 0, total: 0 });
-
-//   useEffect(() => {
-//     if (showCards && timer > 0) {
-//       const countdown = setTimeout(() => setTimer(timer - 1), 1000);
-//       return () => clearTimeout(countdown);
-//     } else if (showCards && timer === 0) {
-//       setShowCards(false);
-//       setTimer(5);
-//     }
-//   }, [showCards, timer]);
-
-//   const handleSelect = (card) => {
-//     if (selections.length < 4 && !selections.includes(card)) {
-//       setSelections([...selections, card]);
-//     }
-//   };
-
-//   const reset = () => setSelections([]);
-
-//   const check = () => {
-//     const current = testItems[index];
-//     let seqErr = 0;
-//     let oriErr = 0;
-
-//     for (let i = 0; i < 4; i++) {
-//       if (selections[i]?.name !== current.correctSequence[i].name) seqErr++;
-//       if (selections[i]?.orientation !== current.correctSequence[i].orientation) oriErr++;
-//     }
-
-//     const itemScore = Math.max(0, 2 - (seqErr > 0 ? 1 : 0) - (oriErr > 0 ? 1 : 0));
-//     setScore(prev => ({
-//       sequence: prev.sequence + (seqErr > 0 ? 0 : 1),
-//       orientation: prev.orientation + (oriErr > 0 ? 0 : 1),
-//       total: prev.total + itemScore
-//     }));
-
-//     setFeedback(seqErr === 0 && oriErr === 0 ? '🎉 Great job!' : '🤔 Let’s try again!');
-
-//     if (index < testItems.length - 1) {
-//       setTimeout(() => {
-//         setIndex(index + 1);
-//         setSelections([]);
-//         setShowCards(true);
-//         setFeedback('');
-//       }, 2000);
-//     } else {
-//       setTimeout(() => setPhase('completed'), 2000);
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 max-w-xl mx-auto text-center">
-//       <h2 className="text-3xl font-bold mb-4 text-pink-600">🎮 Sequence Arrangement Game</h2>
-
-//       {phase === 'instructions' && (
-//         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-//           <p className="text-lg mb-4">Let's play a fun memory game! 👀✨</p>
-//           <p className="mb-4">Look at the pictures, remember the order and which way they’re facing. Then, make it just like mine!</p>
-//           <button onClick={() => { setPhase('test'); setShowCards(true); }} className="bg-pink-500 hover:bg-pink-600">Start Game</button>
-//         </motion.div>
-//       )}
-
-//       {phase === 'test' && (
-//         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-//           <h3 className="text-xl mb-2">Test {index + 1} of {testItems.length}</h3>
-
-//           {showCards ? (
-//             <div className="mb-4">
-//               <p className="text-md">Watch closely! ⏳ ({timer}s)</p>
-//               <div className="flex justify-center gap-4 mt-2">
-//                 {testItems[index].correctSequence.map((card, i) => (
-//                   <Card key={i} className="p-3 text-3xl">
-//                     <CardContent>{card.orientation === 'left' ? '⬅️' : '➡️'} {cuteEmojis[card.name]}</CardContent>
-//                   </Card>
-//                 ))}
-//               </div>
-//             </div>
-//           ) : (
-//             <div className="space-y-4">
-//               <p className="text-md">Now you do it! 🎯</p>
-//               <div className="flex justify-center gap-4 flex-wrap">
-//                 {practiceItems.map((card, i) => (
-//                   <button key={i} onClick={() => handleSelect(card)} disabled={selections.includes(card)} className="text-2xl">
-//                     {card.orientation === 'left' ? '⬅️' : '➡️'} {cuteEmojis[card.name]}
-//                   </button>
-//                 ))}
-//               </div>
-
-//               <div className="flex justify-center gap-4 mt-4">
-//                 {selections.map((card, i) => (
-//                   <Card key={i} className="p-3 text-3xl">
-//                     <CardContent>{card.orientation === 'left' ? '⬅️' : '➡️'} {cuteEmojis[card.name]}</CardContent>
-//                   </Card>
-//                 ))}
-//               </div>
-
-//               <div className="mt-4 flex justify-center gap-4">
-//                 <button onClick={reset} className="bg-yellow-400 hover:bg-yellow-500">Reset</button>
-//                 <button onClick={check} disabled={selections.length < 4} className="bg-green-500 hover:bg-green-600">Check</button>
-//               </div>
-//               <p className="text-xl mt-2">{feedback}</p>
-//             </div>
-//           )}
-
-//           <Progress value={((index + 1) / testItems.length) * 100} className="mt-4" />
-//         </motion.div>
-//       )}
-
-//       {phase === 'completed' && (
-//         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-//           <h3 className="text-2xl font-bold mb-2">🏁 All Done!</h3>
-//           <p className="text-lg">Sequence Score: {score.sequence} / {testItems.length}</p>
-//           <p className="text-lg">Orientation Score: {score.orientation} / {testItems.length}</p>
-//           <p className="text-lg">Total Score: {score.total} / {testItems.length * 2}</p>
-//         </motion.div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Test7;
-
-
-
-
 import React, { useState, useEffect } from 'react';
-import './sequenceArrangement.css';
+import { IoIosInformationCircleOutline } from 'react-icons/io';
+import { IoClose } from 'react-icons/io5';
 
 const Test7 = () => {
   // Animal emojis
@@ -177,7 +12,38 @@ const Test7 = () => {
     bear: '🐻'
   };
 
-  // Practice sequence
+  const sequences = [
+    // Pattern 1: Simple alternating
+    [{ name: 'fish' }, { name: 'mouse' }, { name: 'fish' }, { name: 'mouse' }],
+    
+    // Pattern 2: Double same animal
+    [{ name: 'bear' }, { name: 'bear' }, { name: 'fish' }, { name: 'mouse' }],
+    
+    // Pattern 3: Alternating with different animals
+    [{ name: 'rabbit' }, { name: 'frog' }, { name: 'rabbit' }, { name: 'bear' }],
+    
+    // Pattern 4: Mixed sequence
+    [{ name: 'mouse' }, { name: 'fish' }, { name: 'bear' }, { name: 'frog' }],
+    
+    // Pattern 5: Reverse order
+    [{ name: 'frog' }, { name: 'rabbit' }, { name: 'mouse' }, { name: 'fish' }],
+    
+    // Pattern 6: All different animals
+    [{ name: 'bear' }, { name: 'mouse' }, { name: 'frog' }, { name: 'rabbit' }],
+    
+    // Pattern 7: Repeating with different animals
+    [{ name: 'fish' }, { name: 'bear' }, { name: 'mouse' }, { name: 'bear' }],
+    
+    // Pattern 8: Double same animal in middle
+    [{ name: 'rabbit' }, { name: 'rabbit' }, { name: 'frog' }, { name: 'mouse' }],
+    
+    // Pattern 9: Same animal at start and end
+    [{ name: 'mouse' }, { name: 'fish' }, { name: 'bear' }, { name: 'fish' }],
+    
+    // Pattern 10: Complex pattern
+    [{ name: 'frog' }, { name: 'bear' }, { name: 'rabbit' }, { name: 'mouse' }]
+  ];
+
   const practiceSequence = [
     { name: 'fish' },
     { name: 'mouse' },
@@ -185,89 +51,20 @@ const Test7 = () => {
     { name: 'mouse' }
   ];
 
-  // Test items (10 items with correct sequences)
-  const testItems = [
-    // Item 1
-    [
-      { name: 'fish' },
-      { name: 'mouse' },
-      { name: 'fish' },
-      { name: 'mouse' }
-    ],
-    // Item 2
-    [
-      { name: 'mouse' },
-      { name: 'fish' },
-      { name: 'mouse' },
-      { name: 'fish' }
-    ],
-    // Item 3
-    [
-      { name: 'rabbit' },
-      { name: 'frog' },
-      { name: 'rabbit' },
-      { name: 'frog' }
-    ],
-    // Item 4
-    [
-      { name: 'bear' },
-      { name: 'mouse' },
-      { name: 'bear' },
-      { name: 'mouse' }
-    ],
-    // Item 5
-    [
-      { name: 'frog' },
-      { name: 'frog' },
-      { name: 'rabbit' },
-      { name: 'rabbit' }
-    ],
-    // Item 6
-    [
-      { name: 'fish' },
-      { name: 'rabbit' },
-      { name: 'mouse' },
-      { name: 'frog' }
-    ],
-    // Item 7
-    [
-      { name: 'bear' },
-      { name: 'bear' },
-      { name: 'bear' },
-      { name: 'mouse' }
-    ],
-    // Item 8
-    [
-      { name: 'frog' },
-      { name: 'mouse' },
-      { name: 'frog' },
-      { name: 'mouse' }
-    ],
-    // Item 9
-    [
-      { name: 'rabbit' },
-      { name: 'fish' },
-      { name: 'rabbit' },
-      { name: 'fish' }
-    ],
-    // Item 10
-    [
-      { name: 'mouse' },
-      { name: 'frog' },
-      { name: 'bear' },
-      { name: 'rabbit' }
-    ]
-  ];
+  const testItems = sequences;
 
   // Game state
   const [gameState, setGameState] = useState('welcome');
   const [currentItem, setCurrentItem] = useState(0);
   const [showExample, setShowExample] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
   const [timer, setTimer] = useState(5);
+  const [timerProgress, setTimerProgress] = useState(100);
   const [selectedCards, setSelectedCards] = useState([]);
   const [availableCards, setAvailableCards] = useState([]);
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [feedback, setFeedback] = useState({ message: '', isCorrect: false });
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
 
   // Initialize available cards (shuffled with some extras)
   const initCards = (sequence) => {
@@ -299,11 +96,16 @@ const Test7 = () => {
   const startTest = () => {
     setGameState('test');
     setCurrentItem(0);
+    setScore({ correct: 0, total: 0 });
     startTestItem(0);
   };
 
   // Start a test item
   const startTestItem = (index) => {
+    if (index >= testItems.length) {
+      setGameState('results');
+      return;
+    }
     setAvailableCards(initCards(testItems[index]));
     setSelectedCards([]);
     showSequence(testItems[index]);
@@ -312,16 +114,23 @@ const Test7 = () => {
   // Show the sequence to remember
   const showSequence = (sequence) => {
     setShowExample(true);
+    setShowTimer(true);
     setTimer(5);
+    setTimerProgress(100);
   };
 
   // Timer effect
   useEffect(() => {
     if (showExample && timer > 0) {
-      const countdown = setTimeout(() => setTimer(timer - 1), 1000);
+      const countdown = setTimeout(() => {
+        setTimer(timer - 1);
+        setTimerProgress((timer - 1) * 20); // Update progress (20% per second)
+      }, 1000);
       return () => clearTimeout(countdown);
     } else if (showExample && timer === 0) {
       setShowExample(false);
+      setShowTimer(false);
+      setTimerProgress(100); // Reset progress
     }
   }, [showExample, timer]);
 
@@ -365,15 +174,18 @@ const Test7 = () => {
       setScore({ ...score, total: score.total + 1 });
     }
 
-    // Move to next item or show results
+    // Move to next item or show results after 2 seconds
     setTimeout(() => {
       if (gameState === 'practice') {
         setGameState('instructions2');
+        setFeedback({ message: '', isCorrect: false });
       } else if (currentItem < testItems.length - 1) {
         setCurrentItem(currentItem + 1);
         startTestItem(currentItem + 1);
+        setFeedback({ message: '', isCorrect: false });
       } else {
         setGameState('results');
+        setFeedback({ message: '', isCorrect: false });
       }
     }, 2000);
   };
@@ -391,216 +203,391 @@ const Test7 = () => {
   };
 
   return (
-    <div className="animal-game">
-      {/* Welcome Screen */}
-      {gameState === 'welcome' && (
-        <div className="welcome-screen">
-          <h1>Animal Sequence Game</h1>
-          <div className="welcome-animals">
-            <div className="animal-card">{animals.fish}</div>
-            <div className="animal-card">{animals.mouse}</div>
-            <div className="animal-card">{animals.rabbit}</div>
-            <div className="animal-card">{animals.frog}</div>
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5 flex items-center justify-center">
+      {/* Info Icon and End Test Button */}
+      <div className="absolute top-4 right-4 flex gap-4 z-50">
+        <button 
+          onClick={() => setShowInfoDialog(true)}
+          className="p-2 bg-white/90 rounded-full shadow-md hover:bg-white transition-colors duration-300"
+        >
+          <IoIosInformationCircleOutline className="text-3xl text-blue-600" />
+        </button>
+        {(gameState === 'practice' || gameState === 'test') && (
+          <button 
+            onClick={() => {
+              setGameState('results');
+              setShowExample(false);
+              setShowTimer(false);
+              setFeedback({ message: '', isCorrect: false });
+            }}
+            className="px-4 py-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors duration-300 font-semibold"
+          >
+            End Test
+          </button>
+        )}
+      </div>
+
+      {/* Info Dialog */}
+      {showInfoDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-3xl p-8 max-w-2xl mx-auto shadow-2xl relative">
+            <button 
+              onClick={() => setShowInfoDialog(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <IoClose className="text-2xl" />
+            </button>
+            
+            <h2 className="text-3xl font-bold text-blue-800 mb-6">About the Game</h2>
+            
+            <div className="space-y-6">
+              <div className="bg-blue-50 rounded-2xl p-6">
+                <h3 className="text-xl font-semibold text-blue-700 mb-4">How to Play</h3>
+                <p className="text-blue-800 mb-4">
+                  This is a memory game where you need to remember and recreate sequences of animals. Here's how it works:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 text-blue-800">
+                  <li>Watch the sequence of animals carefully</li>
+                  <li>Remember the order of the animals</li>
+                  <li>Recreate the same sequence using the available cards</li>
+                  <li>You have 5 seconds to memorize each sequence</li>
+                </ol>
+              </div>
+
+              <div className="bg-blue-50 rounded-2xl p-6">
+                <h3 className="text-xl font-semibold text-blue-700 mb-4">Game Structure</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-blue-800">Practice Round</h4>
+                    <p className="text-blue-800">One simple sequence to get familiar with the game</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-800">Main Test</h4>
+                    <p className="text-blue-800">10 different sequences with varying difficulty</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 rounded-2xl p-6">
+                <h3 className="text-xl font-semibold text-blue-700 mb-4">Tips</h3>
+                <ul className="list-disc list-inside space-y-2 text-blue-800">
+                  <li>Focus on the order of the animals</li>
+                  <li>Look for patterns in the sequences</li>
+                  <li>Take your time to arrange the cards correctly</li>
+                  <li>You can remove and rearrange cards if needed</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <p>Can you remember the correct order?</p>
-          <button className="big-button" onClick={() => setGameState('instructions')}>
+        </div>
+      )}
+
+      {gameState === 'welcome' && (
+        <div className="animate-zoomFadeIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
+          <div className="space-y-3">
+            <h1 className="text-4xl font-bold text-blue-800">Animal Sequence Game</h1>
+            <p className="text-sm text-gray-800 max-w-lg mx-auto">
+              Match the sequence first shown to the next one and test your memory.
+            </p>
+          </div>
+          <style>
+            {`
+              @keyframes slideInfinite {
+                0% {
+                  transform: translateX(0);
+                }
+                100% {
+                  transform: translateX(-50%);
+                }
+              }
+              .slide-animation {
+                animation: slideInfinite 20s linear infinite;
+                display: flex;
+                gap: 8px;
+                width: 200%;
+                transform-origin: left center;
+              }
+              .slide-animation:hover {
+                animation-play-state: paused;
+              }
+              .fade-edges {
+                position: relative;
+              }
+              .fade-edges::before,
+              .fade-edges::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 30px;
+                pointer-events: none;
+                z-index: 10;
+              }
+              .fade-edges::before {
+                left: 0;
+                background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+              }
+              .fade-edges::after {
+                right: 0;
+                background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+              }
+            `}
+          </style>
+          <div className="relative overflow-hidden h-32 fade-edges">
+            <div className="absolute top-0 left-0 slide-animation">
+              {Object.values(animals).map((animal, index) => (
+                <div key={index} className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl shadow-lg flex items-center justify-center text-3xl transform hover:scale-1.01 transition-transform duration-300 border-2 border-blue-200 hover:border-blue-400">
+                  {animal}
+                </div>
+              ))}
+              {/* Duplicate the animals for seamless animation */}
+              {Object.values(animals).map((animal, index) => (
+                <div key={`dup-${index}`} className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl shadow-lg flex items-center justify-center text-3xl transform hover:scale-105 transition-transform duration-300 border-2 border-blue-200 hover:border-blue-400">
+                  {animal}
+                </div>
+              ))}
+            </div>
+          </div>
+          <button onClick={() => setGameState('instructions')} 
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
             Let's Play!
           </button>
         </div>
       )}
 
-      {/* Instructions */}
       {gameState === 'instructions' && (
-        <div className="instructions-screen">
-          <h2>How to Play</h2>
-          <div className="instruction-steps">
-            <div className="step">
-              <div className="step-number">1</div>
-              <p>I'll show you some animals in order</p>
-              <div className="example-sequence">
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-                <div className="animal-card">{animals.fish}</div>
+        <div className="animate-rotateIn max-w-2xl mx-auto bg-white/90 rounded-3xl p-8 shadow-xl">
+          <h2 className="text-3xl font-bold text-blue-800 text-center mb-8">How to Play</h2>
+          <div className="space-y-8">
+            <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                <p className="text-lg text-blue-800">I'll show you some animals in order</p>
               </div>
-            </div>
-            <div className="step">
-              <div className="step-number">2</div>
-              <p>Then you recreate the same order</p>
-              <div className="example-sequence">
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-number">3</div>
-              <p>Watch carefully - you'll only see them for 5 seconds!</p>
-              <div className="timer-demo">5</div>
-            </div>
-          </div>
-          <button className="big-button" onClick={startPractice}>
-            Practice Round
-          </button>
-        </div>
-      )}
-
-      {/* Practice Instructions */}
-      {gameState === 'instructions2' && (
-        <div className="instructions-screen">
-          <h2>Ready for the Challenge?</h2>
-          <div className="instruction-steps">
-            <div className="step">
-              <p>Now you'll play <strong>10 rounds</strong></p>
-              <div className="rounds-example">1/10</div>
-            </div>
-            <div className="step">
-              <p>There will be <strong>more animal types</strong></p>
-              <div className="animal-types">
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-                <div className="animal-card">{animals.rabbit}</div>
-                <div className="animal-card">{animals.frog}</div>
-                <div className="animal-card">{animals.bear}</div>
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-                <div className="animal-card">{animals.rabbit}</div>
-                <div className="animal-card">{animals.frog}</div>
-                <div className="animal-card">{animals.bear}</div>
-                <div className="animal-card">{animals.fish}</div>
-                <div className="animal-card">{animals.mouse}</div>
-                <div className="animal-card">{animals.rabbit}</div>
-                <div className="animal-card">{animals.frog}</div>
-                <div className="animal-card">{animals.bear}</div>
-                <div className="animal-card">{animals.mouse}</div>
-
-              </div>
-            </div>
-            <div className="step">
-              <p>Try to get as many correct as you can!</p>
-              <div className="score-example">⭐ 0/0</div>
-            </div>
-          </div>
-          <button className="big-button" onClick={startTest}>
-            Start Game!
-          </button>
-        </div>
-      )}
-
-      {/* Game Screen (Practice and Test) */}
-      {(gameState === 'practice' || gameState === 'test') && (
-        <div className="game-screen">
-          {/* Header */}
-          <div className="game-header">
-            {gameState === 'practice' ? (
-              <h2>Practice Round</h2>
-            ) : (
-              <h2>Round {currentItem + 1} of 10</h2>
-            )}
-            <div className="score-display">
-              <span className="score-icon">⭐</span> {score.correct}/{score.total}
-            </div>
-          </div>
-
-          {/* Example to remember */}
-          {showExample && (
-            <div className="example-area">
-              <h3>Remember this sequence:</h3>
-              <div className="sequence-display">
-                {(gameState === 'practice' ? practiceSequence : testItems[currentItem]).map((animal, index) => (
-                  <div key={`example-${index}`} className="animal-card">
-                    {animals[animal.name]}
+              <div className="flex justify-center gap-4">
+                {[animals.fish, animals.mouse, animals.fish].map((animal, index) => (
+                  <div key={index} className="w-16 h-16 bg-white rounded-xl shadow-md flex items-center justify-center text-2xl">
+                    {animal}
                   </div>
                 ))}
               </div>
-              <div className="timer">
-                <div className="timer-circle">
-                  <div className="timer-text">{timer}</div>
+            </div>
+
+            <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                <p className="text-lg text-blue-800">Then you recreate the same order</p>
+              </div>
+              <div className="flex justify-center gap-4">
+                {[animals.fish, animals.mouse, animals.fish, animals.mouse].map((animal, index) => (
+                  <div key={index} className="w-16 h-16 bg-white rounded-xl shadow-md flex items-center justify-center text-2xl">
+                    {animal}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                <p className="text-lg text-blue-800">Watch carefully - you'll only see them for 5 seconds!</p>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full flex items-center justify-center text-2xl text-white font-bold shadow-lg">
+                  5
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Player's turn */}
-          {!showExample && (
-            <div className="play-area">
-              {/* Feedback message */}
-              {feedback.message && (
-                <div className={`feedback ${feedback.isCorrect ? 'correct' : 'incorrect'}`}>
-                  {feedback.message}
+          <button 
+            className="mt-8 w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+            onClick={startPractice}
+          >
+            Start Practice Round
+          </button>
+        </div>
+      )}
+
+      {gameState === 'instructions2' && (
+        <div className="animate-rotateIn max-w-2xl mx-auto bg-white/90 rounded-3xl p-8 shadow-xl">
+          <h2 className="text-3xl font-bold text-blue-800 text-center mb-8">Ready for the Test?</h2>
+          <div className="space-y-6">
+            <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
+              <p className="text-lg text-blue-800 text-center">
+                You'll now see 10 different sequences. Try to remember and match each one correctly!
+              </p>
+            </div>
+            <button 
+              className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+              onClick={startTest}
+            >
+              Start Test
+            </button>
+          </div>
+        </div>
+      )}
+
+      {(gameState === 'practice' || gameState === 'test') && (
+        <div className="flex flex-col items-center min-h-[600px] relative">
+          <style>
+            {`
+              @keyframes slideIn {
+                0% {
+                  opacity: 0;
+                  transform: translate(-50%, -20px);
+                }
+                100% {
+                  opacity: 1;
+                  transform: translate(-50%, 0);
+                }
+              }
+              .feedback-animation {
+                animation: slideIn 0.5s ease-out forwards;
+              }
+            `}
+          </style>
+          <div className="max-w-4xl w-full mx-auto bg-white/95 rounded-3xl p-8 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-blue-800">
+                {gameState === 'practice' ? 'Practice Round' : `Round ${currentItem + 1} of 10`}
+              </h2>
+              <div className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full text-white font-semibold shadow-md">
+                ⭐ {score.correct}/{score.total}
+              </div>
+            </div>
+
+            <div className="h-[450px] w-full flex flex-col justify-between">
+              {showExample ? (
+                <div className="w-full">
+                  <div className="space-y-4 w-full">
+                    <div className="flex flex-col mt-20 items-center w-full">
+                      <h3 className="text-2xl font-bold text-blue-800 mb-8">Remember this sequence:</h3>
+                      <div className="flex justify-center gap-6 w-full">
+                        {(gameState === 'practice' ? practiceSequence : testItems[currentItem]).map((animal, index) => (
+                          <div 
+                            key={`example-${index}`} 
+                            className="animate-cardFlip"
+                            style={{ animationDelay: `${index * 0.15}s` }}
+                          >
+                            <div className="w-28 h-28 cursor-pointer hover:scale-105 hover:border-blue-600 transition-all duration-300 bg-white rounded-xl shadow-lg flex items-center justify-center text-5xl">
+                              {animals[animal.name]}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {showTimer && (
+                        <div className="relative w-16 h-16 mt-8">
+                          <div className="absolute inset-0 rounded-full bg-gray-200"></div>
+                          <div 
+                            className="absolute inset-0 rounded-full"
+                            style={{
+                              background: `conic-gradient(
+                                #3b82f6 ${timerProgress * 3.6}deg,
+                                transparent ${timerProgress * 3.6}deg
+                              )`
+                            }}
+                          ></div>
+                          <div className="absolute inset-1 rounded-full bg-white flex items-center justify-center">
+                            <span className="text-xl font-bold text-blue-600">
+                              {timer}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full">
+                  <div className="space-y-6 w-full">
+                    <div className="space-y-8 w-full">
+                      <div className="grid grid-cols-4 gap-6 w-full max-w-2xl mx-auto mb-12">
+                        {selectedCards.map((card, index) => (
+                          <div 
+                            key={`selected-${index}`} 
+                            className="relative w-28 h-28 bg-white rounded-xl shadow-lg flex items-center justify-center text-5xl transform hover:scale-110 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                            onClick={() => removeCard(index)}
+                            style={{ animationDelay: `${index * 0.1}s` }}
+                          >
+                            {animals[card.name]}
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 rounded-xl transition-all duration-300"></div>
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <span className="text-white text-base font-semibold">Remove?</span>
+                            </div>
+                          </div>
+                        ))}
+                        {Array(4 - selectedCards.length).fill(0).map((_, index) => (
+                          <div key={`empty-${index}`} className="w-28 h-28 bg-gray-200 rounded-xl shadow-lg flex items-center justify-center text-4xl">
+                            ?
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+                        <div className="py-8">
+                          <h3 className="text-lg font-semibold text-blue-700 text-center mb-6">Available Choices</h3>
+                          <div className="grid grid-cols-6 gap-6 w-full max-w-3xl mx-auto">
+                            {availableCards.map((card, index) => (
+                              <div
+                                key={`available-${index}`}
+                                className="w-28 h-28 bg-white rounded-xl shadow-lg flex items-center justify-center text-5xl transform hover:scale-110 hover:shadow-xl hover:border-2 hover:border-blue-400 transition-all duration-300"
+                                onClick={() => selectCard(card, index)}
+                                style={{ animationDelay: `${index * 0.1}s` }}
+                              >
+                                {animals[card.name]}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center gap-4 w-full">
+                      <button onClick={tryAgain}
+                              className="px-6 py-3 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300">
+                        ↻ Try Again
+                      </button>
+                      <button onClick={checkAnswer}
+                              disabled={selectedCards.length < 4}
+                              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full font-semibold shadow-md hover:shadow-lg disabled:opacity-50 transition-all duration-300">
+                        ✓ Check
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
+            </div>
+          </div>
 
-              <h3>Your turn! Make the same sequence:</h3>
-              
-              {/* Selected cards */}
-              <div className="selected-cards">
-                {selectedCards.map((card, index) => (
-                  <div 
-                    key={`selected-${index}`} 
-                    className="animal-card selected"
-                    onClick={() => removeCard(index)}
-                  >
-                    {animals[card.name]}
-                  </div>
-                ))}
-                {/* Empty slots */}
-                {Array(4 - selectedCards.length).fill(0).map((_, index) => (
-                  <div key={`empty-${index}`} className="animal-card empty">
-                    ?
-                  </div>
-                ))}
-              </div>
-
-              {/* Available cards */}
-              <div className="available-cards">
-                {availableCards.map((card, index) => (
-                  <div
-                    key={`available-${index}`}
-                    className="animal-card"
-                    onClick={() => selectCard(card, index)}
-                  >
-                    {animals[card.name]}
-                  </div>
-                ))}
-              </div>
-
-              {/* Controls */}
-              <div className="game-controls">
-                <button className="control-button try-again" onClick={tryAgain}>
-                  ↻ Try Again
-                </button>
-                <button 
-                  className="control-button check" 
-                  onClick={checkAnswer}
-                  disabled={selectedCards.length < 4}
-                >
-                  ✓ Check
-                </button>
-              </div>
+          {feedback.message && (
+            <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-4 p-4 rounded-xl text-white text-center font-semibold text-xl w-full max-w-4xl feedback-animation ${
+              feedback.isCorrect ? 'bg-gradient-to-r from-blue-500 to-blue-400' : 'bg-gradient-to-r from-red-500 to-red-400'
+            }`}>
+              {feedback.message}
             </div>
           )}
         </div>
       )}
 
-      {/* Results Screen */}
       {gameState === 'results' && (
-        <div className="results-screen">
-          <h2>Game Complete!</h2>
-          <div className="final-score">
+        <div className="animate-scaleIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
+          <h2 className="text-3xl font-bold text-blue-800">Game Complete!</h2>
+          <div className="text-xl font-semibold text-blue-700">
             You got {score.correct} out of {score.total} correct!
           </div>
-          <div className="score-stars">
+          <div className="flex justify-center gap-2">
             {Array(Math.round((score.correct / score.total) * 5)).fill(0).map((_, i) => (
-              <span key={`star-${i}`} className="star">⭐</span>
+              <span key={`star-${i}`} className="text-3xl text-yellow-400">⭐</span>
             ))}
           </div>
-          <div className="encouragement">
+          <div className="text-lg text-blue-600">
             {score.correct / score.total > 0.7 ? "Awesome memory! 🎉" : 
              score.correct / score.total > 0.4 ? "Good job! 👍" : "Nice try! 😊"}
           </div>
           <button 
-            className="big-button" 
+            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
             onClick={() => {
               setGameState('welcome');
               setScore({ correct: 0, total: 0 });
