@@ -10,6 +10,7 @@ import testRoutes from "./routes/testRoutes.js";
 import visualRoutes from "./routes/visualRoute.js";
 import pictureRoutes from "./routes/pictureRoutes.js";
 import graphemeRoutes from "./routes/graphemeRoutes.js";
+import sequenceRoutes from "./routes/sequenceRoutes.js";
 
 app.use(
   cors({
@@ -27,6 +28,7 @@ app.use("/", testRoutes);
 app.use("/", visualRoutes);
 app.use("/", pictureRoutes);
 app.use("/", graphemeRoutes);
+app.use("/api", sequenceRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosInformationCircleOutline } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 const Test7 = () => {
+  const navigate = useNavigate();
+
   // Animal emojis
   const animals = {
     fish: '🐟',
@@ -215,10 +218,7 @@ const Test7 = () => {
         {(gameState === 'practice' || gameState === 'test') && (
           <button 
             onClick={() => {
-              setGameState('results');
-              setShowExample(false);
-              setShowTimer(false);
-              setFeedback({ message: '', isCorrect: false });
+              navigate('/test9');
             }}
             className="px-4 py-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors duration-300 font-semibold"
           >
