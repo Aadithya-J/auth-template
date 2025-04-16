@@ -17,7 +17,8 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "http://localhost:5173",
     "https://sankalp-client1.vercel.app",
-    "https://sankalp-server.onrender.com"
+    "https://sankalp-server.onrender.com",
+    "https://jiveesha.vercel.app"
 ]
 
 # Enable CORS
