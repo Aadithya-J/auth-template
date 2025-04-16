@@ -1,56 +1,66 @@
 import React, { useState } from "react";
+import { MdSearch, MdClose } from "react-icons/md";
 
 const SearchbyName = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchTerm); // Pass current term
+    onSearch(searchTerm);
   };
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    onSearch(value); // Triggers live update (reset on clear)
+    onSearch(value); // Live search
+  };
+
+  const handleClear = () => {
+    setSearchTerm("");
+    onSearch("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-[250px] mx-auto mb-1 mr-8">
-      <label
-        htmlFor="default-search"
-        className="mb-2 text-sm font-medium text-gray-900 sr-only"
-      >
-        Search
-      </label>
-      <div className="relative">
-        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-gray-500"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
+    <form 
+      onSubmit={handleSubmit} 
+      className="w-full md:w-80 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
+    >
+      <div className={`relative transition-all duration-300 ease-in-out ${isFocused ? 'translate-y-[-2px]' : ''}`}>
+        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <MdSearch 
+            className={`w-5 h-5 transition-all duration-300 ${isFocused ? 'text-blue-600' : 'text-blue-500'}`} 
+            aria-hidden="true" 
+          />
         </div>
+        
         <input
           type="search"
-          id="default-search"
-          className="block w-full p-4 ps-10 text-sm text-black border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+          id="student-search"
+          className="w-full py-2 pl-10 pr-16 text-sm text-gray-700 bg-white border border-blue-200 rounded-lg transition-all duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:shadow-md"
           placeholder="Search students..."
           value={searchTerm}
           onChange={handleInputChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          aria-label="Search for students by name"
         />
+        
+        {searchTerm && (
+          <button
+            type="button"
+            className="absolute right-[4.5rem] top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+            onClick={handleClear}
+            aria-label="Clear search"
+          >
+            <MdClose className="w-5 h-5" />
+          </button>
+        )}
+        
         <button
           type="submit"
-          className="text-gray-700 border border-gray-700 absolute end-2.5 bottom-2.5 bg-white hover:bg-green-600 hover:text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+          className={`absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-100 hover:bg-blue-500 text-blue-700 hover:text-white py-1 px-3 text-sm font-medium rounded-md transition-all duration-300 ease-in-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 ${isFocused ? 'bg-blue-200' : ''}`}
+          aria-label="Submit search"
         >
           Search
         </button>

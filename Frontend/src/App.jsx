@@ -28,6 +28,7 @@ import PictureRecognition from "./components/test 7/Test7";
 import GraphemeTest from "./components/test 5/Test5";
 import DigitSpanTest from "./components/test 13/Test13";
 import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
+import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -205,6 +206,14 @@ function App() {
             element={
               <PrivateRoute>
                 <GraphemeTest />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/test10"
+            element={
+              <PrivateRoute>
+                <SymbolSequence />
               </PrivateRoute>
             }
           />
