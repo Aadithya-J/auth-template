@@ -26,6 +26,7 @@ const TestCard = ({ test }) => {
     if (id === 5) return "Grapheme/Phoneme Correspondence";
     if (id === 6) return "Auditory Sequence Memory Test";
     if (id === 7) return "Sequence Arrangement";
+    if (id === 8) return "Symbol Sequence";
   };
 
   const handleTestClick = (testId) => {
