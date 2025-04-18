@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { backendURL } from "../../definedURL";
 
-const AudioQuiz = () => {
+const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [skippedQuestions, setSkippedQuestions] = useState(Array(10).fill(false));
@@ -87,10 +87,14 @@ const AudioQuiz = () => {
       );
 
       if (response.status === 201) {
-        toast.success("Test submitted successfully!", {
-          position: "top-center",
-          onClose: () => navigate('/'),
-        });
+        if (suppressResultPage && typeof onComplete === 'function') {
+          onComplete(score);
+        } else {
+          toast.success("Test submitted successfully!", {
+            position: "top-center",
+            onClose: () => navigate('/'),
+          });
+        }
       } else {
         toast.error("Failed to submit test. Please try again.");
       }

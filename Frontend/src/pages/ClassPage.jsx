@@ -24,8 +24,15 @@ export default function ClassPage({ students }) {
     if (studentId !== storedId || storedId == undefined) {
       localStorage.setItem("childId", studentId);
     }
+    // Find the student object
+    const selectedStudentObj = (students || []).find(s => String(s.id) === String(studentId));
     // Check the selectedTestId and navigate accordingly
-    if (selectedTestId === "1") {
+    if (selectedTestId === "all") {
+      if (selectedStudentObj) {
+        localStorage.setItem('selectedStudent', JSON.stringify(selectedStudentObj));
+      }
+      navigate("/continuousassessment");
+    } else if (selectedTestId === "1") {
       navigate("/test6");
     } else if (selectedTestId === "2") {
       navigate("/test8");

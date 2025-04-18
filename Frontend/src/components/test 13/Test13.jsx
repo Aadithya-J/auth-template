@@ -12,16 +12,16 @@ const DIGIT_DISPLAY_TIME = 1000;
 const PAUSE_BETWEEN_DIGITS = 200;
 const STARTING_FORWARD_SEQUENCES = [
   [4, 9], [3, 8],
-  // [7, 1, 2], [2, 6, 2],
-  // [6, 3, 5, 1], [1, 4, 5, 2],
+  [7, 1, 2], [2, 6, 2],
+  [6, 3, 5, 1], [1, 4, 5, 2],
   // [2, 7, 4, 6, 9], [2, 4, 7, 1, 6],
   // [6, 9, 1, 8, 3, 7], [1, 4, 5, 4, 7, 6]
 ];
 
 const STARTING_REVERSE_SEQUENCES = [
   [7, 5], [2, 7],
-  // [5, 2, 7], [0, 1, 9],
-  // [4, 7, 3, 5], [1, 6, 8, 5],
+  [5, 2, 7], [0, 1, 9],
+  [4, 7, 3, 5], [1, 6, 8, 5],
   // [1, 7, 5, 0, 4], [3, 5, 2, 1, 7],
   // [8, 3, 9, 7, 5, 3], [1, 4, 0, 4, 7, 2]
 ];
@@ -79,7 +79,7 @@ const parseTranscript = (transcript) => {
 };
 
 // --- Component ---
-function Test13() {
+function Test13({ suppressResultPage = false, onComplete }) {
   const navigate = useNavigate();
   const [gameState, setGameState] = useState("instructions"); // instructions, presenting, listening, evaluating, finished
   const [mode, setMode] = useState("forward"); // forward, reverse
@@ -597,7 +597,8 @@ function Test13() {
   );
 
   const renderListening = () => (
-    <motion.div
+    <>
+     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -717,23 +718,6 @@ function Test13() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
-  );
-
-  const renderFinished = () => {
-    const finalScore = Math.round((forwardScore + reverseScore) / 2);
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-10 bg-white rounded-2xl shadow-lg max-w-3xl mx-auto border border-gray-100"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
-          className="mb-8"
-        >
           <CheckCircle size={80} className="mx-auto text-blue-600" />
         </motion.div>
         
@@ -772,9 +756,93 @@ function Test13() {
           <Send size={24}/>
           <span>Submit Results</span>
         </motion.button>
+  </>
+);
+
+  const renderFinished = () => (
+    <>
+      <AnimatePresence>
+        {gameState === "finished" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl mx-auto mt-20 border border-blue-200"
+          >
+            {showFeedback ? (
+              <>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                >
+                  <CheckCircle size={48} className="text-green-500" />
+                </motion.div>
+                <div className="bg-green-50 text-green-700 px-8 py-4 rounded-xl border border-green-200">
+                  <span className="text-2xl font-bold">Correct!</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                >
+                  <XCircle size={48} className="text-blue-600" />
+                </motion.div>
+                <div className="bg-blue-50 text-blue-600 px-8 py-4 rounded-xl border border-blue-200">
+                  <span className="text-2xl font-bold">Let&apos;s try the next one</span>
+                </div>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <CheckCircle size={80} className="mx-auto text-blue-600" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl mx-auto mt-10 border border-blue-200"
+      >
+        <h2 className="text-4xl font-bold text-gray-800 mb-10">
+          Challenge Complete!
+        </h2>
+
+        <div className="grid grid-cols-2 gap-8 mb-10">
+          <div className="bg-blue-50 p-8 rounded-xl">
+            <h3 className="text-xl text-gray-700 mb-3">Forward Score</h3>
+            <p className="text-4xl font-bold text-blue-600">
+              {forwardScore} / {STARTING_FORWARD_SEQUENCES.length}
+            </p>
+          </div>
+          <div className="bg-blue-50 p-8 rounded-xl">
+            <h3 className="text-xl text-gray-700 mb-3">Reverse Score</h3>
+            <p className="text-4xl font-bold text-blue-600">
+              {reverseScore} / {STARTING_REVERSE_SEQUENCES.length}
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-10 rounded-xl mb-10">
+          <h3 className="text-2xl text-gray-700 mb-3">Final Score</h3>
+          <p className="text-6xl font-extrabold text-blue-600">
+            {finalScore} / 10
+          </p>
+        </div>
+
+        <motion.button
+          onClick={submitResults}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white text-xl font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg"
+        >
+          <Send size={24}/>
+          <span>Submit Results</span>
+        </motion.button>
       </motion.div>
-    );
-  };
+    </>
+  );
   return (
     <div className="min-h-screen overflow-y-auto bg-gray-50 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
