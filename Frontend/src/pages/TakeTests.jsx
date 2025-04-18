@@ -39,6 +39,15 @@ const TakeTests = ({ tests = [] }) => {
     <div className="bg-gradient-to-b from-blue-50/80 to-white min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <header className="animate-fadeIn">
+          <div className="flex justify-end mb-6">
+            <button
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 text-lg font-semibold"
+              onClick={() => { localStorage.setItem('selectedTestId', 'all'); navigate('/selectstudent'); }}
+            >
+              <MdQuiz className="w-6 h-6" />
+              Take All Tests
+            </button>
+          </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
             <div className="flex items-center">
               <MdSchool className="text-blue-500 w-8 h-8 mr-3" aria-hidden="true" />
@@ -79,40 +88,43 @@ const TakeTests = ({ tests = [] }) => {
         </header>
 
         <main className="pb-8">
-          <div className={`space-y-6 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-            {filteredTests.length > 0 ? (
-              filteredTests.map((test) => (
-                <div 
-                  key={test.id}
-                  className="transform transition-all duration-500 ease-out hover:translate-y-[-4px]"
-                >
-                  <TakeTestCard 
-                    test={test} 
-                    buttonLabel="Take Test" 
-                    onClick={() => handleTestClick(test.id)}
-                  />
+          {/* Make only the test list scrollable */}
+          <div className="overflow-y-auto max-h-[calc(100vh-260px)] pr-2">
+            <div className={`space-y-6 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+              {filteredTests.length > 0 ? (
+                filteredTests.map((test) => (
+                  <div 
+                    key={test.id}
+                    className="transform transition-all duration-500 ease-out hover:translate-y-[-4px]"
+                  >
+                    <TakeTestCard 
+                      test={test} 
+                      buttonLabel="Take Test" 
+                      onClick={() => handleTestClick(test.id)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-blue-200 shadow-sm animate-slideInUp">
+                  <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 mb-4">
+                    <MdQuiz className="w-10 h-10" />
+                  </div>
+                  <p className="text-lg text-gray-600">
+                    {searchTerm ? "No matching tests found" : "No tests available"}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    {searchTerm ? (
+                      <button 
+                        onClick={clearSearch}
+                        className="text-blue-500 hover:underline focus:outline-none"
+                      >
+                        Clear search
+                      </button>
+                    ) : "Check back later for new assessments"}
+                  </p>
                 </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-blue-200 shadow-sm animate-slideInUp">
-                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 mb-4">
-                  <MdQuiz className="w-10 h-10" />
-                </div>
-                <p className="text-lg text-gray-600">
-                  {searchTerm ? "No matching tests found" : "No tests available"}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
-                  {searchTerm ? (
-                    <button 
-                      onClick={clearSearch}
-                      className="text-blue-500 hover:underline focus:outline-none"
-                    >
-                      Clear search
-                    </button>
-                  ) : "Check back later for new assessments"}
-                </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </main>
       </div>
