@@ -129,7 +129,7 @@ import { MdDashboard } from "react-icons/md";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/daira-logo.png";
-import profile from "../assets/default-profile.jpg";
+import profile from "../../public/profile-icon.jpg";
 
 export default function SideNavBar({ onToggle, handleLogout }) {
   const [expand, setExpand] = useState(true);
@@ -172,7 +172,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
 
       {/* Profile & Logout */}
       <div className="border-t pt-4 flex items-center">
-        <img src={profile} alt="Profile" className="w-10 h-10 rounded-full" />
+        <img src={profile} alt="Profile" className="w-8 h-8 rounded-full" />
         {expand && (
           <div className="ml-3 text-sm">
             <h2 className="font-semibold text-gray-900">{userDetails.name}</h2>

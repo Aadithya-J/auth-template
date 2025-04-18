@@ -29,6 +29,8 @@ import GraphemeTest from "./components/test 5/Test5";
 import DigitSpanTest from "./components/test 13/Test13";
 import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
 import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
+import Register from "./pages/Register";
+import Analytics from "./pages/Analytics";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -39,15 +41,31 @@ function App() {
 
   
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      verifyToken(token);
-    } else {
-      navigate("/login");
-    }
+    const checkAuth = async () => {
+      const token = localStorage.getItem("access_token");
+      const currentPath = window.location.pathname;
+      const publicRoutes = ['/login', '/register'];
+  
+      if (token) {
+        try {
+          const isValid = await verifyToken(token);
+          if (isValid && publicRoutes.includes(currentPath)) {
+            navigate("/"); // Redirect to home if authenticated user tries to access auth pages
+          }
+        } catch (error) {
+          if (!publicRoutes.includes(currentPath)) {
+            navigate("/login");
+          }
+        }
+      } else if (!publicRoutes.includes(currentPath)) {
+        navigate("/login");
+      }
+    };
+  
+    checkAuth();
     setTests(testsData);
   }, [navigate]);
-
+  
   const verifyToken = async (token) => {
     try {
       const response = await axios.get(`${backendURL}/validateUser`, {
@@ -101,16 +119,18 @@ function App() {
     navigate("/");
   };
 
+  
+
   const handleLogout = () => {
     clearAuth();
     setIsAuthenticated(false);
     navigate("/login");
   };
 
-  const handleTestSelect = (testId) => {
-    setSelectedTest(testId); // Store the selected test ID
-    navigate("/selectstudent"); // Navigate to ClassPage to select student
-  };
+  // const handleTestSelect = (testId) => {
+  //   setSelectedTest(testId); // Store the selected test ID
+  //   navigate("/selectstudent"); // Navigate to ClassPage to select student
+  // };
 
   return (
     <div className="h-screen overflow-hidden  ">
@@ -144,7 +164,7 @@ function App() {
         }`}
       >
         <Routes>
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} /> 
           <Route
             path="/"
             element={
@@ -153,11 +173,27 @@ function App() {
               </PrivateRoute>
             }
           />
+            <Route
+            path="/register"
+            element={
+              <PrivateRoute>
+                <Register />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/myclass"
             element={
               <PrivateRoute>
                 <MyClass students={students} />
+              </PrivateRoute>
+            }
+          />
+            <Route
+            path="/analytics"
+            element={
+              <PrivateRoute>
+                <Analytics students={students} />
               </PrivateRoute>
             }
           />

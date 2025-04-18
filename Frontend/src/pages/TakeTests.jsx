@@ -79,7 +79,7 @@ const TakeTests = ({ tests = [] }) => {
         </header>
 
         <main className="pb-8">
-          <div className={`space-y-6 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`space-y-6 ${isLoaded ? 'opacity-100' : 'opacity-0'} max-h-[calc(100vh-220px)] overflow-y-auto pr-2`}>
             {filteredTests.length > 0 ? (
               filteredTests.map((test) => (
                 <div 
