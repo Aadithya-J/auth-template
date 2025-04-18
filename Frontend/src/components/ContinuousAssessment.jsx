@@ -11,11 +11,11 @@ import Test16 from './test 16/Test16';
 const TESTS = [
   { name: 'Test 9: Sequence Arrangement', component: SequenceArrangement },
   { name: 'Test 10: Symbol Sequence', component: SymbolSequence },
-  { name: 'Test 5: Letter Challenge', component: Test5 },
-  { name: 'Test 6: Word Repetition', component: Test6 },
+  { name: 'Test 5: Grapheme/Phoneme Correspondence', component: Test5 },
+  { name: 'Test 6: Schonell Test', component: Test6 },
   { name: 'Test 7: Picture Recognition', component: Test7 },
-  { name: 'Test 8: Audio Quiz', component: Test8 },
-  { name: 'Test 13: Number Memory', component: Test13 },
+  { name: 'Test 8: Visual Discrimination', component: Test8 },
+  { name: 'Test 13: Auditory Sequential Memory', component: Test13 },
   { name: 'Test 16: Sound Discrimination', component: Test16 },
 ];
 

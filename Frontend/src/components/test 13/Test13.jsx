@@ -94,6 +94,15 @@ function Test13({ suppressResultPage = false, onComplete }) {
   const [forwardErrors, setForwardErrors] = useState(0);
   const [reverseErrors, setReverseErrors] = useState(0);
 
+  // Add effect to handle test completion
+  useEffect(() => {
+    if (gameState === "finished" && suppressResultPage && onComplete) {
+      // Calculate final score - same formula used in submitResults
+      const finalScore = Math.round((forwardScore + reverseScore) / 2);
+      onComplete(finalScore);
+    }
+  }, [gameState, suppressResultPage, onComplete, forwardScore, reverseScore]);
+
   const [transcript, setTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -319,6 +328,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
                     userAnswer.every((digit, i) => digit === correctAnswer[i]);
 
     setEvaluationResult(isCorrect ? 'correct' : 'incorrect');
+    // Set feedback state based on correctness
 
     if (isCorrect) {
       speakText("Correct!", 0.9, 1.3);
@@ -597,7 +607,6 @@ function Test13({ suppressResultPage = false, onComplete }) {
   );
 
   const renderListening = () => (
-    <>
      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -630,7 +639,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
           )}
         </motion.button>
 
-        {isRecording && (
+        {isRecording && !isTranscribing && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -679,10 +688,11 @@ function Test13({ suppressResultPage = false, onComplete }) {
       <AnimatePresence>
         {evaluationResult && (
           <motion.div
+            key="evaluationFeedback"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center space-y-4"
+            className="flex flex-col items-center space-y-4 mt-6"
           >
             {evaluationResult === 'correct' ? (
               <>
@@ -718,98 +728,21 @@ function Test13({ suppressResultPage = false, onComplete }) {
           </motion.div>
         )}
       </AnimatePresence>
-          <CheckCircle size={80} className="mx-auto text-blue-600" />
-        </motion.div>
-        
-        <h2 className="text-4xl font-bold text-gray-800 mb-10">
-          Challenge Complete!
-        </h2>
-
-        <div className="grid grid-cols-2 gap-8 mb-10">
-          <div className="bg-blue-50 p-8 rounded-xl">
-            <h3 className="text-xl text-gray-700 mb-3">Forward Score</h3>
-            <p className="text-4xl font-bold text-blue-600">
-              {forwardScore} / {STARTING_FORWARD_SEQUENCES.length}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-8 rounded-xl">
-            <h3 className="text-xl text-gray-700 mb-3">Reverse Score</h3>
-            <p className="text-4xl font-bold text-blue-600">
-              {reverseScore} / {STARTING_REVERSE_SEQUENCES.length}
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-10 rounded-xl mb-10">
-          <h3 className="text-2xl text-gray-700 mb-3">Final Score</h3>
-          <p className="text-6xl font-extrabold text-blue-600">
-            {finalScore} / 10
-          </p>
-        </div>
-
-        <motion.button
-          onClick={submitResults}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white text-xl font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg"
-        >
-          <Send size={24}/>
-          <span>Submit Results</span>
-        </motion.button>
-  </>
-);
+    </motion.div>
+  );
 
   const renderFinished = () => (
-    <>
-      <AnimatePresence>
-        {gameState === "finished" && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl mx-auto mt-20 border border-blue-200"
-          >
-            {showFeedback ? (
-              <>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                >
-                  <CheckCircle size={48} className="text-green-500" />
-                </motion.div>
-                <div className="bg-green-50 text-green-700 px-8 py-4 rounded-xl border border-green-200">
-                  <span className="text-2xl font-bold">Correct!</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                >
-                  <XCircle size={48} className="text-blue-600" />
-                </motion.div>
-                <div className="bg-blue-50 text-blue-600 px-8 py-4 rounded-xl border border-blue-200">
-                  <span className="text-2xl font-bold">Let&apos;s try the next one</span>
-                </div>
-              </>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <CheckCircle size={80} className="mx-auto text-blue-600" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl mx-auto mt-10 border border-blue-200"
+        className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl mx-auto mt-10 border border-blue-200 text-center"
       >
+        <CheckCircle size={80} className="mx-auto text-blue-600 mb-6" />
         <h2 className="text-4xl font-bold text-gray-800 mb-10">
           Challenge Complete!
         </h2>
 
-        <div className="grid grid-cols-2 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
           <div className="bg-blue-50 p-8 rounded-xl">
             <h3 className="text-xl text-gray-700 mb-3">Forward Score</h3>
             <p className="text-4xl font-bold text-blue-600">
@@ -827,25 +760,26 @@ function Test13({ suppressResultPage = false, onComplete }) {
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-10 rounded-xl mb-10">
           <h3 className="text-2xl text-gray-700 mb-3">Final Score</h3>
           <p className="text-6xl font-extrabold text-blue-600">
-            {finalScore} / 10
+            {Math.round((forwardScore + reverseScore) / 2)} / 10
           </p>
         </div>
 
-        <motion.button
-          onClick={submitResults}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white text-xl font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg"
-        >
-          <Send size={24}/>
-          <span>Submit Results</span>
-        </motion.button>
+        {!suppressResultPage && (
+          <motion.button
+            onClick={submitResults}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white text-xl font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 hover:shadow-lg"
+          >
+            <Send size={24}/>
+            <span>Submit Results</span>
+          </motion.button>
+        )}
       </motion.div>
-    </>
   );
   return (
-    <div className="min-h-screen overflow-y-auto bg-gray-50 p-6 md:p-10">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen overflow-y-auto bg-gray-50 p-6 md:p-10 flex items-center justify-center">
+      <div className="max-w-6xl mx-auto w-full">
         <ToastContainer 
           position="top-center" 
           autoClose={3000} 
@@ -863,7 +797,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10 bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+            className="mb-10 bg-white rounded-2xl p-6 shadow-lg border border-gray-100 max-w-3xl mx-auto"
           >
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
               <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -895,29 +829,38 @@ function Test13({ suppressResultPage = false, onComplete }) {
 
         <AnimatePresence mode="wait">
           {gameState === "instructions" && (
-            <motion.div key="instructions">
+            <motion.div key="instructions" exit={{ opacity: 0 }}>
               {renderInstructions()}
             </motion.div>
           )}
           {gameState === "instructions_reverse" && (
-            <motion.div key="instructions_reverse">
+            <motion.div key="instructions_reverse" exit={{ opacity: 0 }}>
               {renderReverseInstructions()}
             </motion.div>
           )}
-          {(gameState === "presenting" || gameState === "listening" || gameState === "evaluating") && (
-            <motion.div
-              key="gameplay"
+          {gameState === "presenting" && (
+             <motion.div
+              key="presenting"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="flex flex-col items-center space-y-10"
             >
-              {gameState === "presenting" && renderPresenting()}
-              {(gameState === "listening" || gameState === "evaluating") && renderListening()}
+               {renderPresenting()}
+             </motion.div>
+          )}
+          {(gameState === "listening" || gameState === "evaluating") && (
+            <motion.div
+              key="listening-evaluating"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {renderListening()}
             </motion.div>
           )}
-          {gameState === "finished" && (
-            <motion.div key="finished">
+          {gameState === "finished" && !suppressResultPage && (
+            <motion.div key="finished" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               {renderFinished()}
             </motion.div>
           )}
