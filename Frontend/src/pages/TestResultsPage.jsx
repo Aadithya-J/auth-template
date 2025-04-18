@@ -180,7 +180,7 @@ const TestResultsTable = () => {
               {/* User Information */}
               <div className="flex-1 text-white">
                 <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left">
-                  {userDetails.name || "Shane"}
+                  {childDetails.name|| "Vimal"}
                 </h1>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8">
                   {userDetails.role && (
