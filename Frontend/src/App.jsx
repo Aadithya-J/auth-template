@@ -25,6 +25,11 @@ import { backendURL } from "./definedURL"; // Ensure this import is correct
 import { clearAuth } from "./utils/authHelper";
 import AfterTest from "./components/test 6/AfterTest";
 import PictureRecognition from "./components/test 7/Test7";
+import GraphemeTest from "./components/test 5/Test5";
+import DigitSpanTest from "./components/test 13/Test13";
+import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
+import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
+import ContinuousAssessment from "./components/ContinuousAssessment";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -36,7 +41,6 @@ function App() {
   
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    7;
     if (token) {
       verifyToken(token);
     } else {
@@ -190,7 +194,7 @@ function App() {
               </PrivateRoute>
             }
           />
-            <Route
+          <Route
             path="/test7"
             element={
               <PrivateRoute>
@@ -198,11 +202,35 @@ function App() {
               </PrivateRoute>
             }
           />
-            <Route
+          <Route
+            path="/test5"
+            element={
+              <PrivateRoute>
+                <GraphemeTest />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/test10"
+            element={
+              <PrivateRoute>
+                <SymbolSequence />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/test9"
+            element={
+              <PrivateRoute>
+                <Test7/>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/results"
             element={
               <PrivateRoute>
-                <AfterTest/>
+                <AfterTest />
               </PrivateRoute>
             }
           />
@@ -251,6 +279,20 @@ function App() {
             element={
               <PrivateRoute>
                 <ClassPage students={students} />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/test13" 
+            element={
+              <PrivateRoute>
+                <DigitSpanTest />
+              </PrivateRoute>
+            } />
+          <Route
+            path="/continuousassessment"
+            element={
+              <PrivateRoute>
+                <ContinuousAssessment />
               </PrivateRoute>
             }
           />

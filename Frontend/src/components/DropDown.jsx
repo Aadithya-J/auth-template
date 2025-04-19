@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { FaFilter } from "react-icons/fa6";
 
 export default function DropDown({ findNum, LatestClicked, FilterClicked }) {
@@ -29,6 +28,7 @@ export default function DropDown({ findNum, LatestClicked, FilterClicked }) {
           type="button"
           className="inline-flex w-full justify-center hover:scale-110 hover:text-black rounded-md bg-transparent  text-med font-bold  "
           onClick={handleFilterClick}
+           aria-label="Open filter options"
         >
           
           {/* <ChevronDown className="-mr-1 h-5 w-5 text-gray-700" aria-hidden="true" /> */}

@@ -18,5 +18,25 @@
     "id": 4,
     "testName": "Picture Recognition",
     "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
+  },
+  {
+    "id":5,
+    "testName": "Grapheme/Phoneme Correspondence",
+    "About":"This test assesses a child's ability to correctly recognize and pronounce individual letters of the alphabet, establishing the crucial connection between written graphemes and their corresponding spoken phonemes. It is designed to detect common letter confusions and support early identification of reading and pronunciation difficulties."
+  },
+  {
+    "id": 6,
+    "testName": "Auditory sequential memory",
+    "About": "This test evaluates a child's ability to remember and repeat a sequence of sounds or words. It is crucial for language development, reading, and spelling. The test consists of two levels: Level 1 focuses on simple sequences, while Level 2 presents more complex patterns. Children are asked to listen to a series of sounds or words and then repeat them in the correct order. This helps identify auditory processing strengths and weaknesses."
+  },
+  {
+    "id": 7 ,
+    "testName": "Sequence Arrangement",
+    "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
+  },
+  {
+    "id": 8 ,
+    "testName": "Symbol Sequence",
+    "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
   }
 ]

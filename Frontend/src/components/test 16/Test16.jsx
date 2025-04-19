@@ -1,12 +1,12 @@
 
-import { useState } from "react";
 import axios from "axios";
-import { backendURL } from "../../definedURL";
+import { useState } from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { backendURL } from "../../definedURL";
 
 const wordPairs = [
   ["dog", "hog"],
@@ -31,7 +31,7 @@ const wordPairs = [
   ["in", "on"],
 ];
 
-const SoundDiscriminationTest = () => {
+const SoundDiscriminationTest = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredPairs, setAnsweredPairs] = useState(new Set());
   const [selectedOptions, setSelectedOptions] = useState(Array(wordPairs.length).fill(null));
@@ -99,10 +99,14 @@ const SoundDiscriminationTest = () => {
       );
 
       if (response.status === 201) {
-        toast.success("Test submitted successfully!", {
-          position: "top-center",
-          onClose: () => navigate('/'),
-        });
+        if (suppressResultPage && typeof onComplete === 'function') {
+          onComplete(score);
+        } else {
+          toast.success("Test submitted successfully!", {
+            position: "top-center",
+            onClose: () => navigate('/'),
+          });
+        }
       } else {
         toast.error("Failed to submit test. Please try again.", {
           position: "top-center",
@@ -117,77 +121,96 @@ const SoundDiscriminationTest = () => {
   };
 
   return (
-    <div className="p-8 overflow-auto h-screen bg-gray-200">
-      <div className="mb-8">
-        <h2 className="text-3xl font-roboto font-extrabold mb-7 flex items-center">
-          Sound Discrimination Test
-        </h2>
-        <div style={{ height: '2px', backgroundColor: '#ccc', width: '100%', marginBottom: '40px' }}></div>
+<div className="p-8 overflow-auto h-screen bg-gray-200">
+  <div className="mb-8">
+    <h2 className="text-3xl font-roboto font-extrabold mb-7 flex items-center">
+      Sound Discrimination Test
+    </h2>
+    <div style={{ height: '2px', backgroundColor: '#999', width: '100%', marginBottom: '40px' }}></div>
 
-        {wordPairs.map((pair, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-end mb-7 bg-white rounded-lg p-5 w-full"
-          >
-            <div className="w-full mb-4 text-left">
-              <span className={`text-xl font-bold ${skippedPairs[index] ? "text-gray-500" : ""}`}>
-                Word Pair Number {index + 1} {skippedPairs[index] && <span className="text-gray-500">: Skipped</span>}
-              </span>
-            </div>
+    {wordPairs.map((pair, index) => (
+      <div
+        key={index}
+        className="flex flex-col items-end mb-7 bg-white rounded-lg p-5 w-full shadow-md"
+      >
+        <div className="w-full mb-4 text-left">
+          <span className={`text-xl font-bold ${skippedPairs[index] ? "text-gray-600" : "text-gray-900"}`}>
+            Word Pair Number {index + 1} {skippedPairs[index] && <span className="text-gray-600">: Skipped</span>}
+          </span>
+        </div>
 
-            <div className="w-full flex justify-end mb-4">
-              <div className="w-full">
-                <AudioPlayer
-                  src={`/audio/${pair[0]}_${pair[1]}.m4a`}
-                  customProgressBarSection={['MAIN_CONTROLS', 'PROGRESS_BAR', 'DURATION']}
-                  customControlsSection={[]}
-                  customAdditionalControls={[]}
-                  showJumpControls={false}
-                  layout="horizontal"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-between w-full items-center space-x-4">
-              <div className="flex space-x-4">
-                <button
-                  className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${selectedOptions[index] === true ? "bg-green-600 text-white" : skippedPairs[index] ? "border-2 border-gray-400 text-gray-400" : "border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white hover:translate-y-[-2px]"}`}
-                  onClick={() => handleResponse(index, true)}
-                  disabled={skippedPairs[index]}
-                >
-                  Yes, the sounds are same
-                </button>
-                <button
-                  className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${selectedOptions[index] === false ? "bg-red-600 text-white" : skippedPairs[index] ? "border-2 border-gray-400 text-gray-400" : "border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white hover:translate-y-[-2px]"}`}
-                  onClick={() => handleResponse(index, false)}
-                  disabled={skippedPairs[index]}
-                >
-                  No, the sounds are not same
-                </button>
-              </div>
-
-              <div className="flex justify-end flex-grow">
-                  <button
-                    className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${skippedPairs[index] ? "border-2 border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white" : "border-2 border-gray-400 text-gray-400 hover:bg-gray-400 hover:text-white"}`}
-                    onClick={() => handleSkip(index)}
-                  >
-                  {skippedPairs[index] ? "Attempt" : "Skip"}
-                </button>
-              </div>
-            </div>
+        <div className="w-full flex justify-end mb-4">
+          <div className="w-full">
+            <AudioPlayer
+              src={`/audio/${pair[0]}_${pair[1]}.m4a`}
+              customProgressBarSection={['MAIN_CONTROLS', 'PROGRESS_BAR', 'DURATION']}
+              customControlsSection={[]}
+              customAdditionalControls={[]}
+              showJumpControls={false}
+              layout="horizontal"
+            />
           </div>
-        ))}
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={handleSubmit}
-            className="bg-green-500 text-white font-bold py-3 px-6 rounded-md text-lg transition transform duration-200 hover:bg-green-700 hover:translate-y-[-2px] shadow-lg"
-          >
-            Submit Test
-          </button>
+        </div>
+
+        <div className="flex justify-between w-full items-center space-x-4">
+          <div className="flex space-x-4">
+            <button
+              className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
+                selectedOptions[index] === true
+                  ? "bg-green-700 text-white"
+                  : skippedPairs[index]
+                  ? "border-2 border-gray-600 text-gray-600"
+                  : "border-2 border-green-700 text-green-700 hover:bg-green-700 hover:text-white hover:translate-y-[-2px]"
+              }`}
+              onClick={() => handleResponse(index, true)}
+              disabled={skippedPairs[index]}
+            >
+              Yes, the sounds are same
+            </button>
+
+            <button
+              className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
+                selectedOptions[index] === false
+                  ? "bg-red-700 text-white"
+                  : skippedPairs[index]
+                  ? "border-2 border-gray-600 text-gray-600"
+                  : "border-2 border-red-700 text-red-700 hover:bg-red-700 hover:text-white hover:translate-y-[-2px]"
+              }`}
+              onClick={() => handleResponse(index, false)}
+              disabled={skippedPairs[index]}
+            >
+              No, the sounds are not same
+            </button>
+          </div>
+
+          <div className="flex justify-end flex-grow">
+            <button
+              className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
+                skippedPairs[index]
+                  ? "border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white"
+                  : "border-2 border-gray-700 text-gray-700 hover:bg-gray-300 hover:text-black"
+              }`}
+              onClick={() => handleSkip(index)}
+            >
+              {skippedPairs[index] ? "Attempt" : "Skip"}
+            </button>
+          </div>
         </div>
       </div>
-      <ToastContainer />
+    ))}
+
+    <div className="flex justify-center mt-8">
+      <button
+        onClick={handleSubmit}
+        className="bg-green-700 text-white font-bold py-3 px-6 rounded-md text-lg transition transform duration-200 hover:bg-green-800 hover:translate-y-[-2px] shadow-lg"
+      >
+        Submit Test
+      </button>
     </div>
+  </div>
+  <ToastContainer />
+</div>
+
   );
 };
 

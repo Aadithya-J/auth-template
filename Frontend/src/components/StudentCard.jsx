@@ -1,38 +1,46 @@
 import React from "react";
-import Button from "./Button";
 
 const StudentCard = ({ student = {}, buttonLabel = "Click Me", onButtonClick = () => {} }) => {
   return (
-    <div className="relative w-100 h-80 group bg-black rounded-xl">
-      <div className="absolute top-0 left-0 w-full h-full shadow-[8px_8px_0px_rgba(0,0,0,1)] rounded-xl opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-0"></div>
-      <article className="w-55 h-80 p-2 bg-white transition-transform duration-300 ease-out transform group-hover:bg-[#ff937a] group-hover:-translate-x-1 group-hover:-translate-y-1 border-2 border-black rounded-xl">
-        <div className="flex flex-col items-center pb-2">
-          <img
-            src={student.imageUrl || "/defaultphp.jpg"}
-            alt={`Profile picture of ${student.name}`}
-            className="w-24 h-24 mb-4 mt-7 rounded-full object-cover border-2 border-black"
-          />
-          <h3 className="text-[20px] mb-[0.5] font-bold font-roboto">
+    <div className="h-80 bg-white rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out hover:border-blue-400 group overflow-hidden">
+      <article className="h-full flex flex-col p-4">
+        <div className="flex flex-col items-center mb-4">
+          <div className="w-24 h-24 mb-3 rounded-full overflow-hidden border-2 border-blue-300 transition-all duration-300 group-hover:border-blue-500 transform group-hover:scale-105">
+            <img
+              src={student.imageUrl || "/defaultphp.jpg"}
+              alt={`${student.name || "Student"}`}
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+          </div>
+          <h3 className="text-xl font-semibold text-blue-800 transition-colors duration-300 group-hover:text-blue-600">
             {student.name || "Unknown Student"}
           </h3>
         </div>
-        <div className="flex justify-between items-center w-full px-4">
-          <div className="flex flex-col items-center justify-center text-sm text-gray-700 space-y-1 w-1/2">
-            <p className="text-sm font-roboto group-hover:text-black text-gray-500">Roll No</p>
-            <p className="text-sm font-semibold font-roboto group-hover:text-black text-gray-500">
-              {student.rollno}
+        
+        <div className="flex justify-between items-center w-full px-4 mb-5">
+          <div className="flex flex-col items-center justify-center space-y-1 w-1/2 transition-transform duration-300 ease-out group-hover:transform group-hover:-translate-y-1">
+            <p className="text-sm text-gray-500">Roll No</p>
+            <p className="text-base font-semibold text-blue-600">
+              {student.rollno || "N/A"}
             </p>
           </div>
-          <div className="h-8 border border-gray-400"></div>
-          <div className="flex flex-col items-center justify-center text-sm text-gray-700 space-y-1 w-1/2">
-            <p className="text-sm font-roboto group-hover:text-black text-gray-500">Test Taken</p>
-            <p className="text-sm font-semibold font-roboto group-hover:text-black text-gray-500">
-              {student.tests_taken}
+          <div className="h-12 border-r border-blue-200 transition-all duration-300 group-hover:border-blue-400 group-hover:h-14"></div>
+          <div className="flex flex-col items-center justify-center space-y-1 w-1/2 transition-transform duration-300 ease-out group-hover:transform group-hover:-translate-y-1">
+            <p className="text-sm text-gray-500">Tests Taken</p>
+            <p className="text-base font-semibold text-blue-600">
+              {student.tests_taken || "0"}
             </p>
           </div>
         </div>
-        <div className="flex justify-center mt-6">
-          <Button label={buttonLabel} onClick={onButtonClick} /> {/* Reintegrated the Button with onClick */}
+        
+        <div className="mt-auto">
+          <button
+            onClick={onButtonClick}
+            className="w-full py-2 px-4 bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white rounded-md border border-blue-300 hover:border-transparent transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            aria-label={`View test report for ${student.name || "student"}`}
+          >
+            {buttonLabel}
+          </button>
         </div>
       </article>
     </div>

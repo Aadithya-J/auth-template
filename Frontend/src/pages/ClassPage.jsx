@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentCard from "../components/StudentCard";
-import { RiGraduationCapFill } from "react-icons/ri";
-import { CiCirclePlus } from "react-icons/ci";
-import img1 from "../assets/grid.jpg"; // Importing the background image
-import SearchbyName from "../components/SearchbyName"; // Importing SearchbyName
+import { MdPerson } from "react-icons/md";
+import SearchbyName from "../components/SearchbyName";
 
 export default function ClassPage({ students }) {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState(""); // Adding search term state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Enable the animation after initial render
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Handle clicking on a student card
   const handleStudentClick = (studentId) => {
@@ -17,21 +24,31 @@ export default function ClassPage({ students }) {
     if (studentId !== storedId || storedId == undefined) {
       localStorage.setItem("childId", studentId);
     }
+    // Find the student object
+    const selectedStudentObj = (students || []).find(s => String(s.id) === String(studentId));
     // Check the selectedTestId and navigate accordingly
-    if (selectedTestId === "1") {
+    if (selectedTestId === "all") {
+      if (selectedStudentObj) {
+        localStorage.setItem('selectedStudent', JSON.stringify(selectedStudentObj));
+      }
+      navigate("/continuousassessment");
+    } else if (selectedTestId === "1") {
       navigate("/test6");
     } else if (selectedTestId === "2") {
       navigate("/test8");
     } else if (selectedTestId === "3") {
-      navigate("/test16"); // Default or if selectedTestId is 3
-    } else {
-      navigate("/test7"); // Default or if selectedTestId is not recognized
+      navigate("/test16");
+    } else if (selectedTestId === "4") {
+      navigate("/test7");
+    } else if (selectedTestId === "5") {
+      navigate("/test5");
+    } else if (selectedTestId === "6") {
+      navigate("/test13");
+    } else if(selectedTestId === "7"){
+      navigate("/test9");
+    }else if(selectedTestId === "8"){
+      navigate("/test10");
     }
-  };
-
-  // Handle clicking the 'Add Child' button
-  const handleClick = () => {
-    navigate("/empty");
   };
 
   // Handle search term updates
@@ -43,57 +60,47 @@ export default function ClassPage({ students }) {
   const filteredStudents = (students || []).filter((student) =>
     student?.name?.toLowerCase().includes(searchTerm)
   );
-  return (
-    <div style={{ position: "relative", height: "100vh" }}>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundImage: `url(${img1})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          zIndex: -1,
-        }}
-      />
-      <div
-        className="p-6 overflow-auto h-full"
-        style={{ backgroundColor: "rgba(255, 255, 255, 0)" }}
-      >
-        <div className="pl-7 pr-7 pt-2">
-          <div className="flex justify-center items-center">
-            <h2
-              className="text-[30px] pt-0 mb-[0.5] font-extrabold font-roboto  "
-              style={{ textShadow: "2px 2px 0 #ff937a" }} // Example shadow with color #ff937a
-            >
-              SELECT A STUDENT
-            </h2>
 
-            {/* SearchBar Component Integration */}
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-auto">
+      <div className="container mx-auto px-4 py-8 pb-16">
+        <header className="mb-8 animate-fadeIn">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 
+              className="text-3xl font-bold text-blue-800 transition-all duration-300 hover:text-blue-700"
+              aria-label="Select a Student"
+            >
+              Select a Student
+            </h1>
             <SearchbyName onSearch={handleSearch} />
           </div>
-          <hr className="flex justify-between border-t-2 border-gray-800 mt-4 ml-0 mb-7 mr-0" />
-        </div>
+          <div className="h-1 w-full bg-gradient-to-r from-blue-600 to-blue-300 mt-4 rounded-full animate-pulseLight" 
+               aria-hidden="true" />
+        </header>
 
-        {/* SearchbyName Component Integration
-        <SearchbyName onSearch={handleSearch} /> */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-cols-fr gap-8 pb-4 pl-6 pr-6">
-          {filteredStudents.length > 0 ? (
-            filteredStudents.map((student) => (
-              <StudentCard
-                key={student.id}
-                student={student}
-                buttonLabel="Select Student"
-                onButtonClick={() => handleStudentClick(student.id)} // Pass the click handler
-              />
-            ))
-          ) : (
-            <p>No students available</p>
-          )}
-        </div>
+        <main>
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 stagger-children ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+            {/* Student Cards */}
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map((student) => (
+                <StudentCard
+                  key={student.id}
+                  student={student}
+                  buttonLabel="Select Student"
+                  onButtonClick={() => handleStudentClick(student.id)}
+                />
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-blue-200 shadow-sm animate-slideInUp">
+                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
+                  <MdPerson className="w-10 h-10" aria-hidden="true" />
+                </div>
+                <p className="text-lg text-gray-600">No students found</p>
+                <p className="text-sm text-gray-500 mt-2">Try adjusting your search criteria</p>
+              </div>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
