@@ -12,7 +12,7 @@ import pictureRoutes from "./routes/pictureRoutes.js";
 import graphemeRoutes from "./routes/graphemeRoutes.js";
 import sequenceRoutes from "./routes/sequenceRoutes.js";
 import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
-
+import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
 app.use(
   cors({
     origin: ["https://jiveesha.vercel.app", "http://localhost:5173"],
@@ -31,7 +31,7 @@ app.use("/", pictureRoutes);
 app.use("/", graphemeRoutes);
 app.use("/", sequenceRoutes);
 app.use("/", soundBlendingRoutes);
-
+app.use("/", symbolSequenceRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
