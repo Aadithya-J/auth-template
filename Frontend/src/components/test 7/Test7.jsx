@@ -8,7 +8,7 @@ import { backendURL } from "../../definedURL";
 import PictureCard from "./PictureCard";
 import ProgressTracker from "./ProgressTracker";
 
-const PictureRecognition = () => {
+const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canSee, setCanSee] = useState(null);
   const [answer, setAnswer] = useState("");
@@ -139,9 +139,14 @@ const PictureRecognition = () => {
       );
 
       if (response.status === 201) {
-        toast.success("Test submitted successfully!");
-        setTestId(response.data.id); // Set the test ID
-        await fetchTestResults(response.data.id); // Fetch results with the new ID
+        if (suppressResultPage && typeof onComplete === 'function') {
+          // Assuming response.data.score or similar holds the score
+          onComplete(response.data.score || (response.data && response.data.result && response.data.result.score) || 0);
+        } else {
+          toast.success("Test submitted successfully!");
+          setTestId(response.data.id); // Set the test ID
+          await fetchTestResults(response.data.id); // Fetch results with the new ID
+        }
       }
     } catch (error) {
       console.error("Error submitting test:", error);

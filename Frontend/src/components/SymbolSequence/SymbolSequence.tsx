@@ -24,7 +24,17 @@ const difficultyLevels: DifficultyLevel[] = [
 
 type GameState = 'welcome' | 'playing' | 'showing' | 'guessing' | 'results' | 'gameOver';
 
-const SymbolSequence: React.FC = () => {
+interface SymbolSequenceProps {
+  suppressResultPage?: boolean;
+  onComplete?: (score: number) => void;
+  student?: any;
+}
+
+const SymbolSequence: React.FC<SymbolSequenceProps> = ({
+  suppressResultPage = false,
+  onComplete = null,
+  student
+}) => {
   const [gameState, setGameState] = useState<GameState>('welcome');
   const [level, setLevel] = useState<number>(0);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
@@ -55,7 +65,7 @@ const SymbolSequence: React.FC = () => {
       // Clear saved state when returning to welcome screen
       localStorage.removeItem('symbolSequenceGameState');
     }
-  }, [gameState, level, currentSequence, userSequence, score, currentRound, timeLeft]);
+  }, [gameState, level, currentSequence, userSequence, score, currentRound, timeLeft, suppressResultPage, onComplete]);
 
   // Load game state from localStorage on component mount
   useEffect(() => {
@@ -125,6 +135,7 @@ const SymbolSequence: React.FC = () => {
       if (timer) clearTimeout(timer);
     };
   }, []);  // Empty dependency array means this runs once on mount
+
 
   const startGame = (difficulty: number) => {
     // Clear any existing timers when starting a new game
@@ -212,38 +223,61 @@ const SymbolSequence: React.FC = () => {
   };
 
   const checkAnswer = (userSeq: string[]) => {
-    const isCorrect = userSeq.every((symbol, index) => symbol === currentSequence[index]);
-    
-    if (isCorrect) {
-      setScore(prev => prev + 1);
-      setFeedback('Correct! Well done!');
-      setConfetti(true);
-      
-      // Play success sound
-      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3');
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-      
-      setTimeout(() => setConfetti(false), 2000);
-    } else {
-      setFeedback(`Let's try again!`);
-      
-      // Play error sound
-      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3');
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    }
-    
-    setGameState('results');
-    
-    // Move to next round after delay
-    setTimeout(() => {
-      if (currentRound < 10) {
-        nextRound(level);
+    if (timer) clearTimeout(timer);
+    setTimer(null);
+
+    const isCorrect = JSON.stringify(userSeq) === JSON.stringify(currentSequence);
+    // Calculate the score based on the current round's result
+    const newScore = isCorrect ? score + 1 : score;
+
+    // Update score immediately - state update might be async, but newScore holds the correct value for this check
+    setScore(newScore);
+    setFeedback(isCorrect ? 'Correct!' : 'Incorrect. Try again!');
+    setGameState('results'); // Show feedback momentarily
+
+    // Set a timer to move to the next step
+    const nextStateTimer = setTimeout(() => {
+      setFeedback(''); // Clear feedback
+
+      const totalRounds = 10; // Define total rounds
+      console.log(`SymbolSequence: checkAnswer timeout. Current Round completed: ${currentRound}, Total Rounds: ${totalRounds}`);
+
+      // Check for Game Over condition (after completing the last round)
+      if (currentRound >= totalRounds) {
+        console.log("SymbolSequence: Game should end.");
+
+        // If suppressing result page and onComplete is provided, call it immediately
+        if (suppressResultPage && typeof onComplete === 'function') {
+          console.log(`SymbolSequence: Suppressing results page. Calling onComplete with final score: ${newScore}`);
+          onComplete(newScore); // Pass the final score calculated for this last round
+          // IMPORTANT: Don't change gameState to 'gameOver' here.
+          // Let the parent component handle unmounting or moving to the next test.
+          // We can optionally reset some state if the component *might* be reused without unmounting,
+          // but usually the unmount handles cleanup.
+          // e.g., setGameState('welcome'); setCurrentRound(0); // Probably not needed here
+        } else {
+          // Otherwise, proceed to the normal game over state (show results page)
+          console.log("SymbolSequence: Not suppressing results. Setting gameState to gameOver.");
+          setGameState('gameOver');
+          // Add confetti only if showing the game over screen and last answer was correct
+          if (isCorrect) { // Use the isCorrect flag from the checkAnswer scope
+             setConfetti(true);
+             setTimeout(() => setConfetti(false), 3000);
+          }
+        }
       } else {
-        setGameState('gameOver');
+        // If not game over, proceed to the next round
+        console.log("SymbolSequence: Proceeding to next round.");
+        nextRound(level); // level state should be correct here
       }
-    }, 3000);
+    }, 1500); // Show feedback for 1.5 seconds
+
+    // It's good practice to return a cleanup, though React manages setTimeout cleanup on unmounts.
+    // If checkAnswer could be called rapidly, this might be needed, but shouldn't happen here.
+    // setTimer(nextStateTimer); // Store the timer if you need to clear it elsewhere explicitly
+
+    // Cleanup function for the timer IF the component unmounts or checkAnswer is somehow re-triggered before timeout
+     return () => clearTimeout(nextStateTimer);
   };
 
   const getAvailableSymbols = () => {
@@ -381,7 +415,7 @@ const SymbolSequence: React.FC = () => {
                     <motion.button
                       key={index}
                       onClick={() => startGame(index)}
-                      className="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-5 px-6 rounded-xl shadow-md hover:shadow-xl relative overflow-hidden group"
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-5 px-6 rounded-xl shadow-md hover:shadow-xl relative overflow-hidden group"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -610,7 +644,7 @@ const SymbolSequence: React.FC = () => {
             </motion.div>
           )}
 
-          {gameState === 'gameOver' && (
+          {gameState === 'gameOver' && !suppressResultPage && (
             <motion.div 
               className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 max-w-2xl text-center border border-blue-100"
               initial={{ scale: 0.9, opacity: 0 }}
@@ -650,9 +684,9 @@ const SymbolSequence: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.8 }}
               >
-                {score >= 9 && <p className="text-yellow-500 font-bold">⭐ Excellent memory! ⭐</p>}
-                {score >= 7 && score < 9 && <p className="text-green-600 font-bold">👍 Very good job! 👍</p>}
-                {score >= 5 && score < 7 && <p className="text-blue-600">😊 Good effort! 😊</p>}
+                {score >= 9 && <p className="text-yellow-500 font-bold"> Excellent memory! </p>}
+                {score >= 7 && score < 9 && <p className="text-green-600 font-bold"> Very good job! </p>}
+                {score >= 5 && score < 7 && <p className="text-blue-600"> Good effort! </p>}
                 {score < 5 && <p className="text-blue-600">Keep practicing to improve!</p>}
               </motion.div>
               

@@ -14,7 +14,7 @@ import sequenceRoutes from "./routes/sequenceRoutes.js";
 
 app.use(
   cors({
-    origin: "https://jiveesha.vercel.app",
+    origin: ["https://jiveesha.vercel.app", "https://jiveesha.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

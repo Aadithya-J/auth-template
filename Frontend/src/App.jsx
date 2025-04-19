@@ -29,6 +29,7 @@ import GraphemeTest from "./components/test 5/Test5";
 import DigitSpanTest from "./components/test 13/Test13";
 import Test7 from "./components/Sequence_arrangement/sequenceArrangement";
 import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
+import ContinuousAssessment from "./components/ContinuousAssessment";
 import Register from "./pages/Register";
 import Analytics from "./pages/Analytics";
 
@@ -323,6 +324,14 @@ function App() {
                 <DigitSpanTest />
               </PrivateRoute>
             } />
+          <Route
+            path="/continuousassessment"
+            element={
+              <PrivateRoute>
+                <ContinuousAssessment />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

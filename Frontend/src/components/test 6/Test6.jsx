@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { ArrowRightCircle, Mic, MicOff, UploadCloud } from "lucide-react";
 
-function Test6() {
+function Test6({ suppressResultPage = false, onComplete }) {
   const [transcript, setTranscript] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptionReady, setTranscriptionReady] = useState(false);
@@ -147,13 +147,17 @@ function Test6() {
           errorWords: validErrorWords[index]?.join(" ") || "-", // Handle missing data
         }));
         setTestResults(tableData); // Store results locally
-        toast.success(`Test submitted! Score: ${score}%`, {
-          position: "top-center",
-          onClose: () =>
-            navigate("/results", {
-              state: { score, tableData }, // Pass test results to AfterTest
-            }),
-        });
+        if (suppressResultPage && typeof onComplete === 'function') {
+          onComplete(score);
+        } else {
+          toast.success(`Test submitted! Score: ${score}%`, {
+            position: "top-center",
+            onClose: () =>
+              navigate("/results", {
+                state: { score, tableData }, // Pass test results to AfterTest
+              }),
+          });
+        }
       } else {
         toast.error("Failed to submit test. Please try again.");
       }

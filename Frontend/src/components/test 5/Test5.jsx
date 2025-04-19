@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 
-const GraphemeTest = () => {
+const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const [letters] = useState([
     "w",
     "a",
@@ -172,7 +172,11 @@ const GraphemeTest = () => {
 
       toast.dismiss();
       setScore(evalResponse.data.score);
-      setShowResults(true);
+      if (suppressResultPage && typeof onComplete === 'function') {
+        onComplete(evalResponse.data.score);
+      } else {
+        setShowResults(true);
+      }
     } catch (error) {
       toast.dismiss();
       toast.error("Failed to process results");
