@@ -12,7 +12,6 @@ export async function addVisual(req, res) {
         
         if (error) throw error;
         
-        // Increment the number of tests taken by the child
         const { error: updateError } = await supabase
             .rpc('increment_tests_taken', { child_id_param: child_id });
         

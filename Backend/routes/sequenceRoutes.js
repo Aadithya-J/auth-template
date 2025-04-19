@@ -1,12 +1,13 @@
-import express from 'express';
-import { addSequenceTest, getSequenceTestsByUser } from '../controllers/sequenceController.js';
+import express from "express";
+import {
+  addSequenceTest,
+  getSequenceTestsByUser,
+} from "../controllers/sequenceController.js";
 
 const router = express.Router();
 
-// Add new sequence test result
-router.post('/add-sequencetest', addSequenceTest);
+router.post("/addsequencetest", addSequenceTest);
 
-// Get all sequence tests for a specific user
-router.get('/user/:userId', getSequenceTestsByUser);
+router.get("/getSequenceTestsByUser/:userId", getSequenceTestsByUser);
 
 export default router;

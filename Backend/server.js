@@ -11,10 +11,11 @@ import visualRoutes from "./routes/visualRoute.js";
 import pictureRoutes from "./routes/pictureRoutes.js";
 import graphemeRoutes from "./routes/graphemeRoutes.js";
 import sequenceRoutes from "./routes/sequenceRoutes.js";
+import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 
 app.use(
   cors({
-    origin: ["https://jiveesha.vercel.app", "https://jiveesha.vercel.app"],
+    origin: ["https://jiveesha.vercel.app", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -28,7 +29,8 @@ app.use("/", testRoutes);
 app.use("/", visualRoutes);
 app.use("/", pictureRoutes);
 app.use("/", graphemeRoutes);
-app.use("/api", sequenceRoutes);
+app.use("/", sequenceRoutes);
+app.use("/", soundBlendingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

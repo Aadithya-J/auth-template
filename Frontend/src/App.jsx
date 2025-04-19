@@ -32,6 +32,7 @@ import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
 import ContinuousAssessment from "./components/ContinuousAssessment";
 import Register from "./pages/Register";
 import Analytics from "./pages/Analytics";
+import Test14 from "./components/test 14/test14";
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -40,13 +41,12 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("access_token");
       const currentPath = window.location.pathname;
-      const publicRoutes = ['/login', '/register'];
-  
+      const publicRoutes = ["/login", "/register"];
+
       if (token) {
         try {
           const isValid = await verifyToken(token);
@@ -62,11 +62,11 @@ function App() {
         navigate("/login");
       }
     };
-  
+
     checkAuth();
     setTests(testsData);
   }, [navigate]);
-  
+
   const verifyToken = async (token) => {
     try {
       const response = await axios.get(`${backendURL}/validateUser`, {
@@ -120,8 +120,6 @@ function App() {
     navigate("/");
   };
 
-  
-
   const handleLogout = () => {
     clearAuth();
     setIsAuthenticated(false);
@@ -165,7 +163,7 @@ function App() {
         }`}
       >
         <Routes>
-          <Route path="/login" element={<Login onLogin={handleLogin} />} /> 
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route
             path="/"
             element={
@@ -174,7 +172,7 @@ function App() {
               </PrivateRoute>
             }
           />
-            <Route
+          <Route
             path="/register"
             element={
               <PrivateRoute>
@@ -190,7 +188,7 @@ function App() {
               </PrivateRoute>
             }
           />
-            <Route
+          <Route
             path="/analytics"
             element={
               <PrivateRoute>
@@ -255,10 +253,18 @@ function App() {
             }
           />
           <Route
+            path="/test14"
+            element={
+              <PrivateRoute>
+                <Test14/>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/test9"
             element={
               <PrivateRoute>
-                <Test7/>
+                <Test7 />
               </PrivateRoute>
             }
           />
@@ -318,12 +324,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/test13" 
+          <Route
+            path="/test13"
             element={
               <PrivateRoute>
                 <DigitSpanTest />
               </PrivateRoute>
-            } />
+            }
+          />
           <Route
             path="/continuousassessment"
             element={

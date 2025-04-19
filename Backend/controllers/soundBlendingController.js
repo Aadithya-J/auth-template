@@ -1,20 +1,20 @@
 import supabase from "../utils/supabaseClient.js";
 
-export async function addSequenceTest(req, res) {
-  const { childId, score } = req.body;
-
+export async function submitResults(req, res) {
   try {
+    const { childId, totalScore, responses, normalized_score } = req.body;
+
     const { data, error } = await supabase
-      .from("sequence_test_results")
+      .from("sound_blending_results")
       .insert([
         {
           child_id: childId,
-          score,
-          test_name: "Visual Sequential Memory Test",
+          total_score: totalScore,
+          responses: responses,
+          normalized_score: normalized_score,
         },
       ])
       .select();
-
     const { error: updateError } = await supabase.rpc("increment_tests_taken", {
       child_id_param: childId,
     });
@@ -22,30 +22,22 @@ export async function addSequenceTest(req, res) {
     if (error) return res.status(400).json({ error: error.message });
     res.status(200).json({ data });
   } catch (error) {
-    console.error("Error adding sequence test:", error);
-    res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 }
 
-export async function getSequenceTestsByUser(req, res) {
-  const { childId } = req.params;
-
+export async function getSoundBlendingByChild(req, res) {
   try {
+    const { childId } = req.params;
+
     const { data, error } = await supabase
-      .from("sequence_test_results")
+      .from("sound_blending_results")
       .select("*")
       .eq("child_id", childId);
 
     if (error) return res.status(400).json({ error: error.message });
     res.status(200).json({ tests: data });
   } catch (error) {
-    console.error("Error fetching sequence tests:", error);
-    res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 }

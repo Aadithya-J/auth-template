@@ -15,6 +15,7 @@ const TestCard = ({ test }) => {
     if (id === 4) return books;
     if (id === 5) return books;
     if (id === 6) return speak;
+    if (id === 7) return books;
     return books;
   };
 
@@ -27,6 +28,7 @@ const TestCard = ({ test }) => {
     if (id === 6) return "Auditory Sequence Memory Test";
     if (id === 7) return "Sequence Arrangement";
     if (id === 8) return "Symbol Sequence";
+    if (id === 9) return "Sound Blending Test";
   };
 
   const handleTestClick = (testId) => {

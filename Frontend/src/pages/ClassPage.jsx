@@ -48,6 +48,8 @@ export default function ClassPage({ students }) {
       navigate("/test9");
     }else if(selectedTestId === "8"){
       navigate("/test10");
+    }else if(selectedTestId === "9"){
+      navigate("/test14");
     }
   };
 
