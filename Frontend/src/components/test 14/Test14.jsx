@@ -103,14 +103,7 @@ const WORDS = [
   },
   {
     id: 16,
-    sounds: [
-      "/sounds/d.mp3",
-      "/sounds/e.mp3",
-      "/sounds/l.mp3",
-      "/sounds/i.mp3",
-      "/sounds/k.mp3",
-      "/sounds/t.mp3",
-    ],
+    sounds: ["/sounds/d.mp3", "/sounds/u.mp3", "/sounds/p.mp3"],
     word: "dup",
   },
   {
