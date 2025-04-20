@@ -49,10 +49,8 @@ export default function Analytics({ students: initialStudents }) {
   );
 
   return (
-    <div className="h-screen overflow-y-auto bg-white">
-    <div className="transform scale-[0.87] origin-top max-w-7xl mx-auto px-4 py-8 pb-16">
-  
-      <div className="container mx-auto px-4 py-8 pb-16 overflow-y-auto">
+    <div className="min-h-screen bg-white overflow-auto">
+      <div className="container mx-auto px-0 py-8 pb-16 overflow-auto">
         <header className="mb-8 animate-fadeIn">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h1 
