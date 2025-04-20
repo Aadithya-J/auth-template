@@ -4,13 +4,14 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const evaluateResponse = async (userInput, correctAnswer) => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  if(!userInput) {
+    return { score: 0, feedback: "No description provided" };
+  }
   const prompt = `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`;
-
   try {
     const result = await model.generateContent({
       contents: [{ parts: [{ text: prompt }] }],
     });
-
     const textResponse = result.response.text();
     const [score, feedback] = textResponse.split("|");
     return { score: parseInt(score), feedback };
@@ -51,16 +52,18 @@ export async function evaluateDescriptionAndStore(req, res) {
         feedback,
       });
     }
-
-    const {data, error } = await supabase
+    console.log("Score : ", totalScore);
+    const { data, error } = await supabase
       .from("picture_test_results")
-      .insert({
-        child_id,
-        responses: processedResponses,
-        score: totalScore,
-        test_name: "Picture Recognition Test",
-      })
-      .select() // This is crucial to get the inserted record
+      .insert([
+        {
+          child_id,
+          responses: processedResponses,
+          score: totalScore,
+          test_name: "Picture Recognition Test - testdb",
+        }
+      ])
+      .select()
       .single();
 
     if (error) throw error;
