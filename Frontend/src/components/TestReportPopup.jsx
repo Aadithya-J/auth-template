@@ -56,27 +56,28 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
     if (!test || !test.test_name) return null;
     return testDataMap[test.test_name] || null;
   };
-  
+
   // Determines the test type from test name or test.type
   const getTestType = () => {
     if (!test) return null;
-    
+
     if (test.type) {
       return test.type;
     }
-    
+
     const name = test.test_name || "";
-    
+
     if (name.includes("Schonell") || name.includes("Reading")) return "reading";
     if (name.includes("Visual Discrimination")) return "visual";
     if (name.includes("Sound Discrimination")) return "sound";
-    if (name.includes("Grapheme") || name.includes("Phoneme")) return "grapheme";
+    if (name.includes("Grapheme") || name.includes("Phoneme"))
+      return "grapheme";
     if (name.includes("Picture Recognition")) return "picture";
     if (name.includes("Auditory")) return "auditory";
     if (name.includes("Sequence Arrangement")) return "sequence";
     if (name.includes("Symbol Sequence")) return "symbol";
     if (name.includes("Sound Blending")) return "soundBlending";
-    
+
     return "unknown";
   };
 
@@ -87,8 +88,8 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
   // Renders the appropriate table for each test type
   const renderTestDetails = () => {
     if (!test) return null;
-    
-    switch(testType) {
+
+    switch (testType) {
       case "reading":
         return (
           <div className="overflow-x-auto">
@@ -96,149 +97,268 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
               <thead>
                 <tr className="bg-blue-50">
                   <th className="border border-blue-200 p-2 text-left">Test</th>
-                  <th className="border border-blue-200 p-2 text-center">Correct Words</th>
-                  <th className="border border-blue-200 p-2 text-center">Incorrect Words</th>
-                  <th className="border border-blue-200 p-2 text-center">Score</th>
+                  <th className="border border-blue-200 p-2 text-center">
+                    Correct Words
+                  </th>
+                  <th className="border border-blue-200 p-2 text-center">
+                    Incorrect Words
+                  </th>
+                  <th className="border border-blue-200 p-2 text-center">
+                    Score
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                  <td className="border border-blue-200 p-2 text-center">{test.correct_words || "-"}</td>
-                  <td className="border border-blue-200 p-2 text-center">{test.incorrect_words || "-"}</td>
-                  <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                  <td className="border border-blue-200 p-2 font-semibold">
+                    {test.test_name}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {test.correct_words || "-"}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {test.incorrect_words || "-"}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {test.score || "-"}
+                  </td>
                 </tr>
               </tbody>
             </table>
             {test.reading_age && (
               <div className="mt-3 bg-blue-50 p-2 rounded text-sm">
-                <span className="font-semibold">Reading Age:</span> {test.reading_age} years
-                (Child's Age: {childDetails.age} years)
+                <span className="font-semibold">Reading Age:</span>{" "}
+                {test.reading_age} years (Child's Age: {childDetails.age} years)
               </div>
             )}
           </div>
         );
-        
+
       case "visual":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Selected Options</th>
-                <th className="border border-blue-200 p-2 text-center">Correct Options</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Selected Options
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Correct Options
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.options || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.correct_options || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-left align-top">
+                  {Array.isArray(test.options)
+                    ? test.options.map((item, index) => (
+                        <div key={index}>
+                          {index + 1}. {item || "-"}
+                        </div>
+                      ))
+                    : "-"}
+                </td>
+
+                <td className="border border-blue-200 p-2 text-left align-top">
+                  {[
+                    "o",
+                    "f",
+                    "b",
+                    "m",
+                    "no",
+                    "cat",
+                    "girl",
+                    "little",
+                    "help",
+                    "fast",
+                  ].map((item, index) => (
+                    <div key={index}>
+                      {index + 1}. {item}
+                    </div>
+                  ))}
+                </td>
+
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "sound":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "grapheme":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Results</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Results
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.results || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.results || "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "picture":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Responses</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Responses
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.responses || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {/* Handle responses */}
+                  {Array.isArray(test.responses) ? (
+                    <ul className="list-disc list-inside">
+                      {test.responses.map((response, index) => (
+                        <li key={index}>
+                          {response.image && (
+                            <span>Your Answer: {response.userAnswer}, </span>
+                          )}
+                          {response.feedback && (
+                            <span>
+                              Correct Answer: {response.correctAnswer}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    test.responses || "-"
+                  )}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "auditory":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Forward Correct</th>
-                <th className="border border-blue-200 p-2 text-center">Reverse Correct</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Forward Correct
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Reverse Correct
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.forward_correct !== undefined ? test.forward_correct : "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.reverse_correct !== undefined ? test.reverse_correct : "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.forward_correct !== undefined
+                    ? test.forward_correct
+                    : "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.reverse_correct !== undefined
+                    ? test.reverse_correct
+                    : "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "sequence":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       case "symbol":
       case "soundBlending":
         return (
@@ -246,48 +366,72 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Difficulty</th>
-                <th className="border border-blue-200 p-2 text-center">Level</th>
-                <th className="border border-blue-200 p-2 text-center">Total Rounds</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Difficulty
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Level
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Total Rounds
+                </th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.difficulty || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.level || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.total_rounds || "-"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.difficulty || "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.level || "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.total_rounds || "-"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
-        
+
       default:
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
                 <th className="border border-blue-200 p-2 text-left">Test</th>
-                <th className="border border-blue-200 p-2 text-center">Score</th>
+                <th className="border border-blue-200 p-2 text-center">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">{test.test_name || "Assessment"}</td>
-                <td className="border border-blue-200 p-2 text-center">{test.score || "-"}</td>
+                <td className="border border-blue-200 p-2 font-semibold">
+                  {test.test_name || "Assessment"}
+                </td>
+                <td className="border border-blue-200 p-2 text-center">
+                  {test.score || "-"}
+                </td>
               </tr>
             </tbody>
           </table>
         );
     }
   };
-  
+
   // Renders a cumulative report with all tests
   const renderCumulativeReport = () => {
     if (!test || !test.allTests || !Array.isArray(test.allTests)) return null;
-    
+
     return (
       <table className="w-full border-collapse">
         <thead>
@@ -300,11 +444,17 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
         <tbody>
           {test.allTests.map((singleTest, index) => (
             <tr key={index}>
-              <td className="border border-blue-200 p-2 font-semibold">{singleTest.test_name || `Test ${index + 1}`}</td>
-              <td className="border border-blue-200 p-2 text-center">
-                {singleTest.created_at ? formatDateTime(singleTest.created_at) : "-"}
+              <td className="border border-blue-200 p-2 font-semibold">
+                {singleTest.test_name || `Test ${index + 1}`}
               </td>
-              <td className="border border-blue-200 p-2 text-center">{singleTest.score || "-"}</td>
+              <td className="border border-blue-200 p-2 text-center">
+                {singleTest.created_at
+                  ? formatDateTime(singleTest.created_at)
+                  : "-"}
+              </td>
+              <td className="border border-blue-200 p-2 text-center">
+                {singleTest.score || "-"}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -313,10 +463,13 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 overflow-y-auto p-4" onClick={onClose}>
-      <div 
+    <div
+      className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 overflow-y-auto p-4"
+      onClick={onClose}
+    >
+      <div
         className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()} // Prevent clicks inside dialog from closing it
+        onClick={(e) => e.stopPropagation()} // Prevent clicks inside dialog from closing it
       >
         <div id="report-content">
           {/* Header with report institution */}
@@ -420,8 +573,10 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
             <h2 className="text-xl font-bold uppercase text-center mb-4 text-blue-800 border-b pb-2">
               {test?.test_name || "Assessment Results"}
             </h2>
-            
-            {test?.is_cumulative ? renderCumulativeReport() : renderTestDetails()}
+
+            {test?.is_cumulative
+              ? renderCumulativeReport()
+              : renderTestDetails()}
 
             {/* Clinical Notes */}
             <div className="mt-6 bg-blue-50 p-4 rounded-lg">

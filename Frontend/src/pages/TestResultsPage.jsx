@@ -238,12 +238,22 @@ const TestResultsTable = () => {
     setShowReportPopup(false);
   };
 
-  // Combine all test data for display
   const allTests = [
     ...data.map((test) => ({ ...test, type: "reading" })),
     ...visualTestData.map((test) => ({ ...test, type: "visual" })),
     ...soundTestData.map((test) => ({ ...test, type: "sound" })),
     ...auditoryTestData.map((test) => ({ ...test, type: "auditory" })),
+    ...graphemeTestData.map((test) => ({ ...test, type: "grapheme" })),
+    ...pictureTestData.map((test) => ({ ...test, type: "picture" })),
+    ...sequenceTestData.map((test) => ({ ...test, type: "sequence" })),
+    ...soundBlendingTestData.map((test) => ({
+      ...test,
+      type: "soundBlending",
+    })),
+    ...symbolSequenceTestData.map((test) => ({
+      ...test,
+      type: "symbol",
+    })),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   return (
@@ -407,9 +417,7 @@ const TestResultsTable = () => {
                           {timePart}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {test.type === "visual"
-                            ? test.options
-                            : test.score || "N/A"}
+                          {test.score}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
@@ -453,4 +461,3 @@ const TestResultsTable = () => {
 };
 
 export default TestResultsTable;
-
