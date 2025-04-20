@@ -52,7 +52,7 @@ export async function evaluateDescriptionAndStore(req, res) {
       });
     }
 
-    const {data, error } = await supabase
+    const { data, error } = await supabase
       .from("picture_test_results")
       .insert({
         child_id,
@@ -60,7 +60,7 @@ export async function evaluateDescriptionAndStore(req, res) {
         score: totalScore,
         test_name: "Picture Recognition Test",
       })
-      .select() // This is crucial to get the inserted record
+      .select()
       .single();
 
     if (error) throw error;

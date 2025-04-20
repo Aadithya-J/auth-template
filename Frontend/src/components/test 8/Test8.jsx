@@ -2,13 +2,15 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { backendURL } from "../../definedURL";
 
 const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
-  const [skippedQuestions, setSkippedQuestions] = useState(Array(10).fill(false));
+  const [skippedQuestions, setSkippedQuestions] = useState(
+    Array(10).fill(false)
+  );
   const [selectedOptions, setSelectedOptions] = useState(Array(10).fill(null));
   const navigate = useNavigate();
 
@@ -18,12 +20,36 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
     { word: "f", options: ["k", "h", "f", "j", "t", "g"], correct: "f" },
     { word: "b", options: ["p", "d", "q", "b", "g", "h"], correct: "b" },
     { word: "m", options: ["w", "n", "u", "m", "h", "s"], correct: "m" },
-    { word: "no", options: ["oh", "on", "in", "no", "uo", "ou"], correct: "no" },
-    { word: "cat", options: ["act", "tac", "cat", "atc", "cta"], correct: "cat" },
-    { word: "girl", options: ["gril", "lirg", "irig", "girl", "glir"], correct: "girl" },
-    { word: "little", options: ["kitten", "little", "like", "litter", "kettle"], correct: "little" },
-    { word: "help", options: ["hlep", "hple", "help", "pleh", "hlpe"], correct: "help" },
-    { word: "fast", options: ["staf", "fats", "fast", "taps", "saft"], correct: "fast" }
+    {
+      word: "no",
+      options: ["oh", "on", "in", "no", "uo", "ou"],
+      correct: "no",
+    },
+    {
+      word: "cat",
+      options: ["act", "tac", "cat", "atc", "cta"],
+      correct: "cat",
+    },
+    {
+      word: "girl",
+      options: ["gril", "lirg", "irig", "girl", "glir"],
+      correct: "girl",
+    },
+    {
+      word: "little",
+      options: ["kitten", "little", "like", "litter", "kettle"],
+      correct: "little",
+    },
+    {
+      word: "help",
+      options: ["hlep", "hple", "help", "pleh", "hlpe"],
+      correct: "help",
+    },
+    {
+      word: "fast",
+      options: ["staf", "fats", "fast", "taps", "saft"],
+      correct: "fast",
+    },
   ];
 
   const handleAnswer = (index, selectedAnswer) => {
@@ -39,7 +65,8 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
     setScore((prevScore) => {
       if (answeredQuestions.has(index)) {
-        const previousAnswerCorrect = selectedOptions[index] === questions[index].correct;
+        const previousAnswerCorrect =
+          selectedOptions[index] === questions[index].correct;
         return isCorrect && !previousAnswerCorrect
           ? prevScore + 1
           : !isCorrect && previousAnswerCorrect
@@ -66,17 +93,19 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
     const childId = localStorage.getItem("childId");
 
     if (!childId) {
-      alert("No student data found. Please select a student before taking the test.");
+      alert(
+        "No student data found. Please select a student before taking the test."
+      );
       return;
     }
 
     try {
-      // Send selectedOptions array as the options field in the payload
       const response = await axios.post(
         `${backendURL}/addVisual`,
         {
           child_id: childId,
           options: selectedOptions,
+          score: score,
         },
         {
           headers: {
@@ -87,12 +116,12 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
       );
 
       if (response.status === 201) {
-        if (suppressResultPage && typeof onComplete === 'function') {
+        if (suppressResultPage && typeof onComplete === "function") {
           onComplete(score);
         } else {
           toast.success("Test submitted successfully!", {
             position: "top-center",
-            onClose: () => navigate('/'),
+            onClose: () => navigate("/"),
           });
         }
       } else {
@@ -100,7 +129,9 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error("An error occurred while submitting the test. Please try again.");
+      toast.error(
+        "An error occurred while submitting the test. Please try again."
+      );
     }
   };
 
@@ -110,13 +141,30 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         <h2 className="text-3xl font-roboto font-extrabold mb-7 flex items-center">
           Visual Discrimination Test
         </h2>
-        <div style={{ height: '2px', backgroundColor: '#ccc', width: '100%', marginBottom: '40px' }}></div>
+        <div
+          style={{
+            height: "2px",
+            backgroundColor: "#ccc",
+            width: "100%",
+            marginBottom: "40px",
+          }}
+        ></div>
 
         {questions.map((question, index) => (
-          <div key={index} className="flex flex-col items-end mb-7 bg-white rounded-lg p-5 w-full">
+          <div
+            key={index}
+            className="flex flex-col items-end mb-7 bg-white rounded-lg p-5 w-full"
+          >
             <div className="w-full mb-4 text-left">
-              <span className={`text-xl font-bold ${skippedQuestions[index] ? "text-gray-500" : ""}`}>
-                Question {index + 1} {skippedQuestions[index] && <span className="text-gray-500">: Skipped</span>}
+              <span
+                className={`text-xl font-bold ${
+                  skippedQuestions[index] ? "text-gray-500" : ""
+                }`}
+              >
+                Question {index + 1}{" "}
+                {skippedQuestions[index] && (
+                  <span className="text-gray-500">: Skipped</span>
+                )}
               </span>
             </div>
 
@@ -147,12 +195,12 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
               </div>
 
               <div className="flex justify-end flex-grow">
-              <button
-              className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
-                skippedQuestions[index]
-                ? "border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
-                : "border-2 border-gray-700 text-gray-700 hover:bg-gray-100 hover:text-black"
-              }`}
+                <button
+                  className={`py-3 px-5 rounded-md text-lg transition transform duration-200 ${
+                    skippedQuestions[index]
+                      ? "border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
+                      : "border-2 border-gray-700 text-gray-700 hover:bg-gray-100 hover:text-black"
+                  }`}
                   onClick={() => handleSkip(index)}
                 >
                   {skippedQuestions[index] ? "Attempt" : "Skip"}

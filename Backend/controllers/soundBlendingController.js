@@ -11,7 +11,8 @@ export async function submitResults(req, res) {
           child_id: childId,
           total_score: totalScore,
           responses: responses,
-          normalized_score: normalized_score,
+          score: normalized_score,
+          test_name: "Sound Blending Test",
         },
       ])
       .select();

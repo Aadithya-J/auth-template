@@ -18,7 +18,6 @@ const TestResultsTable = () => {
   const tokenId = localStorage.getItem("access_token");
 
   useEffect(() => {
-    // Retrieve user details from localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {

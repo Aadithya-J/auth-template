@@ -316,7 +316,7 @@ export default function PhonemeGame() {
 
   const finishGame = async (responsesToSubmit) => {
     const token = localStorage.getItem("access_token");
-
+    const childId = localStorage.getItem("childId");
     // Calculate score according to new rules
     const incorrectCount = responsesToSubmit.filter((r) => !r.isCorrect).length;
     const rawScore = 20 - incorrectCount;
@@ -327,11 +327,13 @@ export default function PhonemeGame() {
         `${backendURL}/submitResults`,
         {
           responses: responsesToSubmit.map((r) => ({
+            word: r.word,
             wordId: r.wordId,
             isCorrect: r.isCorrect,
           })),
           normalized_score: finalScore,
           total_score: rawScore,
+          childId,
         },
         {
           headers: {

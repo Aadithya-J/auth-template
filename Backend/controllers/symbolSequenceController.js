@@ -16,6 +16,7 @@ export async function createResult(req, res) {
         level,
         score,
         total_rounds: totalRounds,
+        test_name: "Symbol Sequence Test",
       },
     ])
     .select();

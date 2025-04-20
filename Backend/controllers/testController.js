@@ -105,6 +105,7 @@ rescind    metamorphosis somnambulist bibliography idiosyncrasy`
         correct_words: JSON.stringify(formattedCorrectGroups),
         incorrect_words: JSON.stringify(errorWords),
         score: score.toFixed(2),
+        test_name: "Schonell Test",
       },
     ]);
 
@@ -166,6 +167,7 @@ export async function addTest16(req, res) {
         {
           child_id: childId,
           score: score,
+          test_name: "Sound Discrimination Test",
         },
       ]);
     if (error) {
@@ -222,6 +224,7 @@ export async function addTest13(req, res) {
           score: score,
           forward_correct: forwardCorrect,
           reverse_correct: reverseCorrect,
+          test_name: "Auditory Sequential Memory Test",
         },
       ]);
     if (error) {

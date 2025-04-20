@@ -1,0 +1,139 @@
+{
+    "Grapheme/Phoneme Correspondence Test": {
+      "id": 5,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Struggles with letter‑sound associations.",
+      "remedies": [
+        "Phonics Games (e.g., Starfall, Teach Your Monster to Read)",
+        "AR Letter Tracing Apps (e.g., Writing Wizard)",
+        "Digital b/d/p/q Comparators",
+        "Interactive Whiteboards",
+        "Speech Therapy Digital Platforms"
+      ]
+    },
+    "Picture Recognition Test": {
+      "id": 1,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Difficulty naming objects or expressing ideas.",
+      "remedies": [
+        "Speech Therapy Apps (e.g., Speech Blubs, Articulation Station)",
+        "Interactive Storytelling Tools (e.g., Epic!, Book Creator)",
+        "AR Flashcards (interactive 3D object labeling)",
+        "Smart Assistant Q&A Games (e.g., Alexa word quizzes)",
+        "Online Language Platforms (e.g., Read Theory, ABCmouse)",
+        "Speech‑to‑Text Tools"
+      ]
+    },
+    "Visual Sequential Memory Test": {
+      "id": 12,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Difficulty recalling image sequences.",
+      "remedies": [
+        "Memory Matrix Games (e.g., CogniFit)",
+        "Digital “Simon Says” Clones",
+        "Animated Pattern Recall",
+        "Augmented Reality Image Recognition",
+        "Sequencing Flashcards"
+      ]
+    },
+    "Sound Blending Test": {
+      "id": 14,
+      "scoreRange": {
+        "difficulty": [0, 15],
+        "strong": [16, 20]
+      },
+      "description": "Can’t blend phonemes into words.",
+      "remedies": [
+        "Phonics Blending Apps (e.g., HOMER Learn & Grow)",
+        "Interactive Sound Boards",
+        "Rhyming Robot Games",
+        "Flashcard Practice",
+        "Phonics‑Based Activities"
+      ]
+    },
+    "Symbol Sequence Test": {
+      "id": 15,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Trouble recalling symbol sequences.",
+      "remedies": [
+        "Symbol Sequence Games",
+        "Digital “Concentration” Games",
+        "Coding Games (e.g., Lightbot)",
+        "Interactive Drawing Tools",
+        "AR Symbol Recognition"
+      ]
+    },
+    "Schonell Test": {
+      "id": 6,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Weak letter/sound recognition.",
+      "remedies": [
+        "Interactive Phonics Whiteboards (e.g., LetterSchool)",
+        "Digital Flashcards with Audio (e.g., Quizlet)",
+        "Letter‑Matching VR Games",
+        "Colorful Flashcards",
+        "Phonics‑Based Reading Games"
+      ]
+    },
+    "Sound Discrimination Test": {
+      "id": 16,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Can’t distinguish similar sounds (e.g., \"bit\" vs. \"pit\").",
+      "remedies": [
+        "Minimal Pair Apps (e.g., Auditory Workout)",
+        "Sound‑Matching VR Games",
+        "Digital “Same/Different” Quizzes",
+        "Interactive Audio Recognition",
+        "Teletherapy Tools"
+      ]
+    },
+    "Visual Discrimination Test": {
+      "id": 8,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Trouble matching patterns/letters.",
+      "remedies": [
+        "Digital “Spot the Difference” Games (e.g., Lumosity)",
+        "Interactive b/d/p/q Tools",
+        "Pattern‑Matching Apps (e.g., Khan Academy Kids)",
+        "Augmented Reality Recognition Apps",
+        "Customized Flashcards with Sound"
+      ]
+    },
+    "Auditory Sequential Memory Test": {
+      "id": 13,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Struggles recalling sound/digit sequences.",
+      "remedies": [
+        "Digital “Simon” Sound Games",
+        "Number/Word Recall Apps",
+        "Rhythm‑Matching Games (e.g., Beat Saber)",
+        "Interactive Learning Apps",
+        "Voice‑Enabled Daily Challenges"
+      ]
+    }
+  }
+  
