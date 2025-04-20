@@ -51,6 +51,36 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
     return test.score >= min && test.score <= max;
   };
 
+  // Check if score falls in strong range
+  const isStrongScore = () => {
+    if (!test || !test.test_name || !test.score) {
+      console.log("Missing test data for strong score check");
+      return false;
+    }
+
+    // Get test data from the inference.json
+    const testData = testDataMap[test.test_name];
+    if (!testData || !testData.scoreRange) {
+      console.log("No matching test data in inference.json for:", test.test_name);
+      return false;
+    }
+
+    const [min, max] = testData.scoreRange.strong;
+    const score = parseFloat(test.score);
+    const isStrong = score >= min && score <= max;
+    
+    console.log(
+      "Strong score check:", 
+      test.test_name, 
+      "Score:", score, 
+      "Range:", min, "-", max, 
+      "Result:", isStrong,
+      "Has message:", !!testData.strongMessage
+    );
+    
+    return isStrong;
+  };
+
   // Get the test data for the current test
   const getCurrentTestData = () => {
     if (!test || !test.test_name) return null;
@@ -580,11 +610,30 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
 
             {/* Clinical Notes */}
             <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-bold mb-2">Inference:</h3>
+              <h3 className="font-bold mb-2">Assessment Feedback:</h3>
+              {console.log(
+                "Display conditions:",
+                "Is strong score:", isStrongScore(),
+                "Has current test data:", !!currentTestData,
+                "Has strong message:", currentTestData?.strongMessage,
+                "Show remedies:", showRemedies
+              )}
               <p className="text-sm">
-                {showRemedies && currentTestData
-                  ? currentTestData.description
-                  : "This assessment evaluates cognitive and educational abilities relevant to the student's learning profile. Results should be interpreted in the context of the student's overall educational performance and development."}
+                {isStrongScore() && currentTestData && currentTestData.strongMessage 
+                  ? (
+                      <>
+                        <span className="text-green-600 font-bold">Excellent! </span>
+                        {currentTestData.strongMessage}
+                      </>
+                    )
+                  : showRemedies && currentTestData
+                  ? (
+                      <>
+                        <span className="text-amber-600 font-bold">Areas for Improvement: </span>
+                        {currentTestData.description}
+                      </>
+                    )
+                  : "This assessment evaluates cognitive abilities relevant to the student's learning profile. Results should be considered alongside overall educational performance."}
               </p>
 
               {/* Show remedies only if score is in difficulty range */}

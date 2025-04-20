@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { pythonURL, backendURL } from "../../definedURL";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import PropTypes from "prop-types";
 
 const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const [letters] = useState([
@@ -118,7 +119,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
 
         recorder.start();
         setIsRecording(true);
-      } catch (error) {
+      } catch (err) {
+        console.error("Error accessing microphone:", err);
         toast.error("Microphone permission denied");
         setCurrentIndex(letters.length);
         return;
@@ -126,7 +128,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
     }
 
     const timer = setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1); // ✅ This line ensures we move beyond the last index
+      setCurrentIndex((prev) => prev + 1);
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -193,148 +195,256 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-6">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6"
+    >
       {showResults && (
-        <Confetti width={width} height={height} recycle={false} />
+        <Confetti width={width} height={height} recycle={false} colors={['#2563EB', '#60A5FA', '#93C5FD', '#FFFFFF']} />
       )}
 
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-100"
+      >
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-purple-600">
+          <motion.h1 
+            initial={{ y: -10 }}
+            animate={{ y: 0 }}
+            className="text-4xl font-bold text-blue-600 mb-2"
+          >
             Letter Challenge
-          </h1>
-          <p className="text-lg text-gray-600">Say the letter you see!</p>
+          </motion.h1>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <p className="text-lg text-blue-600/80">Say the letter you see!</p>
+          </motion.div>
         </div>
 
         <div className="mb-8">
           <div className="flex justify-between mb-2">
-            <span className="text-md font-medium text-purple-700">
+            <span className="text-md font-medium text-blue-700">
               Progress: {currentIndex}/{letters.length}
             </span>
-            <span className="text-md font-medium text-purple-700">
+            <span className="text-md font-medium text-blue-700">
               {Math.round((currentIndex / letters.length) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div
-              className="bg-purple-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${(currentIndex / letters.length) * 100}%` }}
-            ></div>
+          <div className="w-full bg-blue-100 rounded-full h-3 overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentIndex / letters.length) * 100}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="bg-blue-600 h-3 rounded-full"
+            ></motion.div>
           </div>
         </div>
 
-        {currentIndex < letters.length ? (
-          <motion.div
-            key={currentIndex}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col items-center"
-          >
-            <div className="relative">
-              <div className="w-64 h-64 bg-purple-100 rounded-2xl flex items-center justify-center shadow-lg mb-8">
-                <span className="text-9xl font-extrabold text-purple-800">
-                  {letters[currentIndex]}
-                </span>
-              </div>
+        <AnimatePresence mode="wait">
+          {currentIndex < letters.length ? (
+            <motion.div
+              key={`letter-${currentIndex}`}
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center"
+            >
+              <div className="relative">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="w-64 h-64 bg-blue-50 rounded-2xl flex items-center justify-center shadow-lg mb-8 border-2 border-blue-200"
+                >
+                  <span className="text-9xl font-extrabold text-blue-700">
+                    {letters[currentIndex]}
+                  </span>
+                </motion.div>
 
-              <div className="absolute -top-5 -right-5">
-                <div className="relative w-20 h-20">
-                  <svg className="w-full h-full" viewBox="0 0 36 36">
-                    <path
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="#e2e8f0"
-                      strokeWidth="3"
-                    />
-                    <path
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="#8b5cf6"
-                      strokeWidth="3"
-                      strokeDasharray={`${(timeLeft / 5) * 100}, 100`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xl font-bold text-purple-800">
-                      {timeLeft}s
-                    </span>
+                <div className="absolute -top-5 -right-5">
+                  <div className="relative w-20 h-20">
+                    <svg className="w-full h-full" viewBox="0 0 36 36">
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="#DBEAFE"
+                        strokeWidth="3"
+                      />
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="#2563EB"
+                        strokeWidth="3"
+                        strokeDasharray={`${(timeLeft / 5) * 100}, 100`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xl font-bold text-blue-700">
+                        {timeLeft}s
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center mb-6">
-              <div
-                className={`w-5 h-5 rounded-full mr-2 ${
-                  isRecording ? "bg-red-500 animate-pulse" : "bg-gray-400"
-                }`}
-              ></div>
-              <span className="text-lg text-gray-600">
-                {isRecording ? "Recording..." : "Ready"}
-              </span>
-            </div>
-          </motion.div>
-        ) : showResults ? (
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center py-8"
-          >
-            <div className="text-5xl mb-6">🎉</div>
-            <h2 className="text-2xl font-bold text-purple-700 mb-2">
-              Test Complete!
-            </h2>
-            <p className="text-gray-600 mb-6">
-              You scored {score} out of {letters.length}!
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-4 mb-6">
-              <div
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full"
-                style={{ width: `${(score / letters.length) * 100}%` }}
-              ></div>
-            </div>
-            <button
-              onClick={restartTest}
-              className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors shadow-md"
+              <motion.div 
+                animate={{ opacity: isRecording ? 1 : 0.7 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center mb-6"
+              >
+                <motion.div
+                  animate={{ 
+                    scale: isRecording ? [1, 1.2, 1] : 1,
+                    backgroundColor: isRecording ? "#EF4444" : "#94A3B8"
+                  }}
+                  transition={{ 
+                    repeat: isRecording ? Infinity : 0, 
+                    duration: 1.5
+                  }}
+                  className="w-5 h-5 rounded-full mr-2"
+                ></motion.div>
+                <span className="text-lg text-blue-700">
+                  {isRecording ? "Recording..." : "Ready"}
+                </span>
+              </motion.div>
+            </motion.div>
+          ) : showResults ? (
+            <motion.div
+              key="results"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center py-8"
             >
-              Try Again
-            </button>
-          </motion.div>
-        ) : showSubmit ? (
-          <div className="text-center py-8">
-            <h2 className="text-2xl font-bold text-purple-700 mb-4">
-              Ready to Submit?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              You've recorded all letters. Click below to process your results.
-            </p>
-            <button
-              onClick={handleSubmit}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md"
+              <motion.div 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-5xl mb-6"
+              >
+                🎉
+              </motion.div>
+              <motion.h2 
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-2xl font-bold text-blue-700 mb-2"
+              >
+                Test Complete!
+              </motion.h2>
+              <motion.p
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-blue-600 mb-6"
+              >
+                You scored {score} out of {letters.length}!
+              </motion.p>
+              <div className="w-full bg-blue-100 rounded-full h-4 mb-6 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(score / letters.length) * 100}%` }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-4 rounded-full"
+                ></motion.div>
+              </div>
+              <motion.button
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={restartTest}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
+              >
+                Try Again
+              </motion.button>
+            </motion.div>
+          ) : showSubmit ? (
+            <motion.div
+              key="submit"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center py-8"
             >
-              Submit Recording
-            </button>
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-xl">Processing results...</p>
-          </div>
-        )}
-      </div>
+              <motion.h2
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="text-2xl font-bold text-blue-700 mb-4"
+              >
+                Ready to Submit?
+              </motion.h2>
+              <motion.p
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="text-blue-600 mb-6"
+              >
+                You&apos;ve recorded all letters. Click below to process your results.
+              </motion.p>
+              <motion.button
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSubmit}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
+              >
+                Submit Recording
+              </motion.button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="processing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-8"
+            >
+              <motion.p 
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="text-xl text-blue-600"
+              >
+                Processing results...
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
       {!showResults && currentIndex < letters.length && (
-        <div className="mt-6 text-center">
-          <p className="text-gray-500">
-            {["🌟", "🎯", "💡", "🔊", "👏"][currentIndex % 5]} Say it loud and
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-6 text-center"
+        >
+          <p className="text-blue-500 font-medium">
+            {["✨", "🎯", "💡", "🔊", "👏"][currentIndex % 5]} Say it loud and
             clear!
           </p>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
+};
+
+GraphemeTest.propTypes = {
+  suppressResultPage: PropTypes.bool,
+  onComplete: PropTypes.func,
 };
 
 export default GraphemeTest;
