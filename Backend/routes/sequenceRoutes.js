@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post("/addsequencetest", addSequenceTest);
 
-router.get("/getSequenceTestsByUser/:userId", getSequenceTestsByUser);
+router.get("/getSequenceTestsByUser/:childId", getSequenceTestsByUser);
 
 export default router;
