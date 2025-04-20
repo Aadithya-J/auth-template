@@ -7,8 +7,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 
-const VocabularyScaleTest = () => {
-  const childId = localStorage.getItem("childId");
+const VocabularyScaleTest = ({ suppressResultPage = false, onComplete, student }) => {
+  const childId = localStorage.getItem("childId") || (student && student.id);
   const navigate = useNavigate();
   const [words, setWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -229,7 +229,6 @@ const VocabularyScaleTest = () => {
 
     try {
       const token = localStorage.getItem('token');
-      // Use backendURL for submitting results
       const response = await axios.post(
         `${backendURL}/vocabulary/submit`,
         { child_id: childId, responses: finalResponses },
@@ -237,9 +236,15 @@ const VocabularyScaleTest = () => {
       );
 
       if (response.status === 201 && response.data) {
-        setFinalScore(response.data.score); // Assuming backend returns score
-        setTestComplete(true);
-        toast.success("Test submitted successfully!");
+        const score = response.data.score || 0;
+        setFinalScore(score);
+        
+        if (suppressResultPage && typeof onComplete === 'function') {
+          onComplete(score);
+        } else {
+          setTestComplete(true);
+          toast.success("Test submitted successfully!");
+        }
       } else {
         throw new Error("Failed to submit test results.");
       }
@@ -248,7 +253,13 @@ const VocabularyScaleTest = () => {
       const errorMsg = err.response?.data?.error || "An error occurred during submission.";
       setError(errorMsg);
       toast.error(errorMsg);
-      setTestComplete(false); // Allow retry? Or indicate failure
+      
+      // Even on error, if we're in continuous assessment mode, we need to continue
+      if (suppressResultPage && typeof onComplete === 'function') {
+        onComplete(0); // Pass 0 score on error
+      } else {
+        setTestComplete(false);
+      }
     } finally {
       setSubmitting(false);
     }

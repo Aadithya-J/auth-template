@@ -144,7 +144,7 @@ const WORDS = [
   },
 ];
 
-export default function PhonemeGame() {
+export default function Test14({ suppressResultPage = false, onComplete, student }) {
   const [gameState, setGameState] = useState("playing");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -316,7 +316,7 @@ export default function PhonemeGame() {
 
   const finishGame = async (responsesToSubmit) => {
     const token = localStorage.getItem("access_token");
-    const childId = localStorage.getItem("childId");
+    const childId = localStorage.getItem("childId") || (student && student.id);
     // Calculate score according to new rules
     const incorrectCount = responsesToSubmit.filter((r) => !r.isCorrect).length;
     const rawScore = 20 - incorrectCount;
@@ -342,11 +342,23 @@ export default function PhonemeGame() {
           },
         }
       );
-      setGameState("results");
+      
+      // Check if we should suppress results page and call onComplete
+      if (suppressResultPage && typeof onComplete === "function") {
+        onComplete(finalScore);
+      } else {
+        setGameState("results");
+      }
     } catch (err) {
       console.error("Error submitting results:", err);
       setError("Failed to save results. You can try again later.");
-      setGameState("results");
+      
+      // Even on error, if we're in continuous assessment mode, we need to continue
+      if (suppressResultPage && typeof onComplete === "function") {
+        onComplete(0); // Pass 0 score on error
+      } else {
+        setGameState("results");
+      }
     }
   };
 

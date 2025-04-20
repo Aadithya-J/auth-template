@@ -6,7 +6,9 @@ import Test6 from './test 6/Test6';
 import Test7 from './test 7/Test7';
 import Test8 from './test 8/Test8';
 import Test13 from './test 13/Test13';
+import Test14 from './test 14/Test14';
 import Test16 from './test 16/Test16';
+import VocabularyScaleTest from './VocabularyScaleTest/VocabularyScaleTest';
 
 const TESTS = [
   { name: 'Test 9: Sequence Arrangement', component: SequenceArrangement },
@@ -16,7 +18,9 @@ const TESTS = [
   { name: 'Test 7: Picture Recognition', component: Test7 },
   { name: 'Test 8: Visual Discrimination', component: Test8 },
   { name: 'Test 13: Auditory Sequential Memory', component: Test13 },
+  { name: 'Test 14: Phoneme Blending', component: Test14 },
   { name: 'Test 16: Sound Discrimination', component: Test16 },
+  { name: 'Test 2: Vocabulary Scale Test', component: VocabularyScaleTest }
 ];
 
 // --- Constants for Styling and Config ---

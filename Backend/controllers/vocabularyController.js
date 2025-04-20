@@ -122,9 +122,8 @@ export async function evaluateVocabularyAndStore(req, res) {
       });
     }
 
-    console.log("Vocabulary Test Score for child", child_id, ":", totalScore);
+    // console.log("Vocabulary Test Score for child", child_id, ":", totalScore);
 
-    // Store results in Supabase (assuming 'vocabulary_test_results' table)
     const { data, error } = await supabase
       .from("vocabulary_test_results") // Ensure this table exists in Supabase
       .insert([
