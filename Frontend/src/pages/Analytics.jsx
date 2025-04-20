@@ -8,7 +8,7 @@ import StudentCard from "../components/StudentCard";
 
 export default function Analytics({ students: initialStudents }) {
   const navigate = useNavigate();
-  const [students, setStudents] = useState(initialStudents || []); 
+  const [students, setStudents] = useState(initialStudents || []);
   const [showPopup, setShowPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
@@ -41,7 +41,7 @@ export default function Analytics({ students: initialStudents }) {
   };
 
   const handleNewStudent = (newStudent) => {
-    setStudents((prevStudents) => [newStudent, ...prevStudents]); 
+    setStudents((prevStudents) => [newStudent, ...prevStudents]);
   };
 
   const filteredStudents = students.filter((student) =>
@@ -53,7 +53,7 @@ export default function Analytics({ students: initialStudents }) {
       <div className="container mx-auto px-0 py-8 pb-16 overflow-auto">
         <header className="mb-8 animate-fadeIn">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 
+            <h1
               className="text-3xl font-bold text-blue-800 transition-all duration-300 hover:text-blue-700"
               aria-label="My Classroom"
             >
@@ -61,14 +61,20 @@ export default function Analytics({ students: initialStudents }) {
             </h1>
             <SearchbyName onSearch={handleSearch} />
           </div>
-          <div className="h-1 w-full bg-gradient-to-r from-blue-600 to-blue-300 mt-4 rounded-full animate-pulseLight" 
-               aria-hidden="true" />
+          <div
+            className="h-1 w-full bg-gradient-to-r from-blue-600 to-blue-300 mt-4 rounded-full animate-pulseLight"
+            aria-hidden="true"
+          />
         </header>
 
         <main className="pb-16">
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 stagger-children ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          <div
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 stagger-children ${
+              isLoaded ? "opacity-100" : "opacity-0"
+            }`}
+          >
             {/* Add Student Card */}
-            <div 
+            <div
               className="flex flex-col items-center justify-center p-6 bg-blue-50 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:shadow-md"
               onClick={handleAddChildClick}
               aria-label="Add new student"
@@ -93,7 +99,9 @@ export default function Analytics({ students: initialStudents }) {
                   <MdPerson className="w-10 h-10" aria-hidden="true" />
                 </div>
                 <p className="text-lg text-gray-600">No students found</p>
-                <p className="text-sm text-gray-500 mt-2">Try adjusting your search or add a new student</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Try adjusting your search or add a new student
+                </p>
               </div>
             )}
           </div>
@@ -107,7 +115,6 @@ export default function Analytics({ students: initialStudents }) {
           />
         )}
       </div>
-    </div>
     </div>
   );
 }
