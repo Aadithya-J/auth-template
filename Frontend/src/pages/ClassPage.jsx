@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; // Removed React import
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types'; // Import PropTypes
 import StudentCard from "../components/StudentCard";
 import { MdPerson } from "react-icons/md";
 import SearchbyName from "../components/SearchbyName";
@@ -48,8 +49,10 @@ export default function ClassPage({ students }) {
       navigate("/test9");
     }else if(selectedTestId === "8"){
       navigate("/test10");
-    }else if(selectedTestId === "9"){
+    } else if(selectedTestId === "9"){
       navigate("/test14");
+    } else if (selectedTestId === "10") { // Add navigation for Vocabulary Scale Test
+      navigate(`/test2/`);
     }
   };
 
@@ -107,3 +110,14 @@ export default function ClassPage({ students }) {
     </div>
   );
 }
+
+// Add PropTypes validation
+ClassPage.propTypes = {
+  students: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Assuming id can be string or number
+      name: PropTypes.string.isRequired,
+      // Add other expected student properties here if needed
+    })
+  )
+};

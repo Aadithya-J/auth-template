@@ -13,6 +13,7 @@ import graphemeRoutes from "./routes/graphemeRoutes.js";
 import sequenceRoutes from "./routes/sequenceRoutes.js";
 import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
+import vocabularyRoutes from "./routes/vocabularyRoutes.js"; // Import vocabulary routes
 app.use(
   cors({
     origin: ["https://jiveesha.vercel.app", "http://localhost:5173"],
@@ -32,6 +33,8 @@ app.use("/", graphemeRoutes);
 app.use("/", sequenceRoutes);
 app.use("/", soundBlendingRoutes);
 app.use("/", symbolSequenceRoutes);
+app.use("/vocabulary", vocabularyRoutes); // Use vocabulary routes with /vocabulary prefix
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
