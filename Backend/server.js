@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors"
+import cors from "cors";
 import dotenv from "dotenv";
 import childRoutes from "./routes/childRoutes.js";
 dotenv.config();
@@ -15,7 +15,8 @@ import graphemeRoutes from "./routes/graphemeRoutes.js";
 import sequenceRoutes from "./routes/sequenceRoutes.js";
 import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
-import vocabularyRoutes from "./routes/vocabularyRoutes.js"; // Import vocabulary routes
+import vocabularyRoutes from "./routes/vocabularyRoutes.js";
+import geminiInferenceRoutes from "./utils/geminiInference.js";
 app.use(
   cors({
     origin: ["https://jiveesha.vercel.app", "http://localhost:5173"],
@@ -27,8 +28,8 @@ app.use(
 app.use(express.json());
 
 app.use("/", authRoutes);
-app.use("/",childRoutes);
-app.use("/",testRoutes);
+app.use("/", childRoutes);
+app.use("/", testRoutes);
 app.use("/", visualRoutes);
 
 // Start server
@@ -38,7 +39,7 @@ app.use("/", sequenceRoutes);
 app.use("/", soundBlendingRoutes);
 app.use("/", symbolSequenceRoutes);
 app.use("/vocabulary", vocabularyRoutes); // Use vocabulary routes with /vocabulary prefix
-
+app.use("/", geminiInferenceRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

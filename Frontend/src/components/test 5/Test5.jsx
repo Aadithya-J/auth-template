@@ -1,10 +1,11 @@
+import { useEffect, useState, useRef } from "react";
+import { toast } from "sonner";
 import axios from "axios";
-import { motion } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
+import { pythonURL, backendURL } from "../../definedURL";
+import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
-import { toast } from "sonner";
-import { backendURL, pythonURL } from "../../definedURL";
+import PropTypes from "prop-types";
 
 const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const [letters] = useState([
@@ -194,12 +195,21 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-purple-50 p-6">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6"
+    >
       {showResults && (
         <Confetti width={width} height={height} recycle={false} colors={['#2563EB', '#60A5FA', '#93C5FD', '#FFFFFF']} />
       )}
 
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl ">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-100"
+      >
         <div className="text-center mb-8">
           <motion.h1 
             initial={{ y: -10 }}

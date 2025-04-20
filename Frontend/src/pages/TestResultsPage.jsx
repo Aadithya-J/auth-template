@@ -1,8 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FaCalendarAlt, FaChartLine, FaEnvelope, FaFileAlt, FaIdCard, FaPhone, FaUser } from 'react-icons/fa';
+import {
+  FaCalendarAlt,
+  FaChartLine,
+  FaEnvelope,
+  FaFileAlt,
+  FaIdCard,
+  FaPhone,
+  FaUser,
+} from "react-icons/fa";
 import TestReportPopup from "../components/TestReportPopup";
-import { FaUser, FaCalendarAlt, FaIdCard, FaPhone, FaEnvelope, FaChartLine, FaFileAlt } from 'react-icons/fa';
 import { backendURL } from "../definedURL.js";
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
@@ -442,11 +449,11 @@ const TestResultsTable = () => {
       {/* Report Popup */}
       {showReportPopup && selectedTest && (
         <TestReportPopup
-          test={selectedTest}
-          childDetails={{ ...childDetails, id: childId }}
-          onClose={closeReportPopup}
-          isCumulative={showCumulativeReport}
-        />
+        test={selectedTest}
+        childDetails={{ ...childDetails, id: childId }}
+        onClose={closeReportPopup}
+        isCumulative={showCumulativeReport}  // Add this line
+      />
       )}
     </div>
   );
