@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import SideNavBar, { SideNavBarItem } from "./components/SideNavBar";
 import { GrHomeRounded } from "react-icons/gr";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { MdOutlineEventNote } from "react-icons/md";
-
+import axios from "axios";
 import Home from "./pages/Home";
 import MyClass from "./pages/MyClass";
 import TakeTests from "./pages/TakeTests";
@@ -33,6 +32,7 @@ import ContinuousAssessment from "./components/ContinuousAssessment";
 import Register from "./pages/Register";
 import Analytics from "./pages/Analytics";
 import Test14 from "./components/test 14/test14";
+import VocabularyScaleTest from "./components/VocabularyScaleTest/VocabularyScaleTest"; // Import the new test component
 
 function App() {
   const [students, setStudents] = useState([]);
@@ -51,14 +51,15 @@ function App() {
         try {
           const isValid = await verifyToken(token);
           if (isValid && publicRoutes.includes(currentPath)) {
-            navigate("/"); // Redirect to home if authenticated user tries to access auth pages
-          }
-        } catch (error) {
-          if (!publicRoutes.includes(currentPath)) {
-            navigate("/login");
-          }
-        }
-      } else if (!publicRoutes.includes(currentPath)) {
+             navigate("/");
+           }
+         } catch (error) {
+           console.error("Authentication check failed:", error); // Log the error
+           if (!publicRoutes.includes(currentPath)) {
+             navigate("/login");
+           }
+         } // <<< Add missing closing brace for catch block
+      } else if (!publicRoutes.includes(currentPath)) { // This else if corresponds to the `if (token)`
         navigate("/login");
       }
     };
@@ -337,6 +338,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ContinuousAssessment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/test2"
+            element={
+              <PrivateRoute>
+                <VocabularyScaleTest />
               </PrivateRoute>
             }
           />

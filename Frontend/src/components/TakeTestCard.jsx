@@ -17,6 +17,7 @@ const TakeTestCard = ({ test, buttonLabel, onClick }) => {
     if (id === 7) return mag;
     if (id === 8) return books;
     if (id === 9) return books;
+    if (id === 10) return speak;
     return books;
   };
   

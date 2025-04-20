@@ -43,5 +43,10 @@
     "id": 9 ,
     "testName": "Sound Blending",
     "About": "This test evaluates a child's ability to blend individual sounds into words, a key skill for reading and spelling. It consists of two levels: Level 1 focuses on simple three-sound blends, while Level 2 presents more complex blends. Children listen to separate sounds and are asked to combine them to form a word. This helps identify phonemic awareness and blending skills."
+  },
+  {
+    "id": 10,
+    "testName": "Vocabulary Scale",
+    "About": "This test requires the child to define, or indicate an understanding of, a series of graded words, typically verbally. The first nine words are common first-reader words to gauge readiness. Graded words start from word 10. The tester speaks each word, asks for its meaning, and may use encouragement without prompting. The test stops after five consecutive incorrect responses. Scoring is based on the total number of correctly defined words, which corresponds to a vocabulary age."
   }
 ]
