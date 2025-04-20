@@ -1,33 +1,28 @@
 import React from "react";
-import Button from "./Button";
+import PropTypes from "prop-types";
 
-const StudentList = ({ student, buttonLabel, onButtonClick }) => {
+const StudentList = ({ student, buttonLabel, onButtonClick, buttonClassName }) => {
   return (
-    <div>
-      <div className="relative w-full h-[70px] group bg-black rounded-md">
-        <article className="w-full h-[70px] rounded-md transition-transform duration-300 ease-out transform group-hover:-translate-x-1 group-hover:-translate-y-1 border-gray-300 relative z-20">
-          <div className="px-6 bg-[#fafafa] hover:bg-[#ff937a] py-5 rounded-md text-left h-full flex justify-between items-center">
-            <div className="w-[25%] flex justify-start items-center rounded-md">
-              <h1 className="text-[18px] pr-[0] font-roboto text-gray-700 font-bold group-hover:text-black pl-5">
-                {student.name}
-              </h1>
+    <div className="mb-3">
+      <div className="w-full group">
+        <article className="bg-white rounded-lg shadow-sm transition-all duration-300 ease-in-out hover:shadow-md">
+          <div className="px-4 py-3 text-left flex flex-wrap md:flex-nowrap items-center justify-between">
+            <div className="flex items-center space-x-3 mb-2 md:mb-0">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
+                {student.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 className="text-base font-medium text-gray-800">{student.name}</h3>
+                <div className="flex space-x-3 text-xs text-gray-500">
+                  <span>Roll No: {student.rollno}</span>
+                  <span>Tests: {student.tests_taken || 0}</span>
+                </div>
+              </div>
             </div>
-            <div className="w-[25%] flex justify-center rounded-md">
-              <h1 className="text-[15px] pr-[0] font-roboto text-gray-500 font-semibold group-hover:text-black">
-                Roll No: {student.rollno}
-              </h1>
-            </div>
-            <div className="w-[25%] flex justify-center rounded-md">
-              <h1 className="text-[15px] pr-[0] font-roboto text-gray-500 font-semibold group-hover:text-black">
-                Tests Taken: {student.tests_taken}
-              </h1>
-            </div>
-
-            {/* ✅ Add onClick to the button! */}
+            
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
+              className={buttonClassName || "bg-blue-600 text-white px-3 py-1.5 text-sm rounded-md hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"}
               onClick={() => {
-                console.log("Clicked button for student:", student.id);
                 onButtonClick(student.id);
               }}
             >
@@ -38,6 +33,13 @@ const StudentList = ({ student, buttonLabel, onButtonClick }) => {
       </div>
     </div>
   );
+};
+
+StudentList.propTypes = {
+  student: PropTypes.object.isRequired,
+  buttonLabel: PropTypes.string.isRequired,
+  onButtonClick: PropTypes.func.isRequired,
+  buttonClassName: PropTypes.string
 };
 
 export default StudentList;

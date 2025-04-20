@@ -130,6 +130,7 @@ const Home = ({ students = [], tests = [] }) => {
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [totalScoresByChild, setTotalScoresByChild] = useState({});
+  const [highestScore, setHighestScore] = useState(0);
   const [averageScore, setAverageScore] = useState(0);
   const [performanceData, setPerformanceData] = useState([]);
 
@@ -252,6 +253,7 @@ const Home = ({ students = [], tests = [] }) => {
       setPerformanceData(performanceData);
       setTotalScoresByChild(scores);
       setAverageScore(average);
+      setHighestScore(highestScore);
     };
 
     fetchScores();
@@ -297,8 +299,8 @@ const Home = ({ students = [], tests = [] }) => {
           <h2 className="text-xl font-bold text-blue-800">{averageScore}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Dyslexia Likelihood</p>
-          <h2 className="text-xl font-bold text-blue-600">{dyslexiaLikelihood}</h2>
+          <p className="text-sm font-medium">Highest Score</p>
+          <h2 className="text-xl font-bold text-blue-600">{highestScore}</h2>
         </div>
       </div>
   

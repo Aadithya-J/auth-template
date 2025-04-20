@@ -80,23 +80,22 @@
       ],
       "strongMessage": "Wonderful job! Your strong symbol sequencing skills will help with reading, spelling and mathematics!"
     },
- "Schonell Test": {
-  "id": 6,
-  "scoreRange": {
-    "difficulty": [0, 40],
-    "average": [41, 70],
-    "strong": [71, 100]
-  },
-  "description": "Weak letter/sound recognition.",
-  "remedies": [
-    "Interactive Phonics Whiteboards (e.g., LetterSchool)",
-    "Digital Flashcards with Audio (e.g., Quizlet)",
-    "Letter‑Matching VR Games",
-    "Colorful Flashcards",
-    "Phonics‑Based Reading Games"
-  ],
-  "strongMessage": "Fantastic work! Your letter and sound recognition skills are excellent - a critical foundation for reading!"
-}
+    "Schonell Test": {
+      "id": 6,
+      "scoreRange": {
+        "difficulty": [0, 7],
+        "strong": [8, 10]
+      },
+      "description": "Weak letter/sound recognition.",
+      "remedies": [
+        "Interactive Phonics Whiteboards (e.g., LetterSchool)",
+        "Digital Flashcards with Audio (e.g., Quizlet)",
+        "Letter‑Matching VR Games",
+        "Colorful Flashcards",
+        "Phonics‑Based Reading Games"
+      ],
+      "strongMessage": "Fantastic work! Your letter and sound recognition skills are excellent - a critical foundation for reading!"
+    },
 
     
     "Sound Discrimination Test": {
