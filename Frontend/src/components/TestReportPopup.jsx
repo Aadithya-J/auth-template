@@ -51,6 +51,18 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
     return test.score >= min && test.score <= max;
   };
 
+  // Check if score falls in strong range
+  const isStrongScore = () => {
+    if (!test || !test.test_name) return false;
+
+    const testData = testDataMap[test.test_name];
+    if (!testData || !testData.scoreRange || test.score === undefined)
+      return false;
+
+    const [min, max] = testData.scoreRange.strong;
+    return test.score >= min && test.score <= max;
+  };
+
   // Get the test data for the current test
   const getCurrentTestData = () => {
     if (!test || !test.test_name) return null;
@@ -582,9 +594,11 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
             <div className="mt-6 bg-blue-50 p-4 rounded-lg">
               <h3 className="font-bold mb-2">Inference:</h3>
               <p className="text-sm">
-                {showRemedies && currentTestData
+                {isStrongScore() && currentTestData && currentTestData.strongMessage
+                  ? currentTestData.strongMessage
+                  : showRemedies && currentTestData
                   ? currentTestData.description
-                  : "This assessment evaluates cognitive and educational abilities relevant to the student's learning profile. Results should be interpreted in the context of the student's overall educational performance and development."}
+                  : "This assessment evaluates cognitive abilities relevant to the student's learning profile. Results should be considered alongside overall educational performance."}
               </p>
 
               {/* Show remedies only if score is in difficulty range */}
