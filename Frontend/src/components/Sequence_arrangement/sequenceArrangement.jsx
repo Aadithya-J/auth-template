@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { backendURL } from "../../definedURL";
 
 const Test7 = () => {
@@ -251,8 +251,9 @@ const Test7 = () => {
     }
   };
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5 flex items-center justify-center">
+    <div className="h-screen w-full overflow-y-auto bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5">
       {/* Info Icon and End Test Button */}
+      
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <button
           onClick={() => setShowInfoDialog(true)}

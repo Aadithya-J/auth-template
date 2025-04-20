@@ -274,7 +274,8 @@ const Home = ({ students = [], tests = [] }) => {
   const dyslexiaLikelihood = "Low";
 
   return (
-    <div className="h-screen overflow-y-auto bg-blue-50 p-4 text-gray-900">
+    <div className="h-screen overflow-y-auto bg-blue-50 px-4 text-gray-900">
+      <div className="transform scale-[0.96] origin-top mx-auto px-4 py-8 pb-16">
       <div className="bg-transparent shadow-sm rounded-lg p-3">
         <h2 className="text-lg font-semibold">Dashboard,</h2>
         <span className="text-sm font-normal text-gray-600">
@@ -372,6 +373,7 @@ const Home = ({ students = [], tests = [] }) => {
       </div>
   
       {showPopup && <PopupForm showPopup={showPopup} handleClose={handleClose} />}
+    </div>
     </div>
   );
   

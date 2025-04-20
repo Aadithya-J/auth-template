@@ -128,8 +128,8 @@ import { HiOutlineClipboardList } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/daira-logo.png";
 import profile from "../../public/profile-icon.jpg";
+import logo from "../assets/daira-logo.png";
 
 export default function SideNavBar({ onToggle, handleLogout }) {
   const [expand, setExpand] = useState(true);
@@ -149,7 +149,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
   };
 
   return (
-    <aside className={`h-screen ${expand ? "w-64" : "w-20"} bg-white shadow-md flex flex-col p-4 transition-all duration-300 fixed left-0 top-0`}> 
+    <aside className={`h-screen ${expand ? "w-64" : "w-20"} bg-white shadow-pt-4 pl-4 md flex flex-col transition-all duration-300 fixed left-0 top-0`}> 
       {/* Logo and Toggle */}
       <div className={`flex items-center ${expand ? "justify-between" : "justify-center"} mb-6`}>
         <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}> 

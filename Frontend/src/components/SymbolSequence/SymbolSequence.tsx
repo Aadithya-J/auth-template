@@ -333,7 +333,8 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex flex-col">
+    <div className="h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-white flex flex-col">
+
       {confetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {Array.from({ length: 100 }).map((_, i) => (

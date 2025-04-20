@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
 import { MdPerson } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import PopupForm from "../components/PopupForm";
 import SearchbyName from "../components/SearchbyName";
 import StudentCard from "../components/StudentCard";
@@ -50,7 +50,8 @@ export default function MyClass({ students: initialStudents }) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-auto">
+    <div className="h-screen overflow-y-auto bg-gradient-to-b from-blue-50 to-white">
+      <div className="transform scale-[0.87] origin-top mx-auto px-4 p-8 pb-16">
       <div className="container mx-auto px-4 py-8 pb-16">
         <header className="mb-8 animate-fadeIn">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -110,6 +111,7 @@ export default function MyClass({ students: initialStudents }) {
           />
         )}
       </div>
+    </div>
     </div>
   );
 }

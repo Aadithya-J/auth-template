@@ -1,17 +1,9 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
-import { backendURL } from "../definedURL.js";
+import { useEffect, useState } from "react";
+import { FaCalendarAlt, FaChartLine, FaEnvelope, FaFileAlt, FaIdCard, FaPhone, FaUser } from 'react-icons/fa';
 import TestReportPopup from "../components/TestReportPopup";
-import {
-  FaUser,
-  FaCalendarAlt,
-  FaIdCard,
-  FaPhone,
-  FaEnvelope,
-  FaChartLine,
-  FaFileAlt,
-} from "react-icons/fa";
-
+import { FaUser, FaCalendarAlt, FaIdCard, FaPhone, FaEnvelope, FaChartLine, FaFileAlt } from 'react-icons/fa';
+import { backendURL } from "../definedURL.js";
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
   const [childDetails, setChildDetails] = useState({});
