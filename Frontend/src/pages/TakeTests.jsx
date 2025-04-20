@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
+import { MdQuiz, MdSchool, MdSearch } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import TakeTestCard from "../components/TakeTestCard";
-import { MdSchool, MdQuiz, MdSearch } from "react-icons/md";
-import PropTypes from 'prop-types';
 
 const TakeTests = ({ tests = [] }) => {
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ const TakeTests = ({ tests = [] }) => {
 
         <main className="pb-8">
           {/* Make only the test list scrollable */}
-          <div className="overflow-y-auto max-h-[calc(100vh-260px)] pr-2">
+          <div className=" max-h-[calc(100vh-260px)] pr-2">
             <div className={`space-y-6 ${isLoaded ? 'opacity-100' : 'opacity-0'} max-h-[calc(100vh-220px)] overflow-y-auto pr-2`}>
               {filteredTests.length > 0 ? (
                 filteredTests.map((test) => (

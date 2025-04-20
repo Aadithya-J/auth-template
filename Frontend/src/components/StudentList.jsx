@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "./Button";
 
 const StudentList = ({ student, buttonLabel, onButtonClick }) => {
   return (
