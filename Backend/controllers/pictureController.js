@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const evaluateResponse = async (userInput, correctAnswer) => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-  if(!userInput) {
+  if (!userInput) {
     return { score: 0, feedback: "No description provided" };
   }
   const prompt = `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`;
@@ -58,7 +58,7 @@ export async function evaluateDescriptionAndStore(req, res) {
       .insert({
         child_id,
         responses: processedResponses,
-        score: totalScore,
+        score: totalScore / 2,
         test_name: "Picture Recognition Test",
       })
       .select()
