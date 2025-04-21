@@ -22,6 +22,7 @@ const TestResultsTable = () => {
   const [sequenceTestData, setSequenceTestData] = useState([]);
   const [soundBlendingTestData, setSoundBlendingTestData] = useState([]);
   const [symbolSequenceTestData, setSymbolSequenceTestData] = useState([]);
+  const [vocalTestData, setVocalTestData] = useState([]);
   const [selectedTest, setSelectedTest] = useState(null);
   const [showReportPopup, setShowReportPopup] = useState(false);
   const [userDetails, setUserDetails] = useState({});
@@ -175,6 +176,21 @@ const TestResultsTable = () => {
         console.error("Error fetching picture test data:", error);
       }
     };
+
+    const fetchVocalTestData = async () => {
+      if (!childId || !tokenId) return;
+      try {
+        const response = await axios.get(
+          `${backendURL}/vocabulary/results/child/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        setVocalTestData(response.data.tests);
+      } catch (error) {
+        console.error("Error fetching vocal test data:", error);
+      }
+    };
     fetchData();
     fetchVisualTestData();
     fetchSoundTestData();
@@ -184,6 +200,7 @@ const TestResultsTable = () => {
     fetchSequenceTestData();
     fetchSoundBlendingTestData();
     fetchSymbolSequenceTestData();
+    fetchVocalTestData();
   }, [childId, tokenId]);
 
   useEffect(() => {
@@ -253,6 +270,7 @@ const TestResultsTable = () => {
       ...test,
       type: "symbol",
     })),
+    ...vocalTestData.map((test) => ({ ...test, type: "vocabulary" })),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   return (
@@ -449,11 +467,11 @@ const TestResultsTable = () => {
       {/* Report Popup */}
       {showReportPopup && selectedTest && (
         <TestReportPopup
-        test={selectedTest}
-        childDetails={{ ...childDetails, id: childId }}
-        onClose={closeReportPopup}
-        isCumulative={showCumulativeReport}  // Add this line
-      />
+          test={selectedTest}
+          childDetails={{ ...childDetails, id: childId }}
+          onClose={closeReportPopup}
+          isCumulative={showCumulativeReport} // Add this line
+        />
       )}
     </div>
   );
