@@ -243,7 +243,6 @@ const Test7 = () => {
       console.log("Test results saved:", response.data);
       // Show success message to user
       alert("Results saved successfully!");
-      navigate("/taketests");
     } catch (error) {
       console.error("Error saving test results:", error);
       // Show error message to user
@@ -253,7 +252,7 @@ const Test7 = () => {
   return (
     <div className="h-screen w-full overflow-y-auto bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5">
       {/* Info Icon and End Test Button */}
-      
+
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <button
           onClick={() => setShowInfoDialog(true)}
@@ -718,19 +717,9 @@ const Test7 = () => {
           </div>
           <div className="flex gap-4 justify-center">
             <button
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-              onClick={() => {
-                setGameState("welcome");
-                setScore({ correct: 0, total: 0 });
-              }}
-            >
-              Play Again
-            </button>
-            <button
               className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
               onClick={() => {
                 saveTestResults();
-                navigate("/taketests");
               }}
             >
               Finish and Save Results
