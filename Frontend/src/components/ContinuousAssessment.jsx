@@ -16,7 +16,7 @@
 //     description: 'Arrange items in correct sequence',
 //     instructions: 'Drag and drop items to arrange them in order',
 //     icon: '🧩',
-//     color: 'bg-purple-100 text-purple-800'
+//     color: 'bg-blue-100 text-blue-800'
 //   },
 //   {
 //     name: 'Symbol Sequence',
@@ -463,9 +463,9 @@ const TESTS = [
     description: "Arrange items in correct sequence",
     instructions: "Drag and drop items to arrange them in order",
     icon: "🧩",
-    color: "bg-purple-100 text-purple-800",
-    gradientFrom: "from-purple-400",
-    gradientTo: "to-purple-600",
+    color: "bg-blue-100 text-blue-800",
+    gradientFrom: "from-blue-400",
+    gradientTo: "to-blue-600",
   },
   {
     name: "Symbol Sequence",
@@ -924,12 +924,6 @@ export default function ContinuousAssessment() {
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-40 h-40 rounded-full bg-blue-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0"
-          />
           <AnimatePresence mode="wait">
             <CountdownTimer countdown={countdown} />
           </AnimatePresence>
@@ -1023,46 +1017,72 @@ export default function ContinuousAssessment() {
 
           {/* Test Content */}
           <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  className="bg-black w-full scale-90 overflow-hidden flex flex-col"
->
-  <div className="flex-grow flex justify-center items-center">
-    <TestComponent
-      suppressResultPage={true}
-      onComplete={handleTestComplete}
-      student={student}
-    />
-  </div>
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white w-full scale-90 overflow-hidden flex flex-col"
+          >
+            <div className="flex-grow flex justify-center items-center">
+              <TestComponent
+                suppressResultPage={true}
+                onComplete={handleTestComplete}
+                student={student}
+              />
+            </div>
 
-  <motion.div 
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.5, delay: 0.3 }}
-    className="border-t p-4 bg-gray-50 flex justify-between items-center"
-  >
-    <motion.button
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={handleSkipTest}
-      className="px-5 py-2 text-gray-600 hover:text-gray-800 transition flex items-center"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-      </svg>
-      Skip Test
-    </motion.button>
-    <div className="text-sm font-medium flex items-center bg-gray-100 px-3 py-1 rounded-full">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span className={timeRemaining < 60 ? "text-red-600" : "text-gray-700"}>
-        {formatTime(timeRemaining)}
-      </span>
-    </div>
-  </motion.div>
-</motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="border-t p-4 bg-gray-50 flex justify-between items-center"
+            >
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSkipTest}
+                className="px-5 py-2 text-gray-600 hover:text-gray-800 transition flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                  />
+                </svg>
+                Skip Test
+              </motion.button>
+              <div className="text-sm font-medium flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1 text-gray-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span
+                  className={
+                    timeRemaining < 60 ? "text-red-600" : "text-gray-700"
+                  }
+                >
+                  {formatTime(timeRemaining)}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     );

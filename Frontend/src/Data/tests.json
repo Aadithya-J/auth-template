@@ -17,7 +17,7 @@
   {
     "id": 4,
     "testName": "Picture Recognition",
-    "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
+    "About": "The Picture Recognition Test assesses a student’s visual memory and recall abilities by showing a series of images for a brief duration, followed by a task where students must identify those images from a larger set that includes distractors. This test is useful in measuring memory retention, focus, and recognition accuracy. Scoring is based on the number of correctly identified pictures, helping educators understand the learner’s visual memory strength and recognition capabilities."
   },
   {
     "id":5,
@@ -32,12 +32,12 @@
   {
     "id": 7 ,
     "testName": "Sequence Arrangement",
-    "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
+    "About": "The Sequence Arrangement Test evaluates a student's memory and cognitive organization skills by presenting a random sequence of images or events and requiring the student to rearrange them into their original, logical order. This test assesses short-term memory, attention to detail, and sequencing ability, which are crucial for comprehension and problem-solving. The test is conducted in a calm environment to ensure accurate assessment. Scoring is based on the number of correctly placed items in the sequence, helping educators identify memory strengths and areas that may need reinforcement."
   },
   {
     "id": 8 ,
     "testName": "Symbol Sequence",
-    "About": "This test assesses a child's ability to recognize and name familiar objects based on visual cues. The test is divided into two levels: Level 1 presents simple, easy-to-identify images, while Level 2 introduces more complex pictures to challenge recognition skills. The child is asked to identify the image and describe its meaning, with responses recorded in audio or written form. This test helps evaluate visual perception, language development, and cognitive association skills."
+    "About": "The Symbol Sequence Test measures a student’s short-term memory, pattern recognition, and sequential processing skills. In this test, students are shown a sequence of abstract symbols for a limited time. After the sequence disappears, they are asked to recreate it in the same order. The test is designed to evaluate attention span and visual memory. Scoring is based on the number of symbols correctly recalled and arranged in sequence, aiding in the assessment of cognitive processing and memory development."
   },
   {
     "id": 9 ,

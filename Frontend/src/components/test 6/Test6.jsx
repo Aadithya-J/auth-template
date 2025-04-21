@@ -273,12 +273,10 @@
 //       </div>
 //     </div>
 //   );
-  
+
 // }
 
 // export default Test6;
-
-
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -305,7 +303,7 @@ const useAudioRecorder = (onAudioRecorded) => {
       .catch((error) => {
         console.error("Error accessing media devices.", error);
       });
-    
+
     return () => {
       if (window.stream) {
         window.stream.getTracks().forEach((track) => track.stop());
@@ -357,7 +355,7 @@ const useAudioRecorder = (onAudioRecorded) => {
   return {
     isRecording,
     startRecording,
-    stopRecording
+    stopRecording,
   };
 };
 
@@ -409,7 +407,7 @@ const useTranscriptionService = () => {
     isTranscribing,
     transcriptionReady,
     transcribeAudio,
-    setTranscriptionReady
+    setTranscriptionReady,
   };
 };
 
@@ -446,10 +444,10 @@ const useTestSubmission = (onTestComplete) => {
           continuousCorrectWords: group.join(" "), // Join words into a string
           errorWords: validErrorWords[index]?.join(" ") || "-", // Handle missing data
         }));
-        
+
         setTestResults(tableData); // Store results locally
-        
-        if (suppressResultPage && typeof onTestComplete === 'function') {
+
+        if (suppressResultPage && typeof onTestComplete === "function") {
           onTestComplete(score);
         } else {
           toast.success(`Test submitted! Score: ${score}%`, {
@@ -466,7 +464,11 @@ const useTestSubmission = (onTestComplete) => {
         return false;
       }
     } catch (error) {
-      console.error("Error submitting test:", error);
+      console.error("Full error details:", {
+        config: error.config,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       toast.error("An error occurred while submitting the test.");
       return false;
     }
@@ -474,12 +476,16 @@ const useTestSubmission = (onTestComplete) => {
 
   return {
     testResults,
-    submitTest
+    submitTest,
   };
 };
 
 // UI Components
-const RecordingControls = ({ isRecording, onStartRecording, onStopRecording }) => (
+const RecordingControls = ({
+  isRecording,
+  onStartRecording,
+  onStopRecording,
+}) => (
   <div className="flex items-center gap-4">
     {/* Start Recording Button */}
     <div className="relative">
@@ -547,7 +553,7 @@ const FileUploadButton = ({ onFileUpload }) => (
   </div>
 );
 
-const SubmitButton = ({ isTranscribing, transcriptionReady, onSubmit }) => (
+const SubmitButton = ({ isTranscribing, transcriptionReady, onSubmit }) =>
   isTranscribing ? (
     <button
       disabled
@@ -573,16 +579,22 @@ const SubmitButton = ({ isTranscribing, transcriptionReady, onSubmit }) => (
       <span>Submit</span>
       <ArrowRightCircle className="h-4 w-4" />
     </button>
-  )
-);
+  );
 
 // Main Component
 function Test6({ suppressResultPage = false, onComplete }) {
   const [selectedFile, setSelectedFile] = useState(null);
-  
-  const { transcript, isTranscribing, transcriptionReady, transcribeAudio, setTranscriptionReady } = useTranscriptionService();
+
+  const {
+    transcript,
+    isTranscribing,
+    transcriptionReady,
+    transcribeAudio,
+    setTranscriptionReady,
+  } = useTranscriptionService();
   const { testResults, submitTest } = useTestSubmission(onComplete);
-  const { isRecording, startRecording, stopRecording } = useAudioRecorder(transcribeAudio);
+  const { isRecording, startRecording, stopRecording } =
+    useAudioRecorder(transcribeAudio);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -611,7 +623,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
           <div className="animate-slide-up transition-transform delay-100 rounded-xl bg-blue-100/40 backdrop-blur-sm border border-blue-200 p-6 hover:shadow-md">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               {/* Recording controls */}
-              <RecordingControls 
+              <RecordingControls
                 isRecording={isRecording}
                 onStartRecording={startRecording}
                 onStopRecording={stopRecording}
@@ -622,7 +634,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
                 <FileUploadButton onFileUpload={handleFileUpload} />
 
                 {/* Submit button or loading indicator */}
-                <SubmitButton 
+                <SubmitButton
                   isTranscribing={isTranscribing}
                   transcriptionReady={transcriptionReady}
                   onSubmit={handleSubmit}

@@ -5,7 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { backendURL } from "../../definedURL";
 
-const Test7 = () => {
+const Test7 = ({ onComplete, suppressResultPage, student }) => {
   const navigate = useNavigate();
 
   // Animal emojis
@@ -241,11 +241,11 @@ const Test7 = () => {
         }
       );
       console.log("Test results saved:", response.data);
-      // Show success message to user
-      alert("Results saved successfully!");
+      if (onComplete) onComplete(score.correct);
     } catch (error) {
       console.error("Error saving test results:", error);
       // Show error message to user
+      if (onComplete) onComplete(score.correct);
       alert("Failed to save results. Please try again.");
     }
   };
@@ -263,11 +263,11 @@ const Test7 = () => {
         {(gameState === "practice" || gameState === "test") && (
           <button
             onClick={() => {
-              navigate("/test9");
+              if (onComplete) onComplete(0); // Pass 0 if skipped
             }}
             className="px-4 py-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors duration-300 font-semibold"
           >
-            End Test
+            Skip Test
           </button>
         )}
       </div>
@@ -741,14 +741,18 @@ const Test7 = () => {
               : "Nice try! 😊"}
           </div>
           <div className="flex gap-4 justify-center">
-            <button
-              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-              onClick={() => {
-                saveTestResults();
-              }}
-            >
-              Finish and Save Results
-            </button>
+      <button
+        className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+        onClick={() => {
+          saveTestResults();
+          // If not suppressing result page, show local results
+          if (!suppressResultPage) return;
+          // If suppressing, complete immediately
+          if (onComplete) onComplete(score.correct);
+        }}
+      >
+        {suppressResultPage ? "Continue" : "Finish and Save Results"}
+      </button>
           </div>
         </div>
       )}
