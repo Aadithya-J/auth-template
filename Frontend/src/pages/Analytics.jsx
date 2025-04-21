@@ -49,8 +49,8 @@ export default function Analytics({ students: initialStudents }) {
   );
 
   return (
-    <div className="min-h-screen bg-white overflow-auto">
-      <div className="container mx-auto px-0 py-8 pb-16 overflow-auto">
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
+      <div className="container mx-auto px-4 py-8 flex-grow flex flex-col overflow-auto">
         <header className="mb-8 animate-fadeIn">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h1
@@ -67,7 +67,7 @@ export default function Analytics({ students: initialStudents }) {
           />
         </header>
 
-        <main className="pb-16">
+        <main className="flex-grow overflow-auto pb-16">
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 stagger-children ${
               isLoaded ? "opacity-100" : "opacity-0"

@@ -256,7 +256,7 @@ const TestResultsTable = () => {
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   return (
-    <div className="min-h-screen h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
+    <div className="h-screen flex flex-col  h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
       <div className="max-w-7xl mx-auto">
         {/* User Profile Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg mb-8 overflow-hidden">
