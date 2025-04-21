@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/daira-logo.png";
-
+import { backendURL } from "../definedURL";
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -57,7 +57,7 @@ const Register = ({ onRegister }) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch("http://localhost:3000/register", {
+      const response = await fetch(`${backendURL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
