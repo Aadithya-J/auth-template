@@ -488,7 +488,7 @@ const TESTS = [
     gradientTo: "to-green-600",
   },
   {
-    name: "Schonell Test",
+    name: "Reading Proficiency Assessment",
     component: Test6,
     description: "Assess spelling skills",
     instructions: "Spell words correctly",

@@ -425,7 +425,9 @@ const TestResultsTable = () => {
                         className="hover:bg-blue-50 transition-colors duration-200"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-blue-800 font-medium">
-                          {test.test_name}
+                          {test.test_name === "Schonell Test"
+                            ? "Reading Proficiency Test"
+                            : test.test_name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-blue-700">
                           {datePart}
