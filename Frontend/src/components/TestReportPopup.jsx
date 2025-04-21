@@ -186,7 +186,7 @@ const TestReportPopup = ({
                 <tr className="bg-blue-50">
                   <th className="border border-blue-200 p-2 text-left">Test</th>
                   <th className="border border-blue-200 p-2 text-center">
-                    Correct Words
+                    Continous Correct Words
                   </th>
                   <th className="border border-blue-200 p-2 text-center">
                     Incorrect Words
@@ -201,12 +201,49 @@ const TestReportPopup = ({
                   <td className="border border-blue-200 p-2 font-semibold">
                     {test.test_name}
                   </td>
-                  <td className="border border-blue-200 p-2 text-center">
-                    {test.correct_words || "-"}
+                  {/* Correct Words Column */}
+                  <td className="border border-blue-200 p-4 text-left align-top w-1/2 whitespace-pre-wrap">
+                    <div>
+                      {test.correct_words ? (
+                        <ul className="list-disc list-inside space-y-1 text-gray-800">
+                          {(typeof test.correct_words === "string"
+                            ? JSON.parse(test.correct_words)
+                            : test.correct_words
+                          ).map((word, idx) => (
+                            <li key={idx}>{word}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic">No correct words</p>
+                      )}
+                    </div>
                   </td>
-                  <td className="border border-blue-200 p-2 text-center">
-                    {test.incorrect_words || "-"}
+
+                  {/* Incorrect Words Column */}
+                  <td className="border border-blue-200 p-4 text-left align-top w-1/2 whitespace-pre-wrap">
+                    <div>
+                      {test.incorrect_words ? (
+                        <ul className="list-disc list-inside space-y-1 text-gray-800">
+                          {(typeof test.incorrect_words === "string"
+                            ? JSON.parse(test.incorrect_words)
+                            : test.incorrect_words
+                          ).map((item, idx) => (
+                            <li key={idx}>
+                              {item.word}{" "}
+                              <span className="text-gray-500 text-sm">
+                                (Pos {item.position})
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic">
+                          No incorrect words
+                        </p>
+                      )}
+                    </div>
                   </td>
+
                   <td className="border border-blue-200 p-2 text-center">
                     {test.score || "-"}
                   </td>
@@ -351,28 +388,46 @@ const TestReportPopup = ({
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">
+                <td className="border border-blue-200 p-2 font-semibold text-left align-top">
                   {test.test_name}
                 </td>
                 <td className="border border-blue-200 p-2 text-center">
                   {/* Handle responses */}
                   {Array.isArray(test.responses) ? (
-                    <ul className="list-disc list-inside">
+                    <div className="space-y-2">
                       {test.responses.map((response, index) => (
-                        <li key={index}>
+                        <div
+                          key={index}
+                          className="p-2 bg-blue-50 rounded-md shadow-sm border border-blue-200"
+                        >
+                          <p className="text-sm">
+                            <span className="font-semibold">
+                              Question {index + 1}:
+                            </span>
+                          </p>
                           {response.image && (
-                            <span>Your Answer: {response.userAnswer}, </span>
+                            <p className="text-sm">
+                              <span className="font-semibold">
+                                Your Answer:
+                              </span>{" "}
+                              {response.userAnswer || "N/A"}
+                            </p>
                           )}
                           {response.feedback && (
-                            <span>
-                              Correct Answer: {response.correctAnswer}
-                            </span>
+                            <p className="text-sm">
+                              <span className="font-semibold">
+                                Correct Answer:
+                              </span>{" "}
+                              {response.correctAnswer || "N/A"}
+                            </p>
                           )}
-                        </li>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   ) : (
-                    test.responses || "-"
+                    <p className="text-sm text-gray-500">
+                      {test.responses || "No responses available"}
+                    </p>
                   )}
                 </td>
                 <td className="border border-blue-200 p-2 text-center">
@@ -530,21 +585,44 @@ const TestReportPopup = ({
           </tr>
         </thead>
         <tbody>
-          {test.allTests.map((singleTest, index) => (
-            <tr key={index}>
-              <td className="border border-blue-200 p-2 font-semibold">
-                {singleTest.test_name || `Test ${index + 1}`}
-              </td>
-              <td className="border border-blue-200 p-2 text-center">
-                {singleTest.created_at
-                  ? formatDateTime(singleTest.created_at)
-                  : "-"}
-              </td>
-              <td className="border border-blue-200 p-2 text-center">
-                {singleTest.score || "-"}
+          {test.allTests.filter((singleTest) => {
+            if (!singleTest.created_at) return false;
+            const testTime = new Date(singleTest.created_at).getTime();
+            const twentyMinutesAgo = Date.now() - 20 * 60 * 1000;
+            return testTime >= twentyMinutesAgo;
+          }).length === 0 ? (
+            <tr>
+              <td
+                colSpan="3"
+                className="border border-blue-200 p-2 text-center text-gray-500"
+              >
+                No tests taken recently
               </td>
             </tr>
-          ))}
+          ) : (
+            test.allTests
+              .filter((singleTest) => {
+                if (!singleTest.created_at) return false;
+                const testTime = new Date(singleTest.created_at).getTime();
+                const twentyMinutesAgo = Date.now() - 20 * 60 * 1000;
+                return testTime >= twentyMinutesAgo;
+              })
+              .map((singleTest, index) => (
+                <tr key={index}>
+                  <td className="border border-blue-200 p-2 font-semibold">
+                    {singleTest.test_name || `Test ${index + 1}`}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {singleTest.created_at
+                      ? formatDateTime(singleTest.created_at)
+                      : "-"}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {singleTest.score || "-"}
+                  </td>
+                </tr>
+              ))
+          )}
         </tbody>
       </table>
     );
@@ -613,20 +691,6 @@ const TestReportPopup = ({
                   <div className="flex">
                     <span className="font-semibold mr-2">ID:</span>
                     <span>{childDetails.id || "Not available"}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-semibold mr-2">Referred by:</span>
-                    <span>{childDetails.referred_by || "Self"}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-semibold mr-2">Joined:</span>
-                    <span>
-                      {childDetails.joined_date
-                        ? new Date(
-                            childDetails.joined_date
-                          ).toLocaleDateString()
-                        : "Not available"}
-                    </span>
                   </div>
                 </div>
               </div>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Mic, MicOff, Check, X, Volume2 } from "lucide-react";
 import { backendURL, pythonURL } from "../../definedURL";
 import { motion, AnimatePresence } from "framer-motion";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const WORDS = [
   {
@@ -174,13 +174,22 @@ const ResultCard = ({ item, index }) => (
     }`}
   >
     <div className="flex justify-between items-center">
-      <span className="font-medium text-blue-900">Word {index + 1}: {item.word}</span>
-      <span className={`font-bold ${item.isCorrect ? "text-blue-600" : "text-red-600"}`}>
+      <span className="font-medium text-blue-900">
+        Word {index + 1}: {item.word}
+      </span>
+      <span
+        className={`font-bold ${
+          item.isCorrect ? "text-blue-600" : "text-red-600"
+        }`}
+      >
         {item.isCorrect ? <Check size={18} /> : <X size={18} />}
       </span>
     </div>
     <div className="mt-2 text-sm text-blue-800">
-      <p>You said: <span className="font-medium">{item.response || "No response"}</span></p>
+      <p>
+        You said:{" "}
+        <span className="font-medium">{item.response || "No response"}</span>
+      </p>
       {!item.isCorrect && (
         <p className="text-blue-600 mt-1">
           Correct answer: <span className="font-medium">{item.word}</span>
@@ -199,10 +208,18 @@ ResultCard.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Button = ({ onClick, disabled, variant = "primary", children, className = "" }) => {
-  const baseStyle = "py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2";
+const Button = ({
+  onClick,
+  disabled,
+  variant = "primary",
+  children,
+  className = "",
+}) => {
+  const baseStyle =
+    "py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2";
   const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 active:scale-98 disabled:bg-blue-300",
+    primary:
+      "bg-blue-600 text-white hover:bg-blue-700 active:scale-98 disabled:bg-blue-300",
     secondary: "bg-blue-100 text-blue-800 hover:bg-blue-200 active:scale-98",
     danger: "bg-red-600 text-white hover:bg-red-700 active:scale-98",
     success: "bg-green-600 text-white hover:bg-green-700 active:scale-98",
@@ -224,12 +241,16 @@ const Button = ({ onClick, disabled, variant = "primary", children, className = 
 Button.propTypes = {
   onClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'success']),
+  variant: PropTypes.oneOf(["primary", "secondary", "danger", "success"]),
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 
-export default function PhonemeGame() {
+export default function PhonemeGame({
+  onComplete,
+  suppressResultPage,
+  student,
+}) {
   const [gameState, setGameState] = useState("playing");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -401,7 +422,7 @@ export default function PhonemeGame() {
 
   const finishGame = async (responsesToSubmit) => {
     const token = localStorage.getItem("access_token");
-
+    const childId = localStorage.getItem("childId");
     // Calculate score according to new rules
     const incorrectCount = responsesToSubmit.filter((r) => !r.isCorrect).length;
     const rawScore = 20 - incorrectCount;
@@ -417,6 +438,8 @@ export default function PhonemeGame() {
           })),
           normalized_score: finalScore,
           total_score: rawScore,
+          studentId: student?.id,
+          childId: childId,
         },
         {
           headers: {
@@ -425,14 +448,22 @@ export default function PhonemeGame() {
           },
         }
       );
-      setGameState("results");
+
+      if (suppressResultPage) {
+        onComplete(finalScore); // Immediately proceed to next test
+      } else {
+        setGameState("results");
+      }
     } catch (err) {
       console.error("Error submitting results:", err);
       setError("Failed to save results. You can try again later.");
-      setGameState("results");
+      if (suppressResultPage) {
+        onComplete(0); // Proceed with zero score if error occurs
+      } else {
+        setGameState("results");
+      }
     }
   };
-
   const restartGame = () => {
     setCurrentWordIndex(0);
     setResponses([]);
@@ -492,7 +523,8 @@ export default function PhonemeGame() {
                   {finalScore}/10
                 </motion.span>
                 <span className="text-lg font-medium text-blue-800">
-                  {responses.filter((r) => r.isCorrect).length}/{WORDS.length} correct
+                  {responses.filter((r) => r.isCorrect).length}/{WORDS.length}{" "}
+                  correct
                 </span>
               </div>
             </motion.div>
@@ -506,14 +538,13 @@ export default function PhonemeGame() {
             </AnimatePresence>
           </div>
 
-          <Button onClick={restartGame} variant="primary">
-            Restart Test
+          <Button onClick={() => onComplete(finalScore)} variant="primary">
+            Continue to Next Test
           </Button>
         </motion.div>
       </div>
     );
   }
-
   const currentWord = WORDS[currentWordIndex];
   const progress =
     ((currentWordIndex + (showResponse ? 1 : 0)) / WORDS.length) * 100;
@@ -625,10 +656,7 @@ export default function PhonemeGame() {
               )}
 
               {showFinalSubmit && (
-                <Button
-                  onClick={handleFinalSubmit}
-                  variant="primary"
-                >
+                <Button onClick={handleFinalSubmit} variant="primary">
                   Submit All Results
                 </Button>
               )}

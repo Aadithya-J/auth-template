@@ -245,9 +245,6 @@
 
 // export default SoundDiscriminationTest;
 
-
-
-
 import axios from "axios";
 import { useState, useEffect } from "react";
 import AudioPlayer from "react-h5-audio-player";
@@ -362,15 +359,19 @@ const WordPairItem = ({
         <div className="w-full">
           <AudioPlayer
             src={`/audio/${pair[0]}_${pair[1]}.m4a`}
-            customProgressBarSection={["MAIN_CONTROLS", "PROGRESS_BAR", "DURATION"]}
+            customProgressBarSection={[
+              "MAIN_CONTROLS",
+              "PROGRESS_BAR",
+              "DURATION",
+            ]}
             customControlsSection={[]}
             customAdditionalControls={[]}
             showJumpControls={false}
             layout="horizontal"
-            style={{ 
-              borderRadius: '8px',
-              backgroundColor: '#f0f7ff',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            style={{
+              borderRadius: "8px",
+              backgroundColor: "#f0f7ff",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
             }}
           />
         </div>
@@ -398,10 +399,7 @@ const WordPairItem = ({
         </div>
 
         <div className="flex justify-end flex-grow">
-          <AnimatedButton
-            onClick={() => onSkip(index)}
-            variant="neutral"
-          >
+          <AnimatedButton onClick={() => onSkip(index)} variant="neutral">
             {skipped ? "Attempt" : "Skip"}
           </AnimatedButton>
         </div>
@@ -412,7 +410,7 @@ const WordPairItem = ({
 
 // Header component
 const Header = ({ title }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -448,11 +446,11 @@ const ScoreSummary = ({ score, totalPairs }) => (
 
 // Submit button component
 const SubmitButton = ({ onClick }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: 0.2 }}
-    className="flex justify-center mt-8"
+    className="fixed bottom-4 left-0 right-0 flex justify-center"
   >
     <motion.button
       whileHover={{ y: -2, scale: 1.05 }}
@@ -466,7 +464,10 @@ const SubmitButton = ({ onClick }) => (
 );
 
 // Main component
-const SoundDiscriminationTest = ({ suppressResultPage = false, onComplete }) => {
+const SoundDiscriminationTest = ({
+  suppressResultPage = false,
+  onComplete,
+}) => {
   const [score, setScore] = useState(0);
   const [answeredPairs, setAnsweredPairs] = useState(new Set());
   const [selectedOptions, setSelectedOptions] = useState(
@@ -570,14 +571,14 @@ const SoundDiscriminationTest = ({ suppressResultPage = false, onComplete }) => 
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="p-8 overflow-auto h-screen bg-blue-50"
     >
       <Header title="Sound Discrimination Test" />
-      
+
       <ScoreSummary score={score} totalPairs={wordPairs.length} />
 
       {wordPairs.map((pair, index) => (
@@ -593,7 +594,7 @@ const SoundDiscriminationTest = ({ suppressResultPage = false, onComplete }) => 
       ))}
 
       <SubmitButton onClick={handleSubmit} />
-      
+
       <ToastContainer />
     </motion.div>
   );
