@@ -357,44 +357,69 @@ const Test7 = () => {
           <style>
             {`
               @keyframes slideInfinite {
-                0% {
-                  transform: translateX(0);
-                }
-                100% {
-                  transform: translateX(-50%);
-                }
-              }
-              .slide-animation {
-                animation: slideInfinite 20s linear infinite;
-                display: flex;
-                gap: 8px;
-                width: 200%;
-                transform-origin: left center;
-              }
-              .slide-animation:hover {
-                animation-play-state: paused;
-              }
-              .fade-edges {
-                position: relative;
-              }
-              .fade-edges::before,
-              .fade-edges::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 30px;
-                pointer-events: none;
-                z-index: 10;
-              }
-              .fade-edges::before {
-                left: 0;
-                background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-              }
-              .fade-edges::after {
-                right: 0;
-                background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-              }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.slide-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.slide-animation {
+  animation: slideInfinite 20s linear infinite;
+  display: flex;
+  width: max-content; /* Ensures items determine width naturally */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+}
+
+/* Duplicate the items in a continuous manner */
+.slide-animation > * {
+  margin: 0; /* Ensures no margin between items */
+  padding: 0; /* Ensures no padding between items */
+}
+
+/* Clone the items to ensure seamless looping */
+.slide-animation {
+  display: flex;
+}
+
+/* When hovering, pause the animation */
+.slide-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Fade edges effect */
+.fade-edges {
+  position: relative;
+}
+
+.fade-edges::before,
+.fade-edges::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fade-edges::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+}
+
+.fade-edges::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+}
             `}
           </style>
           <div className="relative overflow-hidden h-32 fade-edges">
