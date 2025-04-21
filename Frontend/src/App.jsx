@@ -31,7 +31,7 @@ import SymbolSequence from "./components/SymbolSequence/SymbolSequence";
 import ContinuousAssessment from "./components/ContinuousAssessment";
 import Register from "./pages/Register";
 import Analytics from "./pages/Analytics";
-import Test14 from "./components/test 14/test14";
+import Test14 from "./components/test 14/Test14";
 import VocabularyScaleTest from "./components/VocabularyScaleTest/VocabularyScaleTest"; // Import the new test component
 
 function App() {
@@ -51,15 +51,16 @@ function App() {
         try {
           const isValid = await verifyToken(token);
           if (isValid && publicRoutes.includes(currentPath)) {
-             navigate("/");
-           }
-         } catch (error) {
-           console.error("Authentication check failed:", error); // Log the error
-           if (!publicRoutes.includes(currentPath)) {
-             navigate("/login");
-           }
-         } // <<< Add missing closing brace for catch block
-      } else if (!publicRoutes.includes(currentPath)) { // This else if corresponds to the `if (token)`
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Authentication check failed:", error); // Log the error
+          if (!publicRoutes.includes(currentPath)) {
+            navigate("/login");
+          }
+        } // <<< Add missing closing brace for catch block
+      } else if (!publicRoutes.includes(currentPath)) {
+        // This else if corresponds to the `if (token)`
         navigate("/login");
       }
     };
@@ -257,7 +258,7 @@ function App() {
             path="/test14"
             element={
               <PrivateRoute>
-                <Test14/>
+                <Test14 />
               </PrivateRoute>
             }
           />

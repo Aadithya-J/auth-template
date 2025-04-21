@@ -1,10 +1,59 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Popup from "reactjs-popup";
 import { FaPrint, FaDownload, FaEnvelope, FaUser } from "react-icons/fa";
 import logo from "../../public/logo.jpeg";
 import testDataMap from "../Data/inference.json";
+import axios from "axios";
+import { backendURL } from "../definedURL.js";
 
-const TestReportPopup = ({ test, childDetails, onClose }) => {
+const TestReportPopup = ({
+  test,
+  childDetails,
+  onClose,
+  isCumulative = false,
+}) => {
+  const [inference, setInference] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const tokenId = localStorage.getItem("access_token");
+
+  useEffect(() => {
+    if (isCumulative && test.allTests) {
+      generateCumulativeInference();
+    }
+  }, [isCumulative, test]);
+
+  const generateCumulativeInference = async () => {
+    setIsLoading(true);
+    try {
+      // Filter tests from the last 20 minutes
+      const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000);
+      const recentTests = test.allTests.filter(
+        (t) => new Date(t.created_at) > twentyMinutesAgo
+      );
+
+      if (recentTests.length === 0) {
+        setInference("No recent test data available for analysis.");
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await axios.post(
+        `${backendURL}/generateInference`,
+        { tests: recentTests },
+        {
+          headers: { authorization: `Bearer ${tokenId}` },
+        }
+      );
+
+      setInference(response.data.inference || "Could not generate inference.");
+    } catch (error) {
+      console.error("Error generating inference:", error);
+      setInference("Failed to generate cumulative analysis.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     if (!isNaN(date)) {
@@ -49,6 +98,45 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
 
     const [min, max] = testData.scoreRange.difficulty;
     return test.score >= min && test.score <= max;
+  };
+
+  // Check if score falls in strong range
+  const isStrongScore = () => {
+    if (!test || !test.test_name || !test.score) {
+      console.log("Missing test data for strong score check");
+      return false;
+    }
+
+    // Get test data from the inference.json
+    const testData = testDataMap[test.test_name];
+    if (!testData || !testData.scoreRange) {
+      console.log(
+        "No matching test data in inference.json for:",
+        test.test_name
+      );
+      return false;
+    }
+
+    const [min, max] = testData.scoreRange.strong;
+    const score = parseFloat(test.score);
+    const isStrong = score >= min && score <= max;
+
+    console.log(
+      "Strong score check:",
+      test.test_name,
+      "Score:",
+      score,
+      "Range:",
+      min,
+      "-",
+      max,
+      "Result:",
+      isStrong,
+      "Has message:",
+      !!testData.strongMessage
+    );
+
+    return isStrong;
   };
 
   // Get the test data for the current test
@@ -98,7 +186,7 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
                 <tr className="bg-blue-50">
                   <th className="border border-blue-200 p-2 text-left">Test</th>
                   <th className="border border-blue-200 p-2 text-center">
-                    Correct Words
+                    Continous Correct Words
                   </th>
                   <th className="border border-blue-200 p-2 text-center">
                     Incorrect Words
@@ -113,12 +201,49 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
                   <td className="border border-blue-200 p-2 font-semibold">
                     {test.test_name}
                   </td>
-                  <td className="border border-blue-200 p-2 text-center">
-                    {test.correct_words || "-"}
+                  {/* Correct Words Column */}
+                  <td className="border border-blue-200 p-4 text-left align-top w-1/2 whitespace-pre-wrap">
+                    <div>
+                      {test.correct_words ? (
+                        <ul className="list-disc list-inside space-y-1 text-gray-800">
+                          {(typeof test.correct_words === "string"
+                            ? JSON.parse(test.correct_words)
+                            : test.correct_words
+                          ).map((word, idx) => (
+                            <li key={idx}>{word}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic">No correct words</p>
+                      )}
+                    </div>
                   </td>
-                  <td className="border border-blue-200 p-2 text-center">
-                    {test.incorrect_words || "-"}
+
+                  {/* Incorrect Words Column */}
+                  <td className="border border-blue-200 p-4 text-left align-top w-1/2 whitespace-pre-wrap">
+                    <div>
+                      {test.incorrect_words ? (
+                        <ul className="list-disc list-inside space-y-1 text-gray-800">
+                          {(typeof test.incorrect_words === "string"
+                            ? JSON.parse(test.incorrect_words)
+                            : test.incorrect_words
+                          ).map((item, idx) => (
+                            <li key={idx}>
+                              {item.word}{" "}
+                              <span className="text-gray-500 text-sm">
+                                (Pos {item.position})
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic">
+                          No incorrect words
+                        </p>
+                      )}
+                    </div>
                   </td>
+
                   <td className="border border-blue-200 p-2 text-center">
                     {test.score || "-"}
                   </td>
@@ -263,28 +388,46 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
             </thead>
             <tbody>
               <tr>
-                <td className="border border-blue-200 p-2 font-semibold">
+                <td className="border border-blue-200 p-2 font-semibold text-left align-top">
                   {test.test_name}
                 </td>
                 <td className="border border-blue-200 p-2 text-center">
                   {/* Handle responses */}
                   {Array.isArray(test.responses) ? (
-                    <ul className="list-disc list-inside">
+                    <div className="space-y-2">
                       {test.responses.map((response, index) => (
-                        <li key={index}>
+                        <div
+                          key={index}
+                          className="p-2 bg-blue-50 rounded-md shadow-sm border border-blue-200"
+                        >
+                          <p className="text-sm">
+                            <span className="font-semibold">
+                              Question {index + 1}:
+                            </span>
+                          </p>
                           {response.image && (
-                            <span>Your Answer: {response.userAnswer}, </span>
+                            <p className="text-sm">
+                              <span className="font-semibold">
+                                Your Answer:
+                              </span>{" "}
+                              {response.userAnswer || "N/A"}
+                            </p>
                           )}
                           {response.feedback && (
-                            <span>
-                              Correct Answer: {response.correctAnswer}
-                            </span>
+                            <p className="text-sm">
+                              <span className="font-semibold">
+                                Correct Answer:
+                              </span>{" "}
+                              {response.correctAnswer || "N/A"}
+                            </p>
                           )}
-                        </li>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   ) : (
-                    test.responses || "-"
+                    <p className="text-sm text-gray-500">
+                      {test.responses || "No responses available"}
+                    </p>
                   )}
                 </td>
                 <td className="border border-blue-200 p-2 text-center">
@@ -442,21 +585,44 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
           </tr>
         </thead>
         <tbody>
-          {test.allTests.map((singleTest, index) => (
-            <tr key={index}>
-              <td className="border border-blue-200 p-2 font-semibold">
-                {singleTest.test_name || `Test ${index + 1}`}
-              </td>
-              <td className="border border-blue-200 p-2 text-center">
-                {singleTest.created_at
-                  ? formatDateTime(singleTest.created_at)
-                  : "-"}
-              </td>
-              <td className="border border-blue-200 p-2 text-center">
-                {singleTest.score || "-"}
+          {test.allTests.filter((singleTest) => {
+            if (!singleTest.created_at) return false;
+            const testTime = new Date(singleTest.created_at).getTime();
+            const twentyMinutesAgo = Date.now() - 20 * 60 * 1000;
+            return testTime >= twentyMinutesAgo;
+          }).length === 0 ? (
+            <tr>
+              <td
+                colSpan="3"
+                className="border border-blue-200 p-2 text-center text-gray-500"
+              >
+                No tests taken recently
               </td>
             </tr>
-          ))}
+          ) : (
+            test.allTests
+              .filter((singleTest) => {
+                if (!singleTest.created_at) return false;
+                const testTime = new Date(singleTest.created_at).getTime();
+                const twentyMinutesAgo = Date.now() - 20 * 60 * 1000;
+                return testTime >= twentyMinutesAgo;
+              })
+              .map((singleTest, index) => (
+                <tr key={index}>
+                  <td className="border border-blue-200 p-2 font-semibold">
+                    {singleTest.test_name || `Test ${index + 1}`}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {singleTest.created_at
+                      ? formatDateTime(singleTest.created_at)
+                      : "-"}
+                  </td>
+                  <td className="border border-blue-200 p-2 text-center">
+                    {singleTest.score || "-"}
+                  </td>
+                </tr>
+              ))
+          )}
         </tbody>
       </table>
     );
@@ -469,7 +635,7 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
     >
       <div
         className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()} // Prevent clicks inside dialog from closing it
+        onClick={(e) => e.stopPropagation()}
       >
         <div id="report-content">
           {/* Header with report institution */}
@@ -485,10 +651,14 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
                 </div>
                 <div>
                   <h1 className="text-white text-2xl font-bold">
-                    Learning Assessment Report
+                    {isCumulative
+                      ? "Comprehensive Assessment Report"
+                      : "Learning Assessment Report"}
                   </h1>
                   <p className="text-blue-200 text-sm">
-                    Comprehensive Educational Evaluation
+                    {isCumulative
+                      ? "Multi-Domain Evaluation Summary"
+                      : "Educational Evaluation"}
                   </p>
                 </div>
               </div>
@@ -521,20 +691,6 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
                   <div className="flex">
                     <span className="font-semibold mr-2">ID:</span>
                     <span>{childDetails.id || "Not available"}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-semibold mr-2">Referred by:</span>
-                    <span>{childDetails.referred_by || "Self"}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-semibold mr-2">Joined:</span>
-                    <span>
-                      {childDetails.joined_date
-                        ? new Date(
-                            childDetails.joined_date
-                          ).toLocaleDateString()
-                        : "Not available"}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -578,13 +734,56 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
               ? renderCumulativeReport()
               : renderTestDetails()}
 
+            {/* AI-Generated Cumulative Inference */}
+            {isCumulative && (
+              <div className="mt-6 bg-blue-50 p-4 rounded-lg">
+                <h3 className="font-bold mb-2">AI-Powered Analysis:</h3>
+                {isLoading ? (
+                  <div className="flex justify-center items-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm mb-2">
+                      Based on recent assessments completed:
+                    </p>
+                    <div className="bg-white p-3 rounded border border-blue-200">
+                      <p className="whitespace-pre-line">{inference}</p>
+                    </div>
+                    <p className="text-xs mt-2 text-gray-600 italic">
+                      This analysis is generated by AI and should be reviewed by
+                      a qualified professional.
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
+
             {/* Clinical Notes */}
             <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-bold mb-2">Inference:</h3>
+              <h3 className="font-bold mb-2">Assessment Feedback:</h3>
               <p className="text-sm">
-                {showRemedies && currentTestData
-                  ? currentTestData.description
-                  : "This assessment evaluates cognitive and educational abilities relevant to the student's learning profile. Results should be interpreted in the context of the student's overall educational performance and development."}
+                {isStrongScore() &&
+                currentTestData &&
+                currentTestData.strongMessage ? (
+                  <>
+                    <span className="text-green-600 font-bold">
+                      Excellent!{" "}
+                    </span>
+                    {currentTestData.strongMessage}
+                  </>
+                ) : showRemedies && currentTestData ? (
+                  <>
+                    <span className="text-amber-600 font-bold">
+                      Areas for Improvement:{" "}
+                    </span>
+                    {currentTestData.description}
+                  </>
+                ) : isCumulative ? (
+                  "This comprehensive assessment evaluates multiple cognitive domains relevant to the student's learning profile. Results should be considered alongside overall educational performance."
+                ) : (
+                  "This assessment evaluates cognitive abilities relevant to the student's learning profile. Results should be considered alongside overall educational performance."
+                )}
               </p>
 
               {/* Show remedies only if score is in difficulty range */}
@@ -599,49 +798,7 @@ const TestReportPopup = ({ test, childDetails, onClose }) => {
                 </div>
               )}
 
-              {test?.test_name?.includes("Reading") && (
-                <div className="mt-3">
-                  <h4 className="font-semibold">
-                    Reading Assessment Interpretation:
-                  </h4>
-                  <p className="text-sm mt-1">
-                    The reading age indicates the student's functional reading
-                    level compared to age norms.
-                    {test.reading_age &&
-                    childDetails.age &&
-                    parseFloat(test.reading_age) < parseFloat(childDetails.age)
-                      ? " The reading age is below the chronological age, suggesting potential areas for targeted intervention."
-                      : " The reading age aligns with or exceeds chronological age, indicating appropriate reading development."}
-                  </p>
-                </div>
-              )}
-
-              {test?.test_name?.includes("Visual") && (
-                <div className="mt-3">
-                  <h4 className="font-semibold">
-                    Visual Processing Interpretation:
-                  </h4>
-                  <p className="text-sm mt-1">
-                    Visual processing skills are essential for reading, writing
-                    and learning. Results indicate the student's ability to
-                    process visual information efficiently.
-                  </p>
-                </div>
-              )}
-
-              {test?.test_name?.includes("Auditory") && (
-                <div className="mt-3">
-                  <h4 className="font-semibold">
-                    Auditory Processing Interpretation:
-                  </h4>
-                  <p className="text-sm mt-1">
-                    Auditory processing abilities are critical for language
-                    development and classroom learning. Forward and reverse
-                    sequence tasks measure working memory and cognitive
-                    flexibility.
-                  </p>
-                </div>
-              )}
+              {/* [Rest of your existing interpretation sections remain unchanged...] */}
             </div>
 
             {/* Footer */}

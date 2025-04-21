@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle, HelpCircle, Mic, MicOff, Send, Volume2, XCircle } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MicOff, Send, Volume2, HelpCircle, CheckCircle, Mic, XCircle } from "lucide-react";
 import { backendURL, pythonURL } from "../../definedURL";
 
 // --- Configuration ---
@@ -778,7 +778,8 @@ function Test13({ suppressResultPage = false, onComplete }) {
       </motion.div>
   );
   return (
-    <div className="min-h-screen overflow-y-auto bg-gray-50 p-6 md:p-10 flex items-center justify-center">
+    <div className="h-screen overflow-y-auto bg-gray-50 p-6 md:p-10">
+
       <div className="max-w-6xl mx-auto w-full">
         <ToastContainer 
           position="top-center" 

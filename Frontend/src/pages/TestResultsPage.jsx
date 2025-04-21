@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
-import { backendURL } from "../definedURL.js";
-import TestReportPopup from "../components/TestReportPopup";
+import { useEffect, useState } from "react";
 import {
-  FaUser,
   FaCalendarAlt,
+  FaChartLine,
+  FaEnvelope,
+  FaFileAlt,
   FaIdCard,
   FaPhone,
-  FaEnvelope,
-  FaChartLine,
-  FaFileAlt,
+  FaUser,
 } from "react-icons/fa";
-
+import TestReportPopup from "../components/TestReportPopup";
+import { backendURL } from "../definedURL.js";
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
   const [childDetails, setChildDetails] = useState({});
@@ -23,6 +22,7 @@ const TestResultsTable = () => {
   const [sequenceTestData, setSequenceTestData] = useState([]);
   const [soundBlendingTestData, setSoundBlendingTestData] = useState([]);
   const [symbolSequenceTestData, setSymbolSequenceTestData] = useState([]);
+  const [vocalTestData, setVocalTestData] = useState([]);
   const [selectedTest, setSelectedTest] = useState(null);
   const [showReportPopup, setShowReportPopup] = useState(false);
   const [userDetails, setUserDetails] = useState({});
@@ -176,6 +176,21 @@ const TestResultsTable = () => {
         console.error("Error fetching picture test data:", error);
       }
     };
+
+    const fetchVocalTestData = async () => {
+      if (!childId || !tokenId) return;
+      try {
+        const response = await axios.get(
+          `${backendURL}/vocabulary/results/child/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        setVocalTestData(response.data.tests);
+      } catch (error) {
+        console.error("Error fetching vocal test data:", error);
+      }
+    };
     fetchData();
     fetchVisualTestData();
     fetchSoundTestData();
@@ -185,6 +200,7 @@ const TestResultsTable = () => {
     fetchSequenceTestData();
     fetchSoundBlendingTestData();
     fetchSymbolSequenceTestData();
+    fetchVocalTestData();
   }, [childId, tokenId]);
 
   useEffect(() => {
@@ -254,10 +270,11 @@ const TestResultsTable = () => {
       ...test,
       type: "symbol",
     })),
+    ...vocalTestData.map((test) => ({ ...test, type: "vocabulary" })),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   return (
-    <div className="min-h-screen h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
+    <div className="h-screen flex flex-col  h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
       <div className="max-w-7xl mx-auto">
         {/* User Profile Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg mb-8 overflow-hidden">
@@ -408,7 +425,9 @@ const TestResultsTable = () => {
                         className="hover:bg-blue-50 transition-colors duration-200"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-blue-800 font-medium">
-                          {test.test_name}
+                          {test.test_name === "Schonell Test"
+                            ? "Reading Proficiency Test"
+                            : test.test_name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-blue-700">
                           {datePart}
@@ -453,7 +472,7 @@ const TestResultsTable = () => {
           test={selectedTest}
           childDetails={{ ...childDetails, id: childId }}
           onClose={closeReportPopup}
-          isCumulative={showCumulativeReport}
+          isCumulative={showCumulativeReport} // Add this line
         />
       )}
     </div>

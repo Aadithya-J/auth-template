@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { backendURL } from "../../definedURL";
 
-const Test7 = () => {
+const Test7 = ({ onComplete, suppressResultPage, student }) => {
   const navigate = useNavigate();
 
   // Animal emojis
@@ -241,18 +241,18 @@ const Test7 = () => {
         }
       );
       console.log("Test results saved:", response.data);
-      // Show success message to user
-      alert("Results saved successfully!");
-      navigate("/taketests");
+      if (onComplete) onComplete(score.correct);
     } catch (error) {
       console.error("Error saving test results:", error);
       // Show error message to user
+      if (onComplete) onComplete(score.correct);
       alert("Failed to save results. Please try again.");
     }
   };
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5 flex items-center justify-center">
+    <div className="h-screen w-full overflow-y-auto bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5">
       {/* Info Icon and End Test Button */}
+
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <button
           onClick={() => setShowInfoDialog(true)}
@@ -263,11 +263,11 @@ const Test7 = () => {
         {(gameState === "practice" || gameState === "test") && (
           <button
             onClick={() => {
-              navigate("/test9");
+              if (onComplete) onComplete(0); // Pass 0 if skipped
             }}
             className="px-4 py-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors duration-300 font-semibold"
           >
-            End Test
+            Skip Test
           </button>
         )}
       </div>
@@ -356,44 +356,69 @@ const Test7 = () => {
           <style>
             {`
               @keyframes slideInfinite {
-                0% {
-                  transform: translateX(0);
-                }
-                100% {
-                  transform: translateX(-50%);
-                }
-              }
-              .slide-animation {
-                animation: slideInfinite 20s linear infinite;
-                display: flex;
-                gap: 8px;
-                width: 200%;
-                transform-origin: left center;
-              }
-              .slide-animation:hover {
-                animation-play-state: paused;
-              }
-              .fade-edges {
-                position: relative;
-              }
-              .fade-edges::before,
-              .fade-edges::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 30px;
-                pointer-events: none;
-                z-index: 10;
-              }
-              .fade-edges::before {
-                left: 0;
-                background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-              }
-              .fade-edges::after {
-                right: 0;
-                background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-              }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.slide-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.slide-animation {
+  animation: slideInfinite 20s linear infinite;
+  display: flex;
+  width: max-content; /* Ensures items determine width naturally */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+}
+
+/* Duplicate the items in a continuous manner */
+.slide-animation > * {
+  margin: 0; /* Ensures no margin between items */
+  padding: 0; /* Ensures no padding between items */
+}
+
+/* Clone the items to ensure seamless looping */
+.slide-animation {
+  display: flex;
+}
+
+/* When hovering, pause the animation */
+.slide-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Fade edges effect */
+.fade-edges {
+  position: relative;
+}
+
+.fade-edges::before,
+.fade-edges::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fade-edges::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+}
+
+.fade-edges::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+}
             `}
           </style>
           <div className="relative overflow-hidden h-32 fade-edges">
@@ -716,24 +741,18 @@ const Test7 = () => {
               : "Nice try! 😊"}
           </div>
           <div className="flex gap-4 justify-center">
-            <button
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-              onClick={() => {
-                setGameState("welcome");
-                setScore({ correct: 0, total: 0 });
-              }}
-            >
-              Play Again
-            </button>
-            <button
-              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-              onClick={() => {
-                saveTestResults();
-                navigate("/taketests");
-              }}
-            >
-              Finish and Save Results
-            </button>
+      <button
+        className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+        onClick={() => {
+          saveTestResults();
+          // If not suppressing result page, show local results
+          if (!suppressResultPage) return;
+          // If suppressing, complete immediately
+          if (onComplete) onComplete(score.correct);
+        }}
+      >
+        {suppressResultPage ? "Continue" : "Finish and Save Results"}
+      </button>
           </div>
         </div>
       )}

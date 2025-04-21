@@ -130,6 +130,7 @@ const Home = ({ students = [], tests = [] }) => {
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [totalScoresByChild, setTotalScoresByChild] = useState({});
+  const [highestScore, setHighestScore] = useState(0);
   const [averageScore, setAverageScore] = useState(0);
   const [performanceData, setPerformanceData] = useState([]);
 
@@ -252,6 +253,7 @@ const Home = ({ students = [], tests = [] }) => {
       setPerformanceData(performanceData);
       setTotalScoresByChild(scores);
       setAverageScore(average);
+      setHighestScore(highestScore);
     };
 
     fetchScores();
@@ -274,7 +276,8 @@ const Home = ({ students = [], tests = [] }) => {
   const dyslexiaLikelihood = "Low";
 
   return (
-    <div className="h-screen overflow-y-auto bg-blue-50 p-4 text-gray-900">
+    <div className="h-screen overflow-y-auto bg-blue-50 px-4 text-gray-900">
+      <div className="transform scale-[0.96] origin-top mx-auto px-4 py-8 pb-16">
       <div className="bg-transparent shadow-sm rounded-lg p-3">
         <h2 className="text-lg font-semibold">Dashboard,</h2>
         <span className="text-sm font-normal text-gray-600">
@@ -297,8 +300,8 @@ const Home = ({ students = [], tests = [] }) => {
           <h2 className="text-xl font-bold text-blue-800">{averageScore}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Dyslexia Likelihood</p>
-          <h2 className="text-xl font-bold text-blue-600">{dyslexiaLikelihood}</h2>
+          <p className="text-sm font-medium">Highest Score</p>
+          <h2 className="text-xl font-bold text-blue-600">{highestScore}</h2>
         </div>
       </div>
   
@@ -372,6 +375,7 @@ const Home = ({ students = [], tests = [] }) => {
       </div>
   
       {showPopup && <PopupForm showPopup={showPopup} handleClose={handleClose} />}
+    </div>
     </div>
   );
   

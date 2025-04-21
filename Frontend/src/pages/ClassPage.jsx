@@ -67,7 +67,7 @@ export default function ClassPage({ students }) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-auto">
+    <div className="h-screen bg-gradient-to-b from-blue-50 to-white overflow-auto">
       <div className="container mx-auto px-4 py-8 pb-16">
         <header className="mb-8 animate-fadeIn">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

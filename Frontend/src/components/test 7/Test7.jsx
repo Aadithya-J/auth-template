@@ -19,7 +19,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [responses, setResponses] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [testResults, setTestResults] = useState(null);
-  const [testId, setTestId] = useState(null); // Properly define testId state
+  const [testId, setTestId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const speakText = (text) => {
@@ -58,7 +58,6 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     setCanSee(selection);
 
     if (!selection) {
-      // For "No, I can't" response
       const updatedResponses = [
         ...responses,
         {
@@ -121,7 +120,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       return;
     }
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
       const response = await axios.post(
@@ -139,20 +138,25 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       );
 
       if (response.status === 201) {
-        if (suppressResultPage && typeof onComplete === 'function') {
-          // Assuming response.data.score or similar holds the score
-          onComplete(response.data.score || (response.data && response.data.result && response.data.result.score) || 0);
+        if (suppressResultPage && typeof onComplete === "function") {
+          onComplete(
+            response.data.score ||
+              (response.data &&
+                response.data.result &&
+                response.data.result.score) ||
+              0
+          );
         } else {
           toast.success("Test submitted successfully!");
-          setTestId(response.data.id); // Set the test ID
-          await fetchTestResults(response.data.id); // Fetch results with the new ID
+          setTestId(response.data.id);
+          await fetchTestResults(response.data.id);
         }
       }
     } catch (error) {
       console.error("Error submitting test:", error);
       toast.error("Failed to submit test. Please try again.");
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
 
@@ -203,212 +207,262 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     setTimeout(() => speakText("Can you see this picture?"), 2000);
   }, []);
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-blue-700 text-lg font-medium">
+            Processing your results...
+          </p>
+        </div>
       </div>
     );
   }
 
   if (showResults) {
     return (
-      <div className="h-screen overflow-y-auto bg-gradient-to-b from-white to-blue-100 p-6">
-        <div className="max-w-5xl w-full mx-auto bg-white shadow-lg rounded-2xl p-6">
-          <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
-            {testResults ? "Test Results" : "Loading Results..."}
-          </h1>
-    
-          {testResults ? (
-            <>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-200">
-                      <th className="border border-gray-300 px-4 py-2">Image</th>
-                      <th className="border border-gray-300 px-4 py-2">Your Answer</th>
-                      <th className="border border-gray-300 px-4 py-2">Correct Answer</th>
-                      <th className="border border-gray-300 px-4 py-2">Answer Score</th>
-                      <th className="border border-gray-300 px-4 py-2">Description</th>
-                      <th className="border border-gray-300 px-4 py-2">Description Score</th>
-                      <th className="border border-gray-300 px-4 py-2">Feedback</th>
-                      <th className="border border-gray-300 px-4 py-2">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {testResults.responses.map((response, index) => (
-                      <tr key={index} className="text-center">
-                        <td className="border border-gray-300 px-4 py-2">
-                          <img
-                            src={response.image}
-                            alt="question"
-                            className="w-16 h-16 object-cover rounded-md mx-auto"
-                          />
-                        </td>
-                        <td
-                          className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
-                          }`}
-                        >
-                          {response.userAnswer || "No Answer"}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {response.correctAnswer}
-                        </td>
-                        <td
-                          className={`border border-gray-300 px-4 py-2 ${
-                            response.answerScore === 0 ? "text-red-800" : "text-green-700"
-                          }`}
-                        >
-                          {response.answerScore}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {response.description || "No Description"}
-                        </td>
-                        <td
-                          className={`border border-gray-300 px-4 py-2 ${
-                            response.descriptionScore === 0 ? "text-red-800" : "text-green-700"
-                          }`}
-                        >
-                          {response.descriptionScore}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {response.feedback}
-                        </td>
-                        <td
-                          className={`border border-gray-300 px-4 py-2 font-bold ${
-                            response.totalForThisImage === 0
-                              ? "text-red-500"
-                              : response.totalForThisImage === 2
-                              ? "text-green-700"
-                              : "text-yellow-900"
-                          }`}
-                        >
-                          {response.totalForThisImage}/2
-                        </td>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-6">
+        <div className="max-w-5xl w-full mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6">
+            <h1 className="text-3xl font-bold text-white text-center">
+              Picture Recognition Test Results
+            </h1>
+          </div>
+
+          <div className="p-6">
+            {testResults ? (
+              <>
+                <div className="overflow-x-auto rounded-lg border border-blue-200">
+                  <table className="w-full">
+                    <thead className="bg-blue-100">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Image
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Your Answer
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Correct
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Score
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
+                          Feedback
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-    
-              <div className="text-center mt-6">
-                <h2 className="text-xl font-bold mb-4">
-                  Total Score: {testResults.score}/{testResults.responses.length * 2}
-                </h2>
-                <div className="flex justify-center space-x-4">
-                  <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300"
-                    onClick={() => window.location.reload()}
-                  >
-                    Take New Test
-                  </button>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-blue-200">
+                      {testResults.responses.map((response, index) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0 ? "bg-blue-50" : "bg-white"
+                          }
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <img
+                              src={response.image}
+                              alt="question"
+                              className="h-16 w-16 object-contain rounded-md"
+                            />
+                          </td>
+                          <td
+                            className={`px-6 py-4 whitespace-nowrap ${
+                              response.answerScore === 0
+                                ? "text-red-600"
+                                : "text-green-600"
+                            }`}
+                          >
+                            {response.userAnswer || "-"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-blue-800">
+                            {response.correctAnswer}
+                          </td>
+                          <td
+                            className={`px-6 py-4 whitespace-nowrap font-medium ${
+                              response.totalForThisImage === 0
+                                ? "text-red-600"
+                                : "text-green-600"
+                            }`}
+                          >
+                            {response.totalForThisImage}/2
+                          </td>
+                          <td className="px-6 py-4 whitespace-normal max-w-xs">
+                            {response.description || "-"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-normal max-w-xs text-blue-800">
+                            {response.feedback || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+
+                <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-xl font-bold text-blue-800">
+                        Final Score
+                      </h2>
+                      <p className="text-3xl font-bold text-blue-600">
+                        {testResults.score}/{testResults.responses.length * 2}
+                      </p>
+                    </div>
+                    <div className="flex space-x-4">
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all duration-300"
+                      >
+                        Take New Test
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            </>
-          ) : (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     );
-    
   }
 
   return (
-    <div className="h-screen overflow-y-scroll bg-gradient-to-b from-white to-blue-100 p-6">
-      <div className="max-w-2xl scale-75 mb-16 w-full bg-white shadow-lg rounded-2xl p-6 mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-6">
+      <div className="max-w-2xl mx-auto">
         <ProgressTracker
           currentStep={currentIndex + 1}
           totalSteps={images.length}
         />
-        <div className="text-center space-y-6">
-          <motion.h1
-            key={step}
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-2xl font-bold text-gray-800"
-          >
-            {step === 1
-              ? "Can you see this picture?"
-              : step === 2
-              ? "What is it?"
-              : "What is the picture about?"}
-          </motion.h1>
-  
-          <div className="flex justify-center">
-            <PictureCard imageName={currentImage.imageUrl} />
+
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
+            <motion.h1
+              key={step}
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-2xl font-bold text-white text-center"
+            >
+              {step === 1
+                ? "Can you see this picture?"
+                : step === 2
+                ? "What is it?"
+                : "Describe the picture"}
+            </motion.h1>
           </div>
-  
-          {step === 1 && (
-            <div className="flex justify-center space-x-6">
-              <button
-                className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300"
-                onClick={() => handleCanSeeSelection(true)}
-              >
-                Yes, I can!
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300"
-                onClick={() => handleCanSeeSelection(false)}
-              >
-                No, I can't
-              </button>
-            </div>
-          )}
-  
-          {step > 1 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={step === 2 ? answer : description}
-                  onChange={(e) =>
-                    step === 2
-                      ? setAnswer(e.target.value)
-                      : setDescription(e.target.value)
-                  }
-                  className="w-full border border-gray-300 rounded-xl p-3 text-lg focus:ring-2 focus:ring-blue-400"
-                  placeholder={
-                    step === 2
-                      ? "Type your answer here..."
-                      : "Type the description here..."
-                  }
-                />
-                <span className="text-gray-500">or</span>
-                <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-4 w-[30%] rounded-xl shadow-md transition-all duration-300"
-                  onClick={() =>
-                    startRecording(step === 2 ? setAnswer : setDescription)
-                  }
-                >
-                  {isRecording ? "Listening..." : "Use Voice"}
-                </button>
-              </div>
-  
-              <div className="flex justify-center space-x-4">
-                <button
-                  className={`${
-                    currentIndex === images.length - 1
-                      ? "bg-blue-700 hover:bg-blue-800"
-                      : "bg-purple-500 hover:bg-purple-600"
-                  } text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300`}
-                  onClick={handleNext}
-                >
-                  {currentIndex === images.length - 1 ? "Submit Test" : "Next"}
-                </button>
+
+          <div className="p-6">
+            <div className="flex justify-center mb-8">
+              <div className="w-full max-w-md">
+                <PictureCard imageName={currentImage.imageUrl} />
               </div>
             </div>
-          )}
+
+            {step === 1 ? (
+              <div className="flex justify-center space-x-6">
+                <button
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-8 py-4 rounded-lg shadow-md transition-all duration-300"
+                  onClick={() => handleCanSeeSelection(true)}
+                >
+                  Yes, I can!
+                </button>
+                <button
+                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-8 py-4 rounded-lg shadow-md transition-all duration-300"
+                  onClick={() => handleCanSeeSelection(false)}
+                >
+                  No, I can't
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-4">
+                  <input
+                    type="text"
+                    value={step === 2 ? answer : description}
+                    onChange={(e) =>
+                      step === 2
+                        ? setAnswer(e.target.value)
+                        : setDescription(e.target.value)
+                    }
+                    className="w-full border-2 border-blue-200 focus:border-blue-500 rounded-xl p-4 text-lg focus:ring-2 focus:ring-blue-300 focus:outline-none transition-all duration-200"
+                    placeholder={
+                      step === 2
+                        ? "Type what you see..."
+                        : "Describe the picture..."
+                    }
+                  />
+
+                  <div className="flex items-center justify-center space-x-4">
+                    <div className="h-px bg-blue-200 flex-1"></div>
+                    <span className="text-blue-500 font-medium">OR</span>
+                    <div className="h-px bg-blue-200 flex-1"></div>
+                  </div>
+
+                  <button
+                    className={`flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-6 py-4 rounded-xl shadow-md transition-all duration-300 ${
+                      isRecording ? "animate-pulse" : ""
+                    }`}
+                    onClick={() =>
+                      startRecording(step === 2 ? setAnswer : setDescription)
+                    }
+                  >
+                    {isRecording ? (
+                      <>
+                        <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                        <span>Listening...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span>Use Voice Input</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex justify-center">
+                  <button
+                    className={`${
+                      currentIndex === images.length - 1
+                        ? "bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900"
+                        : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                    } text-white font-semibold px-8 py-3 rounded-lg shadow-md transition-all duration-300`}
+                    onClick={handleNext}
+                  >
+                    {currentIndex === images.length - 1
+                      ? "Submit Test"
+                      : "Continue"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
-  
 };
 
 export default PictureRecognition;

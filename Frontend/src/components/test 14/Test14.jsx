@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Mic, MicOff, Check, X } from "lucide-react";
+import { Mic, MicOff, Check, X, Volume2 } from "lucide-react";
 import { backendURL, pythonURL } from "../../definedURL";
+import { motion, AnimatePresence } from "framer-motion";
+import PropTypes from "prop-types";
 
 const WORDS = [
   {
@@ -144,7 +146,111 @@ const WORDS = [
   },
 ];
 
-export default function Test14({ suppressResultPage = false, onComplete, student }) {
+// Components
+const ProgressBar = ({ progress }) => (
+  <div className="w-full bg-blue-100 rounded-full h-2.5 overflow-hidden">
+    <motion.div
+      className="bg-blue-600 h-2.5"
+      initial={{ width: 0 }}
+      animate={{ width: `${progress}%` }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+    />
+  </div>
+);
+
+ProgressBar.propTypes = {
+  progress: PropTypes.number.isRequired,
+};
+
+const ResultCard = ({ item, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.1 }}
+    className={`p-4 rounded-lg shadow-sm transition-all duration-300 ${
+      item.isCorrect
+        ? "bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200"
+        : "bg-gradient-to-r from-red-50 to-red-100 border border-red-200"
+    }`}
+  >
+    <div className="flex justify-between items-center">
+      <span className="font-medium text-blue-900">
+        Word {index + 1}: {item.word}
+      </span>
+      <span
+        className={`font-bold ${
+          item.isCorrect ? "text-blue-600" : "text-red-600"
+        }`}
+      >
+        {item.isCorrect ? <Check size={18} /> : <X size={18} />}
+      </span>
+    </div>
+    <div className="mt-2 text-sm text-blue-800">
+      <p>
+        You said:{" "}
+        <span className="font-medium">{item.response || "No response"}</span>
+      </p>
+      {!item.isCorrect && (
+        <p className="text-blue-600 mt-1">
+          Correct answer: <span className="font-medium">{item.word}</span>
+        </p>
+      )}
+    </div>
+  </motion.div>
+);
+
+ResultCard.propTypes = {
+  item: PropTypes.shape({
+    isCorrect: PropTypes.bool.isRequired,
+    word: PropTypes.string.isRequired,
+    response: PropTypes.string,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+};
+
+const Button = ({
+  onClick,
+  disabled,
+  variant = "primary",
+  children,
+  className = "",
+}) => {
+  const baseStyle =
+    "py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2";
+  const variants = {
+    primary:
+      "bg-blue-600 text-white hover:bg-blue-700 active:scale-98 disabled:bg-blue-300",
+    secondary: "bg-blue-100 text-blue-800 hover:bg-blue-200 active:scale-98",
+    danger: "bg-red-600 text-white hover:bg-red-700 active:scale-98",
+    success: "bg-green-600 text-white hover:bg-green-700 active:scale-98",
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseStyle} ${variants[variant]} ${className}`}
+    >
+      {children}
+    </motion.button>
+  );
+};
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  variant: PropTypes.oneOf(["primary", "secondary", "danger", "success"]),
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+};
+
+export default function PhonemeGame({
+  onComplete,
+  suppressResultPage,
+  student,
+}) {
   const [gameState, setGameState] = useState("playing");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -327,13 +433,13 @@ export default function Test14({ suppressResultPage = false, onComplete, student
         `${backendURL}/submitResults`,
         {
           responses: responsesToSubmit.map((r) => ({
-            word: r.word,
             wordId: r.wordId,
             isCorrect: r.isCorrect,
           })),
           normalized_score: finalScore,
           total_score: rawScore,
-          childId,
+          studentId: student?.id,
+          childId: childId,
         },
         {
           headers: {
@@ -342,26 +448,22 @@ export default function Test14({ suppressResultPage = false, onComplete, student
           },
         }
       );
-      
-      // Check if we should suppress results page and call onComplete
-      if (suppressResultPage && typeof onComplete === "function") {
-        onComplete(finalScore);
+
+      if (suppressResultPage) {
+        onComplete(finalScore); // Immediately proceed to next test
       } else {
         setGameState("results");
       }
     } catch (err) {
       console.error("Error submitting results:", err);
       setError("Failed to save results. You can try again later.");
-      
-      // Even on error, if we're in continuous assessment mode, we need to continue
-      if (suppressResultPage && typeof onComplete === "function") {
-        onComplete(0); // Pass 0 score on error
+      if (suppressResultPage) {
+        onComplete(0); // Proceed with zero score if error occurs
       } else {
         setGameState("results");
       }
     }
   };
-
   const restartGame = () => {
     setCurrentWordIndex(0);
     setResponses([]);
@@ -377,14 +479,23 @@ export default function Test14({ suppressResultPage = false, onComplete, student
     const percentage = Math.round((finalScore / 10) * 100);
 
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
-          <h1 className="text-3xl font-bold text-center text-green-600">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-white p-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6"
+        >
+          <h1 className="text-3xl font-bold text-center text-blue-600">
             Test Completed!
           </h1>
 
           <div className="flex flex-col items-center space-y-4">
-            <div className="relative">
+            <motion.div
+              initial={{ rotate: -180 }}
+              animate={{ rotate: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative"
+            >
               <svg className="w-32 h-32" viewBox="0 0 36 36">
                 <path
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -392,148 +503,129 @@ export default function Test14({ suppressResultPage = false, onComplete, student
                   stroke="#e6e6e6"
                   strokeWidth="3"
                 />
-                <path
+                <motion.path
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   fill="none"
-                  stroke="#10b981"
+                  stroke="#3b82f6"
                   strokeWidth="3"
-                  strokeDasharray={`${percentage}, 100`}
+                  initial={{ strokeDasharray: "0, 100" }}
+                  animate={{ strokeDasharray: `${percentage}, 100` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-green-600">
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-3xl font-bold text-blue-600"
+                >
                   {finalScore}/10
-                </span>
-                <span className="text-lg font-medium text-gray-800">
+                </motion.span>
+                <span className="text-lg font-medium text-blue-800">
                   {responses.filter((r) => r.isCorrect).length}/{WORDS.length}{" "}
                   correct
                 </span>
               </div>
-            </div>
-            <p className="text-lg font-medium text-gray-700">
-              {finalScore >= 7 ? "Great job!" : "Keep practicing!"}
-            </p>
+            </motion.div>
           </div>
 
-          <div className="max-h-64 overflow-y-auto space-y-2">
-            {responses.map((item, index) => (
-              <div
-                key={index}
-                className={`p-3 rounded-lg border ${
-                  item.isCorrect
-                    ? "bg-green-50 border-green-200"
-                    : "bg-red-50 border-red-200"
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">
-                    Word {index + 1}: {item.word}
-                  </span>
-                  <span
-                    className={`font-bold ${
-                      item.isCorrect ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {item.isCorrect ? <Check size={18} /> : <X size={18} />}
-                  </span>
-                </div>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p>
-                    You said:{" "}
-                    <span className="font-medium">
-                      {item.response || "No response"}
-                    </span>
-                  </p>
-                  {!item.isCorrect && (
-                    <p className="text-green-600 mt-1">
-                      Correct answer:{" "}
-                      <span className="font-medium">{item.word}</span>
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
+          <div className="max-h-64 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
+            <AnimatePresence>
+              {responses.map((item, index) => (
+                <ResultCard key={index} item={item} index={index} />
+              ))}
+            </AnimatePresence>
           </div>
 
-          <button
-            onClick={restartGame}
-            className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 active:scale-95 transition-all"
-          >
-            Restart Test
-          </button>
-        </div>
+          <Button onClick={() => onComplete(finalScore)} variant="primary">
+            Continue to Next Test
+          </Button>
+        </motion.div>
       </div>
     );
   }
-
   const currentWord = WORDS[currentWordIndex];
   const progress =
     ((currentWordIndex + (showResponse ? 1 : 0)) / WORDS.length) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6">
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-white p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6"
+      >
+        <ProgressBar progress={progress} />
 
         <div className="text-center space-y-1">
-          <h2 className="text-2xl font-bold text-purple-700">
+          <h2 className="text-2xl font-bold text-blue-700">
             Blend the Sounds!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-blue-600">
             Word {currentWordIndex + 1} of {WORDS.length}
           </p>
         </div>
 
         {error && (
-          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 rounded">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-3 rounded"
+          >
             <p>{error}</p>
-          </div>
+          </motion.div>
         )}
 
-        <div className="flex justify-center text-8xl my-4">
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: isPlaying ? [0, 5, -5, 0] : 0,
+          }}
+          transition={{
+            duration: isPlaying ? 2 : 0.5,
+            repeat: isPlaying ? Infinity : 0,
+          }}
+          className="flex justify-center text-8xl my-4"
+        >
           {isPlaying ? "👂" : showResponse ? "🎤" : "🤔"}
-        </div>
+        </motion.div>
 
         {!showResponse ? (
-          <button
+          <Button
             onClick={playCurrentWord}
             disabled={isPlaying}
-            className={`w-full py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center ${
-              isPlaying
-                ? "bg-purple-300 text-white cursor-not-allowed"
-                : "bg-purple-600 text-white hover:bg-purple-700 active:scale-95"
-            }`}
+            variant={isPlaying ? "secondary" : "primary"}
           >
+            <Volume2 className="h-5 w-5" />
             {isPlaying ? "Playing Sounds..." : "Play Sounds"}
-          </button>
+          </Button>
         ) : (
           <div className="space-y-4">
-            <p className="text-center text-lg font-medium text-gray-700">
+            <p className="text-center text-lg font-medium text-blue-700">
               What word did you hear?
             </p>
 
             <div className="flex flex-col items-center space-y-3">
-              {transcript && (
-                <div className="bg-gray-100 p-3 rounded-lg w-full text-center">
-                  <p className="font-medium">
-                    You said:{" "}
-                    <span className="text-blue-600">{transcript}</span>
-                  </p>
-                </div>
-              )}
+              <AnimatePresence>
+                {transcript && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-blue-50 p-3 rounded-lg w-full text-center"
+                  >
+                    <p className="font-medium text-blue-800">
+                      You said:{" "}
+                      <span className="text-blue-600">{transcript}</span>
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-              <button
+              <Button
                 onClick={isRecording ? stopRecording : startRecording}
-                className={`flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg font-medium transition-all ${
-                  isRecording
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                } active:scale-95`}
+                variant={isRecording ? "danger" : "primary"}
               >
                 {isRecording ? (
                   <>
@@ -552,29 +644,26 @@ export default function Test14({ suppressResultPage = false, onComplete, student
                     Press & Speak
                   </>
                 )}
-              </button>
+              </Button>
 
               {transcript && (
-                <button
+                <Button
                   onClick={() => checkAnswer(transcript)}
-                  className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:scale-95 transition-all"
+                  variant="success"
                 >
                   {showFinalSubmit ? "Finish Test" : "Submit Answer"}
-                </button>
+                </Button>
               )}
 
               {showFinalSubmit && (
-                <button
-                  onClick={handleFinalSubmit}
-                  className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 active:scale-95 transition-all"
-                >
+                <Button onClick={handleFinalSubmit} variant="primary">
                   Submit All Results
-                </button>
+                </Button>
               )}
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

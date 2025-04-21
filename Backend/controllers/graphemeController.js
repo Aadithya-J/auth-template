@@ -107,7 +107,6 @@ export const evaluateResults = async (req, res) => {
         child_id: childId,
         results,
         score,
-        submitted_at: new Date().toISOString(),
         test_name: "Grapheme/Phoneme Correspondence Test",
       },
     ]);
@@ -131,7 +130,7 @@ export const getTestResults = async (req, res) => {
       .from("phoneme_test_results")
       .select("*")
       .eq("child_id", childId)
-      .order("submitted_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     res.status(200).json({ tests: data });

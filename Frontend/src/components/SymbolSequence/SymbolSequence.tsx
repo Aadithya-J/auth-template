@@ -321,19 +321,25 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
 
   const getAvailableSymbols = () => {
     const requiredSymbols = [...currentSequence];
-    const remainingSymbols = symbols
-      .filter((s) => !requiredSymbols.includes(s))
-      .sort(() => 0.5 - Math.random());
+    const remainingSymbols = symbols.filter(
+      (s) => !requiredSymbols.includes(s)
+    );
+
     const additionalCount =
       difficultyLevels[level].cardsToShow - requiredSymbols.length;
     const additionalSymbols = remainingSymbols.slice(0, additionalCount);
-    return [...requiredSymbols, ...additionalSymbols].sort(
-      () => 0.5 - Math.random()
-    );
+
+    const result = [...requiredSymbols, ...additionalSymbols];
+
+    if (gameState === "showing") {
+      return [...result].sort(() => 0.5 - Math.random());
+    }
+
+    return result;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex flex-col">
+    <div className="h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-white flex flex-col">
       {confetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {Array.from({ length: 100 }).map((_, i) => (
