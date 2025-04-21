@@ -163,6 +163,7 @@ function App() {
             ? "ml-20"
             : ""
         }`}
+        style={{ marginLeft: "222.861px" }}
       >
         <Routes>
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
