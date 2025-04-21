@@ -1,4 +1,4 @@
-import { useState, useEffect,useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Test components imports
@@ -167,7 +167,7 @@ export default function ContinuousAssessment() {
   const [countdown, setCountdown] = useState(3);
   const [loadingTest, setLoadingTest] = useState(false);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes in seconds
+  const [timeRemaining, setTimeRemaining] = useState(900);
 
   useEffect(() => {
     try {
@@ -179,30 +179,32 @@ export default function ContinuousAssessment() {
       setLoadingStudent(false);
     }
   }, []);
-  const handleTestComplete = useCallback((score) => {
-    setResults((prev) => [
-      ...prev,
-      {
-        name: TESTS[currentTest].name,
-        score,
-        icon: TESTS[currentTest].icon,
-        color: TESTS[currentTest].color,
-        gradientFrom: TESTS[currentTest].gradientFrom,
-        gradientTo: TESTS[currentTest].gradientTo,
-      },
-    ]);
+  const handleTestComplete = useCallback(
+    (score) => {
+      setResults((prev) => [
+        ...prev,
+        {
+          name: TESTS[currentTest].name,
+          score,
+          icon: TESTS[currentTest].icon,
+          color: TESTS[currentTest].color,
+          gradientFrom: TESTS[currentTest].gradientFrom,
+          gradientTo: TESTS[currentTest].gradientTo,
+        },
+      ]);
 
-    if (currentTest < TESTS.length - 1) {
-      setCurrentTest(currentTest + 1);
-    } else {
-      setCurrentTest(TESTS.length);
-      setShowFinalMessage(true);
-    }
-  }, [currentTest]);
-
+      if (currentTest < TESTS.length - 1) {
+        setCurrentTest(currentTest + 1);
+      } else {
+        setCurrentTest(TESTS.length);
+        setShowFinalMessage(true);
+      }
+    },
+    [currentTest]
+  );
 
   const handleSkipTest = () => handleTestComplete(0);
-  
+
   useEffect(() => {
     if (started && currentTest < TESTS.length) {
       setShowInstructions(true);
@@ -245,8 +247,14 @@ export default function ContinuousAssessment() {
     }
 
     return () => clearInterval(timer);
-  }, [currentTest, showInstructions, showCountdown, loadingTest, timeRemaining, handleTestComplete]);
-
+  }, [
+    currentTest,
+    showInstructions,
+    showCountdown,
+    loadingTest,
+    timeRemaining,
+    handleTestComplete,
+  ]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
