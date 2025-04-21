@@ -1,447 +1,4 @@
-// import { useState, useEffect } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import SequenceArrangement from './Sequence_arrangement/sequenceArrangement';
-// import SymbolSequence from './SymbolSequence/SymbolSequence';
-// import Test5 from './test 5/Test5';
-// import Test6 from './test 6/Test6';
-// import Test7 from './test 7/Test7';
-// import Test8 from './test 8/Test8';
-// import Test13 from './test 13/Test13';
-// import Test16 from './test 16/Test16';
-
-// const TESTS = [
-//   {
-//     name: 'Sequence Arrangement',
-//     component: SequenceArrangement,
-//     description: 'Arrange items in correct sequence',
-//     instructions: 'Drag and drop items to arrange them in order',
-//     icon: '🧩',
-//     color: 'bg-blue-100 text-blue-800'
-//   },
-//   {
-//     name: 'Symbol Sequence',
-//     component: SymbolSequence,
-//     description: 'Identify correct symbol sequences',
-//     instructions: 'Click symbols in the correct order',
-//     icon: '🔠',
-//     color: 'bg-blue-100 text-blue-800'
-//   },
-//   {
-//     name: 'Grapheme Matching',
-//     component: Test5,
-//     description: 'Match letters to their sounds',
-//     instructions: 'Select the correct sound for each letter',
-//     icon: '🔤',
-//     color: 'bg-green-100 text-green-800'
-//   },
-//   {
-//     name: 'Spelling Test',
-//     component: Test6,
-//     description: 'Assess spelling skills',
-//     instructions: 'Spell words correctly',
-//     icon: '✏️',
-//     color: 'bg-yellow-100 text-yellow-800'
-//   },
-//   {
-//     name: 'Picture Recognition',
-//     component: Test7,
-//     description: 'Identify objects in pictures',
-//     instructions: 'Answer questions about pictures',
-//     icon: '🖼️',
-//     color: 'bg-pink-100 text-pink-800'
-//   },
-//   {
-//     name: 'Visual Discrimination',
-//     component: Test8,
-//     description: 'Spot differences between words',
-//     instructions: 'Choose correctly spelled words',
-//     icon: '👀',
-//     color: 'bg-indigo-100 text-indigo-800'
-//   },
-//   {
-//     name: 'Auditory Memory',
-//     component: Test13,
-//     description: 'Remember sound sequences',
-//     instructions: 'Repeat sequences correctly',
-//     icon: '👂',
-//     color: 'bg-red-100 text-red-800'
-//   },
-//   {
-//     name: 'Sound Discrimination',
-//     component: Test16,
-//     description: 'Distinguish different sounds',
-//     instructions: 'Identify different sounds',
-//     icon: '🔊',
-//     color: 'bg-teal-100 text-teal-800'
-//   },
-// ];
-
-// const CountdownTimer = ({ countdown }) => {
-//   const variants = {
-//     initial: { scale: 0.8, opacity: 0 },
-//     animate: {
-//       scale: [1.2, 1],
-//       opacity: 1,
-//       transition: {
-//         duration: 0.5,
-//         ease: "easeOut"
-//       }
-//     },
-//     exit: { scale: 0.5, opacity: 0 }
-//   };
-
-//   return (
-//     <motion.div
-//       key={countdown}
-//       variants={variants}
-//       initial="initial"
-//       animate="animate"
-//       exit="exit"
-//       className="text-8xl font-bold text-blue-600"
-//     >
-//       {countdown}
-//     </motion.div>
-//   );
-// };
-
-// const Spinner = () => (
-//   <div className="flex flex-col items-center justify-center space-y-4">
-//     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-//     <span className="text-blue-600 font-medium">Preparing Test...</span>
-//   </div>
-// );
-
-// export default function ContinuousAssessment() {
-//   const [student, setStudent] = useState(null);
-//   const [started, setStarted] = useState(false);
-//   const [currentTest, setCurrentTest] = useState(0);
-//   const [results, setResults] = useState([]);
-//   const [loadingStudent, setLoadingStudent] = useState(true);
-//   const [showInstructions, setShowInstructions] = useState(false);
-//   const [showCountdown, setShowCountdown] = useState(false);
-//   const [countdown, setCountdown] = useState(3);
-//   const [loadingTest, setLoadingTest] = useState(false);
-//   const [showFinalMessage, setShowFinalMessage] = useState(false);
-
-//   useEffect(() => {
-//     try {
-//       const s = localStorage.getItem('selectedStudent');
-//       if (s) setStudent(JSON.parse(s));
-//     } catch (error) {
-//       console.error("Failed to parse student data:", error);
-//     } finally {
-//       setLoadingStudent(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if (started && currentTest < TESTS.length) {
-//       setShowInstructions(true);
-//       setShowCountdown(false);
-//       setLoadingTest(false);
-//     }
-//   }, [started, currentTest]);
-
-//   useEffect(() => {
-//     let timer;
-//     if (showCountdown && countdown > 0) {
-//       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-//     } else if (showCountdown && countdown === 0) {
-//       setShowCountdown(false);
-//       setCountdown(3);
-//       setLoadingTest(true);
-//       setTimeout(() => setLoadingTest(false), 800);
-//     }
-//     return () => clearTimeout(timer);
-//   }, [showCountdown, countdown]);
-
-//   const handleTestComplete = (score) => {
-//     setResults(prev => [...prev, {
-//       name: TESTS[currentTest].name,
-//       score,
-//       icon: TESTS[currentTest].icon,
-//       color: TESTS[currentTest].color
-//     }]);
-
-//     if (currentTest < TESTS.length - 1) {
-//       setCurrentTest(currentTest + 1);
-//     } else {
-//       setCurrentTest(TESTS.length);
-//       setShowFinalMessage(true);
-//     }
-//   };
-
-//   const handleSkipTest = () => handleTestComplete(0);
-
-//   if (loadingStudent) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-//         <Spinner />
-//       </div>
-//     );
-//   }
-
-//   if (!student) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-white p-4">
-//         <motion.div
-//           initial={{ opacity: 0, y: 20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center"
-//         >
-//           <h2 className="text-2xl font-bold text-red-600 mb-4">No Student Selected</h2>
-//           <p className="text-gray-600 mb-6">Please select a student before starting assessment</p>
-//           <button
-//             onClick={() => window.history.back()}
-//             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-//           >
-//             Go Back
-//           </button>
-//         </motion.div>
-//       </div>
-//     );
-//   }
-
-//   if (!started) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-//         <motion.div
-//           initial={{ scale: 0.95, opacity: 0 }}
-//           animate={{ scale: 1, opacity: 1 }}
-//           className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center"
-//         >
-//           <div className="mb-6">
-//             <h1 className="text-3xl font-bold text-blue-700 mb-2">Continuous Assessment</h1>
-//             <div className="h-1 w-20 bg-blue-500 rounded-full mx-auto"></div>
-//           </div>
-
-//           <div className="flex items-center justify-center space-x-3 mb-8">
-//             <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl">
-//               👨‍🎓
-//             </div>
-//             <div className="text-left">
-//               <p className="text-gray-500 text-sm">Student</p>
-//               <p className="text-lg font-semibold text-gray-800">{student.name}</p>
-//             </div>
-//           </div>
-
-//           <div className="grid grid-cols-2 gap-4 mb-8">
-//             {TESTS.slice(0, 4).map((test, i) => (
-//               <div key={i} className={`p-3 rounded-lg ${test.color} flex items-center`}>
-//                 <span className="text-xl mr-2">{test.icon}</span>
-//                 <span className="text-sm font-medium">{test.name}</span>
-//               </div>
-//             ))}
-//           </div>
-
-//           <button
-//             onClick={() => setStarted(true)}
-//             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg"
-//           >
-//             Begin Assessment
-//           </button>
-//         </motion.div>
-//       </div>
-//     );
-//   }
-
-//   if (showInstructions && currentTest < TESTS.length) {
-//     const test = TESTS[currentTest];
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-white p-4">
-//         <motion.div
-//           initial={{ opacity: 0, y: 20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full"
-//         >
-//           <div className={`${test.color.split(' ')[0]} w-16 h-16 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto`}>
-//             {test.icon}
-//           </div>
-
-//           <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">{test.name}</h2>
-//           <p className="text-gray-600 text-center mb-6">{test.description}</p>
-
-//           <div className="bg-gray-50 rounded-xl p-5 mb-6 border border-gray-200">
-//             <h3 className="font-semibold text-gray-700 mb-2 flex items-center">
-//               <span className="bg-blue-100 text-blue-800 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">i</span>
-//               Instructions
-//             </h3>
-//             <p className="text-gray-700">{test.instructions}</p>
-//           </div>
-
-//           <div className="flex justify-center">
-//             <button
-//               onClick={() => { setShowInstructions(false); setShowCountdown(true); }}
-//               className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-semibold flex items-center"
-//             >
-//               Start Test
-//               <span className="ml-2">→</span>
-//             </button>
-//           </div>
-//         </motion.div>
-//       </div>
-//     );
-//   }
-
-//   if (showCountdown && currentTest < TESTS.length) {
-//     return (
-//       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-//         <AnimatePresence mode="wait">
-//           <CountdownTimer countdown={countdown} />
-//         </AnimatePresence>
-//         <p className="mt-4 text-gray-600 text-lg">Get ready!</p>
-//       </div>
-//     );
-//   }
-
-//   if (loadingTest && currentTest < TESTS.length) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-white">
-//         <Spinner />
-//       </div>
-//     );
-//   }
-
-//   if (currentTest < TESTS.length) {
-//     const TestComponent = TESTS[currentTest].component;
-//     return (
-//       <div className="min-h-screen bg-gray-50 p-4">
-//         <div className="max-w-6xl mx-auto">
-//           {/* Progress Header */}
-//           <div className="bg-white rounded-xl shadow-sm p-4 mb-4 sticky top-0 z-10">
-//             <div className="flex justify-between items-center mb-2">
-//               <div className="flex items-center">
-//                 <span className={`${TESTS[currentTest].color.split(' ')[0]} w-10 h-10 rounded-lg flex items-center justify-center text-xl mr-3`}>
-//                   {TESTS[currentTest].icon}
-//                 </span>
-//                 <div>
-//                   <h2 className="font-semibold text-gray-800">{TESTS[currentTest].name}</h2>
-//                   <p className="text-sm text-gray-500">Test {currentTest + 1} of {TESTS.length}</p>
-//                 </div>
-//               </div>
-//               <div className="w-1/3">
-//                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-//                   <div
-//                     className="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
-//                     style={{ width: `${((currentTest + 1) / TESTS.length) * 100}%` }}
-//                   ></div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Test Content */}
-//           <motion.div
-//             initial={{ opacity: 0, y: 20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             className="bg-white rounded-xl shadow-md overflow-hidden"
-//           >
-//             <div className="p-6" style={{ minHeight: '70vh' }}>
-//               <TestComponent
-//                 suppressResultPage={true}
-//                 onComplete={handleTestComplete}
-//                 student={student}
-//               />
-//             </div>
-
-//             <div className="border-t p-4 bg-gray-50 flex justify-between items-center">
-//               <button
-//                 onClick={handleSkipTest}
-//                 className="px-4 py-2 text-gray-600 hover:text-gray-800 transition"
-//               >
-//                 Skip Test
-//               </button>
-//               <div className="text-sm text-gray-500">
-//                 Time remaining: <span className="font-medium">15:00</span>
-//               </div>
-//             </div>
-//           </motion.div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   if (showFinalMessage) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-4">
-//         <motion.div
-//           initial={{ scale: 0.95, opacity: 0 }}
-//           animate={{ scale: 1, opacity: 1 }}
-//           className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center"
-//         >
-//           <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto">
-//             🎉
-//           </div>
-//           <h2 className="text-2xl font-bold text-gray-800 mb-3">Assessment Complete!</h2>
-//           <p className="text-gray-600 mb-6">
-//             You've finished all tests for <span className="font-semibold">{student.name}</span>
-//           </p>
-//           <button
-//             onClick={() => setShowFinalMessage(false)}
-//             className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-semibold"
-//           >
-//             View Results
-//           </button>
-//         </motion.div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-4">
-//       <div className="max-w-4xl mx-auto">
-//         <motion.div
-//           initial={{ opacity: 0, y: 20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           className="bg-white rounded-xl shadow-md overflow-hidden"
-//         >
-//           <div className="p-6 border-b">
-//             <h2 className="text-2xl font-bold text-gray-800 mb-2">Assessment Results</h2>
-//             <p className="text-gray-600">
-//               Student: <span className="font-semibold">{student.name}</span>
-//             </p>
-//           </div>
-
-//           <div className="divide-y divide-gray-200">
-//             {results.map((result, index) => (
-//               <div key={index} className="p-4 hover:bg-gray-50 transition">
-//                 <div className="flex items-center">
-//                   <div className={`${result.color.split(' ')[0]} w-10 h-10 rounded-lg flex items-center justify-center text-xl mr-4`}>
-//                     {result.icon}
-//                   </div>
-//                   <div className="flex-grow">
-//                     <h3 className="font-medium text-gray-800">{result.name}</h3>
-//                   </div>
-//                   <div className="text-lg font-semibold">{result.score}</div>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-
-//           <div className="p-4 bg-gray-100 border-t">
-//             <div className="flex justify-between items-center">
-//               <span className="font-semibold">Total Score</span>
-//               <span className="text-xl font-bold text-blue-600">
-//                 {results.reduce((sum, result) => sum + (Number(result.score) || 0), 0)}
-//               </span>
-//             </div>
-//           </div>
-
-//           <div className="p-4 flex justify-center">
-//             <button
-//               onClick={() => { setStarted(false); setCurrentTest(0); setResults([]); }}
-//               className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-//             >
-//               Start New Assessment
-//             </button>
-//           </div>
-//         </motion.div>
-//       </div>
-//     </div>
-//   );
-// }
-
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Test components imports
@@ -622,7 +179,30 @@ export default function ContinuousAssessment() {
       setLoadingStudent(false);
     }
   }, []);
+  const handleTestComplete = useCallback((score) => {
+    setResults((prev) => [
+      ...prev,
+      {
+        name: TESTS[currentTest].name,
+        score,
+        icon: TESTS[currentTest].icon,
+        color: TESTS[currentTest].color,
+        gradientFrom: TESTS[currentTest].gradientFrom,
+        gradientTo: TESTS[currentTest].gradientTo,
+      },
+    ]);
 
+    if (currentTest < TESTS.length - 1) {
+      setCurrentTest(currentTest + 1);
+    } else {
+      setCurrentTest(TESTS.length);
+      setShowFinalMessage(true);
+    }
+  }, [currentTest]);
+
+
+  const handleSkipTest = () => handleTestComplete(0);
+  
   useEffect(() => {
     if (started && currentTest < TESTS.length) {
       setShowInstructions(true);
@@ -665,36 +245,8 @@ export default function ContinuousAssessment() {
     }
 
     return () => clearInterval(timer);
-  }, [
-    currentTest,
-    showInstructions,
-    showCountdown,
-    loadingTest,
-    timeRemaining,
-  ]);
+  }, [currentTest, showInstructions, showCountdown, loadingTest, timeRemaining, handleTestComplete]);
 
-  const handleTestComplete = (score) => {
-    setResults((prev) => [
-      ...prev,
-      {
-        name: TESTS[currentTest].name,
-        score,
-        icon: TESTS[currentTest].icon,
-        color: TESTS[currentTest].color,
-        gradientFrom: TESTS[currentTest].gradientFrom,
-        gradientTo: TESTS[currentTest].gradientTo,
-      },
-    ]);
-
-    if (currentTest < TESTS.length - 1) {
-      setCurrentTest(currentTest + 1);
-    } else {
-      setCurrentTest(TESTS.length);
-      setShowFinalMessage(true);
-    }
-  };
-
-  const handleSkipTest = () => handleTestComplete(0);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -950,140 +502,65 @@ export default function ContinuousAssessment() {
 
   if (currentTest < TESTS.length) {
     const TestComponent = TESTS[currentTest].component;
-    const test = TESTS[currentTest];
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-4 overflow-x-hidden">
-        <div className="max-w-6xl mx-auto">
-          {/* Progress Header */}
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-xl shadow-md p-4 mb-6 sticky top-0 z-10"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <div
-                  className={`w-12 h-12 rounded-lg bg-gradient-to-br ${test.gradientFrom} ${test.gradientTo} flex items-center justify-center text-2xl text-white shadow-sm mr-4`}
-                >
-                  {test.icon}
-                </div>
-                <div>
-                  <h2 className="font-semibold text-gray-800 text-lg">
-                    {test.name}
-                  </h2>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <span>
-                      Test {currentTest + 1} of {TESTS.length}
-                    </span>
-                    <span className="mx-2">•</span>
-                    <span className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      {formatTime(timeRemaining)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="w-1/3">
-                <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                  <motion.div
-                    className={`h-2.5 rounded-full bg-gradient-to-r ${test.gradientFrom} ${test.gradientTo}`}
-                    initial={{
-                      width: `${(currentTest / TESTS.length) * 100}%`,
-                    }}
-                    animate={{
-                      width: `${((currentTest + 1) / TESTS.length) * 100}%`,
-                    }}
-                    transition={{ duration: 0.5 }}
-                  ></motion.div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative">
+        <TestComponent
+          suppressResultPage={true}
+          onComplete={handleTestComplete}
+          student={student}
+        />
 
-          {/* Test Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white w-full scale-90 overflow-hidden flex flex-col"
-          >
-            <div className="flex-grow flex justify-center items-center">
-              <TestComponent
-                suppressResultPage={true}
-                onComplete={handleTestComplete}
-                student={student}
-              />
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="border-t p-4 bg-gray-50 flex justify-between items-center"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="fixed bottom-4 right-4 z-20 flex items-center space-x-4 p-3 bg-white/80 backdrop-blur-sm rounded-lg shadow-md"
+        >
+          <div className="text-sm font-medium flex items-center bg-gray-100 px-3 py-1 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleSkipTest}
-                className="px-5 py-2 text-gray-600 hover:text-gray-800 transition flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                  />
-                </svg>
-                Skip Test
-              </motion.button>
-              <div className="text-sm font-medium flex items-center bg-gray-100 px-3 py-1 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-1 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span
-                  className={
-                    timeRemaining < 60 ? "text-red-600" : "text-gray-700"
-                  }
-                >
-                  {formatTime(timeRemaining)}
-                </span>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              className={timeRemaining < 60 ? "text-red-600" : "text-gray-700"}
+            >
+              {formatTime(timeRemaining)}
+            </span>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleSkipTest}
+            className="px-4 py-2 text-sm bg-red-500 text-white hover:bg-red-600 rounded-md transition flex items-center shadow"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+              />
+            </svg>
+            Skip
+          </motion.button>
+        </motion.div>
       </div>
     );
   }
@@ -1115,7 +592,7 @@ export default function ContinuousAssessment() {
               Assessment Complete!
             </h2>
             <p className="text-gray-600 mb-8 text-lg">
-              Well done! You've completed all tests for{" "}
+              Well done! You&apos;ve completed all tests for{" "}
               <span className="font-semibold">{student.name}</span>
             </p>
           </motion.div>
@@ -1141,13 +618,13 @@ export default function ContinuousAssessment() {
 
   // Results page
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4">
+    <div className="h-screen overflow-y-auto bg-gradient-to-br from-gray-50 to-blue-50 p-4">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-lg overflow-hidden"
+          className="bg-white rounded-2xl shadow-lg"
         >
           <div className="p-6 border-b">
             <div className="flex items-center justify-between">
