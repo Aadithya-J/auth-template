@@ -210,7 +210,7 @@ export default function ContinuousAssessment() {
       setShowInstructions(true);
       setShowCountdown(false);
       setLoadingTest(false);
-      setTimeRemaining(900); // Reset timer for each test
+      setTimeRemaining(900);
     }
   }, [started, currentTest]);
 
