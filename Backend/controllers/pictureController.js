@@ -8,13 +8,25 @@ const evaluateResponse = async (userInput, correctAnswer) => {
     return { score: 0, feedback: "No description provided" };
   }
   const prompt = `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`;
+
   try {
     const result = await model.generateContent({
       contents: [{ parts: [{ text: prompt }] }],
     });
-    const textResponse = result.response.text();
+
+    const textResponse = result.response.text().trim();
+
     const [score, feedback] = textResponse.split("|");
-    return { score: parseInt(score), feedback };
+
+    if (score !== undefined && feedback !== undefined) {
+      return {
+        score: parseInt(score),
+        feedback: feedback.trim(),
+      };
+    } else {
+      console.error("Unexpected response format:", textResponse);
+      return { score: 0, feedback: "Invalid response format" };
+    }
   } catch (err) {
     console.error("Gemini error:", err);
     return { score: 0, feedback: "Evaluation error" };

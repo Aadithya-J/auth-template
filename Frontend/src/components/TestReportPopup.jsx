@@ -15,7 +15,7 @@ const TestReportPopup = ({
   const [inference, setInference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const tokenId = localStorage.getItem("access_token");
-
+  const childId = localStorage.getItem("child_id");
   useEffect(() => {
     if (isCumulative && test.allTests) {
       generateCumulativeInference();
@@ -25,7 +25,6 @@ const TestReportPopup = ({
   const generateCumulativeInference = async () => {
     setIsLoading(true);
     try {
-      // Filter tests from the last 20 minutes
       const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000);
       const recentTests = test.allTests.filter(
         (t) => new Date(t.created_at) > twentyMinutesAgo
@@ -39,7 +38,7 @@ const TestReportPopup = ({
 
       const response = await axios.post(
         `${backendURL}/generateInference`,
-        { tests: recentTests },
+        { tests: recentTests, childId },
         {
           headers: { authorization: `Bearer ${tokenId}` },
         }
@@ -74,6 +73,11 @@ const TestReportPopup = ({
     const originalContents = document.body.innerHTML;
 
     document.body.innerHTML = printContent.innerHTML;
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @page { size: auto; margin: 0mm; }
+    `;
+    document.head.appendChild(style);
     window.print();
     document.body.innerHTML = originalContents;
     window.location.reload();
