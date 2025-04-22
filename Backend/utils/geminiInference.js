@@ -30,43 +30,46 @@ router.post("/generateInference", async (req, res) => {
     }
 
     const age = childData.age;
-    const prompt = `The following test results belong to a ${age}-year-old child. Conduct a thorough clinical analysis of these findings and provide a concise yet comprehensive 4-5 line summary in paragraph form. Highlight key observations, clinically significant patterns, and potential areas of concern, while considering age-appropriate norms. Maintain an objective, evidence-based tone, and acknowledge any limitations in interpretation due to insufficient data or confounding factors. Avoid bullet points and focus on delivering a clear, clinically relevant inference.
-    
-Results:\n\n${tests
-      .map((test) => {
-        const meta = testMetaData[test.test_name];
-        const score = test.score;
+    console.log("Child age:", age);
+    const prompt = `
+Analyze these test results for a ${age}-year-old child and provide a CONCISE clinical assessment.
 
-        const detailStr = test.details
-          ? JSON.stringify(test.details).replace(/[{}"]/g, "")
-          : "None";
+### Test Results:
+${tests
+  .map((test) => {
+    const meta = testMetaData[test.test_name];
+    const score = test.score;
+    const detailStr = test.details
+      ? JSON.stringify(test.details).replace(/[{}"]/g, "")
+      : "None";
 
-        if (!meta) {
-          return `Test: ${test.test_name}, Score: ${
-            score ?? "N/A"
-          }, Details: ${detailStr}, Interpretation: Test metadata not found.`;
-        }
+    let performanceMessage = "Performance unclear due to missing data.";
 
-        let performanceMessage =
-          "Performance level cannot be determined due to missing or invalid score.";
+    if (score !== null && score !== undefined && meta) {
+      const { strong, difficulty } = meta.scoreRange;
+      if (score >= strong[0] && score <= strong[1]) {
+        performanceMessage = meta.strongMessage;
+      } else if (score >= difficulty[0] && score <= difficulty[1]) {
+        performanceMessage = meta.description;
+      } else {
+        performanceMessage = "Score outside typical ranges.";
+      }
+    }
 
-        if (score !== null && score !== undefined) {
-          const { strong, difficulty } = meta.scoreRange;
-          if (score >= strong[0] && score <= strong[1]) {
-            performanceMessage = meta.strongMessage;
-          } else if (score >= difficulty[0] && score <= difficulty[1]) {
-            performanceMessage = meta.description;
-          } else {
-            performanceMessage =
-              "Score is outside typical interpretive ranges.";
-          }
-        }
+    return `- ${test.test_name}: Score ${
+      score ?? "N/A"
+    }, ${performanceMessage}`;
+  })
+  .join("\n")}
 
-        return `Test: ${test.test_name}, Score: ${
-          score ?? "N/A"
-        }, Details: ${detailStr}, Interpretation: ${performanceMessage}`;
-      })
-      .join(" | ")}`;
+### Instructions:
+Write ONE PARAGRAPH (5-6 lines maximum) that:
+1. Integrates all test results into a cohesive clinical assessment
+2. Highlights key strengths and potential concerns based on age-appropriate norms
+3. Uses professional clinical language while remaining concise
+4. Provides actionable insights for next steps or focus areas
+
+Do NOT use bullet points. Maintain a professional clinical tone throughout.`;
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent({
