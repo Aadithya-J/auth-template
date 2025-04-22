@@ -15,7 +15,7 @@ const TestReportPopup = ({
   const [inference, setInference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const tokenId = localStorage.getItem("access_token");
-  const childId = localStorage.getItem("child_id");
+  const childId = localStorage.getItem("childId");
   useEffect(() => {
     if (isCumulative && test.allTests) {
       generateCumulativeInference();

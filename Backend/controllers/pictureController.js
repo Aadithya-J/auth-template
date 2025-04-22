@@ -64,13 +64,13 @@ export async function evaluateDescriptionAndStore(req, res) {
         feedback,
       });
     }
-
+    totalScore = Number((totalScore / 2).toFixed(2));
     const { data, error } = await supabase
       .from("picture_test_results")
       .insert({
         child_id,
         responses: processedResponses,
-        score: totalScore / 2,
+        score: totalScore,
         test_name: "Picture Recognition Test",
       })
       .select()

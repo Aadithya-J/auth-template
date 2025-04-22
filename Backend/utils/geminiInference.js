@@ -2,7 +2,9 @@ import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import supabase from "../utils/supabaseClient.js";
-import testMetaData from "../utils/testMetaData.js";
+import { readFile } from "fs/promises";
+const data = await readFile("./Data/testMetaData.json", "utf-8");
+const testMetaData = JSON.parse(data);
 
 dotenv.config();
 
@@ -29,7 +31,7 @@ router.post("/generateInference", async (req, res) => {
 
     const age = childData.age;
     const prompt = `The following test results belong to a ${age}-year-old child. Conduct a thorough clinical analysis of these findings and provide a concise yet comprehensive 4-5 line summary in paragraph form. Highlight key observations, clinically significant patterns, and potential areas of concern, while considering age-appropriate norms. Maintain an objective, evidence-based tone, and acknowledge any limitations in interpretation due to insufficient data or confounding factors. Avoid bullet points and focus on delivering a clear, clinically relevant inference.
-
+    
 Results:\n\n${tests
       .map((test) => {
         const meta = testMetaData[test.test_name];
