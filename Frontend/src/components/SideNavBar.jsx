@@ -38,13 +38,13 @@ export default function SideNavBar({ onToggle, handleLogout }) {
   return (
     <aside
       className={`h-screen ${
-        expand ? "w-64" : "w-24"
-      } bg-white  flex flex-col transition-all duration-500 ease-in-out fixed left-0 top-0 z-10  overflow-hidden`}
+        expand ? "w-64" : "w-28"
+      } bg-white flex flex-col transition-all duration-500 ease-in-out overflow-hidden flex-shrink-0`}
     >
       {/* Logo and Toggle */}
       <div
         className={`flex items-center ${
-          expand ? "justify-between" : "justify-between"
+          expand ? "justify-between" : "justify-center"
         } py-5 px-4 relative`}
       >
         <div
@@ -64,7 +64,9 @@ export default function SideNavBar({ onToggle, handleLogout }) {
         </div>
         <button
           onClick={handleToggle}
-          className="text-blue-500 hover:text-blue-700 transition-all duration-300 hover:bg-blue-50 rounded-full p-1 flex items-center justify-center"
+          className={`text-blue-500 hover:text-blue-700 transition-all duration-300 hover:bg-blue-50 rounded-full p-1 flex items-center justify-center ${
+            expand ? "" : "absolute right-4"
+          }`}
           aria-label={expand ? "Collapse sidebar" : "Expand sidebar"}
         >
           {expand ? (
@@ -127,7 +129,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
         </div>
 
         <div className="border-t border-gray-100 pt-3 pb-2">
-          <div className="flex items-center">
+          <div className={`flex items-center ${expand ? "" : "justify-center"}`}>
             <div className="relative">
               <img
                 src={profile}
