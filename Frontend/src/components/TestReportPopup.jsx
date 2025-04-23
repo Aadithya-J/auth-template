@@ -162,8 +162,7 @@ const TestReportPopup = ({
     if (name.includes("Schonell") || name.includes("Reading")) return "reading";
     if (name.includes("Visual Discrimination")) return "visual";
     if (name.includes("Sound Discrimination")) return "sound";
-    if (name.includes("Grapheme") || name.includes("Phoneme"))
-      return "grapheme";
+    if (name.includes("Grapheme") || name.includes("Phoneme")) return "phoneme";
     if (name.includes("Picture Recognition")) return "picture";
     if (name.includes("Auditory")) return "auditory";
     if (name.includes("Sequence Arrangement")) return "sequence";
@@ -346,32 +345,59 @@ const TestReportPopup = ({
           </table>
         );
 
-      case "grapheme":
+      case "phoneme":
         return (
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-blue-50">
-                <th className="border border-blue-200 p-2 text-left">Test</th>
+                <th className="border border-blue-200 p-2 text-left">Letter</th>
                 <th className="border border-blue-200 p-2 text-center">
-                  Results
+                  Spoken
                 </th>
                 <th className="border border-blue-200 p-2 text-center">
-                  Score
+                  Status
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border border-blue-200 p-2 font-semibold">
-                  {test.test_name}
-                </td>
-                <td className="border border-blue-200 p-2 text-center">
-                  {test.results || "-"}
-                </td>
-                <td className="border border-blue-200 p-2 text-center">
-                  {test.score || "-"}
-                </td>
-              </tr>
+              {test.results && typeof test.results === "string" ? (
+                JSON.parse(test.results).map((item, index) => (
+                  <tr key={index}>
+                    <td className="border border-blue-200 p-2">
+                      {item.letter}
+                    </td>
+                    <td className="border border-blue-200 p-2 text-center">
+                      {item.spoken ? "Yes" : "No"}
+                    </td>
+                    <td className="border border-blue-200 p-2 text-center">
+                      {item.status}
+                    </td>
+                  </tr>
+                ))
+              ) : test.results && Array.isArray(test.results) ? (
+                test.results.map((item, index) => (
+                  <tr key={index}>
+                    <td className="border border-blue-200 p-2">
+                      {item.letter}
+                    </td>
+                    <td className="border border-blue-200 p-2 text-center">
+                      {item.spoken ? "Yes" : "No"}
+                    </td>
+                    <td className="border border-blue-200 p-2 text-center">
+                      {item.status}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="3"
+                    className="border border-blue-200 p-2 text-center"
+                  >
+                    No results available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         );

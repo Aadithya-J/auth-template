@@ -11,7 +11,7 @@ import { HiOutlineClipboardList } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/daira-logo.png";
+import logo from "../assets/daira-logo1.png";
 import profile from "../../public/profile-icon.jpg";
 import PropTypes from "prop-types";
 
@@ -129,7 +129,9 @@ export default function SideNavBar({ onToggle, handleLogout }) {
         </div>
 
         <div className="border-t border-gray-100 pt-3 pb-2">
-          <div className={`flex items-center ${expand ? "" : "justify-center"}`}>
+          <div
+            className={`flex items-center ${expand ? "" : "justify-center"}`}
+          >
             <div className="relative">
               <img
                 src={profile}

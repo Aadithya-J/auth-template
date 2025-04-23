@@ -430,27 +430,13 @@ const Header = ({ title }) => (
   </motion.div>
 );
 
-// Score summary component
-const ScoreSummary = ({ score, totalPairs }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 shadow-sm"
-  >
-    <h3 className="font-bold text-blue-700 mb-2">Current Score</h3>
-    <p className="text-blue-800">
-      {score} out of {totalPairs} possible points
-    </p>
-  </motion.div>
-);
-
 // Submit button component
 const SubmitButton = ({ onClick }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: 0.2 }}
-    className="fixed bottom-4 left-0 right-0 flex justify-center"
+    className="flex justify-center mt-16 mb-20" // Added margin-top and margin-bottom
   >
     <motion.button
       whileHover={{ y: -2, scale: 1.05 }}
@@ -578,8 +564,6 @@ const SoundDiscriminationTest = ({
       className="p-8 overflow-auto h-screen bg-blue-50"
     >
       <Header title="Sound Discrimination Test" />
-
-      <ScoreSummary score={score} totalPairs={wordPairs.length} />
 
       {wordPairs.map((pair, index) => (
         <WordPairItem

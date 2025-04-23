@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/daira-logo.png";
+import logo from "../assets/daira-logo1.png";
 import { backendURL } from "../definedURL";
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
