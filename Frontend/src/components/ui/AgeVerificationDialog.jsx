@@ -9,7 +9,7 @@ const AgeVerificationDialog = ({ onVerified }) => {
   // Control entrance animation
   useEffect(() => {
     if (isOpen) {
-      // Small delay before showing for smoother animation
+      
       setTimeout(() => {
         setIsVisible(true);
       }, 50);
