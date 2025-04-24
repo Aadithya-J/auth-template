@@ -354,7 +354,6 @@ const Question = ({
   );
 };
 
-// Main AudioQuiz Component
 const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
