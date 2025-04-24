@@ -43,6 +43,7 @@ function App() {
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [showAgeDialog, setShowAgeDialog] = useState(false);
   const [showConsentRequired, setShowConsentRequired] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false); // Add this state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,15 +58,26 @@ function App() {
       if (token) {
         try {
           const isValid = await verifyToken(token);
-          if (isValid && publicRoutes.includes(currentPath)) {
-            if (isVerified) {
-              navigate("/");
-            } else {
+          if (isValid) {
+            setIsAuthenticated(true);
+            if (publicRoutes.includes(currentPath)) {
+              if (isVerified) {
+                navigate("/");
+              } else {
+                setShowAgeDialog(true);
+              }
+            } else if (!isVerified && !showAgeDialog) {
               setShowAgeDialog(true);
+            }
+          } else {
+            setIsAuthenticated(false);
+            if (!publicRoutes.includes(currentPath)) {
+              navigate("/login");
             }
           }
         } catch (error) {
           console.error("Authentication check failed:", error);
+          setIsAuthenticated(false);
           if (!publicRoutes.includes(currentPath)) {
             navigate("/login");
           }
@@ -73,11 +85,15 @@ function App() {
       } else if (!publicRoutes.includes(currentPath)) {
         navigate("/login");
       }
+      setAuthChecked(true); // Mark auth check as complete
     };
 
-    checkAuth();
+    if (!authChecked) {
+      checkAuth();
+    }
+    
     setTests(testsData);
-  }, [navigate]);
+  }, [navigate, authChecked, showAgeDialog]);
 
   const verifyToken = async (token) => {
     try {
@@ -87,26 +103,9 @@ function App() {
         },
       });
 
-      if (response.data.valid) {
-        setIsAuthenticated(true);
-        const isVerified = localStorage.getItem("age_verified") === "true";
-        if (isVerified) {
-          fetchData();
-        } else {
-          setShowAgeDialog(true);
-        }
-        return true;
-      } else {
-        setIsAuthenticated(false);
-        localStorage.removeItem("token");
-        navigate("/login");
-        return false;
-      }
+      return response.data.valid;
     } catch (error) {
       console.error("Error validating token:", error);
-      setIsAuthenticated(false);
-      localStorage.removeItem("token");
-      navigate("/login");
       return false;
     }
   };
@@ -239,9 +238,7 @@ function App() {
         </SideNavBar>
       )}
 
-      <main
-        className={`flex-grow overflow-y-auto transition-all duration-300`}
-      >
+      <main className={`flex-grow overflow-y-auto transition-all duration-300`}>
         <Routes>
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route

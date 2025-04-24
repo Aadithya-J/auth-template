@@ -226,8 +226,6 @@
 
 // export default AudioQuiz;
 
-
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -244,10 +242,26 @@ const quizQuestions = [
   { word: "m", options: ["w", "n", "u", "m", "h", "s"], correct: "m" },
   { word: "no", options: ["oh", "on", "in", "no", "uo", "ou"], correct: "no" },
   { word: "cat", options: ["act", "tac", "cat", "atc", "cta"], correct: "cat" },
-  { word: "girl", options: ["gril", "lirg", "irig", "girl", "glir"], correct: "girl" },
-  { word: "little", options: ["kitten", "little", "like", "litter", "kettle"], correct: "little" },
-  { word: "help", options: ["hlep", "hple", "help", "pleh", "hlpe"], correct: "help" },
-  { word: "fast", options: ["staf", "fats", "fast", "taps", "saft"], correct: "fast" },
+  {
+    word: "girl",
+    options: ["gril", "lirg", "irig", "girl", "glir"],
+    correct: "girl",
+  },
+  {
+    word: "little",
+    options: ["kitten", "little", "like", "litter", "kettle"],
+    correct: "little",
+  },
+  {
+    word: "help",
+    options: ["hlep", "hple", "help", "pleh", "hlpe"],
+    correct: "help",
+  },
+  {
+    word: "fast",
+    options: ["staf", "fats", "fast", "taps", "saft"],
+    correct: "fast",
+  },
 ];
 
 // Option Button Component
@@ -273,13 +287,13 @@ const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
 };
 
 // Question Component
-const Question = ({ 
-  questionData, 
-  index, 
-  isSkipped, 
-  selectedOption, 
-  onAnswer, 
-  onSkipToggle 
+const Question = ({
+  questionData,
+  index,
+  isSkipped,
+  selectedOption,
+  onAnswer,
+  onSkipToggle,
 }) => {
   return (
     <motion.div
@@ -289,14 +303,19 @@ const Question = ({
       className="flex flex-col items-end mb-7 bg-white rounded-lg p-5 w-full shadow-md border-l-4 border-blue-500"
     >
       <div className="w-full mb-4 text-left">
-        <span className={`text-xl font-bold ${isSkipped ? "text-blue-300" : "text-blue-700"}`}>
-          Question {index + 1} {isSkipped && <span className="text-blue-300">: Skipped</span>}
+        <span
+          className={`text-xl font-bold ${
+            isSkipped ? "text-blue-300" : "text-blue-700"
+          }`}
+        >
+          Question {index + 1}{" "}
+          {isSkipped && <span className="text-blue-300">: Skipped</span>}
         </span>
       </div>
 
       <div className="flex justify-between w-full items-center space-x-4">
         <div className="flex mr-20">
-          <motion.button 
+          <motion.button
             whileHover={{ scale: 1.05 }}
             className="py-3 px-5 rounded-md text-lg transition-transform duration-200 border-2 border-blue-600 text-blue-700 bg-blue-50"
           >
@@ -335,28 +354,16 @@ const Question = ({
   );
 };
 
-// Score Display Component
-const ScoreDisplay = ({ score, totalQuestions }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-white p-4 rounded-lg shadow-md mb-6 border-l-4 border-blue-500"
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-blue-800 font-bold">Current Score:</span>
-        <span className="text-blue-600 font-bold text-xl">{score} / {totalQuestions}</span>
-      </div>
-    </motion.div>
-  );
-};
-
 // Main AudioQuiz Component
 const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
-  const [skippedQuestions, setSkippedQuestions] = useState(Array(quizQuestions.length).fill(false));
-  const [selectedOptions, setSelectedOptions] = useState(Array(quizQuestions.length).fill(null));
+  const [skippedQuestions, setSkippedQuestions] = useState(
+    Array(quizQuestions.length).fill(false)
+  );
+  const [selectedOptions, setSelectedOptions] = useState(
+    Array(quizQuestions.length).fill(null)
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -373,7 +380,8 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
     setScore((prevScore) => {
       if (answeredQuestions.has(index)) {
-        const previousAnswerCorrect = selectedOptions[index] === quizQuestions[index].correct;
+        const previousAnswerCorrect =
+          selectedOptions[index] === quizQuestions[index].correct;
         return isCorrect && !previousAnswerCorrect
           ? prevScore + 1
           : !isCorrect && previousAnswerCorrect
@@ -401,7 +409,9 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
     const childId = localStorage.getItem("childId");
 
     if (!childId) {
-      toast.error("No student data found. Please select a student before taking the test.");
+      toast.error(
+        "No student data found. Please select a student before taking the test."
+      );
       setIsSubmitting(false);
       return;
     }
@@ -436,7 +446,9 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error("An error occurred while submitting the test. Please try again.");
+      toast.error(
+        "An error occurred while submitting the test. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -448,7 +460,7 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
   return (
     <div className="p-8 overflow-auto h-screen bg-blue-50">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -457,11 +469,7 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         <h2 className="text-3xl font-roboto font-extrabold mb-7 flex items-center text-blue-800">
           Visual Discrimination Test
         </h2>
-        <div
-          className="h-0.5 bg-blue-200 w-full mb-10"
-        ></div>
-
-        <ScoreDisplay score={score} totalQuestions={totalQuestions} />
+        <div className="h-0.5 bg-blue-200 w-full mb-10"></div>
 
         {quizQuestions.map((question, index) => (
           <Question
@@ -482,7 +490,9 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
             onClick={handleSubmit}
             disabled={isSubmitting}
             className={`bg-blue-600 text-white font-bold py-3 px-6 rounded-md text-lg transition duration-200 shadow-lg ${
-              isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-700"
+              isSubmitting
+                ? "opacity-70 cursor-not-allowed"
+                : "hover:bg-blue-700"
             }`}
           >
             {isSubmitting ? "Submitting..." : "Submit Test"}
