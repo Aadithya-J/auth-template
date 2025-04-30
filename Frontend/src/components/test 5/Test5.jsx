@@ -1041,7 +1041,6 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
     return () => clearTimeout(timer);
   };
 
-  // Stop recognition
   const stopRecording = () => {
     if (recognitionRef.current && isRecording) {
       recognitionRef.current.stop();
