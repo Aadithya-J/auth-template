@@ -14,16 +14,16 @@ const STARTING_FORWARD_SEQUENCES = [
   [4, 9], [3, 8],
   [7, 1, 2], [2, 6, 2],
   [6, 3, 5, 1], [1, 4, 5, 2],
-  // [2, 7, 4, 6, 9], [2, 4, 7, 1, 6],
-  // [6, 9, 1, 8, 3, 7], [1, 4, 5, 4, 7, 6]
+  [2, 7, 4, 6, 9], [2, 4, 7, 1, 6],
+  [6, 9, 1, 8, 3, 7], [1, 4, 5, 4, 7, 6]
 ];
 
 const STARTING_REVERSE_SEQUENCES = [
   [7, 5], [2, 7],
   [5, 2, 7], [0, 1, 9],
   [4, 7, 3, 5], [1, 6, 8, 5],
-  // [1, 7, 5, 0, 4], [3, 5, 2, 1, 7],
-  // [8, 3, 9, 7, 5, 3], [1, 4, 0, 4, 7, 2]
+  [1, 7, 5, 0, 4], [3, 5, 2, 1, 7],
+  [8, 3, 9, 7, 5, 3], [1, 4, 0, 4, 7, 2]
 ];
 
 const MAX_ERRORS = 2;
@@ -429,9 +429,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
     setMode(selectedMode);
     setSequences(selectedMode === "forward" ? STARTING_FORWARD_SEQUENCES : STARTING_REVERSE_SEQUENCES);
     setSequenceIndex(0);
-    setForwardScore(0);
     setReverseScore(0);
-    setForwardErrors(0);
     setReverseErrors(0);
     setTranscript("");
     setEvaluationResult(null);
