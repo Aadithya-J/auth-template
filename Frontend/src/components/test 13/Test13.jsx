@@ -429,7 +429,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
     setMode(selectedMode);
     setSequences(selectedMode === "forward" ? STARTING_FORWARD_SEQUENCES : STARTING_REVERSE_SEQUENCES);
     setSequenceIndex(0);
-    setForwardScore(0);
+    // setForwardScore(0);
     setReverseScore(0);
     setForwardErrors(0);
     setReverseErrors(0);
