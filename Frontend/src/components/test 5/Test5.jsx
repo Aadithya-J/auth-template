@@ -195,7 +195,7 @@
 //   };
 
 //   return (
-//     <motion.div 
+//     <motion.div
 //       initial={{ opacity: 0 }}
 //       animate={{ opacity: 1 }}
 //       className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6"
@@ -204,14 +204,14 @@
 //         <Confetti width={width} height={height} recycle={false} colors={['#2563EB', '#60A5FA', '#93C5FD', '#FFFFFF']} />
 //       )}
 
-//       <motion.div 
+//       <motion.div
 //         initial={{ y: 20, opacity: 0 }}
 //         animate={{ y: 0, opacity: 1 }}
 //         transition={{ duration: 0.5 }}
 //         className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-100"
 //       >
 //         <div className="text-center mb-8">
-//           <motion.h1 
+//           <motion.h1
 //             initial={{ y: -10 }}
 //             animate={{ y: 0 }}
 //             className="text-4xl font-bold text-blue-600 mb-2"
@@ -257,7 +257,7 @@
 //               className="flex flex-col items-center"
 //             >
 //               <div className="relative">
-//                 <motion.div 
+//                 <motion.div
 //                   whileHover={{ scale: 1.05 }}
 //                   transition={{ type: "spring", stiffness: 300 }}
 //                   className="w-64 h-64 bg-blue-50 rounded-2xl flex items-center justify-center shadow-lg mb-8 border-2 border-blue-200"
@@ -294,18 +294,18 @@
 //                 </div>
 //               </div>
 
-//               <motion.div 
+//               <motion.div
 //                 animate={{ opacity: isRecording ? 1 : 0.7 }}
 //                 transition={{ duration: 0.3 }}
 //                 className="flex items-center mb-6"
 //               >
 //                 <motion.div
-//                   animate={{ 
+//                   animate={{
 //                     scale: isRecording ? [1, 1.2, 1] : 1,
 //                     backgroundColor: isRecording ? "#EF4444" : "#94A3B8"
 //                   }}
-//                   transition={{ 
-//                     repeat: isRecording ? Infinity : 0, 
+//                   transition={{
+//                     repeat: isRecording ? Infinity : 0,
 //                     duration: 1.5
 //                   }}
 //                   className="w-5 h-5 rounded-full mr-2"
@@ -324,7 +324,7 @@
 //               transition={{ duration: 0.5 }}
 //               className="text-center py-8"
 //             >
-//               <motion.div 
+//               <motion.div
 //                 initial={{ y: -20, opacity: 0 }}
 //                 animate={{ y: 0, opacity: 1 }}
 //                 transition={{ delay: 0.2 }}
@@ -332,7 +332,7 @@
 //               >
 //                 🎉
 //               </motion.div>
-//               <motion.h2 
+//               <motion.h2
 //                 initial={{ y: -10, opacity: 0 }}
 //                 animate={{ y: 0, opacity: 1 }}
 //                 transition={{ delay: 0.3 }}
@@ -413,7 +413,7 @@
 //               exit={{ opacity: 0 }}
 //               className="text-center py-8"
 //             >
-//               <motion.p 
+//               <motion.p
 //                 animate={{ opacity: [0.5, 1, 0.5] }}
 //                 transition={{ repeat: Infinity, duration: 1.5 }}
 //                 className="text-xl text-blue-600"
@@ -448,8 +448,6 @@
 // };
 
 // export default GraphemeTest;
-
-
 
 // import { useEffect, useState, useRef } from "react";
 // import { toast } from "sonner";
@@ -879,9 +877,6 @@
 
 // export default GraphemeTest;
 
-
-
-
 import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -893,8 +888,58 @@ import PropTypes from "prop-types";
 
 const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const [letters] = useState([
-    "w", "a", "j", "c", "e", "i", "x", "o", "z", "l", "s", "h", "v", "k", "u", "t", "r", "f", "n", "p", "m", "d", "y", "b", "g", "q",
-    "A", "L", "G", "Z", "U", "B", "H", "I", "O", "S", "N", "D", "K", "T", "R", "V", "M", "Q", "F", "X", "P", "Y", "J", "E", "C", "W"
+    "w",
+    "a",
+    "j",
+    "c",
+    "e",
+    "i",
+    "x",
+    "o",
+    "z",
+    "l",
+    "s",
+    "h",
+    "v",
+    "k",
+    "u",
+    "t",
+    "r",
+    "f",
+    "n",
+    "p",
+    "m",
+    "d",
+    "y",
+    "b",
+    "g",
+    "q",
+    "A",
+    "L",
+    "G",
+    "Z",
+    "U",
+    "B",
+    "H",
+    "I",
+    "O",
+    "S",
+    "N",
+    "D",
+    "K",
+    "T",
+    "R",
+    "V",
+    "M",
+    "Q",
+    "F",
+    "X",
+    "P",
+    "Y",
+    "J",
+    "E",
+    "C",
+    "W",
   ]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
@@ -937,7 +982,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
 
   // Initialize Web Speech API
   const initializeSpeechRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       toast.error("Web Speech API is not supported in this browser");
       return null;
@@ -1003,13 +1049,12 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
     }
   };
 
-  // Submit results to backend
   const handleSubmit = async () => {
     setShowSubmit(false);
     toast.loading("Processing your results...");
     try {
       // Wait to ensure all recognition results are processed
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const transcriptions = transcriptionsRef.current;
       // Fill missing transcriptions with empty strings
       while (transcriptions.length < letters.length) {
@@ -1022,7 +1067,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
       );
       toast.dismiss();
       setScore(evalResponse.data.score);
-      if (suppressResultPage && typeof onComplete === 'function') {
+      if (suppressResultPage && typeof onComplete === "function") {
         onComplete(evalResponse.data.score);
       } else {
         setShowResults(true);
@@ -1051,7 +1096,12 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
       className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6"
     >
       {showResults && (
-        <Confetti width={width} height={height} recycle={false} colors={['#2563EB', '#60A5FA', '#93C5FD', '#FFFFFF']} />
+        <Confetti
+          width={width}
+          height={height}
+          recycle={false}
+          colors={["#2563EB", "#60A5FA", "#93C5FD", "#FFFFFF"]}
+        />
       )}
 
       <motion.div
@@ -1151,11 +1201,11 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                 <motion.div
                   animate={{
                     scale: isRecording ? [1, 1.2, 1] : 1,
-                    backgroundColor: isRecording ? "#EF4444" : "#94A3B8"
+                    backgroundColor: isRecording ? "#EF4444" : "#94A3B8",
                   }}
                   transition={{
                     repeat: isRecording ? Infinity : 0,
-                    duration: 1.5
+                    duration: 1.5,
                   }}
                   className="w-5 h-5 rounded-full mr-2"
                 ></motion.div>
@@ -1170,7 +1220,9 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                   {currentTranscript && (
                     <>
                       <span>Heard:&nbsp;</span>
-                      <span className="bg-blue-100 px-2 py-1 rounded">{currentTranscript}</span>
+                      <span className="bg-blue-100 px-2 py-1 rounded">
+                        {currentTranscript}
+                      </span>
                     </>
                   )}
                 </span>
@@ -1265,7 +1317,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                 transition={{ duration: 0.3, delay: 0.1 }}
                 className="text-blue-600 mb-6"
               >
-                You&apos;ve recorded all letters. Click below to process your results.
+                You&apos;ve recorded all letters. Click below to process your
+                results.
               </motion.p>
               <motion.button
                 initial={{ y: 10, opacity: 0 }}
@@ -1307,7 +1360,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
           className="mt-6 text-center"
         >
           <p className="text-blue-500 font-medium">
-            {["✨", "🎯", "💡", "🔊", "👏"][currentIndex % 5]} Say it loud and clear!
+            {["✨", "🎯", "💡", "🔊", "👏"][currentIndex % 5]} Say it loud and
+            clear!
           </p>
         </motion.div>
       )}
