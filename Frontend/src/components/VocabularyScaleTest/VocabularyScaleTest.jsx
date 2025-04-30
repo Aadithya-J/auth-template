@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { backendURL, pythonURL } from "../../definedURL";
+import { backendURL } from "../../definedURL";
 import {
   Mic,
   MicOff,
@@ -37,7 +37,7 @@ const useAudioRecorder = (onAudioCaptured) => {
       setIsTranscribing(true);
       setError(null);
       try {
-        const response = await fetch(`${pythonURL}/transcribe`, {
+        const response = await fetch(`${backendURL}/transcribe`, {
           method: "POST",
           body: formData,
         });

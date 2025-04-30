@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import axios from "axios";
-import { pythonURL, backendURL } from "../../definedURL";
+import { backendURL } from "../../definedURL";
 import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -154,7 +154,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
       const formData = new FormData();
       formData.append("file", audioBlob, "full_recording.webm");
 
-      const response = await axios.post(`${pythonURL}/transcribe`, formData, {
+      const response = await axios.post(`${backendURL}/transcribe`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

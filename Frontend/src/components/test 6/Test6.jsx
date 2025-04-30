@@ -1,6 +1,6 @@
 // import { useEffect, useRef, useState } from "react";
 // import { useNavigate } from "react-router-dom";
-// import { backendURL, pythonURL } from "../../definedURL";
+// import { backendURL } from "../../definedURL";
 // import WordGrid from "./WordGrid";
 
 // import axios from "axios";
@@ -84,7 +84,7 @@
 
 //     try {
 //       setIsTranscribing(true);
-//       const response = await fetch(`${pythonURL}/transcribe`, {
+//       const response = await fetch(`${backendURL}/transcribe`, {
 //         method: "POST",
 //         body: formData,
 //       });
@@ -280,7 +280,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { backendURL, pythonURL } from "../../definedURL";
+import { backendURL } from "../../definedURL";
 import WordGrid from "./WordGrid";
 
 import axios from "axios";
@@ -378,7 +378,7 @@ const useTranscriptionService = () => {
 
     try {
       setIsTranscribing(true);
-      const response = await fetch(`${pythonURL}/transcribe`, {
+      const response = await fetch(`${backendURL}/transcribe`, {
         method: "POST",
         body: formData,
       });

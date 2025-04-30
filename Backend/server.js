@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -7,6 +7,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+import multer from "multer";
+import speechController from "./controllers/speechController.js";
 import authRoutes from "./routes/authRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import visualRoutes from "./routes/visualRoute.js";
@@ -41,6 +43,39 @@ app.use("/", soundBlendingRoutes);
 app.use("/", symbolSequenceRoutes);
 app.use("/vocabulary", vocabularyRoutes); // Use vocabulary routes with /vocabulary prefix
 app.use("/", geminiInferenceRoutes);
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 25 * 1024 * 1024, // 25MB limit
+  },
+});
+
+// Transcription endpoint
+app.post("/transcribe", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const result = await speechController.handleTranscriptionRequest(req.file);
+    res.json(result);
+  } catch (error) {
+    console.error("Transcription error:", error);
+    res.status(500).json({
+      error: "Transcription failed",
+      details: error.message,
+    });
+  }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something broke!" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

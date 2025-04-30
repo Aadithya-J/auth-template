@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "sonner";
 import images from "../../Data/imageData";
-import { backendURL, pythonURL } from "../../definedURL";
+import { backendURL } from "../../definedURL";
 import PictureCard from "./PictureCard";
 import ProgressTracker from "./ProgressTracker";
 
@@ -47,7 +47,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       setIsTranscribing(true);
       setError(null);
       try {
-        const response = await fetch(`${pythonURL}/transcribe`, {
+        const response = await fetch(`${backendURL}/transcribe`, {
           method: "POST",
           body: formData,
         });

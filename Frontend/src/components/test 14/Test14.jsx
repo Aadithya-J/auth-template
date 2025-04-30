@@ -10,7 +10,7 @@ import {
   SkipForward,
   Loader,
 } from "lucide-react";
-import { backendURL, pythonURL } from "../../definedURL";
+import { backendURL } from "../../definedURL";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 
@@ -475,7 +475,7 @@ export default function PhonemeGame({
 
       formData.append("file", upload);
 
-      const response = await axios.post(`${pythonURL}/transcribe`, formData, {
+      const response = await axios.post(`${backendURL}/transcribe`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
