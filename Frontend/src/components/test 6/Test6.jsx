@@ -934,25 +934,6 @@ const RecordingControls = ({
         </div>
       )}
     </div>
-
-    {(interimTranscript || finalTranscript) && (
-      <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200 shadow-sm">
-        <div className="text-sm text-gray-700">
-          {finalTranscript && (
-            <div className="mb-2">
-              <span className="font-semibold text-blue-600">Final: </span>
-              {finalTranscript}
-            </div>
-          )}
-          {interimTranscript && (
-            <div className="text-gray-500">
-              <span className="font-semibold">Listening: </span>
-              {interimTranscript}
-            </div>
-          )}
-        </div>
-      </div>
-    )}
   </div>
 );
 
