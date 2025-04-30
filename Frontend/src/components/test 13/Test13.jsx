@@ -7,7 +7,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { backendURL, pythonURL } from "../../definedURL";
 
-// --- Configuration ---
 const DIGIT_DISPLAY_TIME = 1000;
 const PAUSE_BETWEEN_DIGITS = 200;
 const STARTING_FORWARD_SEQUENCES = [
