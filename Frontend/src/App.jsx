@@ -280,13 +280,17 @@ function App() {
     navigate("/login");
   };
 
-  const handleAgeVerified = () => {
+  const handleAgeVerified = async () => {
     setIsAgeVerified(true);
     setShowAgeDialog(false);
     setShowConsentRequired(false);
     localStorage.setItem("age_verified", "true");
-    fetchData();
-    navigate("/");
+    try {
+      await fetchData();
+      navigate("/");
+    } catch (error) {
+      console.error("Error fetching data after age verification:", error);
+    }
   };
 
   const handleAgeRejected = () => {
@@ -316,8 +320,8 @@ function App() {
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-md">
         <div className="w-full max-w-md p-6 mx-4 bg-white rounded-2xl shadow-xl transform transition-all duration-500 ease-out">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-blue-700 mb-4">We Need Permission</h2>
-            <p className="text-blue-600 mb-6">Without consent, we cannot proceed to the site.</p>
+            <h2 className="text-2xl font-bold text-blue-700 mb-4">Permission Required</h2>
+            <p className="text-blue-600 mb-6">Parental consent is needed to use this site. Please log out.</p>
             <button 
               onClick={handleLogout}
               className="px-6 py-3 bg-blue-500 text-white rounded-xl font-medium transition-all duration-300 hover:bg-blue-600"

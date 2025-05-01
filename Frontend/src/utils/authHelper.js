@@ -14,7 +14,7 @@ export const getUser = () => {
 };
 
 export const clearAuth = () => {
-    console.log('Auth being cleared. Stack trace:', new Error().stack);
+    // console.log('Auth being cleared. Stack trace:', new Error().stack);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");

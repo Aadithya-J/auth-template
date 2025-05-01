@@ -52,7 +52,7 @@ const Login = ({ onLogin }) => {
     setErrors({});
 
     try {
-      const response = await fetch(`${backendURL}/auth/login`, {
+      const response = await fetch(`${backendURL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
