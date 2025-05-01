@@ -9,22 +9,25 @@ RUN npm run build
 
 # final stage
 FROM node:20-slim
-
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system appgroup \
- && adduser --system --ingroup appgroup --home /app --shell /bin/sh appuser
+    && adduser --system --ingroup appgroup --home /app --shell /bin/sh appuser
 
 COPY Backend/package.json Backend/package-lock.json ./
-RUN chown -R appuser:appgroup /app
-
-USER appuser
-ENV HOME=/app
-
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 COPY Backend/ ./
 COPY --from=builder /app/frontend/dist /Frontend/dist
+
+RUN mkdir -p /app/uploads \
+    && chown -R appuser:appgroup /app \
+    && chmod -R 755 /app \
+    && chmod -R 777 /app/uploads
+
+USER appuser
+ENV HOME=/app
 
 EXPOSE 3000
 CMD ["npm", "start"]
