@@ -23,11 +23,11 @@ const register = async (req, res) => {
   }
 };
 
-// Login user
 const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
+  if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
+  }
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -35,18 +35,24 @@ const login = async (req, res) => {
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      return res.status(401).json({ message: error.message });
+    }
+
+    if (!data || !data.session) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     res.status(200).json({
       session: data.session,
       user: data.user,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-// Validate token API
 const validateUser = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -57,16 +63,22 @@ const validateUser = async (req, res) => {
   try {
     const { data, error } = await supabase.auth.getUser(token);
 
-    if (error) throw error;
+    if (error) {
+      return res.status(401).json({
+        valid: false,
+        message: error.message,
+      });
+    }
 
     return res.status(200).json({
       valid: true,
       user: data.user,
     });
   } catch (error) {
+    console.error("Token validation error:", error);
     return res.status(401).json({
       valid: false,
-      message: error.message,
+      message: "Invalid token",
     });
   }
 };

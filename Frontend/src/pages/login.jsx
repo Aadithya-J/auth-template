@@ -49,9 +49,10 @@ const Login = ({ onLogin }) => {
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
 
     try {
-      const response = await fetch(`${backendURL}/login`, {
+      const response = await fetch(`${backendURL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,8 +60,14 @@ const Login = ({ onLogin }) => {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        throw new Error('Invalid response from server');
+      }
+
+      if (response.ok && data.session && data.user) {
         localStorage.setItem("access_token", data.session.access_token);
         localStorage.setItem("refresh_token", data.session.refresh_token);
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -73,16 +80,12 @@ const Login = ({ onLogin }) => {
         if (onLogin) onLogin(defaultHeaders);
         navigate("/");
       } else {
-        const errorData = await response.json();
-        setErrors((prev) => ({
-          ...prev,
-          server: errorData.message || "Login failed. Please try again.",
-        }));
+        throw new Error(data.message || 'Login failed');
       }
     } catch (error) {
       setErrors((prev) => ({
         ...prev,
-        server: "An error occurred while logging in. Please try again.",
+        server: error.message || "An error occurred while logging in. Please try again.",
       }));
       console.error("Login error:", error);
     } finally {
