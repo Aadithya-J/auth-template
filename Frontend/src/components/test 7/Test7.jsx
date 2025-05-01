@@ -14,7 +14,8 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [answer, setAnswer] = useState("");
   const [description, setDescription] = useState("");
   const [step, setStep] = useState(1);
-  const [isListening, setIsListening] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const currentImage = images[currentIndex];
   const [responses, setResponses] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -22,51 +23,9 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [testId, setTestId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const recognitionRef = useRef(null);
 
-  // Initialize speech recognition
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      setError(
-        "Speech recognition is not supported in your browser. Please use Chrome or Edge."
-      );
-      return;
-    }
-
-    recognitionRef.current = new SpeechRecognition();
-    recognitionRef.current.continuous = false;
-    recognitionRef.current.interimResults = false;
-    recognitionRef.current.lang = "en-US";
-
-    recognitionRef.current.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      if (step === 2) {
-        setAnswer(transcript);
-      } else if (step === 3) {
-        setDescription(transcript);
-      }
-      toast.success("Speech recognized!");
-    };
-
-    recognitionRef.current.onerror = (event) => {
-      setIsListening(false);
-      setError(`Speech recognition error: ${event.error}`);
-      toast.error("Speech recognition failed. Please try again.");
-    };
-
-    recognitionRef.current.onend = () => {
-      setIsListening(false);
-    };
-
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, [step]);
+  const mediaRecorderRef = useRef(null);
+  const isRecordingRef = useRef(false);
 
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
@@ -77,24 +36,148 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     }
   };
 
-  const toggleListening = () => {
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
+  const uploadAudio = useCallback(
+    async (audioBlob) => {
+      const formData = new FormData();
+      const file = new File([audioBlob], "picture_recognition.wav", {
+        type: "audio/wav",
+      });
+      formData.append("file", file);
+
+      setIsTranscribing(true);
       setError(null);
       try {
-        recognitionRef.current.start();
-        setIsListening(true);
-        toast.info("Listening... Speak now");
-      } catch (err) {
-        setError(
-          "Could not start speech recognition. Please check permissions."
-        );
-        toast.error("Could not start speech recognition.");
+        const response = await fetch(`${backendURL}/transcribe`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.transcription) {
+          const transcription =
+            result.transcription
+              .toLowerCase()
+              .trim()
+              .replace(/[.,!?;:]*$/, "") || "";
+
+          if (step === 2) {
+            setAnswer(transcription);
+          } else if (step === 3) {
+            setDescription(transcription);
+          }
+
+          toast.success("Transcription received!");
+        } else {
+          const errorMsg =
+            result.error || "Transcription failed. Please try again.";
+          setError(errorMsg);
+          toast.error(errorMsg);
+        }
+      } catch (error) {
+        setError("Error uploading audio. Please check connection.");
+        toast.error("Error uploading audio. Please check connection.");
+      } finally {
+        setIsTranscribing(false);
+      }
+    },
+    [step]
+  );
+
+  const stopListening = useCallback(() => {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state === "recording"
+    ) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (e) {
+        console.error("Error stopping MediaRecorder:", e);
+        toast.error("Error stopping recording");
       }
     }
-  };
+    if (window.stream) {
+      try {
+        window.stream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      } catch (e) {
+        console.error("Error stopping stream tracks:", e);
+        toast.error("Error stopping microphone");
+      }
+      window.stream = null;
+    }
+    mediaRecorderRef.current = null;
+    if (isRecordingRef.current) {
+      setIsRecording(false);
+    }
+  }, []);
+
+  const startListening = useCallback(() => {
+    if (isRecordingRef.current) return;
+
+    setError(null);
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        window.stream = stream;
+        let localAudioChunks = [];
+
+        if (stream.getAudioTracks().length > 0) {
+          stream.getAudioTracks()[0].onended = () => {
+            stopListening();
+          };
+        }
+
+        const mimeType = MediaRecorder.isTypeSupported("audio/wav;codecs=pcm")
+          ? "audio/wav;codecs=pcm"
+          : "audio/webm";
+
+        const newMediaRecorder = new MediaRecorder(stream, { mimeType });
+        mediaRecorderRef.current = newMediaRecorder;
+
+        newMediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            localAudioChunks.push(event.data);
+          }
+        };
+
+        newMediaRecorder.onstop = async () => {
+          if (localAudioChunks.length > 0) {
+            const audioBlob = new Blob(localAudioChunks, { type: mimeType });
+            localAudioChunks = [];
+            await uploadAudio(audioBlob);
+          }
+        };
+
+        newMediaRecorder.onerror = (event) => {
+          toast.error(`Recording error: ${event.error.name}`);
+          stopListening();
+        };
+
+        try {
+          newMediaRecorder.start(100); // Collect data every 100ms
+          isRecordingRef.current = true;
+          setIsRecording(true);
+        } catch (e) {
+          toast.error("Failed to start recording.");
+          stopListening();
+        }
+      })
+      .catch((error) => {
+        setError("Could not access microphone. Please check permissions.");
+        toast.error("Could not access microphone. Please check permissions.");
+      });
+  }, [uploadAudio, stopListening]);
+
+  const toggleRecording = useCallback(() => {
+    if (isRecording) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  }, [isRecording, startListening, stopListening]);
 
   const handleCanSeeSelection = (selection) => {
     setCanSee(selection);
@@ -125,7 +208,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const handleNext = () => {
     if (step === 2 && answer.trim()) {
       setStep(3);
-      speakText("Please describe the picture.");
+      isRecordingRef.current = false;
     } else if (step === 3 && description.trim()) {
       handleSubmit();
     } else {
@@ -243,17 +326,16 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       setDescription("");
       setCanSee(null);
       setStep(1);
+      isRecordingRef.current = false;
     }
   };
 
   useEffect(() => {
     setTimeout(() => speakText("Can you see this picture?"), 2000);
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      stopListening();
     };
-  }, []);
+  }, [stopListening]);
 
   if (isLoading) {
     return (
@@ -519,17 +601,25 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`flex items-center justify-center space-x-2 w-full ${
-                      isListening
-                        ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
-                        : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                    } text-white font-semibold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-md transition-all duration-300`}
-                    onClick={toggleListening}
+                    className={`flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-md transition-all duration-300 ${
+                      isRecording ? "animate-pulse" : ""
+                    }`}
+                    onClick={toggleRecording}
+                    disabled={isTranscribing}
                   >
-                    {isListening ? (
+                    {isTranscribing ? (
                       <>
-                        <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                        <span>Listening... Speak now</span>
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                          className="w-3 h-3 bg-white rounded-full"
+                        />
+                        <span>Processing...</span>
+                      </>
+                    ) : isRecording ? (
+                      <>
+                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span>Stop Recording</span>
                       </>
                     ) : (
                       <>
