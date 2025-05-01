@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
-  Mic,
-  MicOff,
   Check,
   X,
   Volume2,
@@ -42,7 +40,12 @@ const WORDS = [
   },
   {
     id: 6,
-    sounds: ["/sounds/b.mp3", "/sounds/o.mp3", "", "/sounds/t.mp3"],
+    sounds: [
+      "/sounds/b.mp3",
+      "/sounds/o.mp3",
+      "/sounds/a.mp3",
+      "/sounds/t.mp3",
+    ],
     word: "boat",
   },
   {
@@ -298,7 +301,6 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-// Loading overlay component
 const LoadingOverlay = ({ message = "Processing..." }) => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -339,31 +341,28 @@ export default function PhonemeGame({
   const [isPlaying, setIsPlaying] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
   const [responses, setResponses] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState(null);
-  const [transcript, setTranscript] = useState("");
-  const [userResponses, setUserResponses] = useState([]); // Track all user responses for current word
+  const [userInput, setUserInput] = useState("");
   const [readyForNext, setReadyForNext] = useState(false);
   const [showFinalSubmit, setShowFinalSubmit] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // New state for loading overlay
-  const [loadingMessage, setLoadingMessage] = useState(""); // Message to display during loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const audioRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
-      stopRecording();
     };
   }, []);
 
   useEffect(() => {
-    // Reset user responses when changing to a new word
-    setUserResponses([]);
-    setReadyForNext(false);
-  }, [currentWordIndex]);
+    if (showResponse && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showResponse]);
 
   const playSound = (src) => {
     return new Promise((resolve) => {
@@ -404,114 +403,27 @@ export default function PhonemeGame({
     }
   };
 
-  const startRecording = async () => {
-    setError(null);
-    setTranscript("");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm",
-      });
-      mediaRecorderRef.current = mediaRecorder;
-      const audioChunks = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          audioChunks.push(e.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        setIsLoading(true); // Show loading overlay
-        setLoadingMessage("Processing your speech...");
-
-        const audioBlob = new Blob(audioChunks);
-        const file = new File(
-          [audioBlob],
-          `rec.${audioBlob.type.split("/")[1]}`,
-          {
-            type: audioBlob.type,
-          }
-        );
-
-        const transcription = await transcribeAudio(file);
-        stream.getTracks().forEach((track) => track.stop());
-
-        // Add the new response to userResponses
-        setUserResponses((prev) => [...prev, transcription]);
-
-        // Ready to move to next word
-        setReadyForNext(true);
-        setIsLoading(false); // Hide loading overlay
-      };
-
-      // Start recording with timeslice to ensure dataavailable events fire
-      mediaRecorder.start(100); // 100ms timeslice
-      setIsRecording(true);
-    } catch (err) {
-      console.error("Error starting recording:", err);
-      setError("Couldn't access microphone. Please check permissions.");
-      setIsRecording(false);
+  const handleSubmitResponse = () => {
+    if (!userInput.trim()) {
+      setError("Please enter a word before submitting");
+      return;
     }
-  };
 
-  const stopRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state === "recording"
-    ) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
-  };
-
-  const transcribeAudio = async (fileOrBlob) => {
-    try {
-      const formData = new FormData();
-      const upload =
-        fileOrBlob instanceof File
-          ? fileOrBlob
-          : new File([fileOrBlob], "recording", { type: fileOrBlob.type });
-
-      formData.append("file", upload);
-
-      const response = await axios.post(`${backendURL}/transcribe`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const transcription =
-        response.data.transcription
-          ?.toLowerCase()
-          .trim()
-          .replace(/[.,!?;:]*$/, "") || "";
-
-      setTranscript(transcription);
-      return transcription;
-    } catch (err) {
-      console.error("Transcription error:", err);
-      setError("Failed to transcribe audio. Please try again.");
-      return "";
-    }
-  };
-
-  const moveToNextWord = () => {
     const currentWord = WORDS[currentWordIndex];
-    // Use the last response as the final answer
-    const finalResponse =
-      userResponses.length > 0 ? userResponses[userResponses.length - 1] : "";
+    const response = userInput.toLowerCase().trim();
 
     // Check if answer is correct (accounting for alternative correct answers)
     const isCorrect = currentWord.alternatives
       ? [...currentWord.alternatives, currentWord.word.toLowerCase()].includes(
-          finalResponse
+          response
         )
-      : finalResponse === currentWord.word.toLowerCase();
+      : response === currentWord.word.toLowerCase();
 
     // Create the new response object
     const newResponse = {
       wordId: currentWord.id,
       word: currentWord.word,
-      response: finalResponse,
+      response: userInput,
       isCorrect,
     };
 
@@ -525,8 +437,7 @@ export default function PhonemeGame({
       // Move to next word
       setCurrentWordIndex(currentWordIndex + 1);
       setShowResponse(false);
-      setTranscript("");
-      setUserResponses([]);
+      setUserInput("");
       setReadyForNext(false);
     }
   };
@@ -552,8 +463,7 @@ export default function PhonemeGame({
       // Move to next word
       setCurrentWordIndex(currentWordIndex + 1);
       setShowResponse(false);
-      setTranscript("");
-      setUserResponses([]);
+      setUserInput("");
       setReadyForNext(false);
     }
   };
@@ -755,7 +665,7 @@ export default function PhonemeGame({
             Blend the Sounds!
           </motion.h2>
           <p className="text-blue-600 font-medium">
-            {showResponse ? "Say the word you heard" : "Listen carefully"}
+            {showResponse ? "Enter the word you heard" : "Listen carefully"}
           </p>
         </div>
 
@@ -775,16 +685,16 @@ export default function PhonemeGame({
 
         <motion.div
           animate={{
-            scale: isPlaying || isRecording ? [1, 1.1, 1] : 1,
+            scale: isPlaying ? [1, 1.1, 1] : 1,
             rotate: isPlaying ? [0, 5, -5, 0] : 0,
           }}
           transition={{
-            duration: isPlaying || isRecording ? 2 : 0.5,
-            repeat: isPlaying || isRecording ? Infinity : 0,
+            duration: isPlaying ? 2 : 0.5,
+            repeat: isPlaying ? Infinity : 0,
           }}
           className="flex justify-center text-8xl my-6"
         >
-          {isPlaying ? "👂" : showResponse ? (isRecording ? "🎙️" : "🎤") : "🔊"}
+          {isPlaying ? "👂" : showResponse ? "✏️" : "🔊"}
         </motion.div>
 
         {!showResponse ? (
@@ -821,62 +731,25 @@ export default function PhonemeGame({
             </motion.div>
 
             <div className="flex flex-col items-center space-y-3">
-              {/* Display all user responses for the current word */}
-              <AnimatePresence>
-                {userResponses.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg w-full border border-blue-100 shadow-sm"
-                  >
-                    <p className="font-medium text-blue-700 mb-2">
-                      Your responses:
-                    </p>
-                    <ul className="space-y-2">
-                      {userResponses.map((response, index) => (
-                        <motion.li
-                          key={index}
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 * index }}
-                          className={`p-2 rounded-md ${
-                            index === userResponses.length - 1
-                              ? "bg-blue-100 font-medium border-l-4 border-blue-400"
-                              : "bg-white bg-opacity-60"
-                          }`}
-                        >
-                          {index + 1}. {response || "[No response detected]"}
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <Button
-                onClick={isRecording ? stopRecording : startRecording}
-                variant={isRecording ? "danger" : "primary"}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 className="w-full"
               >
-                {isRecording ? (
-                  <>
-                    <div className="flex items-center">
-                      <span className="relative flex h-3 w-3 mr-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                      </span>
-                      <MicOff className="h-5 w-5" />
-                    </div>
-                    Stop Recording
-                  </>
-                ) : (
-                  <>
-                    <Mic className="h-5 w-5" />
-                    Press & Speak
-                  </>
-                )}
-              </Button>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type the word you heard..."
+                  className="w-full px-4 py-3 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center font-medium text-blue-800 placeholder-blue-300"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleSubmitResponse();
+                    }
+                  }}
+                />
+              </motion.div>
 
               {/* Navigation buttons */}
               <div className="flex gap-2 w-full mt-2">
@@ -892,15 +765,15 @@ export default function PhonemeGame({
                   </Button>
                 )}
 
-                {/* Next button - Only show when there's at least one response */}
-                {userResponses.length > 0 && !showFinalSubmit && (
+                {/* Submit button - Only show when there's input */}
+                {userInput && !showFinalSubmit && (
                   <Button
-                    onClick={moveToNextWord}
+                    onClick={handleSubmitResponse}
                     variant="success"
                     className="flex-1"
                   >
-                    <ArrowRight className="h-5 w-5" />
-                    Next
+                    <Check className="h-5 w-5" />
+                    Submit
                   </Button>
                 )}
               </div>
