@@ -6,13 +6,11 @@ import childRoutes from "./routes/childRoutes.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-import multer from "multer";
-import speechController from "./controllers/speechController.js";
+import { transcribeAudio } from "./controllers/speechController.js";
 import authRoutes from "./routes/authRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import visualRoutes from "./routes/visualRoute.js";
-
+import multer from "multer";
 import pictureRoutes from "./routes/pictureRoutes.js";
 import graphemeRoutes from "./routes/graphemeRoutes.js";
 import sequenceRoutes from "./routes/sequenceRoutes.js";
@@ -20,6 +18,9 @@ import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
 import vocabularyRoutes from "./routes/vocabularyRoutes.js";
 import geminiInferenceRoutes from "./utils/geminiInference.js";
+import { mkdirSync } from "fs";
+mkdirSync("uploads", { recursive: true });
+
 app.use(
   cors({
     origin: ["https://jiveesha.vercel.app", "http://localhost:5173"],
@@ -44,36 +45,22 @@ app.use("/", symbolSequenceRoutes);
 app.use("/vocabulary", vocabularyRoutes); // Use vocabulary routes with /vocabulary prefix
 app.use("/", geminiInferenceRoutes);
 
-// Configure multer for file uploads
 const upload = multer({
-  storage: multer.memoryStorage(),
+  dest: "uploads/",
   limits: {
-    fileSize: 25 * 1024 * 1024, // 25MB limit
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+    files: 1,
   },
 });
 
-// Transcription endpoint
-app.post("/transcribe", upload.single("file"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+app.post("/transcribe", upload.single("file"), transcribeAudio);
 
-    const result = await speechController.handleTranscriptionRequest(req.file);
-    res.json(result);
-  } catch (error) {
-    console.error("Transcription error:", error);
-    res.status(500).json({
-      error: "Transcription failed",
-      details: error.message,
-    });
-  }
-});
-
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: "Something broke!" });
+  res.status(500).json({
+    error: "Internal server error",
+    details: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
 });
 
 app.listen(PORT, () => {
