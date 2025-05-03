@@ -116,15 +116,15 @@ export const transcribeAudio = async (req, res) => {
 
     const audioBase64 = audioBuffer.toString("base64");
     const audioLength = audioBuffer.length / (16000 * 2);
-    if (audioLength < 0.5) {
-      throw new Error(
-        `Audio duration (${audioLength.toFixed(
-          1
-        )}s) must be Minimum 0.5s required.`
-      );
-    }
+    // if (audioLength < 0.5) {
+    //   throw new Error(
+    //     `Audio duration (${audioLength.toFixed(
+    //       1
+    //     )}s) must be Minimum 0.5s required.`
+    //   );
+    // }
 
-    if (audioBase64.length < 1000) {
+    if (audioBase64.length < 100) {
       throw new Error("Generated base64 audio data is too short");
     }
 
