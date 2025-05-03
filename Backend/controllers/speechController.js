@@ -1,235 +1,151 @@
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import fs from "fs";
-import path from "path";
-import pkg from "fluent-ffmpeg";
-const { setFfmpegPath } = pkg;
-import ffmpegStatic from "ffmpeg-static";
-import speech from "microsoft-cognitiveservices-speech-sdk";
+// controllers/speechController.js
+import { writeFileSync, readFileSync, unlinkSync, existsSync } from "fs";
+import { stat } from "fs/promises";
+import axios from "axios";
+import { fileTypeFromBuffer } from "file-type";
+import { exec } from "child_process";
+import util from "util";
 
-// Configure __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const execPromise = util.promisify(exec);
 
+const validateAudioFile = async (buffer) => {
+  const type = await fileTypeFromBuffer(buffer);
+  if (!type) throw new Error("Unable to determine file type");
 
-if (ffmpegStatic) {
-  console.log("ffmpeg static path",ffmpegStatic)
-  setFfmpegPath(ffmpegStatic);
-}
+  // Strip parameters like "; codecs=opus"
+  const baseMime = type.mime.split(";")[0].trim();
 
-const uploadsDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+  const supported = [
+    "audio/wav",
+    "audio/x-wav",
+    "audio/webm",
+    "video/webm",
+    "audio/ogg",
+    "application/ogg",
+    "audio/opus",
+  ];
 
+  if (!supported.includes(baseMime)) {
+    throw new Error(`Unsupported audio format: ${type.mime}`);
+  }
+  return type;
+};
 
-class SpeechController {
-  constructor() {
-    if (!process.env.AZURE_SPEECH_KEY) {
-      throw new Error("Azure Speech key not configured");
+const convertToWav = async (inputPath) => {
+  const outputPath = `${inputPath}.converted.wav`;
+  const cmd = [
+    `ffmpeg -y -i "${inputPath}"`,
+    `-ac 1 -ar 16000`,
+    `-af "areverse,silenceremove=start_periods=1:start_duration=0.05:start_threshold=-60dB,` +
+      `areverse,silenceremove=start_periods=1:start_duration=0.05:start_threshold=-60dB,` +
+      `loudnorm=I=-16:TP=-1.5:LRA=11"`,
+    `-f wav "${outputPath}"`,
+  ].join(" ");
+  try {
+    await execPromise(cmd);
+    if (!existsSync(outputPath)) {
+      throw new Error("FFmpeg conversion failed");
+    }
+    const { size } = await stat(outputPath);
+    if (size < 1000) throw new Error("Converted file too small");
+    return outputPath;
+  } catch (err) {
+    if (existsSync(outputPath)) unlinkSync(outputPath);
+    throw new Error(`Conversion error: ${err.message}`);
+  }
+};
+
+const hasAudioContent = (buffer) => {
+  if (buffer.length < 1000) return false;
+  const header = 44;
+  for (let i = header; i < Math.min(header + 2000, buffer.length); i += 2) {
+    if (Math.abs(buffer.readInt16LE(i)) > 50) return true;
+  }
+  return false;
+};
+
+export const transcribeAudio = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, error: "No file uploaded" });
+  }
+
+  const origPath = `uploads/${Date.now()}-${req.file.originalname}`;
+  writeFileSync(origPath, req.file.buffer);
+
+  let wavPath = null;
+  try {
+    const buffer = readFileSync(origPath);
+    const fileType = await validateAudioFile(buffer);
+
+    wavPath = await convertToWav(origPath);
+    const processed = readFileSync(wavPath);
+    if (!hasAudioContent(processed)) {
+      throw new Error("Audio contains no meaningful sound");
     }
 
-    this.speechConfig = speech.SpeechConfig.fromSubscription(
-      process.env.AZURE_SPEECH_KEY,
-      process.env.AZURE_SPEECH_REGION || "eastus"
-    );
-    this.speechConfig.speechRecognitionLanguage = "en-US";
+    const audioBase64 = processed.toString("base64");
+    const durationSec = processed.length / (16000 * 2);
 
-    // Enable detailed logging (optional)
-    this.speechConfig.setProperty(
-      speech.PropertyId.Speech_LogFilename,
-      "azure-speech-debug.log"
-    );
-  }
+    if (audioBase64.length < 100) {
+      throw new Error("Base64 data too short");
+    }
 
-  /**
-   * Convert audio to WAV format with silence padding
-   */
-  async convertToWav(inputPath, outputPath) {
-    return new Promise((resolve, reject) => {
-      console.log(`Converting ${inputPath} to padded WAV at ${outputPath}`);
+    const payload = {
+      pipelineTasks: [
+        {
+          taskType: "asr",
+          config: {
+            language: { sourceLanguage: "en" },
+            serviceId: process.env.SERVICE_ID,
+            audioFormat: "wav",
+            samplingRate: 16000,
+          },
+        },
+      ],
+      inputData: { audio: [{ audioContent: audioBase64 }] },
+    };
 
-      // First convert to basic WAV format
-      const command = pkg(inputPath)
-        .audioFrequency(16000)
-        .audioChannels(1)
-        .audioCodec("pcm_s16le")
-        .format("wav");
-
-      // Add 500ms of silence padding at start and end
-      command
-        .input("anullsrc=r=16000:cl=mono")
-        .inputOptions([
-          "-f lavfi",
-          "-t 0.5", // 500ms silence
-        ])
-        .complexFilter([
-          "[0][1]concat=n=2:v=0:a=1[extended]", // Add silence at start
-          "[extended][1]concat=n=2:v=0:a=1", // Add silence at end
-        ]);
-
-      command
-        .output(outputPath)
-        .on("end", () => {
-          console.log("Audio conversion with padding successful");
-          resolve(outputPath);
-        })
-        .on("error", (err) => {
-          console.error("Audio conversion failed:", err);
-          reject(new Error(`FFmpeg error: ${err.message}`));
-        })
-        .run();
+    const response = await axios.post(process.env.ASR_API_URL, payload, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.INFERENCE_API_KEY,
+        userID: process.env.USER_ID,
+        ulcaApiKey: process.env.ULCA_API_KEY,
+      },
+      timeout: 300_000,
     });
-  }
 
-  /**
-   * Transcribe audio using continuous recognition
-   */
-  async transcribeAudio(filePath) {
-    return new Promise((resolve, reject) => {
-      console.log("Starting transcription...");
+    const transcript =
+      response.data.pipelineResponse?.[0]?.output?.[0]?.source || "";
+    if (!transcript) throw new Error("No transcription received");
 
-      // Validate file exists
-      if (!fs.existsSync(filePath)) {
-        return reject(new Error("Audio file not found"));
-      }
-
-      const fileStats = fs.statSync(filePath);
-      if (fileStats.size < 1000) {
-        console.warn("Warning: Audio file is very small (<1KB)");
-      }
-
-      const pushStream = speech.AudioInputStream.createPushStream();
-      fs.createReadStream(filePath)
-        .on("data", (chunk) => pushStream.write(chunk))
-        .on("end", () => pushStream.close())
-        .on("error", (err) => reject(err));
-
-      const audioConfig = speech.AudioConfig.fromStreamInput(pushStream);
-      const recognizer = new speech.SpeechRecognizer(
-        this.speechConfig,
-        audioConfig
-      );
-
-      let resultText = "";
-      let confidence = null;
-      let hasResult = false;
-
-      recognizer.recognized = (s, e) => {
-        if (
-          e.result.reason === speech.ResultReason.RecognizedSpeech &&
-          e.result.text
-        ) {
-          resultText = e.result.text;
-          hasResult = true;
-
-          // Extract confidence score
-          const jsonResult = e.result.properties.getProperty(
-            speech.PropertyId.SpeechServiceResponse_JsonResult
-          );
-          if (jsonResult) {
-            try {
-              const parsed = JSON.parse(jsonResult);
-              confidence = parsed.NBest?.[0]?.Confidence || null;
-            } catch (e) {
-              console.warn("Could not parse confidence score", e);
-            }
-          }
-        }
-      };
-
-      recognizer.canceled = (s, e) => {
-        if (e.reason === speech.CancellationReason.Error) {
-          reject(new Error(`Azure Error: ${e.errorDetails}`));
-        }
-      };
-
-      recognizer.sessionStopped = () => {
-        recognizer.close();
-        if (hasResult) {
-          resolve({
-            transcription: resultText.trim(),
-            confidence: confidence,
-          });
-        } else {
-          reject(new Error("No speech detected in audio"));
-        }
-      };
-
-      // Start recognition with 1.5s timeout (adjust as needed)
-      recognizer.startContinuousRecognitionAsync(
-        () =>
-          setTimeout(() => {
-            if (!hasResult) {
-              recognizer.stopContinuousRecognitionAsync();
-            }
-          }, 1500),
-        (err) => reject(new Error(`Recognition failed to start: ${err}`))
-      );
+    res.json({
+      success: true,
+      transcription: transcript
+        .toLowerCase()
+        .trim()
+        .replace(/[.,!?;:]*$/, ""),
+      audioDetails: {
+        originalFormat: fileType.mime,
+        duration: `${durationSec.toFixed(1)}s`,
+        processedSize: processed.length,
+      },
     });
-  }
-
-  /**
-   * Main handler for transcription requests
-   */
-  async handleTranscriptionRequest(file) {
-    let tempPaths = [];
-    try {
-      // Create temp file paths
-      const originalPath = join(
-        __dirname,
-        "../uploads",
-        `${Date.now()}-original`
-      );
-      const convertedPath = join(
-        __dirname,
-        "../uploads",
-        `${Date.now()}-padded.wav`
-      );
-      tempPaths = [originalPath, convertedPath];
-
-      // Save uploaded file
-      console.log("Saving uploaded file to:", originalPath);
-      await fs.promises.writeFile(originalPath, file.buffer);
-
-      // Convert to padded WAV
-      await this.convertToWav(originalPath, convertedPath);
-
-      // Verify output file
-      const stats = fs.statSync(convertedPath);
-      console.log("Padded WAV file size:", stats.size, "bytes");
-
-      // Log audio duration
-      await new Promise((resolve) => {
-        pkg.ffprobe(convertedPath, (err, metadata) => {
-          if (!err) {
-            console.log("Audio duration:", metadata.format.duration, "seconds");
-          }
-          resolve();
-        });
-      });
-
-      // Transcribe
-      const result = await this.transcribeAudio(convertedPath);
-      console.log("Transcription successful:", result);
-      return result;
-    } catch (error) {
-      console.error("Transcription failed:", error);
-      throw error;
-    } finally {
-      // Clean up temp files
-      for (const filePath of tempPaths) {
+  } catch (err) {
+    console.error("Transcription Error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Audio processing failed",
+      details:
+        process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  } finally {
+    [origPath, wavPath]
+      .filter(Boolean)
+      .forEach((p) => {
         try {
-          if (filePath && fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-            console.log(`Deleted temp file: ${filePath}`);
-          }
-        } catch (err) {
-          console.error(`Error deleting ${filePath}:`, err);
-        }
-      }
-    }
+          if (existsSync(p)) unlinkSync(p);
+        } catch {}
+      });
   }
-}
-
-export default new SpeechController();
+};
