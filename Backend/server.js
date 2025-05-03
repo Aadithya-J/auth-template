@@ -16,7 +16,7 @@ import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
 import vocabularyRoutes from "./routes/vocabularyRoutes.js";
 import geminiInferenceRoutes from "./utils/geminiInference.js";
-
+import { mkdirSync } from "fs";
 import { transcribeAudio } from "./controllers/speechController.js";
 
 const __filename = fileURLToPath(import.meta.url);
