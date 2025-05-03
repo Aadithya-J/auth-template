@@ -157,4 +157,6 @@ psd
 thumb
 sketch
 
-DockerFIle
+DockerFile
+Backend/node_modules/
+Frontend/node_modules/
