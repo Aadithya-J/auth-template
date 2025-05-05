@@ -47,7 +47,7 @@ const convertToWav = async (inputPath) => {
       throw new Error("FFmpeg conversion failed");
     }
     const { size } = await stat(outputPath);
-    if (size < 1000) throw new Error("Converted file too small");
+    if (size < 500) throw new Error("Converted file too small");
     return outputPath;
   } catch (err) {
     if (existsSync(outputPath)) unlinkSync(outputPath);
