@@ -367,23 +367,26 @@ function App() {
           </SideNavBar>
           
           {/* Voice control button */}
-          <button 
-            onClick={toggleListening}
-            className={`fixed bottom-4 right-4 z-50 p-3 rounded-full shadow-lg ${
-              isListening ? 'bg-red-500 animate-pulse' : 'bg-blue-500'
-            } text-white`}
-            title={isListening ? 'Listening... Click to stop' : 'Start voice control'}
-          >
-            {isListening ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-              </svg>
-            )}
-          </button>
+          {['/', '/viewstudents', '/taketests', '/analytics', '/testreports'].includes(location.pathname) && (
+  <button 
+    onClick={toggleListening}
+    className={`fixed bottom-4 right-4 z-50 p-3 rounded-full shadow-lg ${
+      isListening ? 'bg-red-500 animate-pulse' : 'bg-blue-500'
+    } text-white`}
+    title={isListening ? 'Listening... Click to stop' : 'Start voice control'}
+  >
+    {isListening ? (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+      </svg>
+    ) : (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+      </svg>
+    )}
+  </button>
+)}
+
           
           {/* Voice command feedback */}
           {isListening && (
@@ -429,6 +432,14 @@ function App() {
           />
           <Route
             path="/analytics"
+            element={
+              <PrivateRoute>
+                <Analytics students={students} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/viewstudents"
             element={
               <PrivateRoute>
                 <Analytics students={students} />

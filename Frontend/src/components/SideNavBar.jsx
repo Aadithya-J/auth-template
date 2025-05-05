@@ -99,12 +99,21 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           />
           <SideNavBarItem
             icon={<HiOutlineClipboardList size={20} />}
+            text="Students"
+            route="/viewstudents"
+            expand={expand}
+            activeItem={activeItem}
+            onClick={handleItemClick}
+          />
+           <SideNavBarItem
+            icon={<HiOutlineClipboardList size={20} />}
             text="Tests"
             route="/taketests"
             expand={expand}
             activeItem={activeItem}
             onClick={handleItemClick}
           />
+          
           <SideNavBarItem
             icon={<BiBarChartAlt2 size={20} />}
             text="Analytics"
