@@ -9,7 +9,7 @@ import testsData from "../Data/tests.json";
 
 const TestCard = ({ test }) => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const getImageForTest = (id) => {
     if (id === 1) return mag;
@@ -61,7 +61,7 @@ const TestCard = ({ test }) => {
         <div className="relative overflow-hidden rounded-lg w-20 h-20">
           <img
             src={getImageForTest(test.id)}
-            alt="Test Thumbnail"
+            alt={t('test')}
             className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -73,7 +73,7 @@ const TestCard = ({ test }) => {
             {getNameForTest(test.id)}
           </h1>
           <div className="flex items-center text-gray-500 text-sm mt-1 group-hover:text-blue-500 transition-colors duration-300">
-            <span>Take Test</span>
+            <span>{t('takeTest')}</span>
             <IoIosArrowRoundForward className="text-xl ml-1 transform group-hover:translate-x-1 transition-transform duration-300" />
           </div>
         </div>

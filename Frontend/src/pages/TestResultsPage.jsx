@@ -11,6 +11,8 @@ import {
 } from "react-icons/fa";
 import TestReportPopup from "../components/TestReportPopup";
 import { backendURL } from "../definedURL.js";
+import { useLanguage } from "../contexts/LanguageContext";
+
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
   const [childDetails, setChildDetails] = useState({});
@@ -29,6 +31,7 @@ const TestResultsTable = () => {
   const [showCumulativeReport, setShowCumulativeReport] = useState(false);
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
+  const { t } = useLanguage();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -304,7 +307,7 @@ const TestResultsTable = () => {
                   {userDetails.role && (
                     <div className="flex items-center">
                       <FaIdCard className="mr-2" />
-                      <span className="font-medium">Role:</span>
+                      <span className="font-medium">{t('role')}</span>
                       <span className="ml-2 bg-blue-700 px-2 py-0.5 rounded text-sm">
                         {userDetails.role}
                       </span>
@@ -326,7 +329,7 @@ const TestResultsTable = () => {
                     <div className="flex items-center">
                       <FaCalendarAlt className="mr-2" />
                       <span>
-                        Member since:{" "}
+                        {t('memberSince')}{" "}
                         {new Date(userDetails.since).toLocaleDateString()}
                       </span>
                     </div>
@@ -336,25 +339,25 @@ const TestResultsTable = () => {
                 {/* Student Info Banner */}
                 <div className="mt-4 flex flex-col md:flex-row gap-4 md:gap-8 bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
-                    <span className="text-blue-100">Viewing Results for:</span>
+                    <span className="text-blue-100">{t('viewingResultsFor')}</span>
                     <span className="ml-2 font-semibold">
                       {childDetails.name || "Student"}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">ID:</span>
+                    <span className="text-blue-100">{t('studentId')}</span>
                     <span className="ml-2 font-semibold">
                       {childId || "N/A"}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">Age:</span>
+                    <span className="text-blue-100">{t('studentAge')}</span>
                     <span className="ml-2 font-semibold">
-                      {childDetails.age || "N/A"} years
+                      {childDetails.age || "N/A"} {t('years')}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">Tests:</span>
+                    <span className="text-blue-100">{t('testsCount')}</span>
                     <span className="ml-2 font-semibold">
                       {allTests.length}
                     </span>
@@ -369,7 +372,7 @@ const TestResultsTable = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="px-6 py-4 border-b border-blue-100 bg-blue-50 flex flex-col md:flex-row justify-between items-center gap-3">
             <div className="flex items-center">
-              <h2 className="font-semibold text-blue-700">All Test Results</h2>
+              <h2 className="font-semibold text-blue-700">{t('allTestResults')}</h2>
               <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
                 {allTests.length}
               </span>
@@ -383,9 +386,9 @@ const TestResultsTable = () => {
               >
                 <FaChartLine className="text-blue-200" />
                 <div className="flex flex-col items-start">
-                  <span className="font-medium">Cumulative Report</span>
+                  <span className="font-medium">{t('cumulativeReport')}</span>
                   <span className="text-xs text-blue-200">
-                    View comprehensive assessment
+                    {t('viewComprehensiveAssessment')}
                   </span>
                 </div>
               </button>
@@ -397,19 +400,19 @@ const TestResultsTable = () => {
               <thead className="bg-blue-100">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    Test Name
+                    {t('testName')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    Date
+                    {t('date')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    Time
+                    {t('time')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    Score
+                    {t('score')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    Report
+                    {t('report')}
                   </th>
                 </tr>
               </thead>
@@ -444,7 +447,7 @@ const TestResultsTable = () => {
                             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors duration-150 flex items-center"
                           >
                             <FaFileAlt className="mr-1" size={12} />
-                            View Report
+                            {t('viewReport')}
                           </button>
                         </td>
                       </tr>
@@ -456,7 +459,7 @@ const TestResultsTable = () => {
                       colSpan="5"
                       className="px-6 py-4 text-center text-blue-600"
                     >
-                      No test results found
+                      {t('noTestResultsFound')}
                     </td>
                   </tr>
                 )}
@@ -472,7 +475,7 @@ const TestResultsTable = () => {
           test={selectedTest}
           childDetails={{ ...childDetails, id: childId }}
           onClose={closeReportPopup}
-          isCumulative={showCumulativeReport} // Add this line
+          isCumulative={showCumulativeReport}
         />
       )}
     </div>

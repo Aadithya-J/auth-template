@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FaChild, FaCheck, FaArrowLeft } from 'react-icons/fa';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 // Accept onRejected prop
 const AgeVerificationDialog = ({ onVerified, onRejected }) => { 
   const [isOpen, setIsOpen] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (isOpen) {
@@ -60,10 +62,10 @@ const AgeVerificationDialog = ({ onVerified, onRejected }) => {
             </div>
           </div>
           
-          <h2 className="text-2xl font-bold text-blue-700 mb-4">Confirm Permission</h2>
+          <h2 className="text-2xl font-bold text-blue-700 mb-4">{t('confirmPermission')}</h2>
           <div className="space-y-3 mb-6">
-            <p className="text-blue-600 text-lg">Are you over 18 or have parental permission to use this site?</p>
-            <p className="text-blue-400 text-sm">We need to ensure compliance with safety regulations.</p>
+            <p className="text-blue-600 text-lg">{t('ageVerificationQuestion')}</p>
+            <p className="text-blue-400 text-sm">{t('ageVerificationInfo')}</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -72,7 +74,7 @@ const AgeVerificationDialog = ({ onVerified, onRejected }) => {
               className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-xl font-medium transition-all duration-300 hover:bg-blue-600 hover:shadow-lg hover:-translate-y-1 focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2 group"
             >
               <FaCheck className="group-hover:rotate-12 transition-transform" />
-              <span>Yes, I Confirm</span>
+              <span>{t('yesConfirm')}</span>
             </button>
             
             <button 
@@ -80,12 +82,12 @@ const AgeVerificationDialog = ({ onVerified, onRejected }) => {
               className="flex-1 px-6 py-3 bg-white text-blue-600 border-2 border-blue-100 rounded-xl font-medium transition-all duration-300 hover:bg-blue-50 hover:border-blue-200 hover:-translate-y-1 flex items-center justify-center gap-2 group"
             >
               <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-              <span>No, I Need to Leave</span>
+              <span>{t('noLeave')}</span>
             </button>
           </div>
           
           <div className="mt-6 text-blue-300 text-sm">
-            <p>Protecting users is our priority.</p>
+            <p>{t('protectingUsers')}</p>
           </div>
         </div>
       </div>

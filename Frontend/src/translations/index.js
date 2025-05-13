@@ -191,7 +191,40 @@ export const translations = {
     feedback: "Feedback",
     profile: "Profile",
     termsAndConditions: "Terms and Conditions",
-    privacyPolicy: "Privacy Policy"
+    privacyPolicy: "Privacy Policy",
+    
+    // Age Verification
+    confirmPermission: "Confirm Permission",
+    ageVerificationQuestion: "Are you over 18 or have parental permission to use this site?",
+    ageVerificationInfo: "We need to ensure compliance with safety regulations.",
+    yesConfirm: "Yes, I Confirm",
+    noLeave: "No, I Need to Leave",
+    protectingUsers: "Protecting users is our priority.",
+    
+    // ClassPage
+    selectStudent: "Select a Student",
+    noStudentsFoundMessage: "No students found",
+    tryAdjustingSearch: "Try adjusting your search criteria",
+    selectStudentButton: "Select Student",
+    
+    // TestResultsPage
+    viewingResultsFor: "Viewing Results for:",
+    studentId: "ID:",
+    studentAge: "Age:",
+    testsCount: "Tests:",
+    years: "years",
+    allTestResults: "All Test Results",
+    cumulativeReport: "Cumulative Report",
+    viewComprehensiveAssessment: "View comprehensive assessment",
+    testName: "Test Name",
+    date: "Date",
+    time: "Time",
+    score: "Score",
+    report: "Report",
+    noTestResultsFound: "No test results found",
+    viewReport: "View Report",
+    role: "Role:",
+    memberSince: "Member since:"
   },
   ta: {
     // Navigation
@@ -384,7 +417,40 @@ export const translations = {
     feedback: "கருத்து",
     profile: "சுயவிவரம்",
     termsAndConditions: "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
-    privacyPolicy: "தனியுரிமைக் கொள்கை"
+    privacyPolicy: "தனியுரிமைக் கொள்கை",
+    
+    // Age Verification
+    confirmPermission: "அனுமதியை உறுதிப்படுத்தவும்",
+    ageVerificationQuestion: "நீங்கள் 18 வயதிற்கு மேற்பட்டவரா அல்லது இந்த தளத்தைப் பயன்படுத்த பெற்றோரின் அனுமதி பெற்றுள்ளீர்களா?",
+    ageVerificationInfo: "பாதுகாப்பு விதிமுறைகளுக்கு இணங்க நாங்கள் உறுதிப்படுத்த வேண்டும்.",
+    yesConfirm: "ஆம், நான் உறுதிப்படுத்துகிறேன்",
+    noLeave: "இல்லை, நான் வெளியேற வேண்டும்",
+    protectingUsers: "பயனர்களைப் பாதுகாப்பது எங்கள் முன்னுரிமை.",
+    
+    // ClassPage
+    selectStudent: "ஒரு மாணவரைத் தேர்ந்தெடுக்கவும்",
+    noStudentsFoundMessage: "மாணவர்கள் எவரும் கிடைக்கவில்லை",
+    tryAdjustingSearch: "உங்கள் தேடல் அளவுகோல்களை சரிசெய்ய முயற்சிக்கவும்",
+    selectStudentButton: "மாணவரைத் தேர்ந்தெடுக்கவும்",
+    
+    // TestResultsPage
+    viewingResultsFor: "இதற்கான முடிவுகளைக் காண்கிறது:",
+    studentId: "அடையாள எண்:",
+    studentAge: "வயது:",
+    testsCount: "தேர்வுகள்:",
+    years: "ஆண்டுகள்",
+    allTestResults: "அனைத்து தேர்வு முடிவுகள்",
+    cumulativeReport: "ஒட்டுமொத்த அறிக்கை",
+    viewComprehensiveAssessment: "விரிவான மதிப்பீட்டைக் காண்க",
+    testName: "தேர்வு பெயர்",
+    date: "தேதி",
+    time: "நேரம்",
+    score: "மதிப்பெண்",
+    report: "அறிக்கை",
+    noTestResultsFound: "தேர்வு முடிவுகள் எதுவும் கிடைக்கவில்லை",
+    viewReport: "அறிக்கையைக் காண்க",
+    role: "பதவி:",
+    memberSince: "உறுப்பினராக இருந்து:"
   }
 };
 

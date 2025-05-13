@@ -4,11 +4,13 @@ import PropTypes from 'prop-types'; // Import PropTypes
 import StudentCard from "../components/StudentCard";
 import { MdPerson } from "react-icons/md";
 import SearchbyName from "../components/SearchbyName";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function ClassPage({ students }) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Enable the animation after initial render
@@ -73,9 +75,9 @@ export default function ClassPage({ students }) {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h1 
               className="text-3xl font-bold text-blue-800 transition-all duration-300 hover:text-blue-700"
-              aria-label="Select a Student"
+              aria-label={t('selectStudent')}
             >
-              Select a Student
+              {t('selectStudent')}
             </h1>
             <SearchbyName onSearch={handleSearch} />
           </div>
@@ -91,7 +93,7 @@ export default function ClassPage({ students }) {
                 <StudentCard
                   key={student.id}
                   student={student}
-                  buttonLabel="Select Student"
+                  buttonLabel={t('selectStudentButton')}
                   onButtonClick={() => handleStudentClick(student.id)}
                 />
               ))
@@ -100,8 +102,8 @@ export default function ClassPage({ students }) {
                 <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
                   <MdPerson className="w-10 h-10" aria-hidden="true" />
                 </div>
-                <p className="text-lg text-gray-600">No students found</p>
-                <p className="text-sm text-gray-500 mt-2">Try adjusting your search criteria</p>
+                <p className="text-lg text-gray-600">{t('noStudentsFoundMessage')}</p>
+                <p className="text-sm text-gray-500 mt-2">{t('tryAdjustingSearch')}</p>
               </div>
             )}
           </div>
