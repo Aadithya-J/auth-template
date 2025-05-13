@@ -5,99 +5,105 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const vocabularyWords = [
-  { word: "house", level: "Base" },
-  { word: "box", level: "Base" },
-  { word: "book", level: "Base" },
-  { word: "ball", level: "Base" },
-  { word: "cat", level: "Base" },
-  { word: "tree", level: "Base" },
-  { word: "orange", level: "Base" },
-  { word: "school", level: "Base" },
-  { word: "fish", level: "Base" },
-  { word: "green", level: "5/6" },
-  { word: "spade", level: "5/6" },
-  { word: "rescue", level: "7" },
-  { word: "battle", level: "7" },
-  { word: "brave", level: "8" },
-  { word: "reply", level: "8" },
-  { word: "nonsense", level: "9" },
-  { word: "lecture", level: "9" },
-  { word: "connect", level: "10" },
-  { word: "skill", level: "10" },
-  { word: "malaria", level: "10" },
-  { word: "microscope", level: "11" },
-  { word: "haste", level: "12" },
-  { word: "elevate", level: "12" },
-  { word: "liberty", level: "13" },
-  { word: "priceless", level: "13" },
-  { word: "espionage", level: "14" },
+  { word: "house", level: "Base", ta: "வீடு" },
+  { word: "box", level: "Base", ta: "பெட்டி" },
+  { word: "book", level: "Base", ta: "புத்தகம்" },
+  { word: "ball", level: "Base", ta: "பந்து" },
+  { word: "cat", level: "Base", ta: "பூனை" },
+  { word: "tree", level: "Base", ta: "மரம்" },
+  { word: "orange", level: "Base", ta: "ஆரஞ்சு" },
+  { word: "school", level: "Base", ta: "பள்ளி" },
+  { word: "fish", level: "Base", ta: "மீன்" },
+  { word: "green", level: "5/6", ta: "பச்சை" },
+  { word: "spade", level: "5/6", ta: "மண்வாரி" },
+  { word: "rescue", level: "7", ta: "மீட்பு" },
+  { word: "battle", level: "7", ta: "போர்" },
+  { word: "brave", level: "8", ta: "தைரியமான" },
+  { word: "reply", level: "8", ta: "பதில்" },
+  { word: "nonsense", level: "9", ta: "அர்த்தமில்லாத" },
+  { word: "lecture", level: "9", ta: "விரிவுரை" },
+  { word: "connect", level: "10", ta: "இணை" },
+  { word: "skill", level: "10", ta: "திறமை" },
+  { word: "malaria", level: "10", ta: "மலேரியா" },
+  { word: "microscope", level: "11", ta: "நுண்ணோக்கி" },
+  { word: "haste", level: "12", ta: "விரைவு" },
+  { word: "elevate", level: "12", ta: "உயர்த்து" },
+  { word: "liberty", level: "13", ta: "சுதந்திரம்" },
+  { word: "priceless", level: "13", ta: "விலைமதிப்பற்ற" },
+  { word: "espionage", level: "14", ta: "உளவு" },
 ];
 
 // Function to evaluate the child's definition using Gemini
-const evaluateDefinition = async (word, definition) => {
+// Function to evaluate the child's definition using Gemini
+const evaluateDefinition = async (word, definition, language = "en") => {
   // Use the gemini-1.5-flash model
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
   if (!definition || definition.trim() === "") {
     return { score: 0, feedback: "No definition provided" };
   }
 
-  // More detailed prompt for better evaluation
-  const prompt = `
-    Word: "${word}"
-    Child's Definition: "${definition}"
+  // Language-specific prompts
+  const prompts = {
+    ta: `
+      Word: "${word}"
+      Child's Tamil Definition: "${definition}"
 
-    Task: Evaluate if the child's definition indicates an understanding of the word's nature or use.
-    Consider synonyms, general classification, major use, definitive examples, or description of a definitive feature.
-    Do not be too strict on the definition as it is just a child
-    Based on the definition provided, is it acceptable? Respond ONLY with:
-    "1|Acceptable" if the definition is adequate.
-    "0|Unacceptable" if the definition is inadequate or incorrect.
-    Provide a brief justification after the pipe symbol. Example: "1|Acceptable - Correctly identifies it as a color." or "0|Unacceptable - Definition is too vague."
-  `;
+      Task: Evaluate if the child's Tamil definition indicates an understanding of the word's nature or use.
+      Consider synonyms, general classification, major use, definitive examples, or description of a definitive feature.
+      Do not be too strict on the definition as it is just a child.
+      Respond ONLY with:
+      "1|Acceptable" if the definition is adequate in Tamil.
+      "0|Unacceptable" if the definition is inadequate or incorrect in Tamil.
+      Provide a brief justification after the pipe symbol in English.
+    `,
+    en: `
+      Word: "${word}"
+      Child's Definition: "${definition}"
+
+      Task: Evaluate if the child's definition indicates an understanding of the word's nature or use.
+      Consider synonyms, general classification, major use, definitive examples, or description of a definitive feature.
+      Do not be too strict on the definition as it is just a child.
+      Based on the definition provided, is it acceptable? Respond ONLY with:
+      "1|Acceptable" if the definition is adequate.
+      "0|Unacceptable" if the definition is inadequate or incorrect.
+      Provide a brief justification after the pipe symbol.
+    `,
+  };
+
+  // Get the appropriate prompt based on language, default to English
+  const prompt = prompts[language] || prompts.en;
 
   try {
     const result = await model.generateContent(prompt);
-    // Check if response and text() exist before accessing
-     if (!result.response || typeof result.response.text !== 'function') {
-      console.error("Invalid response structure from Gemini:", result);
-      return { score: 0, feedback: "Evaluation error: Invalid response format." };
-    }
-    const textResponse = result.response.text();
-    const parts = textResponse.split("|");
-    if (parts.length < 2) {
-        console.error("Unexpected response format from Gemini:", textResponse);
-        // Attempt to provide a score based on keywords if possible, otherwise default
-        const lowerCaseResponse = textResponse.toLowerCase();
-        if (lowerCaseResponse.includes("acceptable")) return { score: 1, feedback: textResponse };
-        if (lowerCaseResponse.includes("unacceptable")) return { score: 0, feedback: textResponse };
-        return { score: 0, feedback: "Evaluation error: Unexpected format." };
-    }
-    const score = parseInt(parts[0].trim());
-    const feedback = parts[1].trim();
-    // Validate score
-    // console.log(feedback)
+    const responseText = result.response.text();
+
+    // Parse the response which should be in the format "1|Acceptable" or "0|Unacceptable"
+    const parts = responseText.trim().split("|");
+    const score = parseInt(parts[0], 10);
+    const feedback = parts.length > 1 ? parts.slice(1).join("|") : "";
+
+    // Validate score - it should be 0 or 1
     if (isNaN(score) || (score !== 0 && score !== 1)) {
-        console.error("Invalid score value from Gemini:", parts[0]);
-        return { score: 0, feedback: `Evaluation error: Invalid score (${parts[0]})` };
+      console.warn(`Invalid score for word "${word}": ${responseText}`);
+      return { score: 0, feedback: "Unable to evaluate definition properly." };
     }
+
     return { score, feedback };
   } catch (err) {
     console.error(`Gemini error evaluating "${word}":`, err);
-    // Check for specific error types if needed
-    if (err.message.includes('SAFETY')) {
-        return { score: 0, feedback: "Evaluation blocked due to safety settings." };
-    }
     return { score: 0, feedback: "Evaluation error occurred." };
   }
 };
 
-
 // Controller function to process test results and store them
 export async function evaluateVocabularyAndStore(req, res) {
-  const { child_id, responses } = req.body; // responses = [{ word: "house", definition: "where you live" }, ...]
+  const { child_id, responses, language } = req.body; // responses = [{ word: "house", definition: "where you live" }, ...]
 
   if (!child_id || !Array.isArray(responses)) {
-    return res.status(400).json({ error: "Missing child_id or responses array" });
+    return res
+      .status(400)
+      .json({ error: "Missing child_id or responses array" });
   }
 
   try {
@@ -107,15 +113,19 @@ export async function evaluateVocabularyAndStore(req, res) {
     for (const item of responses) {
       const { word, definition } = item;
       // Find the word details (like level) - might be useful later
-      const wordDetail = vocabularyWords.find(w => w.word === word);
+      const wordDetail = vocabularyWords.find((w) => w.word === word);
 
-      const { score, feedback } = await evaluateDefinition(word, definition);
+      const { score, feedback } = await evaluateDefinition(
+        word,
+        definition,
+        language
+      );
 
       totalScore += score;
 
       processedResponses.push({
         word: word,
-        level: wordDetail ? wordDetail.level : 'Unknown', // Store level if found
+        level: wordDetail ? wordDetail.level : "Unknown", // Store level if found
         definition: definition,
         score: score,
         feedback: feedback,
@@ -132,16 +142,15 @@ export async function evaluateVocabularyAndStore(req, res) {
           responses: processedResponses,
           score: totalScore,
           test_name: "Vocabulary Scale", // Consistent test name
-        }
+        },
       ])
       .select()
       .single();
 
     if (error) {
-        console.error("Supabase insert error:", error);
-        throw error; // Re-throw to be caught by the outer catch block
+      console.error("Supabase insert error:", error);
+      throw error; // Re-throw to be caught by the outer catch block
     }
-
 
     // Increment tests_taken count for the child
     const { error: updateError } = await supabase.rpc("increment_tests_taken", {
@@ -149,22 +158,24 @@ export async function evaluateVocabularyAndStore(req, res) {
     });
 
     if (updateError) {
-        console.error("Supabase increment_tests_taken error:", updateError);
-        // Decide if this should prevent success response. Maybe log and continue.
-        // For now, we'll let the main result return but log the error.
+      console.error("Supabase increment_tests_taken error:", updateError);
+      // Decide if this should prevent success response. Maybe log and continue.
+      // For now, we'll let the main result return but log the error.
     }
 
-
-    return res
-      .status(201)
-      .json({ id: data.id, message: "Vocabulary test results stored successfully", score: totalScore });
-
+    return res.status(201).json({
+      id: data.id,
+      message: "Vocabulary test results stored successfully",
+      score: totalScore,
+    });
   } catch (err) {
     console.error("Error processing vocabulary test:", err);
     // Provide a more specific error message if possible
     const errorMessage = err.message || "Internal Server Error";
     const errorCode = err.code || 500; // Use Supabase error code if available
-    return res.status(errorCode === 404 ? 404 : 500).json({ error: errorMessage }); // Handle 'table not found' specifically if needed
+    return res
+      .status(errorCode === 404 ? 404 : 500)
+      .json({ error: errorMessage }); // Handle 'table not found' specifically if needed
   }
 }
 
@@ -179,7 +190,10 @@ export async function getVocabularyTestResultById(req, res) {
       .single();
 
     if (error) throw error;
-    if (!data) return res.status(404).json({ error: "Vocabulary test results not found" });
+    if (!data)
+      return res
+        .status(404)
+        .json({ error: "Vocabulary test results not found" });
 
     return res.status(200).json(data);
   } catch (err) {
@@ -214,11 +228,11 @@ export async function getVocabularyTestsByChild(req, res) {
 
 // Function to get the list of words for the test
 export function getVocabularyWords(req, res) {
-    try {
-        // Optionally filter or modify the list before sending
-        res.status(200).json({ words: vocabularyWords });
-    } catch (error) {
-        console.error("Error fetching vocabulary words:", error.message);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+  try {
+    // Optionally filter or modify the list before sending
+    res.status(200).json({ words: vocabularyWords });
+  } catch (error) {
+    console.error("Error fetching vocabulary words:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 }
