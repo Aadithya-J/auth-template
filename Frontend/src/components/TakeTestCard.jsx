@@ -1,86 +1,3 @@
-// import React from "react";
-// import PropTypes from 'prop-types';
-// import { useNavigate } from "react-router-dom";
-// import books from "../assets/b.jpg";
-// import mag from "../assets/mag.jpeg.jpg";
-// import speak from "../assets/s.jpg";
-// import { MdArrowForward } from "react-icons/md";
-
-// const TakeTestCard = ({ test, buttonLabel, onClick }) => {
-//   const navigate = useNavigate();
-  
-//   const getImageForTest = (id) => {
-//     if (id === 1) return mag;
-//     if (id === 2) return speak;
-//     if (id === 3 || id === 4 || id === 5) return books;
-//     if (id === 6) return speak;
-//     if (id === 7) return mag;
-//     if (id === 8) return books;
-//     if (id === 9) return books;
-//     if (id === 10) return speak;
-//     return books;
-//   };
-  
-//   const handleButtonClick = (e) => {
-//     e.stopPropagation();
-//     localStorage.setItem("selectedTestId", test.id);
-//     navigate("/selectstudent");
-//     if (onClick) onClick();
-//   };
-
-//   return (
-//     <div className="bg-white rounded-xl shadow-sm border border-blue-200 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-300 group">
-//       <div className="flex flex-col md:flex-row w-full">
-//         {/* Image Section */}
-//         <div className="w-full md:w-1/4 h-48 md:h-auto overflow-hidden">
-//           <img
-//             src={getImageForTest(test.id)}
-//             alt={`${test.testName} thumbnail`}
-//             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-//           />
-//         </div>
-        
-//         {/* Content Section */}
-//         <div className="w-full md:w-3/4 p-6 flex flex-col justify-between">
-//           <div>
-//             <h2 className="text-xl font-bold text-blue-800 mb-2 transition-colors duration-300 group-hover:text-blue-600">
-//               {test.testName}
-//             </h2>
-//             <p className="text-gray-600 mb-4">
-//               {test.About}
-//             </p>
-//           </div>
-          
-//           <div className="flex justify-end mt-auto">
-//             <button
-//               onClick={handleButtonClick}
-//               className="flex items-center px-4 py-2 bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white rounded-md border border-blue-300 hover:border-transparent transition-all duration-300 ease-in-out transform group-hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-//               aria-label={`Take ${test.testName} test`}
-//             >
-//               <span>{buttonLabel}</span>
-//               <MdArrowForward className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// TakeTestCard.propTypes = {
-//   test: PropTypes.shape({
-//     id: PropTypes.number.isRequired,
-//     testName: PropTypes.string.isRequired,
-//     About: PropTypes.string
-//   }).isRequired,
-//   buttonLabel: PropTypes.string.isRequired,
-//   onClick: PropTypes.func
-// };
-
-// export default TakeTestCard;
-
-
-
 import React from "react";
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
@@ -89,6 +6,7 @@ import { MdArrowForward, MdAccessTime, MdDescription } from "react-icons/md";
 import books from "../assets/b.jpg";
 import mag from "../assets/mag.jpeg.jpg";
 import speak from "../assets/s.jpg";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Card Image Component
 const CardImage = ({ testId, testName }) => {
@@ -124,21 +42,23 @@ const CardImage = ({ testId, testName }) => {
 
 // Card Badge Component
 const TestBadge = ({ testId }) => {
+  const { t } = useLanguage();
+  
   const getBadgeInfo = (id) => {
     const categories = {
-      1: { color: "bg-blue-100 text-blue-800", label: "Visual" },
-      2: { color: "bg-indigo-100 text-indigo-800", label: "Audio" },
-      3: { color: "bg-cyan-100 text-cyan-800", label: "Reading" },
-      4: { color: "bg-sky-100 text-sky-800", label: "Reading" },
-      5: { color: "bg-blue-100 text-blue-800", label: "Reading" },
-      6: { color: "bg-indigo-100 text-indigo-800", label: "Audio" },
-      7: { color: "bg-cyan-100 text-cyan-800", label: "Visual" },
-      8: { color: "bg-sky-100 text-sky-800", label: "Reading" },
-      9: { color: "bg-blue-100 text-blue-800", label: "Reading" },
-      10: { color: "bg-indigo-100 text-indigo-800", label: "Audio" },
+      1: { color: "bg-blue-100 text-blue-800", label: t("visual") },
+      2: { color: "bg-indigo-100 text-indigo-800", label: t("audio") },
+      3: { color: "bg-cyan-100 text-cyan-800", label: t("reading") },
+      4: { color: "bg-sky-100 text-sky-800", label: t("reading") },
+      5: { color: "bg-blue-100 text-blue-800", label: t("reading") },
+      6: { color: "bg-indigo-100 text-indigo-800", label: t("audio") },
+      7: { color: "bg-cyan-100 text-cyan-800", label: t("visual") },
+      8: { color: "bg-sky-100 text-sky-800", label: t("reading") },
+      9: { color: "bg-blue-100 text-blue-800", label: t("reading") },
+      10: { color: "bg-indigo-100 text-indigo-800", label: t("audio") },
     };
     
-    return categories[id] || { color: "bg-blue-100 text-blue-800", label: "Test" };
+    return categories[id] || { color: "bg-blue-100 text-blue-800", label: t("test") };
   };
 
   const badgeInfo = getBadgeInfo(testId);
@@ -174,6 +94,7 @@ const ActionButton = ({ label, onClick }) => {
 // Main Card Component
 const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minutes" }) => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   
   const handleButtonClick = (e) => {
     e.stopPropagation();
@@ -181,6 +102,10 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
     navigate("/selectstudent");
     if (onClick) onClick();
   };
+
+  // Get localized test name and description
+  const testName = language === 'ta' && test.testName_ta ? test.testName_ta : test.testName;
+  const testDescription = language === 'ta' && test.About_ta ? test.About_ta : test.About;
 
   return (
     <motion.div
@@ -191,7 +116,7 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
       className="bg-white rounded-xl shadow-lg border border-blue-100 overflow-hidden"
     >
       <div className="flex flex-col md:flex-row w-full">
-        <CardImage testId={test.id} testName={test.testName} />
+        <CardImage testId={test.id} testName={testName} />
         
         <div className="w-full md:w-2/3 lg:w-3/4 p-6 flex flex-col justify-between">
           <div>
@@ -199,17 +124,17 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
               <TestBadge testId={test.id} />
               <div className="flex items-center text-xs text-blue-600">
                 <MdAccessTime className="mr-1" />
-                <span>{estimatedTime}</span>
+                <span>{t('estimatedTime')}: {estimatedTime}</span>
               </div>
             </div>
             
             <h2 className="text-xl font-bold text-blue-800 mb-2">
-              {test.testName}
+              {testName}
             </h2>
             
             <div className="flex items-start mb-4 text-gray-600">
               <MdDescription className="mt-1 mr-2 text-blue-400 flex-shrink-0" />
-              <p>{test.About}</p>
+              <p>{testDescription}</p>
             </div>
           </div>
           
@@ -226,7 +151,9 @@ TakeTestCard.propTypes = {
   test: PropTypes.shape({
     id: PropTypes.number.isRequired,
     testName: PropTypes.string.isRequired,
-    About: PropTypes.string
+    testName_ta: PropTypes.string,
+    About: PropTypes.string,
+    About_ta: PropTypes.string
   }).isRequired,
   buttonLabel: PropTypes.string.isRequired,
   onClick: PropTypes.func,
@@ -250,7 +177,7 @@ export const TestCardList = ({ tests, buttonLabel, onCardClick }) => {
         >
           <TakeTestCard 
             test={test} 
-            buttonLabel={buttonLabel}
+            buttonLabel={buttonLabel} 
             onClick={() => onCardClick && onCardClick(test)}
           />
         </motion.div>
@@ -264,7 +191,9 @@ TestCardList.propTypes = {
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       testName: PropTypes.string.isRequired,
-      About: PropTypes.string
+      testName_ta: PropTypes.string,
+      About: PropTypes.string,
+      About_ta: PropTypes.string
     })
   ).isRequired,
   buttonLabel: PropTypes.string.isRequired,

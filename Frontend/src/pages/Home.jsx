@@ -1,103 +1,3 @@
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import StudentCard from "../components/StudentCard";
-// import TestCard from "../components/TestCard";
-// import { MdOutlineEventNote } from "react-icons/md";
-// import { RiGraduationCapFill } from "react-icons/ri";
-// import { CiCirclePlus } from "react-icons/ci";
-// import PopupForm from "../components/PopupForm";
-// import StudentList from "../components/StudentList";
-// import img1 from "../assets/grid.jpg";
-
-// const Home = ({ students = [], tests = [] }) => {
-//   const navigate = useNavigate();
-//   const [showPopup, setShowPopup] = useState(false);
-
-//   const handleAddChildClick = () => setShowPopup(true);
-//   const handleClose = () => setShowPopup(false);
-
-//   const userDetails = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : { name: "user", email: "u@gmail.com" };  // const userDetails = { name: "user", email: "
-
-//   // const userDetails = { name: "user", email: "u@gmail.com" };
-
-//   const handleStudentClick = (studentId) => {
-//     const storedId = localStorage.getItem("childId");
-//     if (studentId !== storedId) localStorage.setItem("childId", studentId);
-//     navigate(`/testreports`);
-//   };
-
-//   return (
-//     <div style={{ position: "relative", height: "100vh" }}>
-//       <div
-//         style={{
-//           position: "fixed",
-//           top: 0,
-//           left: 0,
-//           width: "100%",
-//           height: "100%",
-//           backgroundImage: `url(${img1})`,
-//           backgroundSize: "cover",
-//           backgroundPosition: "center",
-//           zIndex: -1,
-//         }}
-//       />
-//       <div className="p-7 overflow-auto h-full">
-//         <h2 className="text-[30px] mb-[0.5] font-bold font-roboto pl-5">Welcome,</h2>
-//         <h2
-//           className="text-[35px] mb-[0.5] font-extrabold font-roboto pl-5"
-//           style={{ textShadow: "2px 2px 0 #ff937a" }}
-//         >
-//           {userDetails.name}
-//         </h2>
-
-//         <hr className="border-t-2 border-gray-800 mt-4 ml-5 mb-5 mr-5" />
-
-//         <div className="flex-grow overflow-auto">
-//           <div className="flex flex-wrap justify-start">
-//             {Array.isArray(tests) && tests.length > 0 ? (
-//               tests.map((test) => (
-//                 <TestCard
-//                   key={test.id}
-//                   test={test}
-//                   onClick={() => handleStudentClick(test.id)}
-//                 />
-//               ))
-//             ) : (
-//               <p>No tests available</p>
-//             )}
-//           </div>
-
-//           <hr className="border-t-2 border-gray-800 mt-5 ml-5 mr-5 mb-3" />
-
-//           <div className="space-y-2 p-5">
-//             {Array.isArray(students) && students.length > 0 ? (
-//               students
-//                 .slice()
-//                 .reverse()
-//                 .slice(0, 10)
-//                 .map((student) => (
-//                   <StudentList
-//                     key={student.id}
-//                     student={student}
-//                     buttonLabel="View Results"
-//                     onButtonClick={() => handleStudentClick(student.id)}
-//                   />
-//                 ))
-//             ) : (
-//               <p>No students available</p>
-//             )}
-//           </div>
-//         </div>
-
-//         {showPopup && <PopupForm showPopup={showPopup} handleClose={handleClose} />}
-//       </div>
-//     </div>
-//   );
-// };
-
-// Home.defaultProps = { students: [], tests: [] };
-
-// export default Home;
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -116,9 +16,11 @@ import SearchbyName from "../components/SearchbyName";
 import StudentList from "../components/StudentList";
 import TestCard from "../components/TestCard";
 import { backendURL } from "../definedURL.js";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Home = ({ students = [], tests = [] }) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [showPopup, setShowPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const handleAddChildClick = () => setShowPopup(true);
@@ -273,41 +175,41 @@ const Home = ({ students = [], tests = [] }) => {
   };
 
   // Placeholder for Dyslexia Likelihood (Modify with real data logic)
-  const dyslexiaLikelihood = "Low";
+  const dyslexiaLikelihood = t("low");
 
   return (
     <div className="h-screen overflow-y-auto bg-blue-50 px-4 text-gray-900">
       <div className="transform scale-[0.96] origin-top mx-auto px-4 py-8 pb-16">
       <div className="bg-transparent shadow-sm rounded-lg p-3">
-        <h2 className="text-lg font-semibold">Dashboard,</h2>
+        <h2 className="text-lg font-semibold">{t("dashboard")},</h2>
         <span className="text-sm font-normal text-gray-600">
-          Your Students' performance overview.
+          {t("studentsPerformanceOverview")}
         </span>
         <h3 className="text-xl font-extrabold text-blue-600">{userDetails.name}</h3>
       </div>
   
       <div className="mt-3 flex flex-wrap gap-3 md:flex-nowrap">
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Total Students</p>
+          <p className="text-sm font-medium">{t("totalStudents")}</p>
           <h2 className="text-xl font-bold text-blue-600">{students.length}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Total Tests</p>
+          <p className="text-sm font-medium">{t("totalTests")}</p>
           <h2 className="text-xl font-bold text-blue-600">{tests.length}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Avg. Student Score</p>
+          <p className="text-sm font-medium">{t("avgStudentScore")}</p>
           <h2 className="text-xl font-bold text-blue-800">{averageScore}</h2>
         </div>
         <div className="bg-white shadow-sm rounded-md p-3 w-full md:w-1/4">
-          <p className="text-sm font-medium">Highest Score</p>
+          <p className="text-sm font-medium">{t("highestScore")}</p>
           <h2 className="text-xl font-bold text-blue-600">{highestScore}</h2>
         </div>
       </div>
   
       <div className="flex flex-col md:flex-row gap-4 mt-4">
         <div className="flex-1 bg-white shadow-sm rounded-lg p-3">
-          <h2 className="text-md font-bold text-blue-600">Class Performance</h2>
+          <h2 className="text-md font-bold text-blue-600">{t("classPerformance")}</h2>
           <div className="w-full mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={performanceData}>
@@ -316,23 +218,23 @@ const Home = ({ students = [], tests = [] }) => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="highest" stroke="#2563eb" strokeWidth={2} />
-                <Line type="monotone" dataKey="average" stroke="#3b82f6" strokeWidth={2} />
-                <Line type="monotone" dataKey="lowest" stroke="#93c5fd" strokeWidth={2} />
+                <Line type="monotone" dataKey="highest" stroke="#2563eb" strokeWidth={2} name={t("highest")} />
+                <Line type="monotone" dataKey="average" stroke="#3b82f6" strokeWidth={2} name={t("average")} />
+                <Line type="monotone" dataKey="lowest" stroke="#93c5fd" strokeWidth={2} name={t("lowest")} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
   
         <div className="w-full md:w-1/3 bg-white shadow-sm rounded-lg p-3">
-          <h2 className="text-md font-bold">Recent Tests</h2>
+          <h2 className="text-md font-bold">{t("recentTests")}</h2>
           <div className="space-y-2 mt-2 overflow-y-auto max-h-64">
             {tests.length > 0 ? (
               tests.slice(0, 5).map((test) => (
                 <TestCard key={test.id} test={test} onClick={() => handleStudentClick(test.id)} />
               ))
             ) : (
-              <p className="text-gray-500 text-sm">No tests available</p>
+              <p className="text-gray-500 text-sm">{t("noTests")}</p>
             )}
           </div>
         </div>
@@ -341,9 +243,9 @@ const Home = ({ students = [], tests = [] }) => {
       <div className="mt-3 bg-white shadow-sm rounded-lg p-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold">Students</h2>
+            <h2 className="text-lg font-bold">{t("students")}</h2>
             <h3 className="text-sm mt-1 text-gray-700 font-normal">
-              Select a student to view their report
+              {t("selectStudentViewReport")}
             </h3>
           </div>
           <SearchbyName onSearch={handleSearch} />
@@ -361,15 +263,15 @@ const Home = ({ students = [], tests = [] }) => {
               .slice(0, 10)
               .map((student) => (
                 <StudentList
-  key={student.id}
-  student={student}
-  buttonLabel="View Results"
-  onButtonClick={() => handleStudentClick(student.id)}
-  buttonClassName="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
-/>
+                  key={student.id}
+                  student={student}
+                  buttonLabel={t("viewResults")}
+                  onButtonClick={() => handleStudentClick(student.id)}
+                  buttonClassName="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+                />
               ))
           ) : (
-            <p>No students available</p>
+            <p>{t("noStudentsFound")}</p>
           )}
         </div>
       </div>

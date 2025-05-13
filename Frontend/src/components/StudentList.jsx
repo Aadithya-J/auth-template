@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const StudentList = ({ student, buttonLabel, onButtonClick, buttonClassName }) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="mb-3">
       <div className="w-full group">
@@ -14,8 +17,8 @@ const StudentList = ({ student, buttonLabel, onButtonClick, buttonClassName }) =
               <div>
                 <h3 className="text-base font-medium text-gray-800">{student.name}</h3>
                 <div className="flex space-x-3 text-xs text-gray-500">
-                  <span>Roll No: {student.rollno}</span>
-                  <span>Tests: {student.tests_taken || 0}</span>
+                  <span>{t("rollNo")}: {student.rollno}</span>
+                  <span>{t("tests")}: {student.tests_taken || 0}</span>
                 </div>
               </div>
             </div>

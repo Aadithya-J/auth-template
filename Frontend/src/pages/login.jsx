@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/daira-logo1.png";
 import { backendURL } from "../definedURL";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Login = ({ onLogin }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,13 +33,13 @@ const Login = ({ onLogin }) => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t("emailInvalid");
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t("passwordRequired");
     }
 
     setErrors(newErrors);
@@ -64,7 +66,7 @@ const Login = ({ onLogin }) => {
       try {
         data = await response.json();
       } catch (parseError) {
-        throw new Error('Invalid response from server');
+        throw new Error(t("invalidServerResponse"));
       }
 
       if (response.ok && data.session && data.user) {
@@ -80,12 +82,12 @@ const Login = ({ onLogin }) => {
         if (onLogin) onLogin(defaultHeaders);
         navigate("/");
       } else {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || t("loginFailed"));
       }
     } catch (error) {
       setErrors((prev) => ({
         ...prev,
-        server: error.message || "An error occurred while logging in. Please try again.",
+        server: error.message || t("loginErrorMessage"),
       }));
       console.error("Login error:", error);
     } finally {
@@ -99,16 +101,16 @@ const Login = ({ onLogin }) => {
         {/* Playful header with child-friendly elements */}
         <div className="flex justify-center">
           <div className="flex items-center ">
-            <img src={logo} alt="Logo" className="w-14 h-12" />
+            <img src={logo} alt={t("logo")} className="w-14 h-12" />
             <h1 className="text-3xl font-bold ml-2  font-serif">Daira</h1>
           </div>
         </div>
 
         <h2 className="mt-6 text-center text-3xl font-bold text-blue-600 font-serif">
-          Learn. Play. Grow
+          {t("learnPlayGrow")}
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to continue your adventure
+          {t("signInContinue")}
         </p>
       </div>
 
@@ -140,7 +142,7 @@ const Login = ({ onLogin }) => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Grown-up's Email
+                {t("parentEmail")}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -164,7 +166,7 @@ const Login = ({ onLogin }) => {
                   className={`block w-full pl-10 pr-3 py-3 border ${
                     errors.email ? "border-red-300" : "border-gray-300"
                   } rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
-                  placeholder="parent@example.com"
+                  placeholder={t("emailPlaceholder")}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -177,7 +179,7 @@ const Login = ({ onLogin }) => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Secret Password
+                {t("secretPassword")}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -204,7 +206,7 @@ const Login = ({ onLogin }) => {
                   className={`block w-full pl-10 pr-3 py-3 border ${
                     errors.password ? "border-red-300" : "border-gray-300"
                   } rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400`}
-                  placeholder="••••••••"
+                  placeholder={t("passwordPlaceholder")}
                 />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-600">{errors.password}</p>
@@ -224,7 +226,7 @@ const Login = ({ onLogin }) => {
                   htmlFor="remember-me"
                   className="ml-2 block text-sm text-gray-700"
                 >
-                  Remember me
+                  {t("rememberMe")}
                 </label>
               </div>
 
@@ -234,7 +236,7 @@ const Login = ({ onLogin }) => {
                   className="font-medium text-blue-600 hover:text-blue-500"
                   onClick={() => navigate("/forgot-password")}
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </button>
               </div>
             </div>
@@ -267,7 +269,7 @@ const Login = ({ onLogin }) => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Signing In...
+                    {t("signingIn")}
                   </>
                 ) : (
                   <>
@@ -283,7 +285,7 @@ const Login = ({ onLogin }) => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Let's Learn!
+                    {t("letsLearn")}
                   </>
                 )}
               </button>
@@ -297,7 +299,7 @@ const Login = ({ onLogin }) => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Learn. Play. Grow.
+                  {t("learnPlayGrow")}
                 </span>
               </div>
             </div>
@@ -307,7 +309,7 @@ const Login = ({ onLogin }) => {
                 onClick={() => navigate("/register")}
                 className="w-full flex justify-center py-3 px-4 border-2 border-blue-300 rounded-xl shadow-sm text-lg font-medium text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.01]"
               >
-                Create Account
+                {t("createAccount")}
               </button>
             </div>
           </div>

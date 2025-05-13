@@ -19,7 +19,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
   const [expand, setExpand] = React.useState(true);
   const [activeItem, setActiveItem] = React.useState("/");
   const navigate = useNavigate();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const userDetails = JSON.parse(localStorage.getItem("user")) || {
     name: "User",
     email: "u@gmail.com",
@@ -67,7 +67,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           className={`text-blue-500 hover:text-blue-700 transition-all duration-300 hover:bg-blue-50 rounded-full p-1 flex items-center justify-center ${
             expand ? "" : "absolute right-4"
           }`}
-          aria-label={expand ? "Collapse sidebar" : "Expand sidebar"}
+          aria-label={expand ? t("collapseMenu") : t("expandMenu")}
         >
           {expand ? (
             <FiChevronsLeft size={20} />
@@ -85,13 +85,13 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           }`}
         >
           <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
-            Main Menu
+            {t("mainMenu")}
           </span>
         </div>
         <ul className="space-y-2">
           <SideNavBarItem
             icon={<MdDashboard size={20} />}
-            text="Dashboard"
+            text={t("dashboard")}
             route="/"
             expand={expand}
             activeItem={activeItem}
@@ -99,7 +99,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           />
           <SideNavBarItem
             icon={<HiOutlineClipboardList size={20} />}
-            text="Students"
+            text={t("students")}
             route="/viewstudents"
             expand={expand}
             activeItem={activeItem}
@@ -107,7 +107,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           />
           <SideNavBarItem
             icon={<HiOutlineClipboardList size={20} />}
-            text="Tests"
+            text={t("tests")}
             route="/taketests"
             expand={expand}
             activeItem={activeItem}
@@ -116,7 +116,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
 
           <SideNavBarItem
             icon={<BiBarChartAlt2 size={20} />}
-            text="Analytics"
+            text={t("analytics")}
             route="/analytics"
             expand={expand}
             activeItem={activeItem}
@@ -131,7 +131,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           }`}
         >
           <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
-            Language
+            {t("language")}
           </span>
         </div>
         <div className={`flex ${expand ? "gap-2" : "flex-col items-center"}`}>
@@ -143,7 +143,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            {expand ? "English" : "EN"}
+            {expand ? t("english") : "EN"}
           </button>
           <button
             onClick={() => setLanguage("ta")}
@@ -153,7 +153,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            {expand ? "தமிழ்" : "TA"}
+            {expand ? t("tamil") : "TA"}
           </button>
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           }`}
         >
           <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
-            Account
+            {t("account")}
           </span>
         </div>
 
@@ -211,7 +211,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
                 expand ? "max-w-[80px] opacity-100 ml-3" : "max-w-0 opacity-0"
               }`}
             >
-              Logout
+              {t("logout")}
             </span>
           </button>
         </div>
