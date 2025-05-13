@@ -1,12 +1,14 @@
 import React from "react";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function SearchBar({ findNum }) {
   // state for search bar being used or not 
   const [isSearchActive, setIsSearchActive] = useState(false);
   // state for test number entered by the user to search
   const [searchValue, setSearchValue] = useState("");
+  const { t } = useLanguage();
 
   const handleClick = () => {
     setIsSearchActive(true);
@@ -25,7 +27,7 @@ export default function SearchBar({ findNum }) {
           <div className="flex items-center">
             <input
               type="text"
-              placeholder=" Enter test number"
+              placeholder={t("enterTestNumber")}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               required
@@ -49,7 +51,7 @@ export default function SearchBar({ findNum }) {
       className="block px-4 py-2 font-semibold text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
       onClick={handleClick}
     >
-      Test Number
+      {t("testNumber")}
     </a>
   );
 }

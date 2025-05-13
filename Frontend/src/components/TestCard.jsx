@@ -4,9 +4,12 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import books from "../assets/b.jpg";
 import mag from "../assets/mag.jpeg.jpg";
 import speak from "../assets/s.jpg";
+import { useLanguage } from "../contexts/LanguageContext";
+import testsData from "../Data/tests.json";
 
 const TestCard = ({ test }) => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
 
   const getImageForTest = (id) => {
     if (id === 1) return mag;
@@ -19,7 +22,15 @@ const TestCard = ({ test }) => {
     return books;
   };
 
-  const getnameForTest = (id) => {
+  const getNameForTest = (id) => {
+    const foundTest = testsData.find(t => t.id === id);
+    if (foundTest) {
+      return language === 'ta' && foundTest.testName_ta 
+        ? foundTest.testName_ta 
+        : foundTest.testName;
+    }
+    
+    // Fallback names if not found in tests.json
     if (id === 1) return "Schonell Test";
     if (id === 2) return "Visual Discrimination";
     if (id === 3) return "Sound Discrimination Test";
@@ -29,6 +40,7 @@ const TestCard = ({ test }) => {
     if (id === 7) return "Sequence Arrangement";
     if (id === 8) return "Symbol Sequence";
     if (id === 9) return "Sound Blending Test";
+    return "Test";
   };
 
   const handleTestClick = (testId) => {
@@ -58,7 +70,7 @@ const TestCard = ({ test }) => {
         {/* Text Content on the Right */}
         <div className="ml-4 flex-1">
           <h1 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
-            {getnameForTest(test.id)}
+            {getNameForTest(test.id)}
           </h1>
           <div className="flex items-center text-gray-500 text-sm mt-1 group-hover:text-blue-500 transition-colors duration-300">
             <span>Take Test</span>
