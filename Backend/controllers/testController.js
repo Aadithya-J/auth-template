@@ -2,11 +2,14 @@ import supabase from "../utils/supabaseClient.js";
 
 export async function addTest6(req, res) {
   try {
-    // console.log("Received request body:", req.body);
+    let { childId, spokenWords, language } = req.body;
 
-    let { childId, spokenWords } = req.body;
+    if (!language || (language !== "en" && language !== "ta")) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or missing language. Use 'en' or 'ta'." });
+    }
 
-    // Generate a random 6-digit childId if missing
     if (!childId || childId.trim() === "" || childId === "undefined") {
       childId = Math.floor(100000 + Math.random() * 900000).toString();
       console.log(`Generated random childId: ${childId}`);
@@ -18,12 +21,10 @@ export async function addTest6(req, res) {
         .json({ message: "Invalid or missing spokenWords" });
     }
 
-    // Ensure spokenWords are properly formatted (remove commas)
     spokenWords = spokenWords.replace(/,/g, "").trim();
 
-    // Define correct words list
-    const correctWordsList =
-      `tree       little       milk       egg         book
+    const correctWordsListRaw = {
+      en: `tree       little       milk       egg         book
 school     sit          frog       playing     bun
 flower     road         clock      train       light
 picture    think        summer     people      something
@@ -42,62 +43,72 @@ oblivion   scintillate  satirical sabre       beguile
 terrestrial belligerent adamant   sepulchre   statistics
 miscellaneous procrastinate tyrannical evangelical grotesque
 ineradicable judicature preferential homonym  fictitious
-rescind    metamorphosis somnambulist bibliography idiosyncrasy`
-        .split(/\s+/)
-        .map((word) => word.toLowerCase());
+rescind    metamorphosis somnambulist bibliography idiosyncrasy`,
 
-    // Convert spoken words into an array with positions
+      ta: `மரம்      சிறியது      பால்      முட்டை      புத்தகம்
+பள்ளி     உட்காரு     தவளை     விளையாடும்   பன்
+மலர்      சாலை      கடிகாரம்   ரயில்       ஒளி
+படம்      யோசனை     கோடை      மக்கள்       ஏதாவது
+கனவு      கீழ்மாடி   பிஸ்கட்    மேய்ப்பவர்     தாகம்
+கூட்டம்    சாண்ட்விச் ஆரம்பம்   முத்திரை     தீவு
+தட்டில்    தேவதை      பராமரிப்பு தோன்றியது   கத்தி
+கிளி       அழகு       கற்பனை     மருமகன்     மெதுவாக
+புகை       கைவிடல்     அகற்றுதல் ஊட்டப்பட்டது நோயால் பாதிப்பு
+பல்கலைக்கழகம் இசைக்குழு     அறிவு       பார்வையாளர் இடம்
+இயற்பியல் பிரச்சாரம்   காயர்      நடுவே புகுந்து கவர்ச்சி
+கைவிடு     முற்றுகை     பாதை      நம்பகமான   தீர்க்கதரிசனம்
+கர்னல்     தனிமை       முறைபடுத்தல் அலட்சியம் வகைப்படுத்தல்
+மெய்யான    நிறுவனம்     சுற்றுப்புள்ளி மனச்சாட்சி வீரரசம்
+நிமோனியா   ஆரம்பிக்க   பழமையான   பாதிக்கக்கூடிய புதிர்
+மறதி       ஒளிர்வது    கேலி        வாள்        மயக்கி
+பூமியியல்  சண்டையாளர் உறுதி       கல்லறை     புள்ளியியல்
+விதிவிலக்கான பிணக்கு       அடக்குமுறை   நாமவெழுத்து  கற்பனை
+திரும்பபெறு  உருவமாற்றம் நடக்கும்போது நூலகியல் தனிச்சிறப்பு`,
+    };
+
+    const correctWordsList = correctWordsListRaw[language]
+      .split(/\s+/)
+      .map((word) => word.toLowerCase());
+
     const spokenArray = spokenWords.split(/\s+/).map((word, index) => ({
       word: word.toLowerCase(),
-      position: index + 1, // Start numbering from 1
+      position: index + 1,
     }));
 
     let correctGroups = [];
     let errorWords = [];
     let currentCorrectGroup = [];
 
-    // Process spoken words to group continuous correct words
     spokenArray.forEach(({ word, position }, idx) => {
       if (correctWordsList.includes(word)) {
-        // Add word to current correct group
         currentCorrectGroup.push({ word, position });
       } else {
-        // If an incorrect word is encountered
         if (currentCorrectGroup.length > 0) {
-          correctGroups.push(currentCorrectGroup); // Save the correct group
-          currentCorrectGroup = []; // Reset for the next correct group
+          correctGroups.push(currentCorrectGroup);
+          currentCorrectGroup = [];
         }
-        errorWords.push({ word, position }); // Store error word
+        errorWords.push({ word, position });
       }
 
-      // If last word is correct, add it to the correct groups
       if (idx === spokenArray.length - 1 && currentCorrectGroup.length > 0) {
         correctGroups.push(currentCorrectGroup);
       }
     });
 
-    // Convert correct word groups to readable format
     const formattedCorrectGroups = correctGroups.map((group) =>
       group.map(({ word, position }) => `${word}(${position})`).join(" ")
     );
 
-    // Convert error words to readable format
     const formattedErrorWords = errorWords.map(
       ({ word, position }) => `${word}(${position})`
     );
 
-    // Calculate score (percentage of correct words)
     const totalCorrectWords = correctGroups.reduce(
       (acc, group) => acc + group.length,
       0
     );
     const score = (totalCorrectWords / correctWordsList.length) * 100;
 
-    // Log output in server console
-    // console.log("Correct Groups:", formattedCorrectGroups);
-    // console.log("Error Words:", formattedErrorWords);
-    // console.log(`Score: ${score.toFixed(2)}`);
-    // Insert test results
     const { error } = await supabase.from("schonell_test_results").insert([
       {
         child_id: childId,
@@ -105,7 +116,8 @@ rescind    metamorphosis somnambulist bibliography idiosyncrasy`
         correct_words: JSON.stringify(formattedCorrectGroups),
         incorrect_words: JSON.stringify(errorWords),
         score: score.toFixed(2),
-        test_name: "Schonell Test",
+        test_name:
+          language === "en" ? "Schonell English Test" : "Schonell Tamil Test",
       },
     ]);
 
@@ -116,9 +128,9 @@ rescind    metamorphosis somnambulist bibliography idiosyncrasy`
     if (error || updateError) {
       throw error || updateError;
     }
-    // Send response to frontend
+
     res.status(201).json({
-      message: "Test6 processed successfully",
+      message: "Test processed successfully",
       childId,
       score: score.toFixed(2),
       correctGroups: formattedCorrectGroups,
@@ -130,7 +142,6 @@ rescind    metamorphosis somnambulist bibliography idiosyncrasy`
   }
 }
 
-// Get all tests for a specific child
 export async function getTestsByChild(req, res) {
   const { childId } = req.params;
 

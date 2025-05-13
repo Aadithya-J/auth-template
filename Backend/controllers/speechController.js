@@ -65,6 +65,7 @@ const hasAudioContent = (buffer) => {
 };
 
 export const transcribeAudio = async (req, res) => {
+  const language = req.body.language;
   if (!req.file) {
     return res.status(400).json({ success: false, error: "No file uploaded" });
   }
@@ -95,8 +96,11 @@ export const transcribeAudio = async (req, res) => {
         {
           taskType: "asr",
           config: {
-            language: { sourceLanguage: "en" },
-            serviceId: process.env.SERVICE_ID,
+            language: { sourceLanguage: "ta" },
+            serviceId:
+              language === "ta"
+                ? process.env.SERVICE_ID_TAMIL
+                : process.env.SERVICE_ID_ENGLISH,
             audioFormat: "wav",
             samplingRate: 16000,
           },
@@ -136,16 +140,13 @@ export const transcribeAudio = async (req, res) => {
     res.status(500).json({
       success: false,
       error: "Audio processing failed",
-      details:
-        process.env.NODE_ENV === "development" ? err.message : undefined,
+      details: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   } finally {
-    [origPath, wavPath]
-      .filter(Boolean)
-      .forEach((p) => {
-        try {
-          if (existsSync(p)) unlinkSync(p);
-        } catch {}
-      });
+    [origPath, wavPath].filter(Boolean).forEach((p) => {
+      try {
+        if (existsSync(p)) unlinkSync(p);
+      } catch {}
+    });
   }
 };

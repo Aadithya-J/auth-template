@@ -14,12 +14,12 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/daira-logo1.png";
 import profile from "../../public/profile-icon.jpg";
 import PropTypes from "prop-types";
-
+import { useLanguage } from "../contexts/LanguageContext";
 export default function SideNavBar({ onToggle, handleLogout }) {
   const [expand, setExpand] = React.useState(true);
   const [activeItem, setActiveItem] = React.useState("/");
   const navigate = useNavigate();
-
+  const { language, setLanguage } = useLanguage();
   const userDetails = JSON.parse(localStorage.getItem("user")) || {
     name: "User",
     email: "u@gmail.com",
@@ -105,7 +105,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
             activeItem={activeItem}
             onClick={handleItemClick}
           />
-           <SideNavBarItem
+          <SideNavBarItem
             icon={<HiOutlineClipboardList size={20} />}
             text="Tests"
             route="/taketests"
@@ -113,7 +113,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
             activeItem={activeItem}
             onClick={handleItemClick}
           />
-          
+
           <SideNavBarItem
             icon={<BiBarChartAlt2 size={20} />}
             text="Analytics"
@@ -124,7 +124,39 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           />
         </ul>
       </div>
-
+      <div className="mt-4 px-3">
+        <div
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            expand ? "max-h-6 opacity-100 mb-2" : "max-h-0 opacity-0"
+          }`}
+        >
+          <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
+            Language
+          </span>
+        </div>
+        <div className={`flex ${expand ? "gap-2" : "flex-col items-center"}`}>
+          <button
+            onClick={() => setLanguage("en")}
+            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              language === "en"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            {expand ? "English" : "EN"}
+          </button>
+          <button
+            onClick={() => setLanguage("ta")}
+            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              language === "ta"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            {expand ? "தமிழ்" : "TA"}
+          </button>
+        </div>
+      </div>
       {/* Settings & Profile Section */}
       <div className="mt-auto px-3">
         <div
