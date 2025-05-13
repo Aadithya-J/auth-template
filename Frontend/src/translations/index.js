@@ -351,6 +351,7 @@ export const translations = {
     searchTests: "தேர்வுகளைத் தேடுங்கள்...",
     noTestsFound: "தேர்வுகள் எதுவும் கிடைக்கவில்லை",
     tryDifferentSearch: "வேறு தேடல் சொற்றொடரை முயற்சிக்கவும்",
+    takeAllTests:"அனைத்து தேர்வுகளையும் எழுதுங்கள்",
     
     // Dashboard
     totalStudents: "மொத்த மாணவர்கள்",

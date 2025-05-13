@@ -45,6 +45,14 @@ const TakeTests = ({ tests = [] }) => {
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header section */}
+
+
+        <div className="flex justify-end mb-6">
+            <button onClick={() => { localStorage.setItem('selectedTestId', 'all'); navigate('/selectstudent'); }}   className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 text-lg font-semibold">
+              <MdQuiz className="w-6 h-6" />
+              {t("takeAllTests")}
+            </button>
+        </div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div className="mb-4 md:mb-0">
             <h1 className="text-3xl font-bold text-blue-800 flex items-center">
