@@ -7,7 +7,7 @@ import images from "../../Data/imageData";
 import { backendURL } from "../../definedURL";
 import PictureCard from "./PictureCard";
 import ProgressTracker from "./ProgressTracker";
-
+import { useLanguage } from "../../contexts/LanguageContext.jsx";
 const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canSee, setCanSee] = useState(null);
@@ -23,10 +23,12 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [testId, setTestId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { language } = useLanguage();
   const mediaRecorderRef = useRef(null);
   const isRecordingRef = useRef(false);
-
+  const getCorrectAnswer = (image) => {
+    return language === 'ta' ? image.correctAnswerTamil : image.correctAnswer;
+  };
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);
@@ -43,7 +45,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         type: "audio/wav",
       });
       formData.append("file", file);
-
+      formData.append("language", language);
       setIsTranscribing(true);
       setError(null);
       try {
@@ -188,8 +190,9 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         {
           image: currentImage.imageUrl,
           userAnswer: "",
-          correctAnswer: currentImage.correctAnswer,
+          correctAnswer: getCorrectAnswer(currentImage),
           description: "",
+          language: language,
         },
       ];
       setResponses(updatedResponses);
@@ -201,7 +204,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } else {
       setStep(2);
-      speakText("Great! Can you tell me what it is?");
+      speakText(language === 'ta' ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?" : "Great! Can you tell me what it is?");
     }
   };
 
@@ -222,8 +225,9 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       {
         image: currentImage.imageUrl,
         userAnswer: answer,
-        correctAnswer: currentImage.correctAnswer,
+        correctAnswer: getCorrectAnswer(currentImage),
         description: description,
+        language: language
       },
     ];
     setResponses(updatedResponses);

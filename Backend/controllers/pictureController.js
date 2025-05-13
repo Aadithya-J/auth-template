@@ -2,12 +2,20 @@ import supabase from "../utils/supabaseClient.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const evaluateResponse = async (userInput, correctAnswer) => {
+const evaluateResponse = async (userInput, correctAnswer, language = 'en') => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   if (!userInput) {
     return { score: 0, feedback: "No description provided" };
   }
-  const prompt = `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`;
+
+  // Language-specific prompts
+  const prompts = {
+    en: `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`,
+    ta: `மதிப்பீடு செய்யுங்கள்: '${correctAnswer}' படத்திற்கான இந்த விளக்கம் சரியானதா? ${userInput}. "1|சரி" அல்லது "0|தவறு" என பதிலளிக்கவும்.`,
+    // Add more languages as needed
+  };
+
+  const prompt = prompts[language] || prompts.en; // Fallback to English
 
   try {
     const result = await model.generateContent({
@@ -15,7 +23,6 @@ const evaluateResponse = async (userInput, correctAnswer) => {
     });
 
     const textResponse = result.response.text().trim();
-
     const [score, feedback] = textResponse.split("|");
 
     if (score !== undefined && feedback !== undefined) {
@@ -47,7 +54,8 @@ export async function evaluateDescriptionAndStore(req, res) {
 
       const { score: descriptionScore, feedback } = await evaluateResponse(
         item.description,
-        item.correctAnswer
+        item.correctAnswer,
+        item.language // Pass the language to the evaluation function
       );
 
       const imageTotal = answerScore + descriptionScore;
@@ -58,6 +66,7 @@ export async function evaluateDescriptionAndStore(req, res) {
         userAnswer: item.userAnswer,
         correctAnswer: item.correctAnswer,
         description: item.description,
+        language: item.language,
         answerScore,
         descriptionScore,
         totalForThisImage: imageTotal,
