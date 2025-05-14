@@ -208,11 +208,15 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
     setGameState("showing");
     setCurrentRound((prev) => prev + 1);
 
-    const seq: string[] = [];
-    const availableSymbols = [...symbols].sort(() => 0.5 - Math.random());
-    for (let i = 0; i < difficultyLevels[difficulty].sequenceLength; i++) {
-      seq.push(availableSymbols[i]);
-    }
+    // Create a copy of symbols array and shuffle it
+    const shuffledSymbols = [...symbols].sort(() => 0.5 - Math.random());
+
+    // Take the first 'sequenceLength' symbols from the shuffled array
+    const seq = shuffledSymbols.slice(
+      0,
+      difficultyLevels[difficulty].sequenceLength
+    );
+
     setCurrentSequence(seq);
     setUserSequence([]);
     setTimeLeft(difficultyLevels[difficulty].timeToView / 1000);
@@ -320,22 +324,30 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   };
 
   const getAvailableSymbols = () => {
+    // Start with the correct sequence symbols
     const requiredSymbols = [...currentSequence];
+
+    // Get all symbols except those in the correct sequence
     const remainingSymbols = symbols.filter(
       (s) => !requiredSymbols.includes(s)
     );
 
+    // Shuffle the remaining symbols
+    const shuffledRemaining = [...remainingSymbols].sort(
+      () => 0.5 - Math.random()
+    );
+
+    // Calculate how many additional symbols we need
     const additionalCount =
       difficultyLevels[level].cardsToShow - requiredSymbols.length;
-    const additionalSymbols = remainingSymbols.slice(0, additionalCount);
 
+    // Take the needed number from the shuffled remaining symbols
+    const additionalSymbols = shuffledRemaining.slice(0, additionalCount);
+
+    // Combine and shuffle the result
     const result = [...requiredSymbols, ...additionalSymbols];
 
-    if (gameState === "showing") {
-      return [...result].sort(() => 0.5 - Math.random());
-    }
-
-    return result;
+    return [...result].sort(() => 0.5 - Math.random());
   };
 
   return (
