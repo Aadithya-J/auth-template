@@ -107,13 +107,28 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
   const testName = 
   language === 'ta' && test.testName_ta ? test.testName_ta :
   language === 'hi' && test.testName_hi ? test.testName_hi :
+  language === 'gu' && test.testName_gu ? test.testName_gu :
+  language === 'pa' && test.testName_pa ? test.testName_pa :
+  language === 'te' && test.testName_te ? test.testName_te :
+  language === 'od' && test.testName_od ? test.testName_od :
+  language === 'ml' && test.testName_ml ? test.testName_ml :
+  language === 'mr' && test.testName_mr ? test.testName_mr :
+  language === 'kn' && test.testName_kn ? test.testName_kn :
+  language === 'bn' && test.testName_bn ? test.testName_bn :
   test.testName;
 
 const testDescription = 
   language === 'ta' && test.About_ta ? test.About_ta :
   language === 'hi' && test.About_hi ? test.About_hi :
+  language === 'gu' && test.About_gu ? test.About_gu :
+  language === 'pa' && test.About_pa ? test.About_pa :
+  language === 'te' && test.About_te ? test.About_te :
+  language === 'od' && test.About_od ? test.About_od :
+  language === 'ml' && test.About_ml ? test.About_ml :
+  language === 'mr' && test.About_mr ? test.About_mr :
+  language === 'kn' && test.About_kn ? test.About_kn :
+  language === 'bn' && test.About_bn ? test.About_bn :
   test.About;
-
 
   return (
     <motion.div

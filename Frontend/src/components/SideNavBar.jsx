@@ -126,7 +126,7 @@ export default function SideNavBar({ onToggle, handleLogout }) {
       </div>
 
       {/* Language Section */}
-      <div className="mt-4 px-3">
+      {/* <div className="mt-4 px-3">
   <div
     className={`overflow-hidden transition-all duration-500 ease-in-out ${
       expand ? "max-h-6 opacity-100 mb-2" : "max-h-0 opacity-0"
@@ -168,7 +168,62 @@ export default function SideNavBar({ onToggle, handleLogout }) {
       {expand ? t("hindi") : "HI"}
     </button>
   </div>
+</div> */}
+
+
+
+<div className="mt-6 px-4">
+  {/* Animated label */}
+  <div
+    className={`overflow-hidden transition-all duration-500 ease-in-out ${
+      expand ? "max-h-8 opacity-100 mb-3" : "max-h-0 opacity-0"
+    }`}
+  >
+    <span className="text-[11px] font-semibold text-blue-500 uppercase tracking-widest select-none">
+      {t("language")}
+    </span>
+  </div>
+  {/* Language buttons */}
+  <div className={`flex flex-wrap justify-center ${expand ? "gap-3" : "flex-col items-center"}`}>
+    {[
+      { code: "en", label: "english", short: "EN" },
+      { code: "ta", label: "tamil", short: "TA" },
+      { code: "hi", label: "hindi", short: "HI" },
+      { code: "ml", label: "malayalam", short: "ML" },
+      { code: "te", label: "telugu", short: "TE" },
+      { code: "kn", label: "kannada", short: "KN" },
+      { code: "mr", label: "marathi", short: "MR" },
+      { code: "bn", label: "bengali", short: "BN" },
+      { code: "gu", label: "gujarati", short: "GU" },
+      { code: "pa", label: "punjabi", short: "PA" },
+      { code: "od", label: "Odia", short: "OD" },
+    ].map(({ code, label, short }) => (
+      <button
+        key={code}
+        onClick={() => setLanguage(code)}
+        className={`
+          px-4 py-2 rounded-lg shadow-sm mb-2 w-24
+          font-medium text-sm transition-all duration-200
+          backdrop-blur bg-white/60 border border-gray-200
+          hover:bg-blue-50 hover:border-blue-200
+          focus:outline-none focus:ring-2 focus:ring-blue-300
+          active:scale-95
+          ${
+            language === code
+              ? "bg-gradient-to-r from-blue-500 to-blue-400 text-white border-blue-500 shadow-lg"
+              : "text-gray-800"
+          }
+        `}
+        style={{
+          letterSpacing: '0.03em',
+        }}
+      >
+        {expand ? t(label) : short}
+      </button>
+    ))}
+  </div>
 </div>
+
       {/* Settings & Profile Section */}
       <div className="mt-auto px-3">
         <div
@@ -244,6 +299,7 @@ export function SideNavBarItem({
   expand,
   activeItem,
   onClick,
+  
 }) {
   const isActive = activeItem === route;
 

@@ -32,14 +32,36 @@ const TakeTests = ({ tests = [] }) => {
     setSearchTerm("");
   };
 
-  const filteredTests = tests.filter(test => {
-    const searchLower = searchTerm.toLowerCase();
-    // Search in both English and Tamil test names and descriptions
-    return test.testName.toLowerCase().includes(searchLower) || 
-      (test.About && test.About.toLowerCase().includes(searchLower)) ||
-      (language === 'ta' && test.testName_ta && test.testName_ta.toLowerCase().includes(searchLower)) ||
-      (language === 'ta' && test.About_ta && test.About_ta.toLowerCase().includes(searchLower));
-  });
+  // const filteredTests = tests.filter(test => {
+  //   const searchLower = searchTerm.toLowerCase();
+  //   // Search in both English and Tamil test names and descriptions
+  //   return test.testName.toLowerCase().includes(searchLower) || 
+  //     (test.About && test.About.toLowerCase().includes(searchLower)) ||
+  //     (language === 'ta' && test.testName_ta && test.testName_ta.toLowerCase().includes(searchLower)) ||
+  //     (language === 'ta' && test.About_ta && test.About_ta.toLowerCase().includes(searchLower));
+  // });
+
+  const supportedLanguages = ['ta', 'hi', 'gu', 'pa', 'te', 'od', 'ml', 'mr', 'kn', 'bn'];
+
+const filteredTests = tests.filter(test => {
+  const searchLower = searchTerm.toLowerCase();
+
+  // Always check English base fields
+  let match =
+    test.testName?.toLowerCase().includes(searchLower) ||
+    test.About?.toLowerCase().includes(searchLower);
+
+  // Check localized fields for the current language if it's supported
+  if (supportedLanguages.includes(language)) {
+    const testNameLocalized = test[`testName_${language}`];
+    const aboutLocalized = test[`About_${language}`];
+
+    match ||= testNameLocalized?.toLowerCase().includes(searchLower);
+    match ||= aboutLocalized?.toLowerCase().includes(searchLower);
+  }
+
+  return match;
+});
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen p-4 md:p-8">
