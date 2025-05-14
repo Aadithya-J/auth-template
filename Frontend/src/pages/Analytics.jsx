@@ -144,12 +144,17 @@ export default function Analytics({ students: initialStudents }) {
   const [showPopup, setShowPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch students directly from API instead of relying only on props
   const fetchStudents = async () => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("access_token");
-      if (!token) return;
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
 
       const response = await axios.get(`${backendURL}/getChildrenByTeacher`, {
         headers: {
@@ -160,8 +165,10 @@ export default function Analytics({ students: initialStudents }) {
       if (response.data && response.data.children) {
         setStudents(response.data.children);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching students:", error);
+      setIsLoading(false);
     }
   };
 
@@ -179,6 +186,7 @@ export default function Analytics({ students: initialStudents }) {
   useEffect(() => {
     if (initialStudents && initialStudents.length > 0) {
       setStudents(initialStudents);
+      setIsLoading(false);
     }
   }, [initialStudents]);
 
@@ -255,8 +263,15 @@ export default function Analytics({ students: initialStudents }) {
               </div>
             )}
 
-            {/* Student Cards */}
-            {filteredStudents.length > 0 ? (
+            {/* Loading indicator */}
+            {isLoading ? (
+              <div className="col-span-full flex flex-col items-center justify-center p-8">
+                <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mb-4"></div>
+                <p className="text-blue-600 font-medium">
+                  {t("loadingStudents")}
+                </p>
+              </div>
+            ) : filteredStudents.length > 0 ? (
               filteredStudents.map((student) => (
                 <StudentCard
                   key={student.id}
