@@ -167,7 +167,13 @@ const useAudioRecorder = (onAudioCaptured) => {
 };
 
 // Word Display Component
-const WordDisplay = ({ currentWord, currentIndex, totalWords, language, t }) => {
+const WordDisplay = ({
+  currentWord,
+  currentIndex,
+  totalWords,
+  language,
+  t,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -192,15 +198,13 @@ const WordDisplay = ({ currentWord, currentIndex, totalWords, language, t }) => 
       <div className="flex justify-center gap-4">
         <p className="text-sm text-blue-500">
           <span className="inline-block px-2 py-1 bg-blue-100 rounded-full">
-            {t("level")}
-            : {currentWord.level}
+            {t("level")}: {currentWord.level}
           </span>
         </p>
         {language === "ta" && currentWord.ta && (
           <p className="text-sm text-gray-500">
             <span className="inline-block px-2 py-1 bg-gray-100 rounded-full">
-              {t("english")}
-              : {currentWord.word}
+              {t("english")}: {currentWord.word}
             </span>
           </p>
         )}
@@ -222,7 +226,7 @@ const DefinitionInput = ({
   incorrectStreak,
   error,
   language,
-  t
+  t,
 }) => {
   return (
     <div className="mb-6">
@@ -349,7 +353,7 @@ const NavigationButton = ({
   isRecording,
   isTranscribing,
   incorrectStreak,
-  t
+  t,
 }) => {
   const isFinish = isLast || incorrectStreak >= 4;
 
@@ -390,6 +394,7 @@ const NavigationButton = ({
 
 // Test Complete Component
 const TestComplete = ({ finalScore, totalWords, error, childId }) => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -410,7 +415,9 @@ const TestComplete = ({ finalScore, totalWords, error, childId }) => {
         </div>
       </motion.div>
 
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">Test Completed!</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-700">
+        {t("testCompleted")}
+      </h2>
 
       {finalScore !== null && (
         <motion.div
@@ -419,7 +426,7 @@ const TestComplete = ({ finalScore, totalWords, error, childId }) => {
           transition={{ delay: 0.4 }}
           className="mb-6"
         >
-          <p className="text-xl mb-2">Your final score is:</p>
+          <p className="text-xl mb-2">{t("yourFinalScoreIs")}</p>
           <div className="text-3xl font-bold text-blue-600 mb-2">
             {finalScore} / {totalWords}
           </div>
@@ -444,17 +451,17 @@ const TestComplete = ({ finalScore, totalWords, error, childId }) => {
           animate={{ opacity: 1 }}
           className="text-red-600 mb-4 p-2 bg-red-50 rounded"
         >
-          Submission Error: {error}
+          {t("submissionError")}: {error}
         </motion.p>
       )}
 
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => navigate(`/user/${childId}`)}
+        onClick={() => navigate(`/taketests`)}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 flex items-center gap-2 mx-auto"
       >
-        Back to Child Profile <ArrowRight className="h-4 w-4" />
+        {t("BackToTests")} <ArrowRight className="h-4 w-4" />
       </motion.button>
     </motion.div>
   );
@@ -493,7 +500,6 @@ const ErrorState = ({ message }) => (
   </motion.div>
 );
 
-// Main Component
 const VocabularyScaleTest = () => {
   const childId = localStorage.getItem("childId");
   const navigate = useNavigate();
@@ -598,40 +604,62 @@ const VocabularyScaleTest = () => {
     setSubmitting(true);
     setError(null);
 
-    // Ensure the last definition is captured if user clicks submit directly
+    // Capture the last response if not already saved
     const finalResponses = [...responses];
-    if (
-      currentWordIndex < words.length &&
-      !responses.find((r) => r.word === words[currentWordIndex].word)
-    ) {
+    const currentWord = words[currentWordIndex];
+    if (currentWord && !responses.find((r) => r.word === currentWord.word)) {
       finalResponses.push({
-        word: words[currentWordIndex].word,
+        word: currentWord.word,
         definition: currentDefinition,
       });
     }
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token"); // Make sure this matches your token key
+      if (!token) {
+        throw new Error("Authentication token not found");
+      }
+
       const response = await axios.post(
         `${backendURL}/vocabulary/submit`,
-        { child_id: childId, responses: finalResponses, language: language },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          child_id: childId,
+          responses: finalResponses,
+          language: language,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      if (response.status === 201 && response.data) {
-        setFinalScore(response.data.score);
+      if (response.status === 200 || response.status === 201) {
+        // Make sure we're using the actual score from the API response
+        // and not just the number of responses
+        if (response.data && typeof response.data.score === "number") {
+          setFinalScore(response.data.score);
+        } else {
+          // Fallback if score is missing from API response
+          setFinalScore(0);
+          console.warn("Score missing from API response");
+        }
         setTestComplete(true);
-        toast.success("Test submitted successfully!");
+        toast.success(t("testSubmittedSuccessfully"));
       } else {
-        throw new Error("Failed to submit test results.");
+        throw new Error(
+          response.data?.error || "Failed to submit test results"
+        );
       }
     } catch (err) {
-      console.error("Error submitting vocabulary test:", err);
+      console.error("Submission error:", err);
       const errorMsg =
-        err.response?.data?.error || "An error occurred during submission.";
+        err.response?.data?.error ||
+        err.message ||
+        t("submissionFailedTryAgain");
       setError(errorMsg);
       toast.error(errorMsg);
-      setTestComplete(false);
     } finally {
       setSubmitting(false);
     }

@@ -33,7 +33,6 @@
 //   { word: "espionage", level: "14", ta: "உளவு", hi: "जासूसी" },
 // ];
 
-
 // // Function to evaluate the child's definition using Gemini
 // // Function to evaluate the child's definition using Gemini
 // const evaluateDefinition = async (word, definition, language = "en") => {
@@ -238,8 +237,6 @@
 //   }
 // }
 
-
-
 import supabase from "../utils/supabaseClient.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -394,7 +391,6 @@ export async function evaluateVocabularyAndStore(req, res) {
           responses: processedResponses,
           score: totalScore,
           test_name: "Vocabulary Scale",
-          language: language || "en", // Store the language used for the test
         },
       ])
       .select()
@@ -482,15 +478,15 @@ export function getVocabularyWords(req, res) {
     // Optionally filter by language if needed
     const { language } = req.query;
     let wordsToSend = vocabularyWords;
-    
+
     if (language) {
-      wordsToSend = vocabularyWords.map(wordObj => ({
+      wordsToSend = vocabularyWords.map((wordObj) => ({
         word: wordObj.word,
         level: wordObj.level,
-        translation: wordObj[language] || wordObj.en // Fallback to English if translation not available
+        translation: wordObj[language] || wordObj.en, // Fallback to English if translation not available
       }));
     }
-    
+
     res.status(200).json({ words: wordsToSend });
   } catch (error) {
     console.error("Error fetching vocabulary words:", error.message);
