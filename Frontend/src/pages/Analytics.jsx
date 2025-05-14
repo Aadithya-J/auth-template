@@ -397,7 +397,6 @@ export default function Analytics({ students: initialStudents }) {
     // Update local state
     setStudents((prevStudents) => [newStudent, ...prevStudents]);
 
-    // After adding a new student, fetch the latest student list from API
     await fetchStudents();
   };
 
