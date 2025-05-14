@@ -30,7 +30,7 @@ mkdirSync("uploads", { recursive: true });
 
 app.use(
   cors({
-    origin: ["https://jiveesha.vercel.app", "http://localhost:5173", "http://localhost:3000","https://jiveesha.onrender.com"],
+    origin: ["https://jiveesha.vercel.app", "http://localhost:5173", "http://localhost:3000","https://jiveesha.onrender.com","https://jiveeshadeployed.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
