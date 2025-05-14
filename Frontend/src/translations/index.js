@@ -593,7 +593,7 @@ export const translations = {
     test: "Test",
     
     // Common labels
-    estimatedTime: "Estimated time",
+    estimatedTime: "Estimated time : 5-10 minutes",
     minutes: "minutes",
     seconds: "seconds",
     hours: "hours",
@@ -778,7 +778,12 @@ export const translations = {
     describeThePicture: "Describe the picture",
     yesICan: "Yes, I can!",
     noICan: "No, I can't",
-
+    startRecording: "Start Recording",
+    stopRecording: "Stop Recording",
+    nextWord: "Next Word",
+    finishAndSubmit: "Finish & Submit",
+    consecutiveIncorrectSkipped: "Consecutive incorrect/skipped",
+    enterDefinitionHere: "Enter the definition here or use the microphone...",
     uploadAudio: "Upload Audio",
     useVoiceInput: "Use Voice Input",
     submitTest: "Submit Test",
@@ -808,18 +813,22 @@ export const translations = {
     submit: "Submit",
     submitTest: "Submit Test",
     retakeTest: "Retake Test",
+    vocabularyScaleTest: "Vocabulary Scale Test",
+    thankYouForCompletingVocabularyScaleTest: "Thank you for completing the Vocabulary Scale test.",
     viewResults: "View Results",
     correctAnswers: "Correct Answers",
     wrongAnswers: "Wrong Answers",
+    whatDoesThisWordMean: "What does this word mean?",
     unattempted: "Unattempted",
     takeAllTests: "Take All Tests",
     takeFullTest: "Take Full Test",
     takeIndividualTest: "Take Individual Test",
     takeTest: "Take Test",
+    
     takeTest: "Take Test",
     takeTest: "Take Test",
-    takeTest: "Take Test",
-    takeTest: "Take Test",
+    
+    
   },
   ta: {
     // Navigation
@@ -869,7 +878,8 @@ export const translations = {
     analytics: "பகுப்பாய்வு",
     language: "மொழி",
     account: "கணக்கு",
-    
+    consecutiveIncorrectSkipped: "முடிவு மற்றும் சமர்ப்பிக்கும்",
+    enterDefinitionHere: "இது என்ன என்று சொல்லுங்கள் அல்லது மென்பொருள் பயன்படுத்துங்கள்...",  
     // Languages
     english: "ஆங்கிலம்",
     tamil: "தமிழ்",
@@ -899,6 +909,7 @@ export const translations = {
     close: "மூடு",
     download: "பதிவிறக்கு",
     upload: "பதிவேற்று",
+    whatDoesThisWordMean: "இது என்ன என்று சொல்லுங்கள்",
     
     // Test categories
     visual: "காட்சி",
@@ -907,7 +918,7 @@ export const translations = {
     test: "தேர்வு",
     
     // Common labels
-    estimatedTime: "மதிப்பிடப்பட்ட நேரம்",
+    estimatedTime: "மதிப்பிடப்பட்ட நேரம் : 5-10 நிமிடங்கள்",
     minutes: "நிமிடங்கள்",
     seconds: "வினாடிகள்",
     hours: "மணிநேரம்",
@@ -1038,7 +1049,12 @@ export const translations = {
     thisYear: "இந்த ஆண்டு",
     lastYear: "கடந்த ஆண்டு",
     custom: "தனிப்பயன்",
-    
+    startRecording: "பதிவு தொடங்கு",
+    stopRecording: "பதிவு நிறைவு",
+    finishAndSubmit: "முடிவு மற்றும் சமர்ப்பிக்கும்",
+    nextWord: "அடுத்த வார்த்தை",
+    vocabularyScaleTest: "வார்த்தை அளவு தேர்வு",
+    thankYouForCompletingVocabularyScaleTest: "வார்த்தை அளவு தேர்வு முடிந்தது. நன்றி!",
     // Other UI elements
     collapseMenu: "பக்கப்பட்டியை சுருக்கு",
     expandMenu: "பக்கப்பட்டியை விரிவாக்கு",
@@ -1064,6 +1080,10 @@ export const translations = {
     yesConfirm: "ஆம், நான் உறுதிப்படுத்துகிறேன்",
     noLeave: "இல்லை, நான் வெளியேற வேண்டும்",
     protectingUsers: "பயனர்களைப் பாதுகாப்பது எங்கள் முன்னுரிமை.",
+    level: "நிலை",
+    english: "ஆங்கிலம்",
+    tamil: "தமிழ்",
+    hindi: "ஹிந்தி",
     
     // ClassPage
     selectStudent: "ஒரு மாணவரைத் தேர்ந்தெடுக்கவும்",
@@ -1097,9 +1117,15 @@ export const translations = {
     students: "छात्र",
     tests: "टेस्ट",
     analytics: "विश्लेषण",
+    level: "स्तर",
+    english: "अंग्रेज़ी",
+    tamil: "तमिल",
+    hindi: "हिंदी",
+
     language: "भाषा",
     account: "खाता",
-    
+    whatDoesThisWordMean: "यह शब्द क्या है?",
+    enterDefinitionHere: "यहाँ शब्द का अर्थ दर्ज करें या माइक्रोफोन का उपयोग करें...",
     // Languages
     english: "अंग्रेज़ी",
     tamil: "तमिल",
@@ -1129,6 +1155,17 @@ export const translations = {
     close: "बंद करें",
     download: "डाउनलोड",
     upload: "अपलोड",
+    failedToStartRecording: "रिकॉर्डिंग शुरू नहीं हो पाई",
+    couldNotAccessMicrophone: "माइक्रोफोन प्रवेश नहीं हो पाई",  
+    couldNotAccessCamera: "कैमरा प्रवेश नहीं हो पाई",
+    couldNotAccessLocation: "स्थान प्रवेश नहीं हो पाई",
+    couldNotAccessNotifications: "सूचनाएं प्रवेश नहीं हो पाई",
+    couldNotAccessStorage: "स्टोरेज प्रवेश नहीं हो पाई",
+    couldNotAccessContacts: "संपर्क प्रवेश नहीं हो पाई",
+    couldNotAccessCalendar: "कैलेंडर प्रवेश नहीं हो पाई",
+    vocabularyScaleTest: "वॉकेबुलरी स्केल टेस्ट",
+    thankYouForCompletingVocabularyScaleTest: "आपने वॉकेबुलरी स्केल टेस्ट पूरा करने के लिए धन्यवाद",
+    enterDefinitionHere: "यहाँ शब्द का अर्थ दर्ज करें या माइक्रोफोन का उपयोग करें...",
     
     // Test categories
     visual: "दृश्य",
@@ -1137,7 +1174,7 @@ export const translations = {
     test: "टेस्ट",
     
     // Common labels
-    estimatedTime: "अनुमानित समय",
+    estimatedTime: "अनुमानित समय : 5-10 मिनट",
     minutes: "मिनट",
     seconds: "सेकंड",
     hours: "घंटे",
@@ -1190,6 +1227,9 @@ export const translations = {
     viewTestReport: "टेस्ट रिपोर्ट देखें",
     adjustSearchOrAddNewStudent: "अपनी खोज समायोजित करें या नया छात्र जोड़ें",
     myClassroom: "मेरी कक्षा",
+    startRecording: "रिकॉर्डिंग शुरू करें",
+    stopRecording: "रिकॉर्डिंग समाप्त करें",
+    nextWord: "अगला शब्द",
     
     // Test related
     testDetails: "टेस्ट विवरण",
@@ -1362,10 +1402,8 @@ export const translations = {
     takeIndividualTest: "व्यक्तिगत टेस्ट लें",
     takeTest: "टेस्ट लें",
     takeTest: "टेस्ट लें",
-    takeTest: "टेस्ट लें",
-    takeTest: "टेस्ट लें",
-    takeTest: "टेस्ट लें",
-    takeTest: "टेस्ट लें",
+
+
   }
 };
 

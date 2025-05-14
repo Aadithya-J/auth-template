@@ -104,8 +104,16 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
   };
 
   // Get localized test name and description
-  const testName = language === 'ta' && test.testName_ta ? test.testName_ta : test.testName;
-  const testDescription = language === 'ta' && test.About_ta ? test.About_ta : test.About;
+  const testName = 
+  language === 'ta' && test.testName_ta ? test.testName_ta :
+  language === 'hi' && test.testName_hi ? test.testName_hi :
+  test.testName;
+
+const testDescription = 
+  language === 'ta' && test.About_ta ? test.About_ta :
+  language === 'hi' && test.About_hi ? test.About_hi :
+  test.About;
+
 
   return (
     <motion.div
@@ -124,7 +132,7 @@ const TakeTestCard = ({ test, buttonLabel, onClick, estimatedTime = "5-10 minute
               <TestBadge testId={test.id} />
               <div className="flex items-center text-xs text-blue-600">
                 <MdAccessTime className="mr-1" />
-                <span>{t('estimatedTime')}: {estimatedTime}</span>
+                <span>{t('estimatedTime')}</span>
               </div>
             </div>
             

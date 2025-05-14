@@ -141,13 +141,13 @@ const useAudioRecorder = (onAudioCaptured) => {
           newMediaRecorder.start();
           setIsRecording(true);
         } catch (e) {
-          toast.error("Failed to start recording.");
+          toast.error(t("failedToStartRecording"));
           stopListening();
         }
       })
       .catch((error) => {
-        setError("Could not access microphone. Please check permissions.");
-        toast.error("Could not access microphone. Please check permissions.");
+        setError(t("couldNotAccessMicrophone"));
+        toast.error(t("couldNotAccessMicrophone"));
       });
   }, [uploadAudio, stopListening, isRecordingRef]);
 
@@ -167,7 +167,7 @@ const useAudioRecorder = (onAudioCaptured) => {
 };
 
 // Word Display Component
-const WordDisplay = ({ currentWord, currentIndex, totalWords, language }) => {
+const WordDisplay = ({ currentWord, currentIndex, totalWords, language, t }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -192,13 +192,15 @@ const WordDisplay = ({ currentWord, currentIndex, totalWords, language }) => {
       <div className="flex justify-center gap-4">
         <p className="text-sm text-blue-500">
           <span className="inline-block px-2 py-1 bg-blue-100 rounded-full">
-            Level: {currentWord.level}
+            {t("level")}
+            : {currentWord.level}
           </span>
         </p>
         {language === "ta" && currentWord.ta && (
           <p className="text-sm text-gray-500">
             <span className="inline-block px-2 py-1 bg-gray-100 rounded-full">
-              English: {currentWord.word}
+              {t("english")}
+              : {currentWord.word}
             </span>
           </p>
         )}
@@ -220,6 +222,7 @@ const DefinitionInput = ({
   incorrectStreak,
   error,
   language,
+  t
 }) => {
   return (
     <div className="mb-6">
@@ -227,9 +230,7 @@ const DefinitionInput = ({
         htmlFor="definition"
         className="block text-lg font-medium text-blue-700 mb-2"
       >
-        {language === "ta"
-          ? `"${wordText}" என்றால் என்ன?`
-          : `What does "${wordText}" mean?`}
+        {t("whatDoesThisWordMean")}
       </label>
       <motion.div
         initial={{ opacity: 0.8 }}
@@ -242,7 +243,7 @@ const DefinitionInput = ({
           rows="4"
           value={currentDefinition}
           onChange={(e) => setCurrentDefinition(e.target.value)}
-          placeholder="Enter the definition here or use the microphone..."
+          placeholder={t("enterDefinitionHere")}
           className={`w-full px-3 py-2 text-blue-800 border ${
             isRecording ? "border-red-400" : "border-blue-300"
           } rounded-lg focus:outline-none focus:border-blue-500 transition-colors duration-300`}
@@ -267,11 +268,11 @@ const DefinitionInput = ({
           >
             {isRecording ? (
               <>
-                <MicOff className="h-5 w-5" /> Stop Recording
+                <MicOff className="h-5 w-5" /> {t("stopRecording")}
               </>
             ) : (
               <>
-                <Mic className="h-5 w-5" /> Start Recording
+                <Mic className="h-5 w-5" /> {t("startRecording")}
               </>
             )}
           </motion.button>
@@ -318,7 +319,7 @@ const DefinitionInput = ({
               className="text-xs text-orange-600 mt-2 flex items-center gap-1"
             >
               <AlertCircle className="h-3 w-3" />
-              Consecutive incorrect/skipped: {incorrectStreak}
+              {t("consecutiveIncorrectSkipped")}: {incorrectStreak}
             </motion.p>
           )}
         </AnimatePresence>
@@ -348,6 +349,7 @@ const NavigationButton = ({
   isRecording,
   isTranscribing,
   incorrectStreak,
+  t
 }) => {
   const isFinish = isLast || incorrectStreak >= 4;
 
@@ -374,7 +376,7 @@ const NavigationButton = ({
         </>
       ) : (
         <>
-          {isFinish ? "Finish & Submit" : "Next Word"}
+          {isFinish ? t("finishAndSubmit") : t("nextWord")}
           {isFinish ? (
             <Check className="h-4 w-4" />
           ) : (
@@ -433,7 +435,7 @@ const TestComplete = ({ finalScore, totalWords, error, childId }) => {
       )}
 
       <p className="mb-6 text-blue-800">
-        Thank you for completing the Vocabulary Scale test.
+        {t("thankYouForCompletingVocabularyScaleTest")}
       </p>
 
       {error && (
@@ -505,7 +507,7 @@ const VocabularyScaleTest = () => {
   const [testComplete, setTestComplete] = useState(false);
   const [finalScore, setFinalScore] = useState(null);
   const [incorrectStreak, setIncorrectStreak] = useState(0);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   // Handle transcribed audio
   const handleTranscriptionComplete = useCallback((transcription) => {
     setCurrentDefinition(transcription);
@@ -674,7 +676,7 @@ const VocabularyScaleTest = () => {
         animate={{ y: 0 }}
         className="text-3xl font-bold text-center mb-6 text-blue-800"
       >
-        Vocabulary Scale Test
+        {t("vocabularyScaleTest")}
       </motion.h1>
 
       {currentWord && (
@@ -691,12 +693,14 @@ const VocabularyScaleTest = () => {
               currentIndex={currentWordIndex}
               totalWords={words.length}
               language={language}
+              t={t}
             />
 
             <DefinitionInput
               currentDefinition={currentDefinition}
               setCurrentDefinition={setCurrentDefinition}
               isRecording={isRecording}
+              t={t}
               isTranscribing={isTranscribing}
               isSubmitting={isSubmitting}
               startListening={startListening}
@@ -720,6 +724,7 @@ const VocabularyScaleTest = () => {
                 isRecording={isRecording}
                 isTranscribing={isTranscribing}
                 incorrectStreak={incorrectStreak}
+                t={t}
               />
             </div>
           </motion.div>
