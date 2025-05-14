@@ -77,7 +77,7 @@
 //             }`}
 //           >
 //             {/* Add Student Card */}
-            
+
 //             {location.pathname.includes('/viewstudents') && (
 //               <div
 //                 className="flex flex-col items-center justify-center p-6 bg-blue-50 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:shadow-md"
@@ -88,7 +88,6 @@
 //                 <span className="text-blue-600 font-medium">{t("addStudent")}</span>
 //               </div>
 //             )}
-
 
 //             {/* Student Cards */}
 //             {filteredStudents.length > 0 ? (
@@ -126,7 +125,6 @@
 //   );
 // }
 
-
 import React, { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { MdPerson } from "react-icons/md";
@@ -135,6 +133,8 @@ import PopupForm from "../components/PopupForm";
 import SearchbyName from "../components/SearchbyName";
 import StudentCard from "../components/StudentCard";
 import { useLanguage } from "../contexts/LanguageContext";
+import axios from "axios";
+import { backendURL } from "../definedURL";
 
 export default function Analytics({ students: initialStudents }) {
   const navigate = useNavigate();
@@ -145,12 +145,42 @@ export default function Analytics({ students: initialStudents }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Fetch students directly from API instead of relying only on props
+  const fetchStudents = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      const response = await axios.get(`${backendURL}/getChildrenByTeacher`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data && response.data.children) {
+        setStudents(response.data.children);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
+
   useEffect(() => {
+    // Fetch students when component mounts and whenever location changes
+    fetchStudents();
+
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [location.pathname]);
+
+  // Also update students when initialStudents prop changes
+  useEffect(() => {
+    if (initialStudents && initialStudents.length > 0) {
+      setStudents(initialStudents);
+    }
+  }, [initialStudents]);
 
   const handleAddChildClick = () => {
     setShowPopup(true);
@@ -172,8 +202,12 @@ export default function Analytics({ students: initialStudents }) {
     setSearchTerm(term);
   };
 
-  const handleNewStudent = (newStudent) => {
+  const handleNewStudent = async (newStudent) => {
+    // Update local state
     setStudents((prevStudents) => [newStudent, ...prevStudents]);
+
+    // After adding a new student, fetch the latest student list from API
+    await fetchStudents();
   };
 
   const filteredStudents = students.filter((student) =>
@@ -189,7 +223,9 @@ export default function Analytics({ students: initialStudents }) {
               className="text-3xl font-bold text-blue-800 transition-all duration-300 hover:text-blue-700"
               aria-label={t("myClassroom")}
             >
-              {location.pathname.includes('/analytics') ? t("analytics") : t("studentsManagement")}
+              {location.pathname.includes("/analytics")
+                ? t("analytics")
+                : t("studentsManagement")}
             </h1>
             <SearchbyName onSearch={handleSearch} />
           </div>
@@ -206,14 +242,16 @@ export default function Analytics({ students: initialStudents }) {
             }`}
           >
             {/* Add Student Card */}
-            {location.pathname.includes('/viewstudents') && (
+            {location.pathname.includes("/viewstudents") && (
               <div
                 className="flex flex-col items-center justify-center p-6 bg-blue-50 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:shadow-md"
                 onClick={handleAddChildClick}
                 aria-label={t("addNewStudent")}
               >
                 <CiCirclePlus className="w-12 h-12 text-blue-500 mb-2" />
-                <span className="text-blue-600 font-medium">{t("addStudent")}</span>
+                <span className="text-blue-600 font-medium">
+                  {t("addStudent")}
+                </span>
               </div>
             )}
 
