@@ -28,13 +28,7 @@ const PORT = process.env.PORT || 3000;
 mkdirSync("uploads", { recursive: true });
 
 
-app.use(
-  cors({
-    origin: ["https://jiveesha.vercel.app", "http://localhost:5173", "http://localhost:3000","https://jiveesha.onrender.com"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 
 // API routes
