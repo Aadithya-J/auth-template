@@ -233,7 +233,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { backendURL } from "../../definedURL";
-
+import { useLanguage } from '../../contexts/LanguageContext';
 // Question data
 const quizQuestions = [
   { word: "ο", options: ["c", "a", "o", "d", "e", "p"], correct: "o" },
@@ -295,6 +295,7 @@ const Question = ({
   onAnswer,
   onSkipToggle,
 }) => {
+  const { t } = useLanguage();  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -308,8 +309,8 @@ const Question = ({
             isSkipped ? "text-blue-300" : "text-blue-700"
           }`}
         >
-          Question {index + 1}{" "}
-          {isSkipped && <span className="text-blue-300">: Skipped</span>}
+          {t("question")} {index + 1}{" "}
+          {isSkipped && <span className="text-blue-300">: {t("skipped")}</span>}
         </span>
       </div>
 
@@ -346,7 +347,7 @@ const Question = ({
             }`}
             onClick={() => onSkipToggle(index)}
           >
-            {isSkipped ? "Attempt" : "Skip"}
+            {isSkipped ? t("attempt") : t("skip")}
           </motion.button>
         </div>
       </div>
@@ -357,6 +358,7 @@ const Question = ({
 const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   const [score, setScore] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
+  const { t } = useLanguage();
   const [skippedQuestions, setSkippedQuestions] = useState(
     Array(quizQuestions.length).fill(false)
   );
@@ -409,7 +411,7 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
     if (!childId) {
       toast.error(
-        "No student data found. Please select a student before taking the test."
+        t("noStudentDataFoundPleaseSelectAStudentBeforeTakingTheTest")
       );
       setIsSubmitting(false);
       return;
@@ -435,19 +437,17 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         if (suppressResultPage && typeof onComplete === "function") {
           onComplete(score);
         } else {
-          toast.success("Test submitted successfully!", {
+          toast.success(t("testSubmittedSuccessfully"), {
             position: "top-center",
             onClose: () => navigate("/"),
           });
         }
       } else {
-        toast.error("Failed to submit test. Please try again.");
+        toast.error(t("failedToSubmitTestPleaseTryAgain"));
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error(
-        "An error occurred while submitting the test. Please try again."
-      );
+      toast.error(t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain"));
     } finally {
       setIsSubmitting(false);
     }
@@ -466,7 +466,7 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         className="mb-8"
       >
         <h2 className="text-3xl font-roboto font-extrabold mb-7 flex items-center text-blue-800">
-          Visual Discrimination Test
+          {t("visualDiscriminationTest")}
         </h2>
         <div className="h-0.5 bg-blue-200 w-full mb-10"></div>
 
@@ -494,7 +494,7 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
                 : "hover:bg-blue-700"
             }`}
           >
-            {isSubmitting ? "Submitting..." : "Submit Test"}
+            {isSubmitting ? t("submitting") : t("submitTest")}
           </motion.button>
         </div>
       </motion.div>

@@ -124,39 +124,51 @@ export default function SideNavBar({ onToggle, handleLogout }) {
           />
         </ul>
       </div>
+
+      {/* Language Section */}
       <div className="mt-4 px-3">
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            expand ? "max-h-6 opacity-100 mb-2" : "max-h-0 opacity-0"
-          }`}
-        >
-          <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
-            {t("language")}
-          </span>
-        </div>
-        <div className={`flex ${expand ? "gap-2" : "flex-col items-center"}`}>
-          <button
-            onClick={() => setLanguage("en")}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-              language === "en"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {expand ? t("english") : "EN"}
-          </button>
-          <button
-            onClick={() => setLanguage("ta")}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-              language === "ta"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {expand ? t("tamil") : "TA"}
-          </button>
-        </div>
-      </div>
+  <div
+    className={`overflow-hidden transition-all duration-500 ease-in-out ${
+      expand ? "max-h-6 opacity-100 mb-2" : "max-h-0 opacity-0"
+    }`}
+  >
+    <span className="text-xs font-medium text-blue-400 uppercase tracking-wider">
+      {t("language")}
+    </span>
+  </div>
+  <div className={`flex ${expand ? "gap-2" : "flex-col items-center"}`}>
+    <button
+      onClick={() => setLanguage("en")}
+      className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+        language === "en"
+          ? "bg-blue-500 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }`}
+    >
+      {expand ? t("english") : "EN"}
+    </button>
+    <button
+      onClick={() => setLanguage("ta")}
+      className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+        language === "ta"
+          ? "bg-blue-500 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }`}
+    >
+      {expand ? t("tamil") : "TA"}
+    </button>
+    <button
+      onClick={() => setLanguage("hi")}
+      className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+        language === "hi"
+          ? "bg-blue-500 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }`}
+    >
+      {expand ? t("hindi") : "HI"}
+    </button>
+  </div>
+</div>
       {/* Settings & Profile Section */}
       <div className="mt-auto px-3">
         <div
