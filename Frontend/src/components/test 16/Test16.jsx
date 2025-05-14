@@ -254,7 +254,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { backendURL } from "../../definedURL";
-
+import { useLanguage } from '../../contexts/LanguageContext';
 // Word pairs data
 const wordPairs = [
   ["dog", "hog"],
@@ -336,6 +336,7 @@ const WordPairItem = ({
   selectedOption,
   onResponse,
   onSkip,
+  t,
 }) => {
   return (
     <motion.div
@@ -350,7 +351,7 @@ const WordPairItem = ({
             skipped ? "text-gray-500" : "text-blue-800"
           }`}
         >
-          Word Pair Number {index + 1}{" "}
+          {t("wordPairNumber")} {index + 1}{" "}
           {skipped && <span className="text-gray-500">: Skipped</span>}
         </span>
       </div>
@@ -385,7 +386,7 @@ const WordPairItem = ({
             active={selectedOption === true}
             variant="success"
           >
-            Yes, the sounds are same
+            {t("yesTheSoundsAreSame")}
           </AnimatedButton>
 
           <AnimatedButton
@@ -394,13 +395,13 @@ const WordPairItem = ({
             active={selectedOption === false}
             variant="danger"
           >
-            No, the sounds are not same
+            {t("noTheSoundsAreNotSame")}
           </AnimatedButton>
         </div>
 
         <div className="flex justify-end flex-grow">
           <AnimatedButton onClick={() => onSkip(index)} variant="neutral">
-            {skipped ? "Attempt" : "Skip"}
+            {t("skip")}
           </AnimatedButton>
         </div>
       </div>
@@ -431,7 +432,7 @@ const Header = ({ title }) => (
 );
 
 // Submit button component
-const SubmitButton = ({ onClick }) => (
+const SubmitButton = ({ onClick,t }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -444,7 +445,7 @@ const SubmitButton = ({ onClick }) => (
       onClick={onClick}
       className="bg-blue-700 text-white font-bold py-3 px-6 rounded-md text-lg transition duration-200 hover:bg-blue-800 shadow-lg"
     >
-      Submit Test
+      {t("submitTest")}
     </motion.button>
   </motion.div>
 );
@@ -463,7 +464,7 @@ const SoundDiscriminationTest = ({
     Array(wordPairs.length).fill(false)
   );
   const navigate = useNavigate();
-
+  const { t } = useLanguage();
   // Function to handle user responses
   const handleResponse = (index, isCorrect) => {
     if (skippedPairs[index]) return;
@@ -563,7 +564,7 @@ const SoundDiscriminationTest = ({
       transition={{ duration: 0.5 }}
       className="p-8 overflow-auto h-screen bg-blue-50"
     >
-      <Header title="Sound Discrimination Test" />
+      <Header title={t("soundDiscriminationTest")} />
 
       {wordPairs.map((pair, index) => (
         <WordPairItem
@@ -574,10 +575,11 @@ const SoundDiscriminationTest = ({
           selectedOption={selectedOptions[index]}
           onResponse={handleResponse}
           onSkip={handleSkip}
+          t={t}
         />
       ))}
 
-      <SubmitButton onClick={handleSubmit} />
+      <SubmitButton onClick={handleSubmit} t={t} />
 
       <ToastContainer />
     </motion.div>

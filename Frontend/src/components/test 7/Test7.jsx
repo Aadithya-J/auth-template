@@ -23,7 +23,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [testId, setTestId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const mediaRecorderRef = useRef(null);
   const isRecordingRef = useRef(false);
   const getCorrectAnswer = (image) => {
@@ -335,7 +335,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   };
 
   useEffect(() => {
-    setTimeout(() => speakText("Can you see this picture?"), 2000);
+    setTimeout(() => speakText(language === 'ta' ? "இது என்ன என்று சொல்ல முடியுமா?" : "Can you see this picture?"), 2000);
     return () => {
       stopListening();
     };
@@ -530,10 +530,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               className="text-xl md:text-2xl font-bold text-white text-center"
             >
               {step === 1
-                ? "Can you see this picture?"
+                ? t("canYouSeeThisPicture")
                 : step === 2
-                ? "What is it?"
-                : "Describe the picture"}
+                ? t("whatIsIt")
+                : t("describeThePicture")}
             </motion.h1>
           </div>
 
@@ -561,7 +561,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 py-3 md:px-8 md:py-4 rounded-lg shadow-md transition-all duration-300"
                   onClick={() => handleCanSeeSelection(true)}
                 >
-                  Yes, I can!
+                  {t("yesICan")}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -569,7 +569,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-3 md:px-8 md:py-4 rounded-lg shadow-md transition-all duration-300"
                   onClick={() => handleCanSeeSelection(false)}
                 >
-                  No, I can't
+                  {t("noICan")}
                 </motion.button>
               </motion.div>
             ) : (
@@ -590,8 +590,8 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     className="w-full border-2 border-blue-200 focus:border-blue-500 rounded-xl p-3 md:p-4 text-base md:text-lg focus:ring-2 focus:ring-blue-300 focus:outline-none transition-all duration-200"
                     placeholder={
                       step === 2
-                        ? "Type what you see..."
-                        : "Describe the picture..."
+                        ? t("typeWhatYouSee")
+                        : t("describeThePicture")
                     }
                     whileFocus={{ scale: 1.01 }}
                   />
@@ -623,7 +623,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     ) : isRecording ? (
                       <>
                         <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                        <span>Stop Recording</span>
+                        <span>{t("stopRecording")}</span>
                       </>
                     ) : (
                       <>
@@ -639,7 +639,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span>Use Voice Input</span>
+                        <span>{t("useVoiceInput")}</span>
                       </>
                     )}
                   </motion.button>
@@ -667,8 +667,8 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     onClick={handleNext}
                   >
                     {currentIndex === images.length - 1
-                      ? "Submit Test"
-                      : "Continue"}
+                      ? t("submitTest")
+                      : t("continue")}
                   </motion.button>
                 </div>
               </motion.div>

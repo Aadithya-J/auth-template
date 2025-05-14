@@ -24,14 +24,14 @@ const ProgressTracker = ({ currentStep, totalSteps }) => {
 export default ProgressTracker;
 */
 import React from 'react';
-
+import { useLanguage } from '../../contexts/LanguageContext';
 const ProgressTracker = ({ currentStep, totalSteps }) => {
   const progress = totalSteps > 0 ? Math.min(100, Math.max(0, (currentStep / totalSteps) * 100)) : 0;
-
+  const { t } = useLanguage();
   return (
     <div className="mb-16">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-lg font-bold text-kid-purple">Progress</div>
+        <div className="text-lg font-bold text-kid-purple">{t("progress")}</div>
         <div className="text-lg font-semibold text-gray-700">
           {currentStep}/{totalSteps}
         </div>
