@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import SideNavBar, { SideNavBarItem } from "./components/SideNavBar";
 import { GrHomeRounded } from "react-icons/gr";
 import { RiGraduationCapLine } from "react-icons/ri";
@@ -35,6 +35,7 @@ import Test14 from "./components/test 14/Test14";
 import VocabularyScaleTest from "./components/VocabularyScaleTest/VocabularyScaleTest";
 import AgeVerificationDialog from "./components/ui/AgeVerificationDialog";
 import { LanguageProvider } from "../src/contexts/LanguageContext";
+
 // Speech Recognition setup
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -58,7 +59,9 @@ function App() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isSpeechSupported, setIsSpeechSupported] = useState(!!recognition);
+  const [isStudentsLoading, setIsStudentsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -85,6 +88,11 @@ function App() {
               }
             } else if (!isVerified && !showAgeDialog) {
               setShowAgeDialog(true);
+            }
+            
+            // If authenticated and verified, fetch students data
+            if (isVerified) {
+              await fetchStudents();
             }
           } else {
             console.log("Token invalid, logging out");
@@ -120,6 +128,13 @@ function App() {
       }
     };
   }, [navigate, authChecked, showAgeDialog]);
+
+  // Fetch students when path changes to ensure data is refreshed when navigating between views
+  useEffect(() => {
+    if (isAuthenticated && isAgeVerified) {
+      fetchStudents();
+    }
+  }, [isAuthenticated, isAgeVerified, location.pathname]);
 
   useEffect(() => {
     if (!recognition) return;
@@ -235,22 +250,29 @@ function App() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchStudents = async () => {
     try {
-      const studentRes = await fetch(`${backendURL}/getChildrenByTeacher`, {
+      setIsStudentsLoading(true);
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        setIsStudentsLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${backendURL}/getChildrenByTeacher`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!studentRes.ok) {
-        throw new Error("Failed to fetch data");
+      if (response.data && response.data.children) {
+        setStudents(response.data.children);
+        console.log("Students data fetched successfully:", response.data.children.length);
       }
-
-      const students = await studentRes.json();
-      setStudents(students.children);
+      setIsStudentsLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching students:", error);
+      setIsStudentsLoading(false);
     }
   };
 
@@ -258,12 +280,12 @@ function App() {
     setIsSidebarExpanded(expand);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsAuthenticated(true);
     const isVerified = localStorage.getItem("age_verified") === "true";
 
     if (isVerified) {
-      fetchData();
+      await fetchStudents();
       navigate("/");
     } else {
       setShowAgeDialog(true);
@@ -287,7 +309,7 @@ function App() {
     setShowConsentRequired(false);
     localStorage.setItem("age_verified", "true");
     try {
-      await fetchData();
+      await fetchStudents();
       navigate("/");
     } catch (error) {
       console.error("Error fetching data after age verification:", error);
@@ -478,7 +500,11 @@ function App() {
               path="/analytics"
               element={
                 <PrivateRoute>
-                  <Analytics students={students} />
+                  <Analytics 
+                    students={students} 
+                    isLoading={isStudentsLoading} 
+                    refreshStudents={fetchStudents} 
+                  />
                 </PrivateRoute>
               }
             />
@@ -486,7 +512,11 @@ function App() {
               path="/viewstudents"
               element={
                 <PrivateRoute>
-                  <Analytics students={students} />
+                  <Analytics 
+                    students={students} 
+                    isLoading={isStudentsLoading} 
+                    refreshStudents={fetchStudents} 
+                  />
                 </PrivateRoute>
               }
             />

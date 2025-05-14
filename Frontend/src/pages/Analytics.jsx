@@ -306,8 +306,6 @@
 //   );
 // }
 
-
-
 import React, { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { MdPerson } from "react-icons/md";
@@ -316,62 +314,21 @@ import PopupForm from "../components/PopupForm";
 import SearchbyName from "../components/SearchbyName";
 import StudentCard from "../components/StudentCard";
 import { useLanguage } from "../contexts/LanguageContext";
-import axios from "axios";
-import { backendURL } from "../definedURL";
 
-export default function Analytics({ students: initialStudents }) {
+export default function Analytics({ students, isLoading, refreshStudents }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage(); // Get translation function from context
-  const [students, setStudents] = useState(initialStudents || []);
+  const { t } = useLanguage();
   const [showPopup, setShowPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch students directly from API instead of relying only on props
-  const fetchStudents = async () => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem("access_token");
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await axios.get(`${backendURL}/getChildrenByTeacher`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.data && response.data.children) {
-        setStudents(response.data.children);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
-    // Fetch students when component mounts and whenever location changes
-    fetchStudents();
-
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
     return () => clearTimeout(timer);
-  }, [location.pathname]);
-
-  // Also update students when initialStudents prop changes
-  useEffect(() => {
-    if (initialStudents && initialStudents.length > 0) {
-      setStudents(initialStudents);
-      setIsLoading(false);
-    }
-  }, [initialStudents]);
+  }, []);
 
   const handleAddChildClick = () => {
     setShowPopup(true);
@@ -394,15 +351,15 @@ export default function Analytics({ students: initialStudents }) {
   };
 
   const handleNewStudent = async (newStudent) => {
-    // Update local state
-    setStudents((prevStudents) => [newStudent, ...prevStudents]);
-
-    await fetchStudents();
+    // After adding a new student, refresh the student list from the parent component
+    await refreshStudents();
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students
+    ? students.filter((student) =>
+        student.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
