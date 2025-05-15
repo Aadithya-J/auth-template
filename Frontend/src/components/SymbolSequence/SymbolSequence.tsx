@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { backendURL } from "../../definedURL";
+import { useLanguage } from "../../contexts/LanguageContext";
+
 // Fix for NodeJS.Timeout issue
 type Timeout = ReturnType<typeof setTimeout>;
 
@@ -36,9 +38,9 @@ type DifficultyLevel = {
 };
 
 const difficultyLevels: DifficultyLevel[] = [
-  { name: "Easy", sequenceLength: 3, cardsToShow: 6, timeToView: 5000 },
-  { name: "Medium", sequenceLength: 4, cardsToShow: 8, timeToView: 5000 },
-  { name: "Hard", sequenceLength: 5, cardsToShow: 10, timeToView: 5000 },
+  { name: "easy", sequenceLength: 3, cardsToShow: 6, timeToView: 5000 },
+  { name: "medium", sequenceLength: 4, cardsToShow: 8, timeToView: 5000 },
+  { name: "hard", sequenceLength: 5, cardsToShow: 10, timeToView: 5000 },
 ];
 
 type GameState =
@@ -60,6 +62,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   onComplete = null,
   student,
 }) => {
+  const { t } = useLanguage();
   const [gameState, setGameState] = useState<GameState>("welcome");
   const [level, setLevel] = useState<number>(0);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
@@ -174,7 +177,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
         `${backendURL}/symbolsequenceresults`,
         {
           childId,
-          difficulty: difficultyLevels[level].name,
+          difficulty: t(difficultyLevels[level].name),
           level: level + 1,
           score,
           totalRounds: 10,
@@ -291,7 +294,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
     const newScore = isCorrect ? score + 1 : score;
 
     setScore(newScore);
-    setFeedback(isCorrect ? "Correct!" : "Incorrect. Try again!");
+    setFeedback(isCorrect ? t("correct") : t("incorrect"));
     setGameState("results");
 
     const nextStateTimer = setTimeout(async () => {
@@ -401,23 +404,23 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.2 }}
           >
-            Symbol Sequence Memory Game
+            {t("symbolSequenceTitle")}
           </motion.h1>
 
           {gameState !== "welcome" && gameState !== "gameOver" && (
             <motion.div className="flex justify-center gap-10 mt-6 text-lg">
               <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">Round:</span>
+                <span className="text-blue-50">{t("round")}:</span>
                 <span className="font-bold">{currentRound}/10</span>
               </motion.div>
               <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">Score:</span>
+                <span className="text-blue-50">{t("score")}:</span>
                 <span className="font-bold">{score}</span>
               </motion.div>
               <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">Level:</span>
+                <span className="text-blue-50">{t("level")}:</span>
                 <span className="font-bold">
-                  {difficultyLevels[level].name}
+                  {t(difficultyLevels[level].name)}
                 </span>
               </motion.div>
             </motion.div>
@@ -431,18 +434,16 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
             <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 max-w-2xl text-center border border-blue-100">
               <motion.div>
                 <h2 className="text-3xl font-bold text-blue-700 mb-4">
-                  Symbol Sequence Assessment
+                  {t("symbolSequenceAssessment")}
                 </h2>
                 <p className="text-gray-700 mb-8 leading-relaxed">
-                  You'll be shown a series of symbols in a specific order. Look
-                  at them carefully for 5 seconds. After they disappear, you'll
-                  need to recreate the exact same sequence from memory.
+                  {t("symbolSequenceDescription")}
                 </p>
               </motion.div>
 
               <motion.div className="mt-8">
                 <h3 className="text-2xl font-semibold mb-6 text-blue-600">
-                  Choose Difficulty:
+                  {t("chooseDifficulty")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {difficultyLevels.map((level, index) => (
@@ -452,11 +453,11 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                       className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-5 px-6 rounded-xl shadow-md hover:shadow-xl relative overflow-hidden group"
                     >
                       <span className="block text-xl font-medium relative z-10">
-                        {level.name}
+                        {t(level.name)}
                       </span>
                       <span className="block text-sm opacity-90 mt-2 relative z-10">
-                        {level.sequenceLength} symbols,{" "}
-                        {level.timeToView / 1000}s to view
+                        {level.sequenceLength}{" "}
+                        {t("symbolsToView", { time: level.timeToView / 1000 })}
                       </span>
                     </motion.button>
                   ))}
@@ -468,7 +469,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
           {gameState === "showing" && (
             <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
               <h2 className="text-2xl font-bold text-blue-700 mb-8">
-                Look carefully for 5 seconds:
+                {t("lookCarefully")}
               </h2>
 
               <div className="flex justify-center flex-wrap gap-6 my-10">
@@ -495,7 +496,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               </div>
 
               <p className="mt-4 text-blue-600 font-medium">
-                Wait until symbols disappear
+                {t("waitUntilDisappear")}
               </p>
             </motion.div>
           )}
@@ -503,7 +504,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
           {gameState === "guessing" && (
             <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
               <h2 className="text-2xl font-bold text-blue-700 mb-8">
-                Now recreate the exact sequence:
+                {t("recreateSequence")}
               </h2>
 
               <div className="flex justify-center flex-wrap gap-6 my-10">
@@ -519,7 +520,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                     {hoveredCardIndex === index && (
                       <motion.div className="absolute inset-0 bg-blue-800/50 rounded-xl flex items-center justify-center">
                         <span className="text-white text-sm font-medium">
-                          Remove?
+                          {t("remove")}
                         </span>
                       </motion.div>
                     )}
@@ -544,7 +545,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               </div>
 
               <h3 className="text-xl font-semibold mb-6 text-blue-700">
-                Available Symbols:
+                {t("availableSymbols")}
               </h3>
 
               <div className="flex justify-center flex-wrap gap-4 my-8">
@@ -563,7 +564,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 onClick={quitGame}
                 className="mt-8 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
               >
-                Quit Assessment
+                {t("quitAssessment")}
               </button>
             </motion.div>
           )}
@@ -572,7 +573,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
             <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
               <h2
                 className={`text-2xl font-bold mb-6 ${
-                  feedback.includes("Correct")
+                  feedback.includes(t("correct"))
                     ? "text-green-600"
                     : "text-red-600"
                 }`}
@@ -583,7 +584,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
                 <div>
                   <h3 className="text-xl font-semibold mb-4 text-blue-700">
-                    Your sequence:
+                    {t("yourSequence")}
                   </h3>
                   <div className="flex justify-center flex-wrap gap-3">
                     {userSequence.map((symbol, index) => (
@@ -603,7 +604,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
 
                 <div>
                   <h3 className="text-xl font-semibold mb-4 text-blue-700">
-                    Correct sequence:
+                    {t("correctSequence")}
                   </h3>
                   <div className="flex justify-center flex-wrap gap-3">
                     {currentSequence.map((symbol, index) => (
@@ -623,7 +624,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
           {gameState === "gameOver" && !suppressResultPage && (
             <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 max-w-2xl text-center border border-blue-100">
               <h2 className="text-3xl font-bold text-blue-700 mb-4">
-                Game Complete!
+                {t("gameComplete")}
               </h2>
 
               <div className="w-40 h-40 mx-auto my-6 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200">
@@ -632,23 +633,22 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 </span>
               </div>
 
-              <p className="text-xl mb-8 text-gray-700">Your final score</p>
+              <p className="text-xl mb-8 text-gray-700">{t("finalScore")}</p>
 
               <div className="my-8 text-2xl">
                 {score >= 9 && (
                   <p className="text-yellow-500 font-bold">
-                    {" "}
-                    Excellent memory!{" "}
+                    {t("excellentMemory")}
                   </p>
                 )}
                 {score >= 7 && score < 9 && (
-                  <p className="text-green-600 font-bold"> Very good job! </p>
+                  <p className="text-green-600 font-bold">{t("veryGoodJob")}</p>
                 )}
                 {score >= 5 && score < 7 && (
-                  <p className="text-blue-600"> Good effort! </p>
+                  <p className="text-blue-600">{t("goodEffort")}</p>
                 )}
                 {score < 5 && (
-                  <p className="text-blue-600">Keep practicing to improve!</p>
+                  <p className="text-blue-600">{t("keepPracticing")}</p>
                 )}
               </div>
 
@@ -666,10 +666,10 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2">
                     <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Saving Results...
+                    {t("savingResults")}
                   </div>
                 ) : (
-                  "Play Again"
+                  t("playAgain")
                 )}
               </button>
             </motion.div>
