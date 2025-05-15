@@ -1,79 +1,24 @@
 import supabase from "../utils/supabaseClient.js";
+import graphemeLetters from "../Data/graphemeLetters.json" assert { type: "json" };
 
-const confusionPairs = {
-  // Lowercase pairs (bidirectional)
-  b: ["d"],
-  d: ["b"],
-  p: ["q"],
-  q: ["p"],
-  n: ["u"],
-  u: ["n"],
-  m: ["w"],
-  w: ["m"],
-  v: ["u"],
-  u: ["v"],
-  a: ["o"],
-  o: ["a"],
-  f: ["t"],
-  t: ["f"],
-  g: ["q"],
-  q: ["g"],
-  i: ["j", "l"],
-  j: ["i", "l"],
-  l: ["i", "j"],
-  c: ["e"],
-  e: ["c"],
-  y: ["g"],
-  g: ["y"],
-  s: ["z"],
-  z: ["s"],
-
-  // Uppercase pairs
-  B: ["D"],
-  D: ["B"],
-  P: ["R"],
-  R: ["P"],
-  M: ["W"],
-  W: ["M"],
-  N: ["Z"],
-  Z: ["N"],
-  U: ["V"],
-  V: ["U"],
-  G: ["C", "O"],
-  C: ["G", "O"],
-  O: ["G", "C"],
-  I: ["J", "L", "T"],
-  J: ["I", "L", "T"],
-  L: ["I", "J", "T"],
-  T: ["I", "J", "L"],
-  F: ["E"],
-  E: ["F"],
-  S: ["Z"],
-  Z: ["S"],
-  K: ["X"],
-  X: ["K"],
-  A: ["H"],
-  H: ["A"],
-};
-
-function evaluateLetter(expected, actual) {
+function evaluateLetter(expected, actual, language) {
   if (!actual || actual.trim() === "") {
     return "skipped";
   }
+
   expected = expected.trim();
   actual = actual.trim();
+
+  // Get confusion pairs based on language
+  const langKey =
+    language === "ta" ? "tamil" : language === "hi" ? "hindi" : "english";
+  const confusionPairs = graphemeLetters[langKey].confusionPairs;
+
   if (expected === actual) {
     return "correct";
   }
-  if (expected.toLowerCase() === actual.toLowerCase()) {
-    return "correct";
-  }
-  const expectedLower = expected.toLowerCase();
-  const actualLower = actual.toLowerCase();
-  if (
-    confusionPairs[expected]?.includes(actual) || // Same case
-    confusionPairs[expectedLower]?.includes(actualLower) // Different case
-  ) {
+
+  if (confusionPairs[expected]?.includes(actual)) {
     return "confused";
   }
 
@@ -91,12 +36,12 @@ function calculateScore(results) {
 
 export const evaluateResults = async (req, res) => {
   try {
-    const { childId, letters, transcriptions } = req.body;
+    const { childId, letters, transcriptions, language } = req.body;
 
     const results = letters.map((letter, index) => {
       let spoken = transcriptions[index] || "";
-      spoken = spoken.replace(/[^A-Za-z]/g, "").toUpperCase();
-      const status = evaluateLetter(letter, spoken);
+      spoken = spoken.replace(/[^A-Za-z\u0B80-\u0BFF\u0900-\u097F]/g, ""); // Allow Tamil and Hindi characters
+      const status = evaluateLetter(letter, spoken, language);
       return { letter, spoken, status };
     });
 

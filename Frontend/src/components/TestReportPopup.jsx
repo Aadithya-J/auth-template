@@ -5,7 +5,8 @@ import logo from "../../public/logo.jpeg";
 import testDataMap from "../Data/inference.json";
 import axios from "axios";
 import { backendURL } from "../definedURL.js";
-
+import { useLanguage } from "../contexts/LanguageContext.jsx";
+import questions from "../../src/components/test 8/questions.json";
 const TestReportPopup = ({
   test,
   childDetails,
@@ -175,7 +176,7 @@ const TestReportPopup = ({
   const currentTestData = getCurrentTestData();
   const showRemedies = shouldShowRemedies();
   const testType = getTestType();
-
+  const { language } = useLanguage();
   // Renders the appropriate table for each test type
   const renderTestDetails = () => {
     if (!test) return null;
@@ -295,20 +296,16 @@ const TestReportPopup = ({
                 </td>
 
                 <td className="border border-blue-200 p-2 text-left align-top">
-                  {[
-                    "o",
-                    "f",
-                    "b",
-                    "m",
-                    "no",
-                    "cat",
-                    "girl",
-                    "little",
-                    "help",
-                    "fast",
+                  {questions[
+                    language === "ta"
+                      ? "tamil"
+                      : language === "hi"
+                      ? "hindi"
+                      : "english"
                   ].map((item, index) => (
                     <div key={index}>
-                      {index + 1}. {item}
+                      {index + 1}.{" "}
+                      <span className="font-semibold">{item.correct}</span>
                     </div>
                   ))}
                 </td>
