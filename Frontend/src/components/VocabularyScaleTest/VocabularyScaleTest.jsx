@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../../contexts/LanguageContext.jsx";
+
 // Audio Recording Hook
 const useAudioRecorder = (onAudioCaptured) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -21,7 +22,8 @@ const useAudioRecorder = (onAudioCaptured) => {
   const [error, setError] = useState(null);
   const mediaRecorderRef = useRef(null);
   const isRecordingRef = useRef(isRecording);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
+
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
@@ -53,18 +55,18 @@ const useAudioRecorder = (onAudioCaptured) => {
           onAudioCaptured(transcription);
         } else {
           const errorMsg =
-            result.error || "Transcription failed. Please try again.";
+            result.error || t("transcriptionFailedPleaseTryAgain");
           setError(errorMsg);
           toast.error(errorMsg);
         }
       } catch (error) {
-        setError("Error uploading audio. Please check connection.");
-        toast.error("Error uploading audio. Please check connection.");
+        setError(t("errorUploadingAudioPleaseCheckConnection"));
+        toast.error(t("errorUploadingAudioPleaseCheckConnection"));
       } finally {
         setIsTranscribing(false);
       }
     },
-    [onAudioCaptured]
+    [onAudioCaptured, language, t]
   );
 
   const stopListening = useCallback(() => {
@@ -75,7 +77,7 @@ const useAudioRecorder = (onAudioCaptured) => {
       try {
         mediaRecorderRef.current.stop();
       } catch (e) {
-        console.error("Error stopping MediaRecorder:", e);
+        console.error(t("errorStoppingMediaRecorder"), e);
       }
     }
     if (window.stream) {
@@ -84,7 +86,7 @@ const useAudioRecorder = (onAudioCaptured) => {
           track.stop();
         });
       } catch (e) {
-        console.error("Error stopping stream tracks:", e);
+        console.error(t("errorStoppingStreamTracks"), e);
       }
       window.stream = null;
     }
@@ -92,7 +94,7 @@ const useAudioRecorder = (onAudioCaptured) => {
     if (isRecordingRef.current) {
       setIsRecording(false);
     }
-  }, [isRecordingRef]);
+  }, [isRecordingRef, t]);
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) return;
@@ -133,7 +135,7 @@ const useAudioRecorder = (onAudioCaptured) => {
         };
 
         newMediaRecorder.onerror = (event) => {
-          toast.error(`Recording error: ${event.error.name}`);
+          toast.error(`${t("recordingError")}: ${event.error.name}`);
           stopListening();
         };
 
@@ -149,7 +151,7 @@ const useAudioRecorder = (onAudioCaptured) => {
         setError(t("couldNotAccessMicrophone"));
         toast.error(t("couldNotAccessMicrophone"));
       });
-  }, [uploadAudio, stopListening, isRecordingRef]);
+  }, [uploadAudio, stopListening, isRecordingRef, t]);
 
   useEffect(() => {
     return () => {
@@ -182,8 +184,9 @@ const WordDisplay = ({
       className="mb-8 p-4 border border-blue-200 rounded-lg bg-blue-50 shadow-sm"
     >
       <p className="text-sm text-blue-600 mb-2">
-        Word {currentIndex + 1} of {totalWords}
+        {t("word")} {currentIndex + 1} {t("of")} {totalWords}
       </p>
+
       <motion.p
         key={currentWord.word}
         initial={{ scale: 0.95 }}
@@ -193,21 +196,26 @@ const WordDisplay = ({
       >
         {language === "ta" && currentWord.ta
           ? currentWord.ta
+          : language === "hi" && currentWord.hi
+          ? currentWord.hi
           : currentWord.word}
       </motion.p>
+
       <div className="flex justify-center gap-4">
         <p className="text-sm text-blue-500">
           <span className="inline-block px-2 py-1 bg-blue-100 rounded-full">
             {t("level")}: {currentWord.level}
           </span>
         </p>
-        {language === "ta" && currentWord.ta && (
+
+        {(language === "ta" && currentWord.ta) ||
+        (language === "hi" && currentWord.hi) ? (
           <p className="text-sm text-gray-500">
             <span className="inline-block px-2 py-1 bg-gray-100 rounded-full">
               {t("english")}: {currentWord.word}
             </span>
           </p>
-        )}
+        ) : null}
       </div>
     </motion.div>
   );
@@ -292,7 +300,7 @@ const DefinitionInput = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                 </span>
-                Recording...
+                {t("recording")}...
               </motion.div>
             )}
           </AnimatePresence>
@@ -309,7 +317,7 @@ const DefinitionInput = ({
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
-                Transcribing...
+                {t("transcribing")}...
               </motion.div>
             )}
           </AnimatePresence>
@@ -376,7 +384,7 @@ const NavigationButton = ({
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          Submitting...
+          {t("submitting")}...
         </>
       ) : (
         <>
@@ -468,7 +476,7 @@ const TestComplete = ({ finalScore, totalWords, error, childId }) => {
 };
 
 // Loading Component
-const LoadingState = () => (
+const LoadingState = ({ t }) => (
   <div className="flex flex-col items-center justify-center p-8 h-64">
     <motion.div
       className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full"
@@ -481,13 +489,13 @@ const LoadingState = () => (
       transition={{ delay: 0.5 }}
       className="mt-4 text-blue-700 font-medium"
     >
-      Loading test...
+      {t("loadingTest")}...
     </motion.p>
   </div>
 );
 
 // Error Component
-const ErrorState = ({ message }) => (
+const ErrorState = ({ message, t }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -514,6 +522,7 @@ const VocabularyScaleTest = () => {
   const [finalScore, setFinalScore] = useState(null);
   const [incorrectStreak, setIncorrectStreak] = useState(0);
   const { language, t } = useLanguage();
+
   // Handle transcribed audio
   const handleTranscriptionComplete = useCallback((transcription) => {
     setCurrentDefinition(transcription);
@@ -544,18 +553,18 @@ const VocabularyScaleTest = () => {
         if (response.data && Array.isArray(response.data.words)) {
           setWords(response.data.words);
         } else {
-          throw new Error("Invalid data format received for words.");
+          throw new Error(t("invalidDataFormatReceivedForWords"));
         }
       } catch (err) {
-        console.error("Error fetching vocabulary words:", err);
-        setError("Failed to load vocabulary words. Please try again later.");
-        toast.error("Failed to load vocabulary words.");
+        console.error(t("errorFetchingVocabularyWords"), err);
+        setError(t("failedToLoadVocabularyWords"));
+        toast.error(t("failedToLoadVocabularyWords"));
       } finally {
         setIsLoading(false);
       }
     };
     fetchWords();
-  }, []);
+  }, [t]);
 
   const handleNextWord = useCallback(() => {
     stopListening();
@@ -595,6 +604,7 @@ const VocabularyScaleTest = () => {
     responses,
     incorrectStreak,
     stopListening,
+    t,
   ]);
 
   const handleSubmit = async () => {
@@ -615,9 +625,9 @@ const VocabularyScaleTest = () => {
     }
 
     try {
-      const token = localStorage.getItem("access_token"); // Make sure this matches your token key
+      const token = localStorage.getItem("access_token");
       if (!token) {
-        throw new Error("Authentication token not found");
+        throw new Error(t("authenticationTokenNotFound"));
       }
 
       const response = await axios.post(
@@ -636,24 +646,19 @@ const VocabularyScaleTest = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        // Make sure we're using the actual score from the API response
-        // and not just the number of responses
         if (response.data && typeof response.data.score === "number") {
           setFinalScore(response.data.score);
         } else {
-          // Fallback if score is missing from API response
           setFinalScore(0);
-          console.warn("Score missing from API response");
+          console.warn(t("scoreMissingFromAPIResponse"));
         }
         setTestComplete(true);
         toast.success(t("testSubmittedSuccessfully"));
       } else {
-        throw new Error(
-          response.data?.error || "Failed to submit test results"
-        );
+        throw new Error(response.data?.error || t("failedToSubmitTestResults"));
       }
     } catch (err) {
-      console.error("Submission error:", err);
+      console.error(t("submissionError"), err);
       const errorMsg =
         err.response?.data?.error ||
         err.message ||
@@ -667,11 +672,11 @@ const VocabularyScaleTest = () => {
 
   // Render states
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState t={t} />;
   }
 
   if (error && !isLoading && !isSubmitting && !isTranscribing) {
-    return <ErrorState message={error} />;
+    return <ErrorState message={error} t={t} />;
   }
 
   if (testComplete) {
@@ -686,7 +691,7 @@ const VocabularyScaleTest = () => {
   }
 
   if (words.length === 0 && !isLoading) {
-    return <ErrorState message="No vocabulary words found." />;
+    return <ErrorState message={t("noVocabularyWordsFound")} t={t} />;
   }
 
   const currentWord = words[currentWordIndex];
@@ -738,6 +743,8 @@ const VocabularyScaleTest = () => {
               wordText={
                 language === "ta" && currentWord.ta
                   ? currentWord.ta
+                  : language === "hi" && currentWord.hi
+                  ? currentWord.hi
                   : currentWord.word
               }
               language={language}

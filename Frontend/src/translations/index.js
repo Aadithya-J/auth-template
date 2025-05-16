@@ -374,6 +374,29 @@ export const translations = {
     of: "of",
     greatJob: "Great job! 🎉",
     tryAgain: "Let's try again! 👍",
+
+    //vocab scale
+    level: "Level",
+    english: "English",
+    whatDoesThisWordMean: "What does this word mean?",
+    enterDefinitionHere: "Enter definition here...",
+    stopRecording: "Stop Recording",
+    startRecording: "Start Recording",
+    consecutiveIncorrectSkipped: "Consecutive incorrect/skipped",
+    nextWord: "Next Word",
+    finishAndSubmit: "Finish & Submit",
+    testCompleted: "Test Completed!",
+    yourFinalScoreIs: "Your final score is",
+    thankYouForCompletingVocabularyScaleTest:
+      "Thank you for completing the Vocabulary Scale Test.",
+    submissionError: "Submission Error",
+    BackToTests: "Back to Tests",
+    vocabularyScaleTest: "Vocabulary Scale Test",
+    testSubmittedSuccessfully: "Test submitted successfully!",
+    submissionFailedTryAgain: "Submission failed. Please try again.",
+    failedToStartRecording: "Failed to start recording",
+    couldNotAccessMicrophone: "Could not access microphone",
+    word: "word",
   },
   ta: {
     mainMenu: "முதன்மை மெனு",
@@ -383,7 +406,7 @@ export const translations = {
     analytics: "பகுப்பாய்வு",
     language: "மொழி",
     account: "கணக்கு",
-
+    word: "வார்த்தை",
     // Languages
     english: "ஆங்கிலம்",
     tamil: "தமிழ்",
@@ -766,6 +789,29 @@ export const translations = {
     of: "இல்",
     greatJob: "அருமை செய்தீர்கள்! 🎉",
     tryAgain: "மீண்டும் முயற்சிக்கலாம்! 👍",
+
+    //vocab scale
+    level: "நிலை",
+    english: "ஆங்கிலம்",
+    whatDoesThisWordMean: "இந்த வார்த்தைக்கு என்ன அர்த்தம்?",
+    enterDefinitionHere: "வரையறையை இங்கே உள்ளிடவும்...",
+    stopRecording: "பதிவை நிறுத்து",
+    startRecording: "பதிவைத் தொடங்கவும்",
+    consecutiveIncorrectSkipped: "தொடர்ச்சியான தவறான/தவிர்க்கப்பட்ட",
+    nextWord: "அடுத்த வார்த்தை",
+    finishAndSubmit: "முடித்து சமர்ப்பிக்கவும்",
+    testCompleted: "டெஸ்ட் முடிந்தது!",
+    yourFinalScoreIs: "உங்கள் இறுதி மதிப்பெண்",
+    thankYouForCompletingVocabularyScaleTest:
+      "சொல்லகராதி அளவுகோல் சோதனையை முடித்ததற்கு நன்றி.",
+    submissionError: "சமர்ப்பிப்பு பிழை",
+    BackToTests: "டெஸ்ட்களுக்கு திரும்பு",
+    vocabularyScaleTest: "சொல்லகராதி அளவுகோல் சோதனை",
+    testSubmittedSuccessfully: "டெஸ்ட் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+    submissionFailedTryAgain:
+      "சமர்ப்பிப்பு தோல்வியுற்றது. மீண்டும் முயற்சிக்கவும்.",
+    failedToStartRecording: "பதிவைத் தொடங்க முடியவில்லை",
+    couldNotAccessMicrophone: "மைக்ரோஃபோனை அணுக முடியவில்லை",
   },
   hi: {
     // Navigation
@@ -776,7 +822,7 @@ export const translations = {
     analytics: "विश्लेषण",
     language: "भाषा",
     account: "खाता",
-
+    word: "शब्द",
     // Languages
     english: "अंग्रेज़ी",
     tamil: "तमिल",
@@ -1148,6 +1194,28 @@ export const translations = {
     of: "में से",
     greatJob: "शानदार काम! 🎉",
     tryAgain: "फिर से कोशिश करें! 👍",
+
+    //vocab scale
+    level: "स्तर",
+    english: "अंग्रेज़ी",
+    whatDoesThisWordMean: "इस शब्द का क्या अर्थ है?",
+    enterDefinitionHere: "परिभाषा यहां दर्ज करें...",
+    stopRecording: "रिकॉर्डिंग बंद करें",
+    startRecording: "रिकॉर्डिंग शुरू करें",
+    consecutiveIncorrectSkipped: "लगातार गलत/छोड़े गए",
+    nextWord: "अगला शब्द",
+    finishAndSubmit: "समाप्त करें और जमा करें",
+    testCompleted: "टेस्ट पूरा हो गया!",
+    yourFinalScoreIs: "आपका अंतिम स्कोर है",
+    thankYouForCompletingVocabularyScaleTest:
+      "शब्दावली स्केल टेस्ट पूरा करने के लिए धन्यवाद।",
+    submissionError: "सबमिशन त्रुटि",
+    BackToTests: "टेस्ट पर वापस जाएं",
+    vocabularyScaleTest: "शब्दावली स्केल टेस्ट",
+    testSubmittedSuccessfully: "टेस्ट सफलतापूर्वक जमा हो गया!",
+    submissionFailedTryAgain: "सबमिशन विफल। कृपया पुनः प्रयास करें।",
+    failedToStartRecording: "रिकॉर्डिंग शुरू करने में विफल",
+    couldNotAccessMicrophone: "माइक्रोफ़ोन तक पहुंच नहीं मिल सकी",
   },
   ml: {
     mainMenu: "മുഖ്യ മെന്ന്",
