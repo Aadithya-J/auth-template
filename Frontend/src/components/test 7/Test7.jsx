@@ -27,7 +27,11 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const mediaRecorderRef = useRef(null);
   const isRecordingRef = useRef(false);
   const getCorrectAnswer = (image) => {
-    return language === 'ta' ? image.correctAnswerTamil : image.correctAnswer;
+    return language === "ta"
+      ? image.correctAnswerTamil
+      : language === "hi"
+      ? image.correctAnswerHindi
+      : image.correctAnswer;
   };
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
@@ -204,7 +208,11 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } else {
       setStep(2);
-      speakText(language === 'ta' ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?" : "Great! Can you tell me what it is?");
+      speakText(
+        language === "ta"
+          ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?"
+          : "Great! Can you tell me what it is?"
+      );
     }
   };
 
@@ -227,7 +235,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         userAnswer: answer,
         correctAnswer: getCorrectAnswer(currentImage),
         description: description,
-        language: language
+        language: language,
       },
     ];
     setResponses(updatedResponses);
@@ -335,7 +343,15 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   };
 
   useEffect(() => {
-    setTimeout(() => speakText(language === 'ta' ? "இது என்ன என்று சொல்ல முடியுமா?" : "Can you see this picture?"), 2000);
+    setTimeout(
+      () =>
+        speakText(
+          language === "ta"
+            ? "இது என்ன என்று சொல்ல முடியுமா?"
+            : "Can you see this picture?"
+        ),
+      2000
+    );
     return () => {
       stopListening();
     };
@@ -589,9 +605,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     }
                     className="w-full border-2 border-blue-200 focus:border-blue-500 rounded-xl p-3 md:p-4 text-base md:text-lg focus:ring-2 focus:ring-blue-300 focus:outline-none transition-all duration-200"
                     placeholder={
-                      step === 2
-                        ? t("typeWhatYouSee")
-                        : t("describeThePicture")
+                      step === 2 ? t("typeWhatYouSee") : t("describeThePicture")
                     }
                     whileFocus={{ scale: 1.01 }}
                   />

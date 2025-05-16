@@ -2,17 +2,17 @@ import supabase from "../utils/supabaseClient.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const evaluateResponse = async (userInput, correctAnswer, language = 'en') => {
+const evaluateResponse = async (userInput, correctAnswer, language = "en") => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   if (!userInput) {
     return { score: 0, feedback: "No description provided" };
   }
 
-  // Language-specific prompts
+  // Language-specific prompts including Hindi
   const prompts = {
     en: `Evaluate if this description is correct for an image of '${correctAnswer}': ${userInput}. Respond with either "1|Correct" or "0|Incorrect".`,
     ta: `மதிப்பீடு செய்யுங்கள்: '${correctAnswer}' படத்திற்கான இந்த விளக்கம் சரியானதா? ${userInput}. "1|சரி" அல்லது "0|தவறு" என பதிலளிக்கவும்.`,
-    // Add more languages as needed
+    hi: `इस चित्र '${correctAnswer}' के लिए दिया गया वर्णन सही है या नहीं मूल्यांकन करें: ${userInput}. कृपया "1|सही" या "0|गलत" में उत्तर दें।`,
   };
 
   const prompt = prompts[language] || prompts.en; // Fallback to English
@@ -73,7 +73,9 @@ export async function evaluateDescriptionAndStore(req, res) {
         feedback,
       });
     }
-    totalScore = Number((totalScore / 2).toFixed(2));
+
+    totalScore = Number((totalScore / 2).toFixed(2)); // Assuming max score per image is 2
+
     const { data, error } = await supabase
       .from("picture_test_results")
       .insert({

@@ -194,6 +194,119 @@ const tamilWords = {
   ],
 };
 
+const hindiWords = {
+  column1: [
+    "पेड़", // tree
+    "स्कूल", // school
+    "फूल", // flower
+    "चित्र", // picture
+    "सपना", // dream
+    "भीड़", // crowd
+    "तश्तरी", // saucer
+    "कनारी", // canary
+    "धुआँ", // smoulder
+    "विश्वविद्यालय", // university
+    "भौतिकी", // physics
+    "जब्ती", // forfeit
+    "कर्नल", // colonel
+    "असली", // genuine
+    "निमोनिया", // pneumonia
+    "भूल", // oblivion
+    "स्थलीय", // terrestrial
+    "विविध", // miscellaneous
+    "अविनाशी", // ineradicable
+    "रद्द करना", // rescind
+  ],
+  column2: [
+    "छोटा", // little
+    "बैठो", // sit
+    "सड़क", // road
+    "सोचना", // think
+    "नीचे", // downstairs
+    "सैंडविच", // sandwich
+    "देवदूत", // angel
+    "आकर्षक", // attractive
+    "सराहना", // applaud
+    "वाद्यवृंद", // orchestra
+    "अभियान", // campaign
+    "घेरा", // siege
+    "एकल गायक", // soloist
+    "संस्था", // institution
+    "प्रारंभिक", // preliminary
+    "चमकना", // scintillate
+    "युद्धकारी", // belligerent
+    "टालमटोल करना", // procrastinate
+    "न्यायपालिका", // judicature
+    "रूपांतरण", // metamorphosis
+  ],
+  column3: [
+    "दूध", // milk
+    "मेंढक", // frog
+    "घड़ी", // clock
+    "गर्मी", // summer
+    "बिस्किट", // biscuit
+    "शुरुआत", // beginning
+    "नौकायन", // sailing
+    "कल्पना करना", // imagine
+    "निपटान", // disposal
+    "ज्ञान", // knowledge
+    "गायक मंडली", // choir
+    "फुटपाथ", // pavement
+    "संगठित", // systematic
+    "धुरी", // pivot
+    "प्राचीन", // antique
+    "व्यंग्यात्मक", // satirical
+    "दृढ़", // adamant
+    "सत्तावादी", // tyrannical
+    "वरीयता आधारित", // preferential
+    "निद्राचलन", // somnambulist
+  ],
+  column4: [
+    "अंडा", // egg
+    "खेलना", // playing
+    "ट्रेन", // train
+    "लोग", // people
+    "चरवाहा", // shepherd
+    "डाक टिकट", // postage
+    "प्रकट हुआ", // appeared
+    "भतीजा", // nephew
+    "पोषित", // nourished
+    "दर्शक", // audience
+    "बीच-बचाव करना", // intercede
+    "विश्वसनीय", // plausible
+    "गंदा", // slovenly
+    "अंतरात्मा", // conscience
+    "संवेदनशील", // susceptible
+    "तलवार", // sabre
+    "कब्र", // sepulchre
+    "सुसमाचार का", // evangelical
+    "समनाम", // homonym
+    "पुस्तक सूची", // bibliography
+  ],
+  column5: [
+    "किताब", // book
+    "बन", // bun
+    "प्रकाश", // light
+    "कुछ", // something
+    "प्यासा", // thirsty
+    "द्वीप", // island
+    "चाकू", // knife
+    "धीरे-धीरे", // gradually
+    "रोगग्रस्त", // diseased
+    "स्थित", // situated
+    "मोहित करना", // fascinate
+    "भविष्यवाणी", // prophecy
+    "वर्गीकरण", // classification
+    "वीर", // heroic
+    "पहेली", // enigma
+    "बहलाना", // beguile
+    "सांख्यिकी", // statistics
+    "विचित्र", // grotesque
+    "काल्पनिक", // fictitious
+    "विशिष्टता", // idiosyncrasy
+  ],
+};
+
 const getFontSize = (idx) => {
   if (idx === 0) {
     return "26px";
@@ -267,4 +380,23 @@ const WordGridTamil = () => {
   );
 };
 
-export { WordGrid, WordGridTamil };
+const WordGridHindi = () => {
+  return (
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      {Object.keys(hindiWords).map((column, index) => (
+        <div key={index} style={{ margin: "0 20px" }}>
+          {hindiWords[column].map((word, idx) => (
+            <div
+              key={idx}
+              style={{ margin: "5px 0", fontSize: getFontSize(idx) }}
+            >
+              {word}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export { WordGrid, WordGridTamil, WordGridHindi };

@@ -1,13 +1,17 @@
+import fs from "fs/promises";
+import path from "path";
 import supabase from "../utils/supabaseClient.js";
 
 export async function addTest6(req, res) {
   try {
     let { childId, spokenWords, language } = req.body;
 
-    if (!language || (language !== "en" && language !== "ta")) {
+    if (!language || !["en", "ta", "hi"].includes(language)) {
       return res
         .status(400)
-        .json({ message: "Invalid or missing language. Use 'en' or 'ta'." });
+        .json({
+          message: "Invalid or missing language. Use 'en', 'ta', or 'hi'.",
+        });
     }
 
     if (!childId || childId.trim() === "" || childId === "undefined") {
@@ -23,52 +27,13 @@ export async function addTest6(req, res) {
 
     spokenWords = spokenWords.replace(/,/g, "").trim();
 
-    const correctWordsListRaw = {
-      en: `tree       little       milk       egg         book
-school     sit          frog       playing     bun
-flower     road         clock      train       light
-picture    think        summer     people      something
-dream      downstairs   biscuit    shepherd    thirsty
-crowd      sandwich     beginning  postage     island
-saucer     angel        sailing    appeared    knife
-canary     attractive   imagine    nephew      gradually
-smoulder   applaud      disposal   nourished   diseased
-university orchestra    knowledge  audience    situated
-physics    campaign     choir      intercede   fascinate
-forfeit    siege        pavement   plausible   prophecy
-colonel    soloist      systematic slovenly    classification
-genuine    institution  pivot      conscience  heroic
-pneumonia  preliminary  antique    susceptible enigma
-oblivion   scintillate  satirical sabre       beguile
-terrestrial belligerent adamant   sepulchre   statistics
-miscellaneous procrastinate tyrannical evangelical grotesque
-ineradicable judicature preferential homonym  fictitious
-rescind    metamorphosis somnambulist bibliography idiosyncrasy`,
+    const filePath = path.join(process.cwd(), "data", "wordLists.json");
+    const data = await fs.readFile(filePath, "utf-8");
+    const wordLists = JSON.parse(data);
 
-      ta: `மரம்       சிறியது        பால்         மூடு
-பள்ளி      உட்காரு        தவளை        விளையாடு
-மலர்       சாலை          கோடை        ரயில்
-படம்       நினை          பிஸ்கட்       மக்கள்
-கனவு       தாழ்த்திடம்     படகுப்பயணம்  மேய்ப்பவன்
-கூட்டம்     சாண்ட்விச்சு   பாடல்        அஞ்சல்
-தட்டம்      தேவதை         அகற்றல்      விழி
-கிளி       அழகான         பதிவு        தோற்றம்
-புகை       இசைக்குழு      அறிவு        நம்பிக்கை
-பேச்சு      பிரச்சாரம்      வழித்தடம்    அழிவுபெறு
-கேப்டன்     பிரச்சினை      படைப்பாளர்  வாலிபன்
-நிகழ்ச்சி   தனிப்பாடகர்    பொதி         செயலாக்கம்
-அறிவு      நிறுவனம்       கட்டுப்பாடு   நம்பகமுள்ள
-நினைவு     முதன்மை        முயற்சி      பாதுகாப்பு
-துவக்கம்    விழிப்புணர்வு   நகைச்சுவை    பகிர்வு
-அறிகுறி    போர்வீரன்      தற்செயல்      போதுமான
-சிலப்பம்    முடக்கிக் கொள்  முடிவு       வெளிச்சம்
-புகழ்      நீதிநிலை       விருப்பம்     உலகின்`,
-    };
-
-    const correctWordsList = correctWordsListRaw[language]
-      .split(/\s+/)
-      .map((word) => word.toLowerCase());
-
+    const correctWordsList = (wordLists[language] || []).map((word) =>
+      word.toLowerCase()
+    );
     const spokenArray = spokenWords.split(/\s+/).map((word, index) => ({
       word: word.toLowerCase(),
       position: index + 1,
@@ -115,8 +80,11 @@ rescind    metamorphosis somnambulist bibliography idiosyncrasy`,
         correct_words: JSON.stringify(formattedCorrectGroups),
         incorrect_words: JSON.stringify(errorWords),
         score: score.toFixed(2),
-        test_name:
-          language === "en" ? "Schonell English Test" : "Schonell Tamil Test",
+        test_name: {
+          en: "Schonell English Test",
+          ta: "Schonell Tamil Test",
+          hi: "Schonell Hindi Test",
+        }[language],
       },
     ]);
 

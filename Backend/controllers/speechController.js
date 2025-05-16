@@ -90,23 +90,33 @@ export const transcribeAudio = async (req, res) => {
     if (audioBase64.length < 100) {
       throw new Error("Base64 data too short");
     }
-
+    const getServiceIdByLanguage = (lang) => {
+      switch (lang) {
+        case "ta":
+          return process.env.SERVICE_ID_TAMIL;
+        case "hi":
+          return process.env.SERVICE_ID_HINDI;
+        case "en":
+          return process.env.SERVICE_ID_ENGLISH;
+        default:
+          throw new Error("Unsupported language");
+      }
+    };
     const payload = {
       pipelineTasks: [
         {
           taskType: "asr",
           config: {
-            language: { sourceLanguage: "ta" },
-            serviceId:
-              language === "ta"
-                ? process.env.SERVICE_ID_TAMIL
-                : process.env.SERVICE_ID_ENGLISH,
+            language: { sourceLanguage: language }, // 'ta', 'hi', or 'en'
+            serviceId: getServiceIdByLanguage(language),
             audioFormat: "wav",
             samplingRate: 16000,
           },
         },
       ],
-      inputData: { audio: [{ audioContent: audioBase64 }] },
+      inputData: {
+        audio: [{ audioContent: audioBase64 }],
+      },
     };
 
     const response = await axios.post(process.env.ASR_API_URL, payload, {

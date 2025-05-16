@@ -4,8 +4,10 @@ import { IoIosInformationCircleOutline } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { backendURL } from "../../definedURL";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 const Test7 = ({ onComplete, suppressResultPage, student }) => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   // Animal emojis
@@ -81,6 +83,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
   const [feedback, setFeedback] = useState({ message: "", isCorrect: false });
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [childId, setChildId] = useState(localStorage.getItem("childId"));
+
   // Initialize available cards (shuffled with some extras)
   const initCards = (sequence) => {
     const allCards = [...sequence];
@@ -186,10 +189,10 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
 
     // Update score and show feedback
     if (isCorrect) {
-      setFeedback({ message: "Great job! 🎉", isCorrect: true });
+      setFeedback({ message: t("greatJob"), isCorrect: true });
       setScore({ correct: score.correct + 1, total: score.total + 1 });
     } else {
-      setFeedback({ message: "Let's try again! 👍", isCorrect: false });
+      setFeedback({ message: t("tryAgain"), isCorrect: false });
       setScore({ ...score, total: score.total + 1 });
     }
 
@@ -224,6 +227,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
     );
     setFeedback({ message: "", isCorrect: false });
   };
+
   const saveTestResults = async () => {
     const token = localStorage.getItem("access_token");
     try {
@@ -244,15 +248,13 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
       if (onComplete) onComplete(score.correct);
     } catch (error) {
       console.error("Error saving test results:", error);
-      // Show error message to user
       if (onComplete) onComplete(score.correct);
-      alert("Failed to save results. Please try again.");
     }
   };
+
   return (
     <div className="h-screen w-full overflow-y-auto bg-gradient-to-br from-blue-50 to-white font-montserrat text-blue-900 p-5">
       {/* Info Icon and End Test Button */}
-
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <button
           onClick={() => setShowInfoDialog(true)}
@@ -263,11 +265,11 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
         {(gameState === "practice" || gameState === "test") && (
           <button
             onClick={() => {
-              if (onComplete) onComplete(0); // Pass 0 if skipped
+              if (onComplete) onComplete(0);
             }}
             className="px-4 py-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors duration-300 font-semibold"
           >
-            Skip Test
+            {t("skipTest")}
           </button>
         )}
       </div>
@@ -284,57 +286,56 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
             </button>
 
             <h2 className="text-3xl font-bold text-blue-800 mb-6">
-              About the Game
+              {t("aboutTheGame")}
             </h2>
 
             <div className="space-y-6">
               <div className="bg-blue-50 rounded-2xl p-6">
                 <h3 className="text-xl font-semibold text-blue-700 mb-4">
-                  How to Play
+                  {t("howToPlay")}
                 </h3>
                 <p className="text-blue-800 mb-4">
-                  This is a memory game where you need to remember and recreate
-                  sequences of animals. Here's how it works:
+                  {t("memoryGameDescription")}
                 </p>
                 <ol className="list-decimal list-inside space-y-2 text-blue-800">
-                  <li>Watch the sequence of animals carefully</li>
-                  <li>Remember the order of the animals</li>
-                  <li>Recreate the same sequence using the available cards</li>
-                  <li>You have 5 seconds to memorize each sequence</li>
+                  <li>{t("watchSequence")}</li>
+                  <li>{t("rememberOrder")}</li>
+                  <li>{t("recreateSequence")}</li>
+                  <li>{t("fiveSecondsToMemorize")}</li>
                 </ol>
               </div>
 
               <div className="bg-blue-50 rounded-2xl p-6">
                 <h3 className="text-xl font-semibold text-blue-700 mb-4">
-                  Game Structure
+                  {t("gameStructure")}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-semibold text-blue-800">
-                      Practice Round
+                      {t("practiceRound")}
                     </h4>
                     <p className="text-blue-800">
-                      One simple sequence to get familiar with the game
+                      {t("practiceRoundDescription")}
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-blue-800">Main Test</h4>
-                    <p className="text-blue-800">
-                      10 different sequences with varying difficulty
-                    </p>
+                    <h4 className="font-semibold text-blue-800">
+                      {t("mainTest")}
+                    </h4>
+                    <p className="text-blue-800">{t("mainTestDescription")}</p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-blue-50 rounded-2xl p-6">
                 <h3 className="text-xl font-semibold text-blue-700 mb-4">
-                  Tips
+                  {t("tips")}
                 </h3>
                 <ul className="list-disc list-inside space-y-2 text-blue-800">
-                  <li>Focus on the order of the animals</li>
-                  <li>Look for patterns in the sequences</li>
-                  <li>Take your time to arrange the cards correctly</li>
-                  <li>You can remove and rearrange cards if needed</li>
+                  <li>{t("focusOnOrder")}</li>
+                  <li>{t("lookForPatterns")}</li>
+                  <li>{t("takeYourTime")}</li>
+                  <li>{t("removeRearrange")}</li>
                 </ul>
               </div>
             </div>
@@ -346,79 +347,63 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
         <div className="animate-zoomFadeIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
           <div className="space-y-3">
             <h1 className="text-4xl font-bold text-blue-800">
-              Animal Sequence Game
+              {t("animalSequenceGame")}
             </h1>
             <p className="text-sm text-gray-800 max-w-lg mx-auto">
-              Match the sequence first shown to the next one and test your
-              memory.
+              {t("matchSequenceDescription")}
             </p>
           </div>
+
           <style>
             {`
               @keyframes slideInfinite {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.slide-container {
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-.slide-animation {
-  animation: slideInfinite 20s linear infinite;
-  display: flex;
-  width: max-content; /* Ensures items determine width naturally */
-  padding: 0; /* Remove any padding */
-  margin: 0; /* Remove any margin */
-}
-
-/* Duplicate the items in a continuous manner */
-.slide-animation > * {
-  margin: 0; /* Ensures no margin between items */
-  padding: 0; /* Ensures no padding between items */
-}
-
-/* Clone the items to ensure seamless looping */
-.slide-animation {
-  display: flex;
-}
-
-/* When hovering, pause the animation */
-.slide-animation:hover {
-  animation-play-state: paused;
-}
-
-/* Fade edges effect */
-.fade-edges {
-  position: relative;
-}
-
-.fade-edges::before,
-.fade-edges::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.fade-edges::before {
-  left: 0;
-  background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-}
-
-.fade-edges::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
-}
+                0% {
+                  transform: translateX(0);
+                }
+                100% {
+                  transform: translateX(-50%);
+                }
+              }
+              .slide-container {
+                width: 100%;
+                overflow: hidden;
+                position: relative;
+              }
+              .slide-animation {
+                animation: slideInfinite 20s linear infinite;
+                display: flex;
+                width: max-content;
+                padding: 0;
+                margin: 0;
+              }
+              .slide-animation > * {
+                margin: 0;
+                padding: 0;
+              }
+              .slide-animation:hover {
+                animation-play-state: paused;
+              }
+              .fade-edges {
+                position: relative;
+              }
+              .fade-edges::before,
+              .fade-edges::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 30px;
+                pointer-events: none;
+                z-index: 10;
+              }
+              .fade-edges::before {
+                left: 0;
+                background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+              }
+              .fade-edges::after {
+                right: 0;
+                background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%);
+              }
             `}
           </style>
           <div className="relative overflow-hidden h-32 fade-edges">
@@ -431,7 +416,6 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   {animal}
                 </div>
               ))}
-              {/* Duplicate the animals for seamless animation */}
               {Object.values(animals).map((animal, index) => (
                 <div
                   key={`dup-${index}`}
@@ -446,7 +430,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
             onClick={() => setGameState("instructions")}
             className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
           >
-            Let's Play!
+            {t("letsPlay")}
           </button>
         </div>
       )}
@@ -454,7 +438,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
       {gameState === "instructions" && (
         <div className="animate-rotateIn max-w-2xl mx-auto bg-white/90 rounded-3xl p-8 shadow-xl">
           <h2 className="text-3xl font-bold text-blue-800 text-center mb-8">
-            How to Play
+            {t("howToPlay")}
           </h2>
           <div className="space-y-8">
             <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
@@ -463,7 +447,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   1
                 </div>
                 <p className="text-lg text-blue-800">
-                  I'll show you some animals in order
+                  {t("showAnimalsInOrder")}
                 </p>
               </div>
               <div className="flex justify-center gap-4">
@@ -485,9 +469,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                 <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                   2
                 </div>
-                <p className="text-lg text-blue-800">
-                  Then you recreate the same order
-                </p>
+                <p className="text-lg text-blue-800">{t("recreateSequence")}</p>
               </div>
               <div className="flex justify-center gap-4">
                 {[animals.fish, animals.mouse, animals.fish, animals.mouse].map(
@@ -509,7 +491,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   3
                 </div>
                 <p className="text-lg text-blue-800">
-                  Watch carefully - you'll only see them for 5 seconds!
+                  {t("fiveSecondsToMemorize")}
                 </p>
               </div>
               <div className="flex justify-center">
@@ -524,7 +506,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
             className="mt-8 w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
             onClick={startPractice}
           >
-            Start Practice Round
+            {t("startPracticeRound")}
           </button>
         </div>
       )}
@@ -532,20 +514,19 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
       {gameState === "instructions2" && (
         <div className="animate-rotateIn max-w-2xl mx-auto bg-white/90 rounded-3xl p-8 shadow-xl">
           <h2 className="text-3xl font-bold text-blue-800 text-center mb-8">
-            Ready for the Test?
+            {t("readyForTest")}
           </h2>
           <div className="space-y-6">
             <div className="bg-blue-50 rounded-2xl p-6 shadow-md">
               <p className="text-lg text-blue-800 text-center">
-                You'll now see 10 different sequences. Try to remember and match
-                each one correctly!
+                {t("testDescription")}
               </p>
             </div>
             <button
               className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
               onClick={startTest}
             >
-              Start Test
+              {t("startTest")}
             </button>
           </div>
         </div>
@@ -574,8 +555,8 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-blue-800">
                 {gameState === "practice"
-                  ? "Practice Round"
-                  : `Round ${currentItem + 1} of 10`}
+                  ? t("practiceRound")
+                  : `${t("round")} ${currentItem + 1} ${t("of")} 10`}
               </h2>
               <div className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full text-white font-semibold shadow-md">
                 ⭐ {score.correct}/{score.total}
@@ -588,7 +569,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   <div className="space-y-4 w-full">
                     <div className="flex flex-col mt-20 items-center w-full">
                       <h3 className="text-2xl font-bold text-blue-800 mb-8">
-                        Remember this sequence:
+                        {t("rememberSequence")}
                       </h3>
                       <div className="flex justify-center gap-6 w-full">
                         {(gameState === "practice"
@@ -644,7 +625,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 rounded-xl transition-all duration-300"></div>
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <span className="text-white text-base font-semibold">
-                                Remove?
+                                {t("remove")}
                               </span>
                             </div>
                           </div>
@@ -665,7 +646,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
                         <div className="py-8">
                           <h3 className="text-lg font-semibold text-blue-700 text-center mb-6">
-                            Available Choices
+                            {t("availableChoices")}
                           </h3>
                           <div className="grid grid-cols-6 gap-6 w-full max-w-3xl mx-auto">
                             {availableCards.map((card, index) => (
@@ -688,14 +669,14 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                         onClick={tryAgain}
                         className="px-6 py-3 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300"
                       >
-                        ↻ Try Again
+                        ↻ {t("tryAgain")}
                       </button>
                       <button
                         onClick={checkAnswer}
                         disabled={selectedCards.length < 4}
                         className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full font-semibold shadow-md hover:shadow-lg disabled:opacity-50 transition-all duration-300"
                       >
-                        ✓ Check
+                        ✓ {t("check")}
                       </button>
                     </div>
                   </div>
@@ -720,9 +701,11 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
 
       {gameState === "results" && (
         <div className="animate-scaleIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
-          <h2 className="text-3xl font-bold text-blue-800">Game Complete!</h2>
+          <h2 className="text-3xl font-bold text-blue-800">
+            {t("gameComplete")}
+          </h2>
           <div className="text-xl font-semibold text-blue-700">
-            You got {score.correct} out of {score.total} correct!
+            {t("youGotScore", { correct: score.correct, total: score.total })}
           </div>
           <div className="flex justify-center gap-2">
             {Array(Math.round((score.correct / score.total) * 5))
@@ -735,24 +718,22 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
           </div>
           <div className="text-lg text-blue-600">
             {score.correct / score.total > 0.7
-              ? "Awesome memory! 🎉"
+              ? t("awesomeMemory")
               : score.correct / score.total > 0.4
-              ? "Good job! 👍"
-              : "Nice try! 😊"}
+              ? t("goodJob")
+              : t("niceTry")}
           </div>
           <div className="flex gap-4 justify-center">
-      <button
-        className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-        onClick={() => {
-          saveTestResults();
-          // If not suppressing result page, show local results
-          if (!suppressResultPage) return;
-          // If suppressing, complete immediately
-          if (onComplete) onComplete(score.correct);
-        }}
-      >
-        {suppressResultPage ? "Continue" : "Finish and Save Results"}
-      </button>
+            <button
+              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+              onClick={() => {
+                saveTestResults();
+                if (!suppressResultPage) return;
+                if (onComplete) onComplete(score.correct);
+              }}
+            >
+              {suppressResultPage ? t("continue") : t("finishAndSaveResults")}
+            </button>
           </div>
         </div>
       )}
