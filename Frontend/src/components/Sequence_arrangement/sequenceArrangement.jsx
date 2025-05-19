@@ -700,43 +700,48 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
       )}
 
       {gameState === "results" && (
-        <div className="animate-scaleIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
-          <h2 className="text-3xl font-bold text-blue-800">
-            {t("gameComplete")}
-          </h2>
-          <div className="text-xl font-semibold text-blue-700">
-            {t("youGotScore", { correct: score.correct, total: score.total })}
-          </div>
-          <div className="flex justify-center gap-2">
-            {Array(Math.round((score.correct / score.total) * 5))
-              .fill(0)
-              .map((_, i) => (
-                <span key={`star-${i}`} className="text-3xl text-yellow-400">
-                  ⭐
-                </span>
-              ))}
-          </div>
-          <div className="text-lg text-blue-600">
-            {score.correct / score.total > 0.7
-              ? t("awesomeMemory")
-              : score.correct / score.total > 0.4
-              ? t("goodJob")
-              : t("niceTry")}
-          </div>
-          <div className="flex gap-4 justify-center">
-            <button
-              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
-              onClick={() => {
-                saveTestResults();
-                if (!suppressResultPage) return;
-                if (onComplete) onComplete(score.correct);
-              }}
-            >
-              {suppressResultPage ? t("continue") : t("finishAndSaveResults")}
-            </button>
-          </div>
-        </div>
-      )}
+  <div className="animate-scaleIn max-w-2xl mx-auto text-center space-y-8 bg-white/90 rounded-3xl p-8 shadow-xl">
+    <h2 className="text-3xl font-bold text-blue-800">
+      Game Complete!
+    </h2>
+    
+    {/* Score display without translation */}
+    <div className="text-xl font-semibold text-blue-700">
+      {`You got ${score.correct} out of ${score.total} correct!`}
+    </div>
+    
+    {/* Star rating */}
+    <div className="flex justify-center gap-2">
+      {Array(Math.floor((score.correct / score.total) * 5) || 1)
+        .fill(0)
+        .map((_, i) => (
+          <span key={`star-${i}`} className="text-3xl text-yellow-400">
+            ⭐
+          </span>
+        ))}
+    </div>
+    
+    {/* Feedback message without translation */}
+    <div className="text-lg text-blue-600">
+      {score.correct / score.total > 0.7
+        ? "Awesome memory!"
+        : score.correct / score.total > 0.4
+        ? "Good job!"
+        : "Nice try!"}
+    </div>
+    
+    <button
+      className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+      onClick={() => {
+        saveTestResults();
+        if (!suppressResultPage) return;
+        if (onComplete) onComplete(score.correct);
+      }}
+    >
+      {suppressResultPage ? "Continue" : "Finish and Save Results"}
+    </button>
+  </div>
+)}
     </div>
   );
 };
