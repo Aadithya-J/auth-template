@@ -1,5 +1,8 @@
 import supabase from "../utils/supabaseClient.js";
-import graphemeLetters from "../Data/graphemeLetters.json" assert { type: "json" };
+import fs from "fs";
+const graphemeLetters = JSON.parse(
+  fs.readFileSync(new URL("../Data/graphemeLetters.json", import.meta.url))
+);
 
 function evaluateLetter(expected, actual, language) {
   if (!actual || actual.trim() === "") {
