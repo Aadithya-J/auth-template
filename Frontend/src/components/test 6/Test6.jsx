@@ -244,23 +244,66 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [currentWords, setCurrentWords] = useState([]);
   const [wordShells, setWordShells] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordsPerBatch, setWordsPerBatch] = useState(5);
+  const [wordsPerBatch, setWordsPerBatch] = useState(4);
   const wordIntervalRef = useRef(null);
   const [tutorialPhase, setTutorialPhase] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
   const [isTutorialComplete, setIsTutorialComplete] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(15);
+  const timerRef = useRef(null);
 
+  useEffect(() => {
+    if (!showTutorial && gameState === "active") {
+      // Reset timer when new words appear
+      setTimeRemaining(15);
+
+      // Clear any existing timer
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+
+      // Start new timer
+      timerRef.current = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            // Time's up - move to next batch
+            if (currentWordIndex + wordsPerBatch < currentWords.length) {
+              setCurrentWordIndex((prevIndex) => prevIndex + wordsPerBatch);
+              return 15; // Reset timer for next batch
+            } else {
+              clearInterval(timerRef.current);
+              return 0;
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+      };
+    }
+  }, [
+    currentWordIndex,
+    wordsPerBatch,
+    showTutorial,
+    gameState,
+    currentWords.length,
+  ]);
   const tutorialMessages = [
-    "Hello there, young explorer!",
-    "I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
-    "This is a special place where words grow like coral!",
-    "Your job is to read each word on the glowing shells out loud.",
-    "They'll start easy and get a little harder — but I believe in you!",
-    "Read carefully and you'll earn the Shell of Fluency",
-    "and my magical Coral Spyglass to help you on your journey.",
-    "Let's get reading!",
-    "Are you ready to attempt the mission?",
+    "👋 Hello there, young explorer!",
+    "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
+    "🌊 This is a special place where words grow like coral!",
+    "📖 Your job is to read each word on the glowing shells out loud.",
+    "✨ They'll start easy and get a little harder — but I believe in you!",
+    "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
+    "🔭 and my magical Coral Spyglass to help you on your journey.",
+    "📚 Let's get reading!",
+    "🚀 Are you ready to attempt the mission?",
   ];
+
   const {
     transcript,
     isTranscribing,
@@ -309,35 +352,32 @@ function Test6({ suppressResultPage = false, onComplete }) {
     }
 
     setCurrentWordIndex(0);
+    setWordsPerBatch(4); // Always 4 words per batch
 
     wordIntervalRef.current = setInterval(() => {
       setCurrentWordIndex((prev) => {
-        const nextIndex = prev + wordsPerBatch;
+        const nextIndex = prev + 4; // Always move 4 words ahead
         if (nextIndex >= words.length) {
           clearInterval(wordIntervalRef.current);
           return prev;
         }
 
-        // Update progress based on words shown
-        const progress = Math.min(
-          100,
-          ((nextIndex + wordsPerBatch) / words.length) * 100
-        );
+        const progress = Math.min(100, ((nextIndex + 4) / words.length) * 100);
         setGameProgress(progress);
-
+        setTimeRemaining(15); // Reset timer when words change
         return nextIndex;
       });
-    }, 5000); // Show new batch every 5 seconds
+    }, 15000); // 15 seconds for each batch
   };
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsSidebarExpanded(false);
-        setWordsPerBatch(3); // Show fewer words on mobile
+        //setWordsPerBatch(3); // Show fewer words on mobile
       } else {
         setIsSidebarExpanded(true);
-        setWordsPerBatch(5);
+        //setWordsPerBatch(5);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -355,20 +395,24 @@ function Test6({ suppressResultPage = false, onComplete }) {
       setCoralineVisible(true);
       setCoralineAnimationState("entering");
 
-      // Show messages one by one with 3 second delay
-      for (let i = 0; i < tutorialMessages.length; i++) {
-        setTutorialPhase(i);
-        setIntroMessage(tutorialMessages[i]);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      }
-
-      // After all messages, show confirmation buttons
-      setCoralineAnimationState("happy");
-      setIntroMessage("Are you ready to begin?");
+      // Remove the auto-progression logic
+      setTutorialPhase(0);
+      setIntroMessage(tutorialMessages[0]);
     };
 
     introSequence();
   }, [showTutorial]);
+
+  // Add this function to handle the "Next" button click
+  const handleNextTutorialStep = () => {
+    if (tutorialPhase < tutorialMessages.length - 1) {
+      setTutorialPhase((prev) => prev + 1);
+      setIntroMessage(tutorialMessages[tutorialPhase + 1]);
+      if (tutorialPhase === tutorialMessages.length - 2) {
+        setCoralineAnimationState("happy");
+      }
+    }
+  };
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -632,39 +676,104 @@ function Test6({ suppressResultPage = false, onComplete }) {
       style={{ width: containerWidth, marginLeft: "1rem" }}
     >
       {showTutorial && (
-        <div className="fixed inset-0 z-30 flex flex-col items-center justify-center">
-          {/* Coraline the Kraken Librarian */}
-          <AnimatePresence>
-            {coralineVisible && (
+        <div className="fixed inset-0 z-50">
+          {/* Blurred background */}
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
+
+          {/* Character and dialog */}
+          <div className="relative h-full flex flex-col items-center justify-center p-4">
+            {/* Floating character */}
+            <motion.img
+              src={coralineImage}
+              alt="Coraline"
+              className="h-96 object-contain mb-4 z-10"
+              initial={{ y: -40, opacity: 0 }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: [1, 1.03, 1],
+                rotate: [0, 2, -2, 0],
+              }}
+              transition={{
+                y: { duration: 0.6, ease: "backOut" },
+                opacity: { duration: 0.8 },
+                scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+              }}
+            />
+
+            {/* Glass-morphism dialog box */}
+            <motion.div
+              className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/20 shadow-2xl w-full max-w-xl relative overflow-hidden"
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, type: "spring" }}
+            >
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
+
+              {/* Dialog content */}
               <motion.div
-                variants={coralineVariants}
-                initial="hidden"
-                animate={coralineAnimationState}
-                className="relative z-40 flex flex-col items-center"
+                key={tutorialPhase}
+                className="text-center text-2xl text-white mb-8 min-h-32 flex items-center justify-center font-serif font-medium leading-relaxed"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4 }}
               >
-                <img
-                  src={coralineImage}
-                  className="w-80 h-80 md:w-96 md:h-96 object-contain" // Larger size
-                  alt="Coraline the Kraken Librarian"
-                />
-
-                {/* Larger speech bubble */}
-                <SpeechBubble
-                  text={introMessage}
-                  visible={!!introMessage}
-                  isLastMessage={tutorialPhase === tutorialMessages.length - 1}
-                  onConfirm={() => {
-                    setShowTutorial(false);
-                    setIsTutorialComplete(true);
-                    setGameState("active");
-                  }}
-                />
+                {tutorialMessages[tutorialPhase]}
               </motion.div>
-            )}
-          </AnimatePresence>
 
-          {/* Semi-transparent overlay (without blur) */}
-          <div className="absolute inset-0 bg-black/30 z-30"></div>
+              {/* Progress indicators */}
+              <div className="flex justify-center gap-2 mb-6">
+                {tutorialMessages.map((_, index) => (
+                  <motion.div
+                    key={index}
+                    className={`w-3 h-3 rounded-full ${
+                      index <= tutorialPhase ? "bg-white" : "bg-white/30"
+                    }`}
+                    initial={{ scale: 0.8 }}
+                    animate={{
+                      scale: index === tutorialPhase ? 1.2 : 1,
+                      y: index === tutorialPhase ? -3 : 0,
+                    }}
+                    transition={{ type: "spring" }}
+                  />
+                ))}
+              </div>
+
+              {/* Action buttons */}
+              {tutorialPhase === tutorialMessages.length - 1 ? (
+                <div className="flex justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      setShowTutorial(false);
+                      setIsTutorialComplete(true);
+                      setGameState("active");
+                    }}
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:from-blue-600 hover:to-purple-600"
+                  >
+                    I'm Ready!
+                  </motion.button>
+                </div>
+              ) : (
+                <div className="flex justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNextTutorialStep}
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:from-blue-600 hover:to-purple-600"
+                  >
+                    Next
+                  </motion.button>
+                </div>
+              )}
+            </motion.div>
+          </div>
         </div>
       )}
       {/* Back button at left most end */}
@@ -794,9 +903,23 @@ function Test6({ suppressResultPage = false, onComplete }) {
               </div>
               <ProgressBar progress={gameProgress} />
             </div>
-
+            {/* Timer Display */}
+            {isTutorialComplete && gameState === "active" && (
+              <div className="mb-4 flex items-center justify-center">
+                <div
+                  className={`text-2xl font-bold rounded-full p-4 w-24 h-24 flex items-center justify-center 
+      ${
+        timeRemaining <= 5
+          ? "text-red-600 bg-red-100"
+          : "text-teal-700 bg-teal-100"
+      }`}
+                >
+                  {timeRemaining}s
+                </div>
+              </div>
+            )}
             {/* Word Shell Grid - Now showing only the current batch */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 mb-8 place-items-center w-full max-w-8xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8 place-items-center w-full max-w-8xl">
               {isTutorialComplete &&
                 visibleWords.map((shell) => (
                   <motion.div
