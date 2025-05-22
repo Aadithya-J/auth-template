@@ -292,7 +292,7 @@ export const translations = {
     takeFullTest: "Take Full Test",
     takeIndividualTest: "Take Individual Test",
     takeTest: "Take Test",
-
+    loadingDashboard: "Loading Dashboard",
     takeTest: "Take Test",
     takeTest: "Take Test",
     sameSounds: "Same Sounds",
@@ -331,6 +331,7 @@ export const translations = {
     symbolSequenceAssessment: "Symbol Sequence Assessment",
 
     //Sequence Arrangement
+    checkAnswer:"Check Answer",
     animalSequenceGame: "Animal Sequence Game",
     matchSequenceDescription:
       "Match the sequence first shown to the next one and test your memory.",
@@ -393,7 +394,7 @@ export const translations = {
     thankYouForCompletingVocabularyScaleTest:
       "Thank you for completing the Vocabulary Scale Test.",
     submissionError: "Submission Error",
-    BackToTests: "Back to Tests",
+    backTotests: "Back to Tests",
     vocabularyScaleTest: "Vocabulary Scale Test",
     testSubmittedSuccessfully: "Test submitted successfully!",
     submissionFailedTryAgain: "Submission failed. Please try again.",
