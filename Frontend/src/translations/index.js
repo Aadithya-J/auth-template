@@ -295,7 +295,9 @@ export const translations = {
 
     takeTest: "Take Test",
     takeTest: "Take Test",
-
+    sameSounds: "Same Sounds",
+    differentSounds: "Different Sounds",
+    imReady: "🏴‍☠️ Aye, I'm Ready!",
     //Symbol Sequence Game
     symbolSequenceTitle: "Symbol Sequence Memory Game",
     symbolSequenceDescription:
