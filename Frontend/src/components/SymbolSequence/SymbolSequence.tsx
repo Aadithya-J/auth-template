@@ -32,6 +32,20 @@ const symbols = [
   "☯",
   "☺",
 ];
+const runeSymbols = [
+  "◯", // Circle Rune
+  "△", // Triangle Rune
+  "◻️", // Square Rune
+  "✶", // Star Rune
+  "ᚠ", // Fehu (Norse rune)
+  "ᛃ", // Jera (Norse rune)
+  "ᛒ", // Berkana (Norse rune)
+  "☉", // Sun Rune
+  "🜂", // Alchemy Fire Symbol
+  "🜁", // Alchemy Air Symbol
+  "⚚", // Caduceus (magical staff)
+  "𝌆", // Fantasy circle glyph
+];
 
 type DifficultyLevel = {
   name: string;
@@ -63,13 +77,14 @@ interface SymbolSequenceProps {
 const CharacterDialog = ({ onComplete, t }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
   const dialog = [
-    "👋 Welcome to Rune Rock!",
-    "These floating stones are full of glowing runes.",
-    "Watch the runes light up in a special order.",
-    "Then, tap them in the same order to solve the puzzle.",
-    "Stay focused and have fun!",
-    "Are you ready?",
-  ];
+  "👋 Welcome to Rune Rock!",
+  "🪨✨ These floating stones are full of glowing runes.",
+  "👁️‍🗨️ Watch the runes light up in a special order.",
+  "🧠🔢 Then, tap them in the same order to solve the puzzle.",
+  "🎯 Stay focused and have fun!",
+  "🚀 Are you ready?",
+];
+
 
   const handleNext = () => {
     if (currentDialog < dialog.length - 1) {
@@ -538,8 +553,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
         whileHover={{ scale: 1.05, x: -5 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => navigate("/taketests")}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-blue-400 to-purple-500
-       text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-400"
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/90 to-blue-500/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-400/50 ml-4 mt-4"
       >
         <motion.span
           animate={{ x: [-2, 0, -2] }}
@@ -599,243 +613,503 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
         </div>
       )}
 
-      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center">
+      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center ">
         <AnimatePresence mode="wait">
           {gameState === "welcome" && (
-            <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 max-w-2xl text-center border border-blue-100">
-              <motion.div>
-                <h2 className="text-3xl font-bold text-blue-700 mb-4">
-                  {t("symbolSequenceAssessment")}
-                </h2>
-                <p className="text-gray-700 mb-8 leading-relaxed">
-                  {t("symbolSequenceDescription")}
-                </p>
-              </motion.div>
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center p-4 z-10" // Full screen centered
+            >
+              <motion.div
+                className="bg-gradient-to-br from-purple-900/70 to-blue-900/70 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.5)] p-10 w-full max-w-2xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 100 }}
+              >
+                {/* Add magical glow elements */}
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full filter blur-3xl"></div>
 
-              <motion.div className="mt-8">
-                <h3 className="text-2xl font-semibold mb-6 text-blue-600">
-                  {t("chooseDifficulty")}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {difficultyLevels.map((level, index) => (
-                    <motion.button
-                      onClick={() => startGame(index)}
-                      className="relative overflow-hidden group px-8 py-4 rounded-xl font-bold text-lg"
-                      style={{
-                        background: "linear-gradient(135deg, #2C003E, #6C757D)",
-                        border: "1px solid #8A2BE2",
-                      }}
-                      whileHover={{
-                        scale: 1.05,
-                        boxShadow: "0 0 15px rgba(138, 43, 226, 0.6)",
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span className="relative z-10 text-white">
-                        {t(level.name)}
-                      </span>
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100"
-                        transition={{ duration: 0.3 }}
-                      />
-                    </motion.button>
-                  ))}
-                </div>
+                {/* Header with animated rune */}
+                <motion.div className="relative">
+                  <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-6 pt-8">
+                    {t("symbolSequenceAssessment")}
+                  </h2>
+
+                  <p className="text-blue-100/90 mb-8 leading-relaxed text-lg">
+                    {t("symbolSequenceDescription")}
+                  </p>
+                </motion.div>
+
+                {/* Difficulty buttons with enhanced styling */}
+                <motion.div className="mt-12">
+                  <h3 className="text-xl font-semibold mb-8 text-purple-200/90 tracking-wider">
+                    {t("chooseDifficulty").toUpperCase()}
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {difficultyLevels.map((level, index) => (
+                      <motion.button
+                        key={index}
+                        onClick={() => startGame(index)}
+                        className="relative overflow-hidden group px-8 py-5 rounded-xl font-bold text-lg"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, rgba(44,0,62,0.7), rgba(70,30,100,0.7))",
+                          border: "1px solid rgba(138, 43, 226, 0.5)",
+                        }}
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: "0 0 25px rgba(138, 43, 226, 0.8)",
+                          y: -5,
+                        }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {/* Animated border */}
+                        <motion.div
+                          className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-purple-400/50"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        />
+
+                        <span className="relative z-10 text-white tracking-wider flex flex-col items-center">
+                          <span className="text-2xl mb-1">
+                            {symbols[index + 5]}
+                          </span>{" "}
+                          {/* Decorative symbol */}
+                          <span>{t(level.name)}</span>
+                        </span>
+
+                        {/* Hover effect */}
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 rounded-xl"
+                          transition={{ duration: 0.4 }}
+                        />
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           )}
 
           {gameState === "showing" && (
-            <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
-              <h2 className="text-2xl font-bold text-blue-700 mb-8">
-                {t("lookCarefully")}
-              </h2>
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center p-4 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 100 }}
+              >
+                {/* Glow effects */}
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
 
-              <div className="flex justify-center flex-wrap gap-6 my-10">
-                {currentSequence.map((symbol, index) => (
-                  <div
-                    key={index}
-                    className="w-24 h-24 flex items-center justify-center text-5xl rounded-xl shadow-lg bg-white border-2 border-blue-200 text-blue-800"
-                  >
+                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-10 tracking-wider">
+                  {t("lookCarefully")}
+                </h2>
+
+                {/* Enhanced Progress Bar */}
+                <div className="relative pt-1 mb-12 w-3/4 mx-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-purple-200">
+                      Round {currentRound} of 10
+                    </span>
+                    <span className="text-sm font-semibold text-blue-300">
+                      {Math.round((currentRound / 10) * 100)}% Complete
+                    </span>
+                  </div>
+                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-purple-900/50">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(currentRound / 10) * 100}%` }}
+                      transition={{ duration: 0.7 }}
+                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg"
+                    />
+                  </div>
+                </div>
+
+                {/* Larger Symbol Grid */}
+                <div className="flex justify-center flex-wrap gap-8 my-12">
+                  {currentSequence.map((symbol, index) => (
                     <motion.div
                       key={index}
-                      className="w-24 h-24 flex items-center justify-center text-5xl rounded-xl relative overflow-hidden"
-                      style={{
-                        background: "radial-gradient(circle, #2C003E, #6C757D)",
-                        border: "2px solid #00BFFF",
-                        boxShadow:
-                          showingIndex === index
-                            ? "0 0 20px rgba(0, 191, 255, 0.8)"
-                            : "0 0 10px rgba(0, 191, 255, 0.5)",
-                        color: "#FFD700",
-                        textShadow:
-                          showingIndex === index
-                            ? "0 0 15px rgba(255, 215, 0, 0.9)"
-                            : "0 0 8px rgba(255, 215, 0, 0.7)",
-                      }}
-                      animate={{
-                        scale: showingIndex === index ? [1, 1.1, 1] : 1,
-                        rotate: showingIndex === index ? [0, 5, -5, 0] : 0,
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        ease: "easeInOut",
-                      }}
+                      className="w-32 h-32 flex items-center justify-center relative" // Increased size
+                      whileHover={{ scale: 1.05 }}
                     >
-                      {symbol}
+                      {/* Symbol Container */}
+                      <motion.div
+                        className="w-full h-full flex items-center justify-center text-6xl rounded-2xl relative overflow-hidden" // Larger text
+                        style={{
+                          background:
+                            "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
+                          border: "2px solid rgba(0, 191, 255, 0.7)",
+                          boxShadow:
+                            showingIndex === index
+                              ? "0 0 30px rgba(0, 191, 255, 0.9)"
+                              : "0 0 15px rgba(0, 191, 255, 0.5)",
+                          color: "#FFD700",
+                          textShadow:
+                            showingIndex === index
+                              ? "0 0 20px rgba(255, 215, 0, 0.9)"
+                              : "0 0 10px rgba(255, 215, 0, 0.7)",
+                        }}
+                        animate={{
+                          scale: showingIndex === index ? [1, 1.2, 1] : 1,
+                          rotate: showingIndex === index ? [0, 10, -10, 0] : 0,
+                        }}
+                        transition={{
+                          duration: 0.6,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        {symbol}
+                        {showingIndex === index && (
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-2xl"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: [0, 0.4, 0] }}
+                            transition={{ duration: 1 }}
+                          />
+                        )}
+                      </motion.div>
+
+                      {/* Floating rune particles around active symbol */}
                       {showingIndex === index && (
                         <motion.div
-                          className="absolute inset-0 bg-blue-400/20 rounded-xl"
+                          className="absolute -inset-4 pointer-events-none"
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: [0, 0.3, 0] }}
-                          transition={{ duration: 0.8 }}
-                        />
+                          animate={{ opacity: [0, 0.8, 0] }}
+                          transition={{ duration: 1.5 }}
+                        >
+                          {[...Array(6)].map((_, i) => (
+                            <motion.span
+                              key={i}
+                              className="absolute text-yellow-300 text-2xl"
+                              initial={{
+                                x: 0,
+                                y: 0,
+                                opacity: 0.8,
+                              }}
+                              animate={{
+                                x: Math.random() * 60 - 30,
+                                y: Math.random() * 60 - 30,
+                                opacity: 0,
+                              }}
+                              transition={{
+                                duration: 1.5,
+                                ease: "easeOut",
+                              }}
+                            >
+                              {
+                                symbols[
+                                  Math.floor(Math.random() * symbols.length)
+                                ]
+                              }
+                            </motion.span>
+                          ))}
+                        </motion.div>
                       )}
                     </motion.div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <div className="w-full bg-gray-200 rounded-full h-3 mt-8">
-                <motion.div
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
-                  initial={{ width: "100%" }}
-                  animate={{ width: "0%" }}
-                  transition={{
-                    duration: difficultyLevels[level].timeToView / 1000,
-                    ease: "linear",
-                  }}
-                />
-              </div>
+                {/* Timer Bar */}
+                <div className="w-3/4 mx-auto bg-purple-900/30 rounded-full h-4 mt-10 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-blue-400 to-purple-500 shadow-lg"
+                    initial={{ width: "100%" }}
+                    animate={{ width: "0%" }}
+                    transition={{
+                      duration: difficultyLevels[level].timeToView / 1000,
+                      ease: "linear",
+                    }}
+                  />
+                </div>
 
-              <p className="mt-4 text-blue-600 font-medium">
-                {t("waitUntilDisappear")}
-              </p>
+                <p className="mt-6 text-xl text-purple-200 font-medium tracking-wider">
+                  {t("waitUntilDisappear")}
+                </p>
+              </motion.div>
             </motion.div>
           )}
 
           {gameState === "guessing" && (
-            <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
-              <h2 className="text-2xl font-bold text-blue-700 mb-8">
-                {t("recreateSequence")}
-              </h2>
-
-              <div className="flex justify-center flex-wrap gap-6 my-10">
-                {userSequence.map((symbol, index) => (
-                  <motion.div
-                    key={index}
-                    className="w-24 h-24 flex items-center justify-center text-5xl bg-white border-2 border-blue-200 text-blue-800 rounded-xl shadow-md relative cursor-pointer"
-                    onHoverStart={() => setHoveredCardIndex(index)}
-                    onHoverEnd={() => setHoveredCardIndex(-1)}
-                    onClick={() => removeSymbol(index)}
-                  >
-                    {symbol}
-                    {hoveredCardIndex === index && (
-                      <motion.div className="absolute inset-0 bg-blue-800/50 rounded-xl flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          {t("remove")}
-                        </span>
-                      </motion.div>
-                    )}
-                  </motion.div>
-                ))}
-                {Array(currentSequence.length - userSequence.length)
-                  .fill(0)
-                  .map((_, index) => (
-                    <motion.div
-                      key={index + userSequence.length}
-                      className="w-24 h-24 flex items-center justify-center text-5xl bg-white border-2 border-dashed border-blue-300 rounded-xl"
-                      animate={{
-                        boxShadow: [
-                          "0px 0px 0px rgba(0,0,0,0)",
-                          "0px 0px 10px rgba(59,130,246,0.5)",
-                          "0px 0px 0px rgba(0,0,0,0)",
-                        ],
-                      }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                    />
-                  ))}
-              </div>
-
-              <h3 className="text-xl font-semibold mb-6 text-blue-700">
-                {t("availableSymbols")}
-              </h3>
-
-              <div className="flex justify-center flex-wrap gap-4 my-8">
-                {getAvailableSymbols().map((symbol, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => selectSymbol(symbol)}
-                    className="w-24 h-24 flex items-center justify-center text-5xl bg-white border-2 border-blue-200 text-blue-800 rounded-xl shadow-md"
-                  >
-                    {symbol}
-                  </motion.button>
-                ))}
-              </div>
-
-              <button
-                onClick={quitGame}
-                className="mt-8 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center p-4 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 100 }}
               >
-                {t("quitAssessment")}
-              </button>
+                {/* Glow effects */}
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+
+                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-10 tracking-wider">
+                  {t("recreateSequence")}
+                </h2>
+
+                {/* Enhanced Progress Bar */}
+                <div className="relative pt-1 mb-12 w-3/4 mx-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-purple-200">
+                      Round {currentRound} of 10
+                    </span>
+                    <span className="text-sm font-semibold text-blue-300">
+                      {Math.round((currentRound / 10) * 100)}% Complete
+                    </span>
+                  </div>
+                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-purple-900/50">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(currentRound / 10) * 100}%` }}
+                      transition={{ duration: 0.7 }}
+                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg"
+                    />
+                  </div>
+                </div>
+
+                {/* User Sequence Area - Larger */}
+                <div className="mb-16">
+                  <h3 className="text-2xl font-semibold mb-8 text-purple-200 tracking-wider">
+                    YOUR SEQUENCE
+                  </h3>
+                  <div className="flex justify-center flex-wrap gap-8 my-10">
+                    {userSequence.map((symbol, index) => (
+                      <motion.div
+                        key={index}
+                        className="relative w-28 h-28" // Increased size
+                        whileHover={{ scale: 1.05 }}
+                        onHoverStart={() => setHoveredCardIndex(index)}
+                        onHoverEnd={() => setHoveredCardIndex(-1)}
+                      >
+                        <motion.div
+                          className="w-full h-full flex items-center justify-center text-6xl rounded-2xl" // Larger text
+                          style={{
+                            background:
+                              "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
+                            border: "2px solid rgba(0, 191, 255, 0.7)",
+                            boxShadow: "0 0 20px rgba(0, 191, 255, 0.5)",
+                            color: "#FFD700",
+                            textShadow: "0 0 10px rgba(255, 215, 0, 0.7)",
+                          }}
+                        >
+                          {symbol}
+                        </motion.div>
+                        {hoveredCardIndex === index && (
+                          <motion.div
+                            className="absolute inset-0 bg-red-500/80 rounded-2xl flex items-center justify-center cursor-pointer"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            onClick={() => removeSymbol(index)}
+                          >
+                            <span className="text-white text-lg font-bold tracking-wider">
+                              {t("remove")}
+                            </span>
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    ))}
+                    {/* Empty slots with pulsing animation */}
+                    {Array(currentSequence.length - userSequence.length)
+                      .fill(0)
+                      .map((_, index) => (
+                        <motion.div
+                          key={index + userSequence.length}
+                          className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl"
+                          style={{
+                            background:
+                              "radial-gradient(circle, rgba(44,0,62,0.5), rgba(70,30,100,0.5))",
+                            border: "2px dashed rgba(0, 191, 255, 0.5)",
+                          }}
+                          animate={{
+                            boxShadow: [
+                              "0 0 0 rgba(0,191,255,0)",
+                              "0 0 20px rgba(0,191,255,0.7)",
+                              "0 0 0 rgba(0,191,255,0)",
+                            ],
+                          }}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                        />
+                      ))}
+                  </div>
+                </div>
+
+                {/* Available Symbols - Enhanced */}
+                <div className="mt-12">
+                  <h3 className="text-2xl font-semibold mb-8 text-purple-200 tracking-wider">
+                    {t("availableSymbols").toUpperCase()}
+                  </h3>
+                  <div className="flex justify-center flex-wrap gap-6 my-8">
+                    {getAvailableSymbols().map((symbol, index) => (
+                      <motion.button
+                        key={index}
+                        onClick={() => selectSymbol(symbol)}
+                        className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl relative group" // Larger size
+                        style={{
+                          background:
+                            "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
+                          border: "2px solid rgba(0, 191, 255, 0.5)",
+                          color: "#FFD700",
+                          textShadow: "0 0 10px rgba(255, 215, 0, 0.7)",
+                        }}
+                        whileHover={{
+                          scale: 1.1,
+                          boxShadow: "0 0 30px rgba(0,191,255,0.8)",
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {symbol}
+                        <motion.div
+                          className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-white/50"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           )}
 
           {gameState === "results" && (
-            <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-blue-100">
-              <h2
-                className={`text-2xl font-bold mb-6 ${
-                  feedback.includes(t("correct"))
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center p-4 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 100 }}
               >
-                {feedback}
-              </h2>
+                {/* Glow effects */}
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-blue-700">
-                    {t("yourSequence")}
-                  </h3>
-                  <div className="flex justify-center flex-wrap gap-3">
-                    {userSequence.map((symbol, index) => (
-                      <div
-                        key={index}
-                        className={`w-20 h-20 flex items-center justify-center text-4xl rounded-lg ${
-                          symbol === currentSequence[index]
-                            ? "bg-gradient-to-br from-green-200 to-green-300 border-2 border-green-300"
-                            : "bg-gradient-to-br from-red-200 to-red-300 border-2 border-red-300"
-                        }`}
-                      >
-                        {symbol}
-                      </div>
-                    ))}
+                {/* Result Feedback */}
+                <motion.h2
+                  className={`text-4xl font-bold mb-12 tracking-wider ${
+                    feedback.includes(t("correct"))
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                  initial={{ y: -20 }}
+                  animate={{ y: 0 }}
+                  style={{
+                    textShadow: feedback.includes(t("correct"))
+                      ? "0 0 20px rgba(100, 255, 100, 0.7)"
+                      : "0 0 20px rgba(255, 100, 100, 0.7)",
+                  }}
+                >
+                  {feedback}
+                </motion.h2>
+
+                {/* Comparison Grid */}
+                {/* Replace the grid with stacked rows */}
+                <div className="space-y-16 mt-10 mb-16">
+                  {" "}
+                  {/* Increased vertical spacing */}
+                  {/* User Sequence Row */}
+                  <div className="space-y-8">
+                    {" "}
+                    {/* Vertical spacing for title and symbols */}
+                    <h3 className="text-2xl font-semibold text-purple-200 tracking-wider">
+                      {t("yourSequence").toUpperCase()}
+                    </h3>
+                    <div className="flex justify-center flex-wrap gap-8">
+                      {" "}
+                      {/* Increased gap */}
+                      {userSequence.map((symbol, index) => (
+                        <motion.div
+                          key={index}
+                          className="relative"
+                          initial={{ scale: 0.9 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <div
+                            className={`w-28 h-28 flex items-center justify-center text-6xl rounded-2xl ${
+                              symbol === currentSequence[index]
+                                ? "bg-green-500/20 border-2 border-green-400 shadow-[0_0_20px_rgba(0,255,0,0.3)]"
+                                : "bg-red-500/20 border-2 border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.3)]"
+                            }`}
+                          >
+                            {symbol}
+                          </div>
+                          {symbol !== currentSequence[index] && (
+                            <motion.div
+                              className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ delay: index * 0.1 + 0.3 }}
+                            >
+                              !
+                            </motion.div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Correct Sequence Row */}
+                  <div className="space-y-8">
+                    <h3 className="text-2xl font-semibold text-purple-200 tracking-wider">
+                      {t("correctSequence").toUpperCase()}
+                    </h3>
+                    <div className="flex justify-center flex-wrap gap-8">
+                      {currentSequence.map((symbol, index) => (
+                        <motion.div
+                          key={index}
+                          className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl bg-blue-500/20 border-2 border-blue-400 shadow-[0_0_20px_rgba(0,191,255,0.3)]"
+                          initial={{ scale: 0.9 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          {symbol}
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-blue-700">
-                    {t("correctSequence")}
-                  </h3>
-                  <div className="flex justify-center flex-wrap gap-3">
-                    {currentSequence.map((symbol, index) => (
-                      <div
-                        key={index}
-                        className="w-20 h-20 flex items-center justify-center text-4xl bg-gradient-to-br from-blue-100 to-blue-300 rounded-lg"
-                      >
-                        {symbol}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                {/* Continue Button */}
+                {currentRound >= 10 && (
+                  <motion.button
+                    onClick={() => {
+                      if (
+                        currentRound >= 10 &&
+                        typeof onComplete === "function"
+                      ) {
+                        onComplete(score);
+                      }
+                    }}
+                    className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-12 rounded-xl text-lg shadow-lg hover:shadow-purple-500/50"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {currentRound >= 10 && t("continue")}
+                  </motion.button>
+                )}
+              </motion.div>
             </motion.div>
           )}
-
           {gameState === "gameOver" && !suppressResultPage && (
-            <motion.div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 max-w-2xl text-center border border-blue-100">
+            <motion.div className="bg-black/50 backdrop-blur-lg rounded-2xl shadow-2xl p-10 w-full max-w-3xl text-center border border-purple-500/30">
               <h2 className="text-3xl font-bold text-blue-700 mb-4">
                 {t("gameComplete")}
               </h2>
@@ -846,7 +1120,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 </span>
               </div>
 
-              <p className="text-xl mb-8 text-gray-700">{t("finalScore")}</p>
+              <p className="text-xl mb-8 text-blue-700">{t("finalScore")}</p>
 
               <div className="my-8 text-2xl">
                 {score >= 9 && (
@@ -873,7 +1147,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
 
               <button
                 onClick={() => setGameState("welcome")}
-                className="mt-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-3 px-10 rounded-lg shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-purple-500/40 transition-all"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

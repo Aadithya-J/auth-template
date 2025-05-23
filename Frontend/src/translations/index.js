@@ -378,7 +378,7 @@ export const translations = {
     of: "of",
     greatJob: "Great job! 🎉",
     tryAgain: "Let's try again! 👍",
-
+    BackToMenu: "Back To Menu",
     //vocab scale
     level: "Level",
     english: "English",

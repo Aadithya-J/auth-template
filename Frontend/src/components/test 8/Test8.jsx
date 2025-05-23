@@ -58,18 +58,15 @@ const CharacterDialog = ({ onComplete }) => {
       </div>
 
       {/* Main content container */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, type: "spring" }}
-          className="relative max-w-2xl w-full flex flex-col items-center"
+          className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
         >
-          {/* Floating character with pulse animation */}
-          <motion.img
-            src={blinkCharacter}
-            alt="Blink the Guardian"
-            className="h-96 object-contain mb-4 z-10"
+          {/* Floating character on the left */}
+          <motion.div
             initial={{ y: -40, opacity: 0 }}
             animate={{
               y: 0,
@@ -92,69 +89,82 @@ const CharacterDialog = ({ onComplete }) => {
                 ease: "easeInOut",
               },
             }}
-          />
+            className="flex-shrink-0 order-2 lg:order-1"
+          >
+            <img
+              src={blinkCharacter}
+              alt="Blink the Guardian"
+              className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
+            />
+          </motion.div>
 
-          {/* Glass-morphism dialog box */}
+          {/* Enhanced glass-morphism dialog box */}
           <motion.div
-            className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/20 shadow-2xl w-full max-w-xl relative overflow-hidden"
+            className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+            {/* Enhanced decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
             <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
             <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
+            <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
+            <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
 
-            {/* Animated dialog text */}
+            {/* Enhanced animated dialog text */}
             <motion.div
               key={currentDialog}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.4 }}
-              className="text-center text-2xl text-white mb-8 min-h-32 flex items-center justify-center font-serif font-medium leading-relaxed"
+              className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
             >
-              {dialog[currentDialog]}
+              <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
             </motion.div>
 
-            {/* Progress indicators */}
-            <div className="flex justify-center gap-2 mb-6">
+            {/* Enhanced progress indicators */}
+            <div className="flex justify-center gap-3 mb-8 lg:mb-10">
               {dialog.map((_, index) => (
                 <motion.div
                   key={index}
-                  className={`w-3 h-3 rounded-full ${
-                    index <= currentDialog ? "bg-white" : "bg-white/30"
+                  className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+                    index <= currentDialog
+                      ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                      : "bg-white/30"
                   }`}
                   initial={{ scale: 0.8 }}
                   animate={{
-                    scale: index === currentDialog ? 1.2 : 1,
-                    y: index === currentDialog ? -3 : 0,
+                    scale: index === currentDialog ? 1.3 : 1,
+                    y: index === currentDialog ? -4 : 0,
                   }}
-                  transition={{ type: "spring" }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 />
               ))}
             </div>
 
-            {/* Animated action button */}
+            {/* Enhanced animated action button */}
             <div className="flex justify-center">
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
-                className={`flex items-center justify-center gap-3 py-3 px-8 rounded-xl font-bold text-lg shadow-lg ${
+                className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
                   currentDialog < dialog.length - 1
-                    ? "bg-white text-blue-900 hover:bg-blue-100"
-                    : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
+                    ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
+                    : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
                 }`}
               >
                 {currentDialog < dialog.length - 1 ? (
                   <>
-                    Next <FaChevronRight className="mt-0.5" />
+                    <span className="drop-shadow-sm">Next</span>
+                    <FaChevronRight className="mt-0.5 drop-shadow-sm" />
                   </>
                 ) : (
                   <>
-                    I'm Ready! <FaCheck className="mt-0.5" />
+                    <span className="drop-shadow-sm">I'm Ready!</span>
+                    <FaCheck className="mt-0.5 drop-shadow-sm" />
                   </>
                 )}
               </motion.button>

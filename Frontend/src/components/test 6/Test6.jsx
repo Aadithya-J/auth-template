@@ -249,49 +249,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [tutorialPhase, setTutorialPhase] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
   const [isTutorialComplete, setIsTutorialComplete] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(15);
-  const timerRef = useRef(null);
 
-  useEffect(() => {
-    if (!showTutorial && gameState === "active") {
-      // Reset timer when new words appear
-      setTimeRemaining(15);
-
-      // Clear any existing timer
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-
-      // Start new timer
-      timerRef.current = setInterval(() => {
-        setTimeRemaining((prev) => {
-          if (prev <= 1) {
-            // Time's up - move to next batch
-            if (currentWordIndex + wordsPerBatch < currentWords.length) {
-              setCurrentWordIndex((prevIndex) => prevIndex + wordsPerBatch);
-              return 15; // Reset timer for next batch
-            } else {
-              clearInterval(timerRef.current);
-              return 0;
-            }
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-        }
-      };
-    }
-  }, [
-    currentWordIndex,
-    wordsPerBatch,
-    showTutorial,
-    gameState,
-    currentWords.length,
-  ]);
   const tutorialMessages = [
     "👋 Hello there, young explorer!",
     "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
@@ -317,57 +275,24 @@ function Test6({ suppressResultPage = false, onComplete }) {
     useAudioRecorder(transcribeAudio);
 
   useEffect(() => {
-    // Only start words if tutorial is complete and game is active
-    if (!showTutorial && gameState === "active") {
-      // Get words from the imported JSON file
-      const words = wordLists[language] || wordLists.en;
-
-      // If you're using difficulty levels (optional):
-      // const difficulty = "easy"; // Could come from state
-      // const words = wordLists[language]?.[difficulty] || wordLists.en.easy;
-
-      setCurrentWords(words);
-      setWordShells(
-        words.map((word, index) => ({
-          id: index,
-          word,
-          collected: false,
-          glowing: false,
-        }))
-      );
-
-      startWordBatches(words);
-    }
-
-    return () => {
-      if (wordIntervalRef.current) {
-        clearInterval(wordIntervalRef.current);
-      }
-    };
-  }, [language, showTutorial, gameState]); // Same dependencies as before // Add dependencies here
+  if (!showTutorial && gameState === "active") {
+    const words = wordLists[language] || wordLists.en;
+    setCurrentWords(words);
+    setWordShells(words.map((word, index) => ({
+      id: index,
+      word,
+      collected: false,
+      glowing: false,
+    })));
+    
+    // Initialize progress to first batch
+    setGameProgress((wordsPerBatch / words.length) * 100);
+  }
+}, [language, showTutorial, gameState]);
 
   const startWordBatches = (words) => {
-    if (wordIntervalRef.current) {
-      clearInterval(wordIntervalRef.current);
-    }
-
     setCurrentWordIndex(0);
-    setWordsPerBatch(4); // Always 4 words per batch
-
-    wordIntervalRef.current = setInterval(() => {
-      setCurrentWordIndex((prev) => {
-        const nextIndex = prev + 4; // Always move 4 words ahead
-        if (nextIndex >= words.length) {
-          clearInterval(wordIntervalRef.current);
-          return prev;
-        }
-
-        const progress = Math.min(100, ((nextIndex + 4) / words.length) * 100);
-        setGameProgress(progress);
-        setTimeRemaining(15); // Reset timer when words change
-        return nextIndex;
-      });
-    }, 15000); // 15 seconds for each batch
+    setWordsPerBatch(4); // 15 seconds for each batch
   };
 
   useEffect(() => {
@@ -676,110 +601,150 @@ function Test6({ suppressResultPage = false, onComplete }) {
       style={{ width: containerWidth, marginLeft: "1rem" }}
     >
       {showTutorial && (
-        <div className="fixed inset-0 z-50">
-          {/* Blurred background */}
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
-
-          {/* Character and dialog */}
-          <div className="relative h-full flex flex-col items-center justify-center p-4">
-            {/* Floating character */}
-            <motion.img
-              src={coralineImage}
-              alt="Coraline"
-              className="h-96 object-contain mb-4 z-10"
-              initial={{ y: -40, opacity: 0 }}
-              animate={{
-                y: 0,
-                opacity: 1,
-                scale: [1, 1.03, 1],
-                rotate: [0, 2, -2, 0],
-              }}
-              transition={{
-                y: { duration: 0.6, ease: "backOut" },
-                opacity: { duration: 0.8 },
-                scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-              }}
-            />
-
-            {/* Glass-morphism dialog box */}
+        <>
+          {/* Blurred background with animated overlay */}
+          <div className="fixed inset-0 z-40">
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-md" />
             <motion.div
-              className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/20 shadow-2xl w-full max-w-xl relative overflow-hidden"
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, type: "spring" }}
-            >
-              {/* Decorative elements */}
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
-              <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
+              className="absolute inset-0 bg-black/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
 
-              {/* Dialog content */}
+          {/* Main content container */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, type: "spring" }}
+              className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
+            >
+              {/* Floating character on the left */}
               <motion.div
-                key={tutorialPhase}
-                className="text-center text-2xl text-white mb-8 min-h-32 flex items-center justify-center font-serif font-medium leading-relaxed"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.4 }}
+                initial={{ y: -40, opacity: 0 }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  scale: [1, 1.03, 1],
+                  rotate: [0, 2, -2, 0],
+                }}
+                transition={{
+                  y: { duration: 0.6, ease: "backOut" },
+                  opacity: { duration: 0.8 },
+                  scale: {
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut",
+                  },
+                  rotate: {
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="flex-shrink-0 order-2 lg:order-1"
               >
-                {tutorialMessages[tutorialPhase]}
+                <img
+                  src={coralineImage}
+                  alt="Coraline"
+                  className="h-64 sm:h-80 lg:h-96 xl:h-[500px] object-contain"
+                />
               </motion.div>
 
-              {/* Progress indicators */}
-              <div className="flex justify-center gap-2 mb-6">
-                {tutorialMessages.map((_, index) => (
-                  <motion.div
-                    key={index}
-                    className={`w-3 h-3 rounded-full ${
-                      index <= tutorialPhase ? "bg-white" : "bg-white/30"
-                    }`}
-                    initial={{ scale: 0.8 }}
-                    animate={{
-                      scale: index === tutorialPhase ? 1.2 : 1,
-                      y: index === tutorialPhase ? -3 : 0,
-                    }}
-                    transition={{ type: "spring" }}
-                  />
-                ))}
-              </div>
+              {/* Enhanced glass-morphism dialog box */}
+              <motion.div
+                className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, type: "spring" }}
+              >
+                {/* Enhanced decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
+                <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
 
-              {/* Action buttons */}
-              {tutorialPhase === tutorialMessages.length - 1 ? (
+                {/* Enhanced animated dialog text */}
+                <motion.div
+                  key={tutorialPhase}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-2xl sm:text-3xl lg:text-4xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 flex items-center font-serif font-medium leading-relaxed px-4"
+                >
+                  <span className="drop-shadow-lg">
+                    {tutorialMessages[tutorialPhase]}
+                  </span>
+                </motion.div>
+
+                {/* Enhanced progress indicators */}
+                <div className="flex justify-center gap-3 mb-8 lg:mb-10">
+                  {tutorialMessages.map((_, index) => (
+                    <motion.div
+                      key={index}
+                      className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+                        index <= tutorialPhase
+                          ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                          : "bg-white/30"
+                      }`}
+                      initial={{ scale: 0.8 }}
+                      animate={{
+                        scale: index === tutorialPhase ? 1.3 : 1,
+                        y: index === tutorialPhase ? -4 : 0,
+                      }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    />
+                  ))}
+                </div>
+
+                {/* Enhanced animated action button */}
                 <div className="flex justify-center">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      setShowTutorial(false);
-                      setIsTutorialComplete(true);
-                      setGameState("active");
-                    }}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:from-blue-600 hover:to-purple-600"
+                    onClick={
+                      tutorialPhase === tutorialMessages.length - 1
+                        ? () => {
+                            setShowTutorial(false);
+                            setIsTutorialComplete(true);
+                            setGameState("active");
+                          }
+                        : handleNextTutorialStep
+                    }
+                    className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
+                      tutorialPhase < tutorialMessages.length - 1
+                        ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
+                        : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
+                    }`}
                   >
-                    I'm Ready!
+                    {tutorialPhase < tutorialMessages.length - 1 ? (
+                      <>
+                        <span className="drop-shadow-sm">Next</span>
+                        <span className="drop-shadow-sm">➔</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="drop-shadow-sm">
+                          "🧭 Aye, I'm ready!"
+                        </span>
+                      </>
+                    )}
                   </motion.button>
                 </div>
-              ) : (
-                <div className="flex justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleNextTutorialStep}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:from-blue-600 hover:to-purple-600"
-                  >
-                    Next
-                  </motion.button>
-                </div>
-              )}
+              </motion.div>
             </motion.div>
           </div>
-        </div>
+        </>
       )}
       {/* Back button at left most end */}
       <Link
         to="/taketests"
-        className="absolute top-4 left-4 z-50 flex items-center gap-2 bg-white/80 hover:bg-white text-teal-800 font-medium py-2 px-4 rounded-full shadow-md transition-all"
+        className="absolute top-4 left-0 z-50 flex items-center gap-2 bg-white/80 hover:bg-white text-teal-800 font-medium py-2 px-4 rounded-full shadow-md transition-all"
       >
         <ChevronLeft className="h-5 w-5" />
         Back to Tests
@@ -903,21 +868,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
               </div>
               <ProgressBar progress={gameProgress} />
             </div>
-            {/* Timer Display */}
-            {isTutorialComplete && gameState === "active" && (
-              <div className="mb-4 flex items-center justify-center">
-                <div
-                  className={`text-2xl font-bold rounded-full p-4 w-24 h-24 flex items-center justify-center 
-      ${
-        timeRemaining <= 5
-          ? "text-red-600 bg-red-100"
-          : "text-teal-700 bg-teal-100"
-      }`}
-                >
-                  {timeRemaining}s
-                </div>
-              </div>
-            )}
+
             {/* Word Shell Grid - Now showing only the current batch */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8 place-items-center w-full max-w-8xl">
               {isTutorialComplete &&
@@ -925,9 +876,9 @@ function Test6({ suppressResultPage = false, onComplete }) {
                   <motion.div
                     key={shell.id}
                     className="relative flex items-center justify-center 
-             w-[18rem] h-[18rem] sm:w-[22rem] sm:h-[22rem] 
-             md:w-[26rem] md:h-[26rem] lg:w-[30rem] lg:h-[30rem] 
-             cursor-pointer"
+           w-[52rem] h-[52rem] sm:w-[32rem] sm:h-[32rem] 
+           md:w-[36rem] md:h-[36rem] lg:w-[44rem] lg:h-[44rem] 
+           cursor-pointer"
                     variants={shellVariants}
                     initial="hidden"
                     animate={shell.glowing ? "glowing" : "visible"}
@@ -940,7 +891,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     />
                     <span
                       className="absolute text-center 
-                  text-3xl md:text-5xl font-bold text-teal-900"
+                  text-2xl md:text-4xl font-bold text-teal-900"
                     >
                       {shell.word}
                     </span>
@@ -958,6 +909,26 @@ function Test6({ suppressResultPage = false, onComplete }) {
                   showEels={showEels}
                   largeSize={true} // Add this prop
                 />
+                {currentWordIndex + wordsPerBatch < currentWords.length && (
+                  <motion.button
+                    onClick={() => {
+                      const newIndex = currentWordIndex + wordsPerBatch;
+                      setCurrentWordIndex(newIndex);
+                      // Update progress based on how many words we've completed
+                      const progress = Math.min(
+                        100,
+                        (newIndex / currentWords.length) * 100
+                      );
+                      setGameProgress(progress);
+                    }}
+                    className="mt-2 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-700 to-cyan-500
+ text-white rounded-full shadow-lg"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Next Words <ChevronRight className="h-5 w-5" />
+                  </motion.button>
+                )}
                 <div className="flex flex-col md:flex-row gap-6 w-full sm:w-auto">
                   <FileUploadButton onFileUpload={handleFileUpload} t={t} />
                   <SubmitButton
