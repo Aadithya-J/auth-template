@@ -1,6 +1,23 @@
 {
-  "dependencies": {
-    "@lottiefiles/dotlottie-react": "^0.13.5",
-    "lottie-react": "^2.4.1"
+  "name": "jiveesha",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --raw -n FRONTEND,BACKEND -c cyan,green \"npm run dev --prefix Frontend\" \"cd Backend && npx nodemon server.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daira-Edtech/Jiveesha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daira-Edtech/Jiveesha/issues"
+  },
+  "homepage": "https://github.com/Daira-Edtech/Jiveesha#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

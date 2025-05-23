@@ -16,6 +16,7 @@ import soundBlendingRoutes from "./routes/soundBlendingRoute.js";
 import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
 import vocabularyRoutes from "./routes/vocabularyRoutes.js";
 import geminiInferenceRoutes from "./utils/geminiInference.js";
+import continuousAssessmentRoutes from "./routes/continuousAssessment.js";
 import { mkdirSync } from "fs";
 import { transcribeAudio } from "./controllers/speechController.js";
 
@@ -49,6 +50,7 @@ app.use("/api", soundBlendingRoutes);
 app.use("/api", symbolSequenceRoutes);
 app.use("/api/vocabulary", vocabularyRoutes);
 app.use("/api", geminiInferenceRoutes);
+app.use("/api", continuousAssessmentRoutes);
 
 // Multer memory storage for uploads
 const upload = multer({

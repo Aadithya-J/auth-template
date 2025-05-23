@@ -11,7 +11,11 @@ RUN npm run build
 FROM node:20-slim
 WORKDIR /app
 
-# RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+# Install ffmpeg CLI
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN addgroup --system appgroup \
     && adduser --system --ingroup appgroup --home /app --shell /bin/sh appuser
 
@@ -25,9 +29,6 @@ RUN mkdir -p /app/uploads \
     && chown -R appuser:appgroup /app \
     && chmod -R 755 /app \
     && chmod -R 777 /app/uploads
-
-RUN /app/node_modules/ffmpeg-static/ffmpeg -version > /dev/null 2>&1 \
-    || (echo "ffmpeg-static failed to run" && exit 1)
 
 USER appuser
 ENV HOME=/app
