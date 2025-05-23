@@ -3,8 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { backendURL } from "../../definedURL";
 import { useLanguage } from "../../contexts/LanguageContext";
-
+import { FaArrowLeft, FaChevronRight, FaCheck } from "react-icons/fa";
+import echoCharacter from "../../assets/symbol-sequence/Rune.png"; // Adjust path
+import backgroundImage from "../../assets/symbol-sequence/Mystical-Runescape.png"; // Adjust path
 // Fix for NodeJS.Timeout issue
+import { useNavigate } from "react-router-dom";
 type Timeout = ReturnType<typeof setTimeout>;
 
 const symbols = [
@@ -57,12 +60,169 @@ interface SymbolSequenceProps {
   student?: any;
 }
 
+const CharacterDialog = ({ onComplete, t }) => {
+  const [currentDialog, setCurrentDialog] = useState(0);
+  const dialog = [
+    "👋 Welcome to Rune Rock!",
+    "These floating stones are full of glowing runes.",
+    "Watch the runes light up in a special order.",
+    "Then, tap them in the same order to solve the puzzle.",
+    "Stay focused and have fun!",
+    "Are you ready?",
+  ];
+
+  const handleNext = () => {
+    if (currentDialog < dialog.length - 1) {
+      setCurrentDialog(currentDialog + 1);
+    } else {
+      onComplete();
+    }
+  };
+
+  return (
+    <>
+      {/* Blurred background with animated overlay */}
+      <div className="fixed inset-0 z-40">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(8px)",
+          }}
+        />
+        <motion.div
+          className="absolute inset-0 bg-black/20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        />
+      </div>
+
+      {/* Main content container */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, type: "spring" }}
+          className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
+        >
+          {/* Floating character on the left */}
+          <motion.div
+            initial={{ y: -40, opacity: 0 }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              scale: [1, 1.03, 1],
+              rotate: [0, 2, -2, 0],
+            }}
+            transition={{
+              y: { duration: 0.6, ease: "backOut" },
+              opacity: { duration: 0.8 },
+              scale: {
+                duration: 4,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              },
+              rotate: {
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
+            className="flex-shrink-0 order-2 lg:order-1"
+          >
+            <img
+              src={echoCharacter}
+              alt="Rune Keeper"
+              className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
+            />
+          </motion.div>
+
+          {/* Dialog box */}
+          <motion.div
+            className="bg-gradient-to-br from-blue-900/70 to-teal-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
+          >
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-500 to-teal-500"></div>
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-teal-400/20 rounded-full filter blur-xl"></div>
+
+            <motion.div
+              key={currentDialog}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4 }}
+              className="text-2xl sm:text-3xl lg:text-4xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+            >
+              <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
+            </motion.div>
+
+            {/* Progress indicators */}
+            <div className="flex justify-center gap-3 mb-8 lg:mb-10">
+              {dialog.map((_, index) => (
+                <motion.div
+                  key={index}
+                  className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+                    index <= currentDialog
+                      ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                      : "bg-white/30"
+                  }`}
+                  initial={{ scale: 0.8 }}
+                  animate={{
+                    scale: index === currentDialog ? 1.3 : 1,
+                    y: index === currentDialog ? -4 : 0,
+                  }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                />
+              ))}
+            </div>
+
+            {/* Action button */}
+            <div className="flex justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNext}
+                className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
+                  currentDialog < dialog.length - 1
+                    ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
+                    : "bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 text-white hover:from-blue-600 hover:via-purple-600 hover:to-teal-600 hover:shadow-purple-500/50"
+                }`}
+              >
+                {currentDialog < dialog.length - 1 ? (
+                  <>
+                    <span className="drop-shadow-sm">{t("next")}</span>
+                    <FaChevronRight className="mt-0.5 drop-shadow-sm" />
+                  </>
+                ) : (
+                  <>
+                    <span className="drop-shadow-sm">{t("imReady")}</span>
+                    <FaCheck className="mt-0.5 drop-shadow-sm" />
+                  </>
+                )}
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </>
+  );
+};
+
 const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   suppressResultPage = false,
   onComplete = null,
   student,
 }) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>("welcome");
   const [level, setLevel] = useState<number>(0);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
@@ -77,7 +237,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number>(-1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
+  const [showIntro, setShowIntro] = useState(true);
   // Save game state to localStorage whenever it changes
   useEffect(() => {
     if (gameState !== "welcome") {
@@ -354,7 +514,55 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   };
 
   return (
-    <div className="h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-white flex flex-col">
+    <div
+      className="fixed inset-0 overflow-y-auto"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {showIntro && (
+        <CharacterDialog
+          onComplete={() => {
+            setShowIntro(false);
+            setGameState("welcome");
+          }}
+          t={t}
+        />
+      )}
+
+      {/* Blurred background with animated overlay */}
+      {/* Back button */}
+      <motion.button
+        whileHover={{ scale: 1.05, x: -5 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => navigate("/taketests")}
+        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-blue-400 to-purple-500
+       text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-400"
+      >
+        <motion.span
+          animate={{ x: [-2, 0, -2] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-xl"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            className="w-6 h-6 text-white-400 drop-shadow-lg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </motion.span>
+        <span className="font-semibold">Back to Tests</span>
+      </motion.button>
       {confetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {Array.from({ length: 100 }).map((_, i) => (
@@ -391,43 +599,6 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
         </div>
       )}
 
-      <motion.header
-        className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white py-6 shadow-lg"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="container mx-auto px-4 text-center">
-          <motion.h1
-            className="text-4xl font-bold tracking-tight text-white drop-shadow-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.2 }}
-          >
-            {t("symbolSequenceTitle")}
-          </motion.h1>
-
-          {gameState !== "welcome" && gameState !== "gameOver" && (
-            <motion.div className="flex justify-center gap-10 mt-6 text-lg">
-              <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">{t("round")}:</span>
-                <span className="font-bold">{currentRound}/10</span>
-              </motion.div>
-              <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">{t("score")}:</span>
-                <span className="font-bold">{score}</span>
-              </motion.div>
-              <motion.div className="bg-gradient-to-r from-blue-600/30 to-blue-700/30 backdrop-blur-sm px-5 py-2 rounded-full shadow flex items-center gap-2">
-                <span className="text-blue-50">{t("level")}:</span>
-                <span className="font-bold">
-                  {t(difficultyLevels[level].name)}
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-        </div>
-      </motion.header>
-
       <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
           {gameState === "welcome" && (
@@ -448,17 +619,25 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {difficultyLevels.map((level, index) => (
                     <motion.button
-                      key={index}
                       onClick={() => startGame(index)}
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-5 px-6 rounded-xl shadow-md hover:shadow-xl relative overflow-hidden group"
+                      className="relative overflow-hidden group px-8 py-4 rounded-xl font-bold text-lg"
+                      style={{
+                        background: "linear-gradient(135deg, #2C003E, #6C757D)",
+                        border: "1px solid #8A2BE2",
+                      }}
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 0 15px rgba(138, 43, 226, 0.6)",
+                      }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      <span className="block text-xl font-medium relative z-10">
+                      <span className="relative z-10 text-white">
                         {t(level.name)}
                       </span>
-                      <span className="block text-sm opacity-90 mt-2 relative z-10">
-                        {level.sequenceLength}{" "}
-                        {t("symbolsToView", { time: level.timeToView / 1000 })}
-                      </span>
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100"
+                        transition={{ duration: 0.3 }}
+                      />
                     </motion.button>
                   ))}
                 </div>
@@ -478,7 +657,41 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                     key={index}
                     className="w-24 h-24 flex items-center justify-center text-5xl rounded-xl shadow-lg bg-white border-2 border-blue-200 text-blue-800"
                   >
-                    {symbol}
+                    <motion.div
+                      key={index}
+                      className="w-24 h-24 flex items-center justify-center text-5xl rounded-xl relative overflow-hidden"
+                      style={{
+                        background: "radial-gradient(circle, #2C003E, #6C757D)",
+                        border: "2px solid #00BFFF",
+                        boxShadow:
+                          showingIndex === index
+                            ? "0 0 20px rgba(0, 191, 255, 0.8)"
+                            : "0 0 10px rgba(0, 191, 255, 0.5)",
+                        color: "#FFD700",
+                        textShadow:
+                          showingIndex === index
+                            ? "0 0 15px rgba(255, 215, 0, 0.9)"
+                            : "0 0 8px rgba(255, 215, 0, 0.7)",
+                      }}
+                      animate={{
+                        scale: showingIndex === index ? [1, 1.1, 1] : 1,
+                        rotate: showingIndex === index ? [0, 5, -5, 0] : 0,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      {symbol}
+                      {showingIndex === index && (
+                        <motion.div
+                          className="absolute inset-0 bg-blue-400/20 rounded-xl"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0, 0.3, 0] }}
+                          transition={{ duration: 0.8 }}
+                        />
+                      )}
+                    </motion.div>
                   </div>
                 ))}
               </div>

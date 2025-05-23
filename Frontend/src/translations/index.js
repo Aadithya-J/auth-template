@@ -329,9 +329,9 @@ export const translations = {
     level: "Level:",
     remove: "Remove?",
     symbolSequenceAssessment: "Symbol Sequence Assessment",
-
+    backToTests: "Back to Tests",
     //Sequence Arrangement
-    checkAnswer:"Check Answer",
+    checkAnswer: "Check Answer",
     animalSequenceGame: "Animal Sequence Game",
     matchSequenceDescription:
       "Match the sequence first shown to the next one and test your memory.",
