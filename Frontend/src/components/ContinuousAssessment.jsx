@@ -168,6 +168,7 @@ export default function ContinuousAssessment() {
   const [loadingTest, setLoadingTest] = useState(false);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(900);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     try {
@@ -263,6 +264,51 @@ export default function ContinuousAssessment() {
       .toString()
       .padStart(2, "0")}`;
   };
+
+  const handleSubmitResults = async () => {
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const totalScore = results.reduce((sum, result) => sum + (Number(result.score) || 0), 0);
+      
+      const payload = {
+        child_id: student.id, // Assuming student object has an id field
+        results: results.map(result => ({
+          name: result.name,
+          score: result.score
+        })),
+        total_score: totalScore,
+        total_tests: results.length
+      };
+
+      const response = await fetch('http://localhost:3000/api/continuous-assessment/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message or redirect
+        alert('Results submitted successfully!');
+        // Optionally redirect to dashboard
+        // window.location.href = '/dashboard';
+      } else {
+        throw new Error(data.message || 'Failed to submit results');
+      }
+    } catch (error) {
+      console.error('Error submitting results:', error);
+      alert('Failed to submit results. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
 
   if (loadingStudent) {
     return (
@@ -605,20 +651,78 @@ export default function ContinuousAssessment() {
             </p>
           </motion.div>
 
-          <motion.button
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 10px 15px -3px rgba(59, 130, 246, 0.3)",
-            }}
-            whileTap={{ scale: 0.98 }}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            onClick={() => setShowFinalMessage(false)}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-md hover:shadow-lg transition font-semibold text-lg"
-          >
-            View Results
-          </motion.button>
+          {/* Results Summary */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">
+              Test Results:
+            </h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              {results.map((result, index) => (
+                <div key={index} className={`p-4 rounded-xl ${result.color}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">{result.icon}</span>
+                      <span className="font-medium">{result.name}</span>
+                    </div>
+                    <span className="text-lg font-bold">{result.score}/10</span>
+                  </div>
+                  <div className="mt-2 bg-white bg-opacity-50 rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full bg-gradient-to-r ${result.gradientFrom} ${result.gradientTo}`}
+                      style={{ width: `${result.score * 10}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Total Score */}
+          <div className="text-center mb-8">
+            <div className="inline-block bg-gradient-to-r from-green-400 to-emerald-600 text-white rounded-2xl px-8 py-4">
+              <div className="text-lg font-medium">Total Score</div>
+              <div className="text-3xl font-bold">
+                {results.reduce(
+                  (sum, result) => sum + (Number(result.score) || 0),
+                  0
+                )}
+                /{results.length * 10}
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center space-x-4">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleSubmitResults}
+              disabled={isSubmitting}
+              className={`px-8 py-3 rounded-xl font-semibold text-white shadow-lg transition-all duration-300 ${
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-600 to-blue-800 hover:shadow-xl"
+              }`}
+            >
+              {isSubmitting ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Submitting...</span>
+                </div>
+              ) : (
+                "Submit Results"
+              )}
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => window.history.back()}
+              className="px-8 py-3 bg-gray-200 text-gray-800 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300"
+            >
+              Back to Dashboard
+            </motion.button>
+          </div>
         </motion.div>
       </div>
     );

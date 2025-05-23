@@ -25,10 +25,11 @@ const TestResultsTable = () => {
   const [soundBlendingTestData, setSoundBlendingTestData] = useState([]);
   const [symbolSequenceTestData, setSymbolSequenceTestData] = useState([]);
   const [vocalTestData, setVocalTestData] = useState([]);
+  const [continuousAssessmentData, setContinuousAssessmentData] = useState([]);
   const [selectedTest, setSelectedTest] = useState(null);
   const [showReportPopup, setShowReportPopup] = useState(false);
   const [userDetails, setUserDetails] = useState({});
-  const [showCumulativeReport, setShowCumulativeReport] = useState(false);
+  const [showCumulativeReport, setShowCumulativeReport] = useState(false); // This state will determine if the popup shows a cumulative-style view
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
   const { t } = useLanguage();
@@ -146,7 +147,7 @@ const TestResultsTable = () => {
         );
         setSequenceTestData(response.data.tests);
       } catch (error) {
-        console.error("Error fetching picture test data:", error);
+        console.error("Error fetching sequence test data:", error);
       }
     };
 
@@ -161,7 +162,7 @@ const TestResultsTable = () => {
         );
         setSoundBlendingTestData(response.data.tests);
       } catch (error) {
-        console.error("Error fetching picture test data:", error);
+        console.error("Error fetching sound blending test data:", error);
       }
     };
 
@@ -176,7 +177,7 @@ const TestResultsTable = () => {
         );
         setSymbolSequenceTestData(response.data.tests);
       } catch (error) {
-        console.error("Error fetching picture test data:", error);
+        console.error("Error fetching symbol sequence test data:", error);
       }
     };
 
@@ -194,6 +195,23 @@ const TestResultsTable = () => {
         console.error("Error fetching vocal test data:", error);
       }
     };
+
+    const fetchContinuousAssessmentData = async () => {
+      if (!childId || !tokenId) return;
+      try {
+        const response = await axios.get(
+          `${backendURL}/continuous-assessment/getByChildId/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        // console.log("Continuous Assessment Data:", response.data);
+        setContinuousAssessmentData(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching continuous assessment data:", error);
+      }
+    };
+
     fetchData();
     fetchVisualTestData();
     fetchSoundTestData();
@@ -204,6 +222,7 @@ const TestResultsTable = () => {
     fetchSoundBlendingTestData();
     fetchSymbolSequenceTestData();
     fetchVocalTestData();
+    fetchContinuousAssessmentData();
   }, [childId, tokenId]);
 
   useEffect(() => {
@@ -237,17 +256,32 @@ const TestResultsTable = () => {
   };
 
   const handleViewReport = (test) => {
-    setSelectedTest(test);
+    if (test.type === "continuous") {
+      // For continuous assessment, prepare it to be viewed like a cumulative report
+      // The 'test.results' array (sub-tests) will be used by TestReportPopup as 'allTests'
+      setSelectedTest({
+        ...test, // Spread the original continuous assessment test object
+        test_name: test.test_name || "Continuous Assessment Details",
+        allTests: test.test_results, // Changed from test.results to test.test_results
+        is_cumulative: true, // Flag to indicate cumulative-like display
+        // Ensure other necessary fields like created_at are present from 'test'
+      });
+      setShowCumulativeReport(true); // Trigger cumulative view in popup
+    } else {
+      // For other individual tests
+      setSelectedTest(test);
+      setShowCumulativeReport(false);
+    }
     setShowReportPopup(true);
-    setShowCumulativeReport(false);
   };
 
   const handleViewCumulativeReport = () => {
+    // This is for the main, overall cumulative report
     setSelectedTest({
       test_name: "Cumulative Assessment Report",
       created_at: new Date().toISOString(),
       is_cumulative: true,
-      allTests,
+      allTests: allTests, // Pass the grand list of all tests
     });
     setShowCumulativeReport(true);
     setShowReportPopup(true);
@@ -255,6 +289,8 @@ const TestResultsTable = () => {
 
   const closeReportPopup = () => {
     setShowReportPopup(false);
+    // Optionally reset showCumulativeReport if it's exclusively tied to the popup's state
+    // setShowCumulativeReport(false); 
   };
 
   const allTests = [
@@ -274,7 +310,14 @@ const TestResultsTable = () => {
       type: "symbol",
     })),
     ...vocalTestData.map((test) => ({ ...test, type: "vocabulary" })),
+    ...continuousAssessmentData.map((test) => ({
+      ...test,
+      type: "continuous",
+      test_name: "Continuous Assessment",
+      score: test.total_score, 
+    })),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
 
   return (
     <div className="h-screen flex flex-col  h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
@@ -422,15 +465,18 @@ const TestResultsTable = () => {
                     const { datePart, timePart } = formatDateTime(
                       test.created_at
                     );
+                    // For continuous assessment, 'score' is its total_score.
+                    // 'test.results' holds the sub-scores if needed for display elsewhere.
+                    const displayName = test.test_name === "Schonell Test"
+                            ? "Reading Proficiency Test"
+                            : test.test_name;
                     return (
                       <tr
-                        key={`${test.type}-${index}`}
+                        key={`${test.type}-${test.id || test._id || index}`} // Modified key for robustness
                         className="hover:bg-blue-50 transition-colors duration-200"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-blue-800 font-medium">
-                          {test.test_name === "Schonell Test"
-                            ? "Reading Proficiency Test"
-                            : test.test_name}
+                          {displayName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-blue-700">
                           {datePart}
@@ -439,7 +485,8 @@ const TestResultsTable = () => {
                           {timePart}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {test.score}
+                          {/* Display total_score for continuous assessment, or score for others */}
+                          {test.score !== undefined ? test.score : (test.total_score !== undefined ? test.total_score : 'N/A')}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
@@ -472,10 +519,10 @@ const TestResultsTable = () => {
       {/* Report Popup */}
       {showReportPopup && selectedTest && (
         <TestReportPopup
-          test={selectedTest}
+          test={selectedTest} // selectedTest will have 'allTests' (sub-tests) and 'is_cumulative: true' for continuous assessments
           childDetails={{ ...childDetails, id: childId }}
           onClose={closeReportPopup}
-          isCumulative={showCumulativeReport}
+          isCumulative={showCumulativeReport} // This prop tells the popup to use the cumulative/detailed view
         />
       )}
     </div>
