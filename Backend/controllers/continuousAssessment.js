@@ -105,7 +105,7 @@ Do NOT use bullet points. Maintain a professional clinical tone throughout.`;
         total_score: total_score,
         created_at: new Date().toISOString(),
         test_results: formattedTestResults,
-        analysis_results: analysis_results
+        analysis: analysis_results
       })
       .select()
       .single();

@@ -208,7 +208,7 @@ const ContinuousAssessmentDetailPopup = ({
                 <>
                   <div className="bg-white p-3 rounded border border-blue-200">
                     <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                      {assessment.analysis_results || t("Analysis not available for this assessment.")}
+                      {assessment.analysis || t("Analysis not available for this assessment.")}
                     </p>
                   </div>
                   <p className="text-xs mt-2 text-gray-600 italic">
