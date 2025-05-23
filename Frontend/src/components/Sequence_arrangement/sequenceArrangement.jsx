@@ -265,154 +265,151 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
     }
   };
 
-  const CharacterDialog = () => (
-    <>
-      {/* Blurred background with animated overlay */}
-      <div className="fixed inset-0 z-40">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            filter: "blur(8px)",
-          }}
-        />
-        <motion.div
-          className="absolute inset-0 bg-black/20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        />
-      </div>
-
-      {/* Main content container */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, type: "spring" }}
-          className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
-        >
-          {/* Floating character on the left */}
-          <motion.div
-            initial={{ y: -40, opacity: 0 }}
-            animate={{
-              y: 0,
-              opacity: 1,
-              scale: [1, 1.03, 1],
-              rotate: [0, 2, -2, 0],
-            }}
-            transition={{
-              y: { duration: 0.6, ease: "backOut" },
-              opacity: { duration: 0.8 },
-              scale: {
-                duration: 4,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              },
-              rotate: {
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-            }}
-            className="flex-shrink-0 order-2 lg:order-1"
-          >
-            <img
-              src={captainCharacter}
-              alt="Captain Clockjaw"
-              className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
-            />
-          </motion.div>
-
-          {/* Enhanced glass-morphism dialog box */}
-          <motion.div
-            className="bg-gradient-to-br from-amber-900/70 to-yellow-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, type: "spring" }}
-          >
-            {/* Enhanced decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500"></div>
-            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-amber-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-yellow-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute top-1/2 right-8 w-24 h-24 bg-orange-400/10 rounded-full filter blur-lg"></div>
-            <div className="absolute bottom-8 left-8 w-32 h-32 bg-yellow-400/10 rounded-full filter blur-lg"></div>
-
-            {/* Enhanced animated dialog text */}
-            <motion.div
-              key={currentDialog}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.4 }}
-              className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
-            >
-              <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
-            </motion.div>
-
-            {/* Enhanced progress indicators */}
-            <div className="flex justify-center gap-3 mb-8 lg:mb-10">
-              {dialog.map((_, index) => (
-                <motion.div
-                  key={index}
-                  className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
-                    index <= currentDialog
-                      ? "bg-gradient-to-r from-white to-amber-200 shadow-lg"
-                      : "bg-white/30"
-                  }`}
-                  initial={{ scale: 0.8 }}
-                  animate={{
-                    scale: index === currentDialog ? 1.3 : 1,
-                    y: index === currentDialog ? -4 : 0,
-                  }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                />
-              ))}
-            </div>
-
-            {/* Enhanced animated action button */}
-            <div className="flex justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleNextDialog}
-                className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
-                  currentDialog < dialog.length - 1
-                    ? "bg-gradient-to-r from-white to-amber-100 text-amber-900 hover:from-amber-50 hover:to-amber-200 hover:shadow-amber-200/50"
-                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white hover:from-amber-600 hover:via-orange-600 hover:to-yellow-600 hover:shadow-orange-500/50"
-                }`}
-              >
-                {currentDialog < dialog.length - 1 ? (
-                  <>
-                    <span className="drop-shadow-sm">Continue</span>
-                    <span className="text-xl">⏳</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="drop-shadow-sm">Let's Begin!</span>
-                    <span className="text-xl">🦀</span>
-                  </>
-                )}
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </>
-  );
-
-  if (gameState === "welcome") {
-    return <CharacterDialog />;
-  }
-
   return (
     <div
       className="fixed inset-0 overflow-y-auto bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      {gameState === "welcome" && (
+        <>
+          {/* Blurred background with animated overlay */}
+          <div className="fixed inset-0 z-40">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                filter: "blur(8px)",
+              }}
+            />
+            <motion.div
+              className="absolute inset-0 bg-black/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+
+          {/* Main content container */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, type: "spring" }}
+              className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
+            >
+              {/* Floating character on the left */}
+              <motion.div
+                initial={{ y: -40, opacity: 0 }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  scale: [1, 1.03, 1],
+                  rotate: [0, 2, -2, 0],
+                }}
+                transition={{
+                  y: { duration: 0.6, ease: "backOut" },
+                  opacity: { duration: 0.8 },
+                  scale: {
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut",
+                  },
+                  rotate: {
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="flex-shrink-0 order-2 lg:order-1"
+              >
+                <img
+                  src={captainCharacter}
+                  alt="Captain Clockjaw"
+                  className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
+                />
+              </motion.div>
+
+              {/* Enhanced glass-morphism dialog box */}
+              <motion.div
+                className="bg-gradient-to-br from-amber-900/70 to-yellow-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, type: "spring" }}
+              >
+                {/* Enhanced decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-amber-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-yellow-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute top-1/2 right-8 w-24 h-24 bg-orange-400/10 rounded-full filter blur-lg"></div>
+                <div className="absolute bottom-8 left-8 w-32 h-32 bg-yellow-400/10 rounded-full filter blur-lg"></div>
+
+                {/* Enhanced animated dialog text */}
+                <motion.div
+                  key={currentDialog}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+                >
+                  <span className="drop-shadow-lg">
+                    {dialog[currentDialog]}
+                  </span>
+                </motion.div>
+
+                {/* Enhanced progress indicators */}
+                <div className="flex justify-center gap-3 mb-8 lg:mb-10">
+                  {dialog.map((_, index) => (
+                    <motion.div
+                      key={index}
+                      className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+                        index <= currentDialog
+                          ? "bg-gradient-to-r from-white to-amber-200 shadow-lg"
+                          : "bg-white/30"
+                      }`}
+                      initial={{ scale: 0.8 }}
+                      animate={{
+                        scale: index === currentDialog ? 1.3 : 1,
+                        y: index === currentDialog ? -4 : 0,
+                      }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    />
+                  ))}
+                </div>
+
+                {/* Enhanced animated action button */}
+                <div className="flex justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNextDialog}
+                    className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
+                      currentDialog < dialog.length - 1
+                        ? "bg-gradient-to-r from-white to-amber-100 text-amber-900 hover:from-amber-50 hover:to-amber-200 hover:shadow-amber-200/50"
+                        : "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white hover:from-amber-600 hover:via-orange-600 hover:to-yellow-600 hover:shadow-orange-500/50"
+                    }`}
+                  >
+                    {currentDialog < dialog.length - 1 ? (
+                      <>
+                        <span className="drop-shadow-sm">Continue</span>
+                        <span className="text-xl">⏳</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="drop-shadow-sm">Let's Begin!</span>
+                        <span className="text-xl">🦀</span>
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </>
+      )}
       {/* Info Dialog */}
       {showInfoDialog && (
         <motion.div
