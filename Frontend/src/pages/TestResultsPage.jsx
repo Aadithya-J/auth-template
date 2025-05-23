@@ -1,17 +1,17 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import TestReportPopup from "../components/TestReportPopup"; // Existing popup
+import ContinuousAssessmentDetailPopup from "../components/ContinuousAssessmentDetailPopup"; // New popup
+import { useLanguage } from "../contexts/LanguageContext";
 import {
   FaCalendarAlt,
   FaChartLine,
   FaEnvelope,
-  FaFileAlt,
   FaIdCard,
   FaPhone,
   FaUser,
 } from "react-icons/fa";
-import TestReportPopup from "../components/TestReportPopup";
-import { backendURL } from "../definedURL.js";
-import { useLanguage } from "../contexts/LanguageContext";
+import { backendURL } from "../definedURL";
 
 const TestResultsTable = () => {
   const [data, setData] = useState([]);
@@ -26,10 +26,21 @@ const TestResultsTable = () => {
   const [symbolSequenceTestData, setSymbolSequenceTestData] = useState([]);
   const [vocalTestData, setVocalTestData] = useState([]);
   const [continuousAssessmentData, setContinuousAssessmentData] = useState([]);
-  const [selectedTest, setSelectedTest] = useState(null);
+
+  const [selectedTestForReport, setSelectedTestForReport] = useState(null); // For TestReportPopup
   const [showReportPopup, setShowReportPopup] = useState(false);
+
+  const [
+    selectedContinuousAssessment,
+    setSelectedContinuousAssessment,
+  ] = useState(null); // For new popup
+  const [
+    showContinuousDetailPopup,
+    setShowContinuousDetailPopup,
+  ] = useState(false);
+
   const [userDetails, setUserDetails] = useState({});
-  const [showCumulativeReport, setShowCumulativeReport] = useState(false); // This state will determine if the popup shows a cumulative-style view
+  const [showCumulativeReport, setShowCumulativeReport] = useState(false); // For TestReportPopup's cumulative view
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
   const { t } = useLanguage();
@@ -229,95 +240,138 @@ const TestResultsTable = () => {
     const fetchChildDetails = async () => {
       if (!childId || !tokenId) return;
       try {
-        const response = await axios.get(`${backendURL}/getChild/${childId}`, {
-          headers: { authorization: `Bearer ${tokenId} ` },
-        });
-        setChildDetails(response.data.child);
+        const response = await axios.get(
+          `${backendURL}/child/getChild/${childId}`,
+          {
+            headers: { authorization: `Bearer ${tokenId}` },
+          }
+        );
+        setChildDetails(response.data.data);
       } catch (error) {
         console.error("Error fetching child details:", error);
       }
     };
 
     fetchChildDetails();
-  }, [childId, tokenId]);
+  }, [childId, tokenId, backendURL]);
 
   const formatDateTime = (dateString) => {
+    if (!dateString) return { datePart: "N/A", timePart: "N/A" };
     const date = new Date(dateString);
-    if (!isNaN(date)) {
-      return {
-        datePart: date.toLocaleDateString(),
-        timePart: date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-    }
-    return { datePart: "Invalid Date", timePart: "Invalid Time" };
+    const datePart = date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const timePart = date.toLocaleTimeString(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return { datePart, timePart };
   };
 
   const handleViewReport = (test) => {
     if (test.type === "continuous") {
-      // For continuous assessment, prepare it to be viewed like a cumulative report
-      // The 'test.results' array (sub-tests) will be used by TestReportPopup as 'allTests'
-      setSelectedTest({
-        ...test, // Spread the original continuous assessment test object
-        test_name: test.test_name || "Continuous Assessment Details",
-        allTests: test.test_results, // Changed from test.results to test.test_results
-        is_cumulative: true, // Flag to indicate cumulative-like display
-        // Ensure other necessary fields like created_at are present from 'test'
-      });
-      setShowCumulativeReport(true); // Trigger cumulative view in popup
+      setSelectedContinuousAssessment(test); // test object already has test_results, total_score etc.
+      setShowContinuousDetailPopup(true);
+      setShowReportPopup(false); // Ensure other popup is closed
+      setShowCumulativeReport(false);
     } else {
-      // For other individual tests
-      setSelectedTest(test);
+      // For other individual tests, use the existing TestReportPopup
+      setSelectedTestForReport({
+        ...test,
+        report_view_type: "single_test_detail",
+      });
+      setShowReportPopup(true);
+      setShowContinuousDetailPopup(false); // Ensure other popup is closed
       setShowCumulativeReport(false);
     }
-    setShowReportPopup(true);
   };
 
   const handleViewCumulativeReport = () => {
-    // This is for the main, overall cumulative report
-    setSelectedTest({
+    // This is for the main, overall cumulative report using TestReportPopup
+    setSelectedTestForReport({
       test_name: "Cumulative Assessment Report",
       created_at: new Date().toISOString(),
-      is_cumulative: true,
+      report_view_type: "main_cumulative",
       allTests: allTests, // Pass the grand list of all tests
     });
-    setShowCumulativeReport(true);
+    setShowCumulativeReport(true); // This flag is used by TestReportPopup for its 'isCumulative' prop
     setShowReportPopup(true);
+    setShowContinuousDetailPopup(false); // Ensure other popup is closed
   };
 
   const closeReportPopup = () => {
     setShowReportPopup(false);
-    // Optionally reset showCumulativeReport if it's exclusively tied to the popup's state
-    // setShowCumulativeReport(false); 
+    setSelectedTestForReport(null);
+    setShowCumulativeReport(false); // Reset this flag as well
+  };
+
+  const closeContinuousDetailPopup = () => {
+    setShowContinuousDetailPopup(false);
+    setSelectedContinuousAssessment(null);
   };
 
   const allTests = [
-    ...data.map((test) => ({ ...test, type: "reading" })),
-    ...visualTestData.map((test) => ({ ...test, type: "visual" })),
-    ...soundTestData.map((test) => ({ ...test, type: "sound" })),
-    ...auditoryTestData.map((test) => ({ ...test, type: "auditory" })),
-    ...graphemeTestData.map((test) => ({ ...test, type: "grapheme" })),
-    ...pictureTestData.map((test) => ({ ...test, type: "picture" })),
-    ...sequenceTestData.map((test) => ({ ...test, type: "sequence" })),
+    ...data.map((test) => ({
+      ...test,
+      type: "reading",
+      test_name: test.test_name || "Reading Proficiency Test",
+    })),
+    ...visualTestData.map((test) => ({
+      ...test,
+      type: "visual",
+      test_name: test.test_name || "Visual Discrimination",
+    })),
+    ...soundTestData.map((test) => ({
+      ...test,
+      type: "sound",
+      test_name: test.test_name || "Sound Discrimination",
+    })),
+    ...auditoryTestData.map((test) => ({
+      ...test,
+      type: "auditory",
+      test_name: test.test_name || "Auditory Memory",
+    })),
+    ...graphemeTestData.map((test) => ({
+      ...test,
+      type: "grapheme",
+      test_name: test.test_name || "Grapheme Matching",
+    })),
+    ...pictureTestData.map((test) => ({
+      ...test,
+      type: "picture",
+      test_name: test.test_name || "Picture Recognition",
+    })),
+    ...sequenceTestData.map((test) => ({
+      ...test,
+      type: "sequence",
+      test_name: test.test_name || "Sequence Arrangement",
+    })),
     ...soundBlendingTestData.map((test) => ({
       ...test,
       type: "soundBlending",
+      test_name: test.test_name || "Sound Blending",
     })),
     ...symbolSequenceTestData.map((test) => ({
       ...test,
       type: "symbol",
+      test_name: test.test_name || "Symbol Sequence",
     })),
-    ...vocalTestData.map((test) => ({ ...test, type: "vocabulary" })),
-    ...continuousAssessmentData.map((test) => ({
+    ...vocalTestData.map((test) => ({
       ...test,
-      type: "continuous",
-      test_name: "Continuous Assessment",
-      score: test.total_score, 
+      type: "vocabulary",
+      test_name: test.test_name || "Vocabulary Scale Test",
     })),
+    ...(Array.isArray(continuousAssessmentData)
+      ? continuousAssessmentData.map((test) => ({
+          ...test, // This includes 'id', 'created_at', 'child_id', 'test_results', 'total_score'
+          type: "continuous",
+          test_name: "Continuous Assessment", // Name for the table
+          score: test.total_score, // Score for the table (overall score of the continuous assessment)
+        }))
+      : []),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
 
   return (
     <div className="h-screen flex flex-col  h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
@@ -350,7 +404,7 @@ const TestResultsTable = () => {
                   {userDetails.role && (
                     <div className="flex items-center">
                       <FaIdCard className="mr-2" />
-                      <span className="font-medium">{t('role')}</span>
+                      <span className="font-medium">{t("role")}</span>
                       <span className="ml-2 bg-blue-700 px-2 py-0.5 rounded text-sm">
                         {userDetails.role}
                       </span>
@@ -372,7 +426,7 @@ const TestResultsTable = () => {
                     <div className="flex items-center">
                       <FaCalendarAlt className="mr-2" />
                       <span>
-                        {t('memberSince')}{" "}
+                        {t("memberSince")}{" "}
                         {new Date(userDetails.since).toLocaleDateString()}
                       </span>
                     </div>
@@ -382,25 +436,25 @@ const TestResultsTable = () => {
                 {/* Student Info Banner */}
                 <div className="mt-4 flex flex-col md:flex-row gap-4 md:gap-8 bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
-                    <span className="text-blue-100">{t('viewingResultsFor')}</span>
+                    <span className="text-blue-100">{t("viewingResultsFor")}</span>
                     <span className="ml-2 font-semibold">
                       {childDetails.name || "Student"}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">{t('studentId')}</span>
+                    <span className="text-blue-100">{t("studentId")}</span>
                     <span className="ml-2 font-semibold">
                       {childId || "N/A"}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">{t('studentAge')}</span>
+                    <span className="text-blue-100">{t("studentAge")}</span>
                     <span className="ml-2 font-semibold">
-                      {childDetails.age || "N/A"} {t('years')}
+                      {childDetails.age || "N/A"} {t("years")}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-100">{t('testsCount')}</span>
+                    <span className="text-blue-100">{t("testsCount")}</span>
                     <span className="ml-2 font-semibold">
                       {allTests.length}
                     </span>
@@ -415,7 +469,9 @@ const TestResultsTable = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="px-6 py-4 border-b border-blue-100 bg-blue-50 flex flex-col md:flex-row justify-between items-center gap-3">
             <div className="flex items-center">
-              <h2 className="font-semibold text-blue-700">{t('allTestResults')}</h2>
+              <h2 className="font-semibold text-blue-700">
+                {t("allTestResults")}
+              </h2>
               <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
                 {allTests.length}
               </span>
@@ -429,9 +485,9 @@ const TestResultsTable = () => {
               >
                 <FaChartLine className="text-blue-200" />
                 <div className="flex flex-col items-start">
-                  <span className="font-medium">{t('cumulativeReport')}</span>
+                  <span className="font-medium">{t("cumulativeReport")}</span>
                   <span className="text-xs text-blue-200">
-                    {t('viewComprehensiveAssessment')}
+                    {t("viewComprehensiveAssessment")}
                   </span>
                 </div>
               </button>
@@ -440,22 +496,22 @@ const TestResultsTable = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-blue-100">
+              <thead className="bg-blue-600">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    {t('testName')}
+                  <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    {t("testName")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    {t('date')}
+                  <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    {t("dateTaken")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    {t('time')}
+                  <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    {t("timeTaken")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    {t('score')}
+                  <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    {t("score")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
-                    {t('report')}
+                  <th className="px-6 py-3 text-center text-xs font-bold text-white uppercase tracking-wider">
+                    {t("actions")}
                   </th>
                 </tr>
               </thead>
@@ -465,36 +521,37 @@ const TestResultsTable = () => {
                     const { datePart, timePart } = formatDateTime(
                       test.created_at
                     );
-                    // For continuous assessment, 'score' is its total_score.
-                    // 'test.results' holds the sub-scores if needed for display elsewhere.
-                    const displayName = test.test_name === "Schonell Test"
-                            ? "Reading Proficiency Test"
-                            : test.test_name;
+                    const displayName =
+                      test.test_name === "Schonell Test"
+                        ? "Reading Proficiency Test"
+                        : t(test.test_name) || test.test_name; // Apply translation here
                     return (
                       <tr
-                        key={`${test.type}-${test.id || test._id || index}`} // Modified key for robustness
+                        key={`${test.type}-${test.id || test._id || index}`}
                         className="hover:bg-blue-50 transition-colors duration-200"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-blue-800 font-medium">
                           {displayName}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-blue-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                           {datePart}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-blue-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                           {timePart}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {/* Display total_score for continuous assessment, or score for others */}
-                          {test.score !== undefined ? test.score : (test.total_score !== undefined ? test.total_score : 'N/A')}
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                          {test.score !== undefined
+                            ? test.score
+                            : test.total_score !== undefined
+                            ? test.total_score
+                            : "N/A"}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
                           <button
                             onClick={() => handleViewReport(test)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors duration-150 flex items-center"
+                            className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors duration-200"
                           >
-                            <FaFileAlt className="mr-1" size={12} />
-                            {t('viewReport')}
+                            {t("viewReport")}
                           </button>
                         </td>
                       </tr>
@@ -504,9 +561,9 @@ const TestResultsTable = () => {
                   <tr>
                     <td
                       colSpan="5"
-                      className="px-6 py-4 text-center text-blue-600"
+                      className="px-6 py-10 text-center text-gray-500"
                     >
-                      {t('noTestResultsFound')}
+                      {t("noTestResultsFound")}
                     </td>
                   </tr>
                 )}
@@ -516,13 +573,21 @@ const TestResultsTable = () => {
         </div>
       </div>
 
-      {/* Report Popup */}
-      {showReportPopup && selectedTest && (
+      {/* Conditional rendering for popups */}
+      {showReportPopup && selectedTestForReport && (
         <TestReportPopup
-          test={selectedTest} // selectedTest will have 'allTests' (sub-tests) and 'is_cumulative: true' for continuous assessments
+          test={selectedTestForReport}
           childDetails={{ ...childDetails, id: childId }}
           onClose={closeReportPopup}
-          isCumulative={showCumulativeReport} // This prop tells the popup to use the cumulative/detailed view
+          isCumulative={showCumulativeReport} // This controls if TestReportPopup shows cumulative view
+        />
+      )}
+
+      {showContinuousDetailPopup && selectedContinuousAssessment && (
+        <ContinuousAssessmentDetailPopup
+          assessment={selectedContinuousAssessment}
+          childDetails={{ ...childDetails, id: childId }}
+          onClose={closeContinuousDetailPopup}
         />
       )}
     </div>
