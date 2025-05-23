@@ -1,4 +1,20 @@
 import supabase from "../utils/supabaseClient.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+import { readFile } from "fs/promises";
+
+dotenv.config();
+
+// Load test metadata
+let testMetaData = {};
+try {
+  const data = await readFile("./Data/testMetaData.json", "utf-8");
+  testMetaData = JSON.parse(data);
+} catch (err) {
+  console.error("Failed to load testMetaData.json:", err);
+}
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Submit continuous assessment results
 export async function submitResults(req, res) {
@@ -18,38 +34,78 @@ export async function submitResults(req, res) {
       });
     }
 
-    // Validate results format
-    const validResults = results.every(result =>
-      typeof result.name === 'string' &&
-      typeof result.score === 'number' &&
-      result.score >= 0 &&
-      result.score <= 10 // Assuming max score is 10
-    );
-
-    if (!validResults) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid results format. Each result must have name (string) and score (number 0-10)"
-      });
-    }
-
-    // Prepare the test_results array to be embedded
-    // No assessment_id is needed here if it's part of the same record
     const formattedTestResults = results.map(result => ({
       test_name: result.name,
       score: result.score,
-      // You might want a timestamp for each individual test result if needed
-      // submitted_at: new Date().toISOString() 
     }));
 
-    // Insert main assessment record with embedded test results
+    // Generate analysis using Gemini
+    let analysis_results = "Analysis not available.";
+    try {
+      // Get child's age
+      const { data: childData, error: childError } = await supabase
+        .from("children")
+        .select("age")
+        .eq("id", child_id)
+        .single();
+
+      if (!childError && childData) {
+        const age = childData.age;
+        
+        const prompt = `
+Analyze these test results for a ${age}-year-old child and provide a CONCISE clinical assessment.
+
+### Test Results:
+${formattedTestResults
+  .map((test) => {
+    const meta = testMetaData[test.test_name];
+    const score = test.score;
+
+    let performanceMessage = "Performance unclear due to missing data.";
+
+    if (score !== null && score !== undefined && meta && meta.scoreRange) {
+      const { strong, difficulty } = meta.scoreRange;
+      if (score >= strong[0] && score <= strong[1]) {
+        performanceMessage = meta.strongMessage || "Strong performance.";
+      } else if (difficulty && score >= difficulty[0] && score <= difficulty[1]) {
+        performanceMessage = meta.description || "Area of difficulty.";
+      } else {
+        performanceMessage = "Score outside typical ranges.";
+      }
+    }
+
+    return `- ${test.test_name}: Score ${score ?? "N/A"}, ${performanceMessage}`;
+  })
+  .join("\n")}
+
+### Instructions:
+Write ONE PARAGRAPH (5-6 lines maximum) that:
+1. Integrates all test results into a cohesive clinical assessment
+2. Highlights key strengths and potential concerns based on age-appropriate norms
+3. Uses professional clinical language while remaining concise
+4. Provides actionable insights for next steps or focus areas
+
+Do NOT use bullet points. Maintain a professional clinical tone throughout.`;
+        // console.log("Prompt for Gemini:", prompt);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent({
+          contents: [{ parts: [{ text: prompt }] }],
+        });
+
+        analysis_results = result.response.text();
+      }
+    } catch (inferenceError) {
+      console.error('Error generating analysis:', inferenceError);
+    }
+
     const { data: assessmentData, error: assessmentError } = await supabase
       .from('continuous_assessments')
       .insert({
         child_id: child_id,
         total_score: total_score,
         created_at: new Date().toISOString(),
-        test_results: formattedTestResults // Store the array directly
+        test_results: formattedTestResults,
+        analysis_results: analysis_results
       })
       .select()
       .single();
@@ -71,7 +127,8 @@ export async function submitResults(req, res) {
         child_id: child_id,
         total_score: total_score,
         results_count: assessmentData.test_results ? assessmentData.test_results.length : 0,
-        submitted_at: assessmentData.created_at
+        submitted_at: assessmentData.created_at,
+        analysis_results: analysis_results
       }
     });
 

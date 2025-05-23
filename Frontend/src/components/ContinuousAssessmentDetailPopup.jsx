@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"; // Import useState and useEffect
-import axios from "axios"; // Import axios
 import logo from "../assets/daira-logo.png"; // Adjust path if necessary
 import { useLanguage } from "../contexts/LanguageContext"; // Assuming you have this for 't'
 import { backendURL } from "../definedURL"; // Adjust path if necessary
@@ -11,52 +10,17 @@ const ContinuousAssessmentDetailPopup = ({
   onClose,
 }) => {
   const { t } = useLanguage();
-  const [analysis, setAnalysis] = useState("");
-  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
-  const tokenId = localStorage.getItem("access_token");
+  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
   const childId = childDetails?.id || localStorage.getItem("childId");
 
   useEffect(() => {
-    const generateContinuousAnalysis = async () => {
-      // Add these console logs for debugging
-      console.log("ContinuousAnalysis - assessment:", assessment);
-      console.log("ContinuousAnalysis - assessment.test_results:", assessment?.test_results);
-      console.log("ContinuousAnalysis - childId:", childId);
-      console.log("ContinuousAnalysis - tokenId:", tokenId);
-      console.log("ContinuousAnalysis - backendURL:", backendURL);
-
-      if (!assessment || !assessment.test_results || assessment.test_results.length === 0 || !childId || !tokenId || !backendURL) {
-        setAnalysis(t("No sub-test data available for analysis or missing configuration."));
-        console.error("Analysis pre-check failed. Values logged above."); // Added error log
-        return;
-      }
-
-      setIsLoadingAnalysis(true);
-      try {
-        const subTestsForAnalysis = assessment.test_results;
-
-        const response = await axios.post(
-          `${backendURL}/generateInference`,
-          { tests: subTestsForAnalysis, childId: childId },
-          {
-            headers: { authorization: `Bearer ${tokenId}` },
-          }
-        );
-
-        setAnalysis(
-          response.data.inference ||
-            t("Could not generate analysis for this assessment.")
-        );
-      } catch (error) {
-        console.error("Error generating continuous assessment analysis:", error);
-        setAnalysis(t("Failed to generate analysis for this assessment."));
-      } finally {
-        setIsLoadingAnalysis(false);
-      }
-    };
-
-    generateContinuousAnalysis();
-  }, [assessment, childId, tokenId, backendURL, t]);
+    // Just a brief artificial loading state to prevent UI flicker
+    const timer = setTimeout(() => {
+      setIsLoadingAnalysis(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [assessment]);
 
   if (!assessment) {
     console.log("Assessment prop is null, returning null from ContinuousAssessmentDetailPopup");
@@ -112,7 +76,7 @@ const ContinuousAssessmentDetailPopup = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" // Matched max-w-4xl
+        className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div id="continuous-assessment-detail-content">
@@ -148,7 +112,7 @@ const ContinuousAssessmentDetailPopup = ({
 
           {/* Child and Assessment Info */}
           <div className="border-b border-gray-200">
-            <div className="grid grid-cols-3 gap-4 p-6"> {/* Matched grid structure */}
+            <div className="grid grid-cols-3 gap-4 p-6">
               <div className="col-span-2">
                 <h2 className="text-xl font-bold text-blue-800 mb-3">
                   {childDetails?.name || t("Student Name")}
@@ -233,18 +197,18 @@ const ContinuousAssessmentDetailPopup = ({
 
             {/* AI-Generated Analysis Section */}
             <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-bold mb-2 text-blue-800"> {/* Matched text-blue-800 */}
+              <h3 className="font-bold mb-2 text-blue-800">
                 {t("AI-Powered Analysis")}:
               </h3>
               {isLoadingAnalysis ? (
-                <div className="flex justify-center items-center py-4"> {/* Matched loading spinner style */}
+                <div className="flex justify-center items-center py-4">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
               ) : (
                 <>
-                  <div className="bg-white p-3 rounded border border-blue-200"> {/* Matched analysis box style */}
+                  <div className="bg-white p-3 rounded border border-blue-200">
                     <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                      {analysis || t("Analysis not available.")}
+                      {assessment.analysis_results || t("Analysis not available for this assessment.")}
                     </p>
                   </div>
                   <p className="text-xs mt-2 text-gray-600 italic">
@@ -264,21 +228,20 @@ const ContinuousAssessmentDetailPopup = ({
         </div>
 
         {/* Action buttons */}
-        <div className="bg-gray-100 p-4 print:hidden flex justify-between items-center"> {/* Matched style */}
+        <div className="bg-gray-100 p-4 print:hidden flex justify-between items-center">
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600" // Matched style
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
             {t("Close")}
           </button>
           <div className="flex space-x-2">
             <button
               onClick={handlePrint}
-              className="flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700" // Matched style
+              className="flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               <FaPrint className="mr-1" /> {t("Print Report")}
             </button>
-            {/* Add Download/Email buttons here if needed, similar to TestReportPopup */}
           </div>
         </div>
       </div>
