@@ -9,13 +9,16 @@ import {
   Check,
   ChevronRight,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../../contexts/LanguageContext.jsx";
+import backgroundImage from "../../assets/vocab-scale/background-image.png";
+import characterImage from "../../assets/vocab-scale/Cute-Dragon.png";
+import microphone from "../../assets/vocab-scale/microphone.png";
 
-// Audio Recording Hook
 const useAudioRecorder = (onAudioCaptured) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -168,7 +171,7 @@ const useAudioRecorder = (onAudioCaptured) => {
   };
 };
 
-// Word Display Component
+// Enhanced Word Display Component
 const WordDisplay = ({
   currentWord,
   currentIndex,
@@ -181,47 +184,204 @@ const WordDisplay = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mb-8 p-4 border border-blue-200 rounded-lg bg-blue-50 shadow-sm"
+      className="mb-8 p-8 border-2 border-white/30 rounded-2xl bg-gradient-to-br from-blue-900/30 to-purple-900/30 shadow-lg backdrop-blur-sm relative overflow-hidden"
     >
-      <p className="text-sm text-blue-600 mb-2">
-        {t("word")} {currentIndex + 1} {t("of")} {totalWords}
-      </p>
+      {/* Decorative elements */}
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-400/10 rounded-full filter blur-xl"></div>
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-sky-500"></div>
 
       <motion.p
-        key={currentWord.word}
-        initial={{ scale: 0.95 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-        className="text-4xl font-semibold text-center mb-4 text-blue-800"
+        className="text-lg text-white/80 mb-4 flex justify-between items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
       >
-        {language === "ta" && currentWord.ta
-          ? currentWord.ta
-          : language === "hi" && currentWord.hi
-          ? currentWord.hi
-          : currentWord.word}
+        <span>
+          {t("word")} {currentIndex + 1} {t("of")} {totalWords}
+        </span>
+        <span className="px-3 py-1 bg-white/10 rounded-full text-xs">
+          {t("level")}: {currentWord.level}
+        </span>
       </motion.p>
 
-      <div className="flex justify-center gap-4">
-        <p className="text-sm text-blue-500">
-          <span className="inline-block px-2 py-1 bg-blue-100 rounded-full">
-            {t("level")}: {currentWord.level}
-          </span>
-        </p>
+      <motion.div
+        key={currentWord.word}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 15,
+          delay: 0.3,
+        }}
+        className="text-center mb-6"
+      >
+        <motion.p
+          className="text-5xl sm:text-6xl font-bold mb-4 text-white drop-shadow-lg"
+          whileHover={{ scale: 1.02 }}
+        >
+          {language === "ta" && currentWord.ta
+            ? currentWord.ta
+            : language === "hi" && currentWord.hi
+            ? currentWord.hi
+            : currentWord.word}
+        </motion.p>
 
         {(language === "ta" && currentWord.ta) ||
         (language === "hi" && currentWord.hi) ? (
-          <p className="text-sm text-gray-500">
-            <span className="inline-block px-2 py-1 bg-gray-100 rounded-full">
-              {t("english")}: {currentWord.word}
-            </span>
-          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="inline-block px-4 py-2 bg-white/10 rounded-full text-white/80 text-sm"
+          >
+            {t("english")}: {currentWord.word}
+          </motion.div>
         ) : null}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
 
-// Definition Input Component
+const Waveform = () => {
+  const bars = [0.4, 0.6, 1, 0.6, 0.4];
+  return (
+    <div className="flex items-end gap-[2px] h-5">
+      {bars.map((scale, i) => (
+        <motion.div
+          key={i}
+          className="w-[3px] bg-white rounded-sm"
+          animate={{ scaleY: [1, scale, 1] }}
+          transition={{
+            duration: 0.6,
+            repeat: Infinity,
+            repeatDelay: 0.1,
+            delay: i * 0.1,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+const RecordingButton = ({
+  isRecording,
+  isSubmitting,
+  isTranscribing,
+  startListening,
+  stopListening,
+  t,
+}) => {
+  return (
+    <div className="w-full flex flex-col items-center mt-6 gap-3">
+      {" "}
+      {/* flex-col + gap */}
+      <motion.button
+        whileHover={{ scale: isSubmitting || isTranscribing ? 1 : 1.08, y: -3 }}
+        whileTap={{ scale: 0.92 }}
+        onClick={isRecording ? stopListening : startListening}
+        disabled={isSubmitting || isTranscribing}
+        className={`relative flex items-center justify-center rounded-full w-32 h-32 focus:outline-none transition-all duration-300 ${
+          isRecording
+            ? "bg-red-500 shadow-red-500/30"
+            : "bg-gradient-to-r from-blue-700/80 to-sky-400/80 shadow-[0_8px_30px_rgba(59,130,246,0.3)]"
+        } ${
+          isSubmitting || isTranscribing ? "opacity-70 cursor-not-allowed" : ""
+        }`}
+        style={{
+          boxShadow: isRecording
+            ? "0 0 20px rgba(239, 68, 68, 0.6)"
+            : "0 6px 20px rgba(59, 130, 246, 0.5), 0 0 10px rgba(59, 130, 246, 0.7)", // added extra glow here
+        }}
+      >
+        {/* Pulsing glow effect when recording */}
+        {isRecording && (
+          <motion.span
+            className="absolute inset-0 rounded-full bg-red-400/50"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.4, 0.8, 0.4],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        )}
+
+        {/* Inner circle with microphone image (rotated anticlockwise) */}
+        <motion.div
+          className="relative z-10 rounded-full flex items-center justify-center w-24 h-24"
+          animate={{
+            scale: isRecording ? [1, 1.05, 1] : 1,
+          }}
+          transition={{
+            duration: 2,
+            repeat: isRecording ? Infinity : 0,
+            ease: "easeInOut",
+          }}
+          style={{
+            border: isRecording
+              ? "1.5px solid rgba(255, 255, 255, 0.6)"
+              : "1px solid rgba(255, 255, 255, 0.3)",
+            background: "rgba(255, 255, 255, 0.15)", // translucent white
+            backdropFilter: "blur(10px)", // glass blur effect
+            WebkitBackdropFilter: "blur(10px)", // for Safari support
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)", // subtle shadow for depth
+          }}
+        >
+          <motion.img
+            src={microphone} // transparent PNG recommended
+            alt="Microphone"
+            className="w-16 h-16 object-contain"
+          />
+
+          {/* Wave animation when recording */}
+          {isRecording && (
+            <div className="absolute -bottom-8 flex space-x-1">
+              {[1, 1.2, 1.5, 1.2, 1].map((scale, i) => (
+                <motion.div
+                  key={i}
+                  className="w-2 h-2 bg-red-500 rounded-full"
+                  animate={{
+                    height: [4, 12, 4],
+                    backgroundColor: ["#ef4444", "#f87171", "#ef4444"],
+                  }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Loading spinner (thinner border) */}
+        {(isTranscribing || isSubmitting) && (
+          <motion.div
+            className="absolute inset-0 rounded-full border-[3px] border-white/30 border-t-white" // Thinner border
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+          />
+        )}
+      </motion.button>
+      {!isRecording ? (
+        <div className="text-white text-lg font-semibold select-none">
+          Click to Speak!
+        </div>
+      ) : (
+        <div className="text-white text-lg mt-3 font-semibold select-none">
+          Click to Stop!
+        </div>
+      )}
+    </div>
+  );
+};
+
 const DefinitionInput = ({
   currentDefinition,
   setCurrentDefinition,
@@ -237,114 +397,110 @@ const DefinitionInput = ({
   t,
 }) => {
   return (
-    <div className="mb-6">
-      <label
+    <div className="mb-8">
+      <motion.label
         htmlFor="definition"
-        className="block text-lg font-medium text-blue-700 mb-2"
+        className="block text-xl font-medium text-white mb-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
       >
         {t("whatDoesThisWordMean")}
-      </label>
+      </motion.label>
+
       <motion.div
-        initial={{ opacity: 0.8 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0.8, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="relative"
       >
-        <textarea
+        <motion.textarea
           id="definition"
           rows="4"
           value={currentDefinition}
           onChange={(e) => setCurrentDefinition(e.target.value)}
           placeholder={t("enterDefinitionHere")}
-          className={`w-full px-3 py-2 text-blue-800 border ${
-            isRecording ? "border-red-400" : "border-blue-300"
-          } rounded-lg focus:outline-none focus:border-blue-500 transition-colors duration-300`}
+          className={`w-full text-2xl px-4 py-3 text-white bg-white/10 backdrop-blur-sm border-2 ${
+            isRecording ? "border-red-400/50" : "border-white/20"
+          } rounded-xl focus:outline-none focus:border-blue-400 transition-all duration-300 placeholder-white/50`}
           disabled={isSubmitting || isRecording || isTranscribing}
+          whileFocus={{
+            boxShadow: "0 0 0 2px rgba(96, 165, 250, 0.5)",
+            scale: 1.01,
+          }}
         />
 
-        <div className="mt-3 flex items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={isRecording ? stopListening : startListening}
-            disabled={isSubmitting || isTranscribing}
-            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all shadow-sm ${
-              isRecording
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            } ${
-              isSubmitting || isTranscribing
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-          >
-            {isRecording ? (
-              <>
-                <MicOff className="h-5 w-5" /> {t("stopRecording")}
-              </>
-            ) : (
-              <>
-                <Mic className="h-5 w-5" /> {t("startRecording")}
-              </>
-            )}
-          </motion.button>
-          <AnimatePresence>
-            {isRecording && !isTranscribing && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                className="flex items-center gap-2 text-red-600"
-              >
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                {t("recording")}...
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <RecordingButton
+            isRecording={isRecording}
+            isSubmitting={isSubmitting}
+            isTranscribing={isTranscribing}
+            startListening={startListening}
+            stopListening={stopListening}
+            t={t}
+          />
+
           <AnimatePresence>
             {isTranscribing && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
-                className="flex items-center gap-2 text-blue-600"
+                className="flex items-center gap-2 text-white"
               >
                 <motion.div
-                  className="w-4 h-4 border-2 border-blue-200 border-t-blue-600 rounded-full"
+                  className="w-4 h-4 border-2 border-blue-300/50 border-t-blue-300 rounded-full"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                 />
-                {t("transcribing")}...
               </motion.div>
             )}
           </AnimatePresence>
         </div>
+
         <AnimatePresence>
           {incorrectStreak > 0 && (
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="text-xs text-orange-600 mt-2 flex items-center gap-1"
+              className="mt-3 flex items-center gap-2 text-amber-300 text-sm"
             >
-              <AlertCircle className="h-3 w-3" />
-              {t("consecutiveIncorrectSkipped")}: {incorrectStreak}
-            </motion.p>
+              <motion.div
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 0.6,
+                  repeat: incorrectStreak >= 3 ? Infinity : 0,
+                  repeatType: "mirror",
+                }}
+              >
+                <AlertCircle className="h-4 w-4" />
+              </motion.div>
+              <span>
+                {t("consecutiveIncorrectSkipped")}: {incorrectStreak}
+              </span>
+            </motion.div>
           )}
         </AnimatePresence>
+
         <AnimatePresence>
           {error && (
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 5 }}
-              className="text-red-600 mt-2 text-sm flex items-center gap-1"
+              className="mt-3 p-3 bg-red-500/20 rounded-lg text-red-200 text-sm flex items-start gap-2"
             >
-              <AlertCircle className="h-4 w-4" /> {error}
-            </motion.p>
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <span>{error}</span>
+            </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
@@ -352,7 +508,7 @@ const DefinitionInput = ({
   );
 };
 
-// Navigation Button Component
+// Enhanced Navigation Button Component
 const NavigationButton = ({
   onClick,
   isLast,
@@ -367,35 +523,73 @@ const NavigationButton = ({
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{
+        scale: isDisabled ? 1 : 1.05,
+        y: isDisabled ? 0 : -2,
+        boxShadow: isDisabled ? "none" : "0 4px 20px rgba(139, 92, 246, 0.3)",
+      }}
+      whileTap={{ scale: isDisabled ? 1 : 0.95 }}
       onClick={onClick}
       disabled={isDisabled || isSubmitting || isRecording || isTranscribing}
-      className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 flex items-center gap-2 ${
+      className={`relative overflow-hidden py-3 px-8 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center gap-2 ${
         isDisabled || isSubmitting || isRecording || isTranscribing
-          ? "opacity-50 cursor-not-allowed"
-          : "shadow-md"
+          ? "opacity-70 cursor-not-allowed bg-gray-500/30"
+          : "bg-gradient-to-r from-blue-500 to-sky-700 hover:from-blue-600 hover:to-sky-800"
       }`}
     >
-      {isSubmitting ? (
-        <>
-          <motion.div
-            className="w-4 h-4 border-2 border-blue-200 border-t-blue-600 rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
-          {t("submitting")}...
-        </>
-      ) : (
-        <>
-          {isFinish ? t("finishAndSubmit") : t("nextWord")}
-          {isFinish ? (
-            <Check className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </>
+      {/* Animated background */}
+      {!isDisabled && (
+        <motion.span
+          className="absolute inset-0 z-0 bg-gradient-to-r from-blue-500 to-sky-700 opacity-0 hover:opacity-100 transition-opacity duration-300"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+        />
       )}
+
+      {/* Content wrapper with higher z-index */}
+      <div className="relative z-10 flex items-center gap-2">
+        {isSubmitting ? (
+          <>
+            <motion.div
+              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+            <span>{t("submitting")}...</span>
+          </>
+        ) : (
+          <>
+            <span>{isFinish ? t("finishAndSubmit") : t("nextWord")}</span>
+            <motion.div
+              animate={
+                isFinish
+                  ? {
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 5, -5, 0],
+                    }
+                  : {
+                      x: [0, 4, 0],
+                    }
+              }
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                repeatDelay: 1,
+              }}
+            >
+              {isFinish ? (
+                <Check className="h-5 w-5" />
+              ) : (
+                <ChevronRight className="h-5 w-5" />
+              )}
+            </motion.div>
+          </>
+        )}
+      </div>
     </motion.button>
   );
 };
@@ -522,7 +716,80 @@ const VocabularyScaleTest = () => {
   const [finalScore, setFinalScore] = useState(null);
   const [incorrectStreak, setIncorrectStreak] = useState(0);
   const { language, t } = useLanguage();
+  const [currentDialog, setCurrentDialog] = useState(0);
+  const [showTest, setShowTest] = useState(false);
 
+  const handleNextDialog = () => {
+    if (currentDialog < dialog.length - 1) {
+      setCurrentDialog((prev) => prev + 1);
+    } else {
+      setShowTest(true);
+    }
+  };
+  const dialog = [
+    "Ahoy, young wordsmith!",
+    "Welcome to the Tower of Tides — a place where every word you understand lifts the tower higher into the clouds.",
+    "I am the Archivist, keeper of meanings and guardian of the final Codex fragment.",
+    "Are you ready to build your tower of understanding? Let's begin!",
+  ];
+  const DialogIntro = ({ currentDialog, dialog, handleNext, t }) => (
+    <>
+      <motion.div
+        key={currentDialog}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.4 }}
+        className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+      >
+        <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
+      </motion.div>
+
+      <div className="flex justify-center gap-3 mb-8 lg:mb-10">
+        {dialog.map((_, index) => (
+          <motion.div
+            key={index}
+            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+              index <= currentDialog
+                ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                : "bg-white/30"
+            }`}
+            initial={{ scale: 0.8 }}
+            animate={{
+              scale: index === currentDialog ? 1.3 : 1,
+              y: index === currentDialog ? -4 : 0,
+            }}
+            transition={{ type: "spring", stiffness: 300 }}
+          />
+        ))}
+      </div>
+
+      <div className="flex justify-center">
+        <motion.button
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleNext}
+          className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
+            currentDialog < dialog.length - 1
+              ? "bg-gradient-to-r from-white to-teal-100 text-teal-900 hover:from-blue-50 hover:to-teal-200 hover:shadow-cyan-200/50"
+              : "bg-gradient-to-r from-cyan-500 to-sky-600 text-white hover:from-cyan-600 hover:to-sky-800 hover:shadow-blue-400/50"
+          }`}
+        >
+          {currentDialog < dialog.length - 1 ? (
+            <>
+              <span className="drop-shadow-sm">{t("next")}</span>
+              <ChevronRight className="mt-0.5 drop-shadow-sm" />
+            </>
+          ) : (
+            <>
+              <span className="drop-shadow-sm">{t("imReady")}</span>
+              <Check className="mt-0.5 drop-shadow-sm" />
+            </>
+          )}
+        </motion.button>
+      </div>
+    </>
+  );
   // Handle transcribed audio
   const handleTranscriptionComplete = useCallback((transcription) => {
     setCurrentDefinition(transcription);
@@ -675,10 +942,6 @@ const VocabularyScaleTest = () => {
     return <LoadingState t={t} />;
   }
 
-  if (error && !isLoading && !isSubmitting && !isTranscribing) {
-    return <ErrorState message={error} t={t} />;
-  }
-
   if (testComplete) {
     return (
       <TestComplete
@@ -697,76 +960,204 @@ const VocabularyScaleTest = () => {
   const currentWord = words[currentWordIndex];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="max-w-2xl mt-32 mx-auto p-6 bg-white shadow-md rounded-lg border border-blue-100"
-    >
-      <ToastContainer position="top-center" autoClose={3000} />
-      <motion.h1
-        initial={{ y: -10 }}
-        animate={{ y: 0 }}
-        className="text-3xl font-bold text-center mb-6 text-blue-800"
-      >
-        {t("vocabularyScaleTest")}
-      </motion.h1>
+    <>
+      {/* Background - conditionally blurred */}
+      <div className="fixed inset-0 z-40">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: showTest ? "none" : "blur(8px)",
+          }}
+        />
+        <motion.div
+          className="absolute inset-0 bg-black/20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showTest ? 0.3 : 0.5 }}
+          transition={{ duration: 0.5 }}
+        />
+      </div>
 
-      {currentWord && (
-        <AnimatePresence mode="wait">
+      {/* Main content container */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
+        <button
+          onClick={() => navigate("/taketests")}
+          className="text-white/80 hover:text-white flex items-center gap-1 border border-white/20 rounded-full px-4 py-2 transition-colors duration-300 shadow-lg absolute top-4 left-4 z-50 backdrop-blur-md hover:bg-white/10"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t("backToTests")}
+        </button>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, type: "spring" }}
+          className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
+        >
+          {/* Floating character - only show during intro */}
+          {!showTest && (
+            <motion.div
+              initial={{ y: -40, opacity: 0 }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: [1, 1.03, 1],
+                rotate: [0, 2, -2, 0],
+              }}
+              transition={{
+                y: { duration: 0.6, ease: "backOut" },
+                opacity: { duration: 0.8 },
+                scale: {
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+                rotate: {
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+              className="flex-shrink-0"
+            >
+              <img
+                src={characterImage}
+                alt="The Archivist"
+                className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
+              />
+            </motion.div>
+          )}
+
+          {/* Main content area */}
           <motion.div
-            key={`word-${currentWordIndex}`}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
+            className={`bg-gradient-to-br from-sky-600/70 to-teal-800/60 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-amber-200/30 shadow-[0_8px_30px_rgba(0,183,235,0.25)] flex-1 relative overflow-hidden w-full ${
+              showTest ? "lg:max-w-3xl mx-auto" : "lg:max-w-4xl"
+            }`}
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
           >
-            <WordDisplay
-              currentWord={currentWord}
-              currentIndex={currentWordIndex}
-              totalWords={words.length}
-              language={language}
-              t={t}
-            />
+            {/* 🌊 Horizon Line */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-100/60 via-white/30 to-teal-200/50"></div>
 
-            <DefinitionInput
-              currentDefinition={currentDefinition}
-              setCurrentDefinition={setCurrentDefinition}
-              isRecording={isRecording}
-              t={t}
-              isTranscribing={isTranscribing}
-              isSubmitting={isSubmitting}
-              startListening={startListening}
-              stopListening={stopListening}
-              incorrectStreak={incorrectStreak}
-              error={error}
-              wordText={
-                language === "ta" && currentWord.ta
-                  ? currentWord.ta
-                  : language === "hi" && currentWord.hi
-                  ? currentWord.hi
-                  : currentWord.word
-              }
-              language={language}
-            />
+            {/* 🌀 Ocean Mist Orbs */}
+            <div className="absolute -bottom-20 -right-20 w-44 h-44 bg-cyan-200/20 rounded-full blur-3xl"></div>
+            <div className="absolute -top-20 -left-20 w-44 h-44 bg-sky-300/20 rounded-full blur-3xl"></div>
 
-            <div className="flex justify-end items-center">
-              <NavigationButton
-                onClick={handleNextWord}
-                isLast={currentWordIndex === words.length - 1}
-                isDisabled={isSubmitting}
-                isSubmitting={isSubmitting}
-                isRecording={isRecording}
-                isTranscribing={isTranscribing}
-                incorrectStreak={incorrectStreak}
+            {/* ☀️ Sun sparkle/magic aura */}
+            <div className="absolute top-1/2 right-8 w-24 h-24 bg-amber-100/20 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-8 left-8 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+
+            {/* 🌤️ Drift shimmer */}
+            <div className="absolute -top-12 right-1/3 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+
+            <ToastContainer position="top-center" autoClose={3000} />
+
+            {!showTest ? (
+              <DialogIntro
+                currentDialog={currentDialog}
+                dialog={dialog}
+                handleNext={handleNextDialog}
                 t={t}
               />
-            </div>
+            ) : isLoading ? (
+              <LoadingState t={t} />
+            ) : error && !isLoading && !isSubmitting && !isTranscribing ? (
+              <ErrorState message={error} t={t} />
+            ) : testComplete ? (
+              <TestComplete
+                finalScore={finalScore}
+                totalWords={words.length}
+                error={error}
+                childId={childId}
+              />
+            ) : words.length === 0 && !isLoading ? (
+              <ErrorState message={t("noVocabularyWordsFound")} t={t} />
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`test-content-${currentWordIndex}`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full flex flex-col"
+                >
+                  {/* Progress bar and back button */}
+                  <div className="w-full mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-white/80">
+                        {t("progress")}: {currentWordIndex + 1}/{words.length}
+                      </span>
+                    </div>
+                    <div className="w-full bg-white/20 rounded-full h-3">
+                      <motion.div
+                        className="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${
+                            ((currentWordIndex + 1) / words.length) * 100
+                          }%`,
+                        }}
+                        transition={{ duration: 0.6 }}
+                      />
+                    </div>
+                  </div>
+
+                  {currentWord && (
+                    <>
+                      <WordDisplay
+                        currentWord={currentWord}
+                        currentIndex={currentWordIndex}
+                        totalWords={words.length}
+                        language={language}
+                        t={t}
+                      />
+
+                      <DefinitionInput
+                        currentDefinition={currentDefinition}
+                        setCurrentDefinition={setCurrentDefinition}
+                        isRecording={isRecording}
+                        t={t}
+                        isTranscribing={isTranscribing}
+                        isSubmitting={isSubmitting}
+                        startListening={startListening}
+                        stopListening={stopListening}
+                        incorrectStreak={incorrectStreak}
+                        error={error}
+                        wordText={
+                          language === "ta" && currentWord.ta
+                            ? currentWord.ta
+                            : language === "hi" && currentWord.hi
+                            ? currentWord.hi
+                            : currentWord.word
+                        }
+                        language={language}
+                      />
+
+                      <div className="mt-auto pt-6 flex justify-end items-center">
+                        <NavigationButton
+                          onClick={handleNextWord}
+                          isLast={currentWordIndex === words.length - 1}
+                          isDisabled={isSubmitting}
+                          isSubmitting={isSubmitting}
+                          isRecording={isRecording}
+                          isTranscribing={isTranscribing}
+                          incorrectStreak={incorrectStreak}
+                          t={t}
+                        />
+                      </div>
+                    </>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </motion.div>
-        </AnimatePresence>
-      )}
-    </motion.div>
+        </motion.div>
+      </div>
+    </>
   );
 };
-
 export default VocabularyScaleTest;

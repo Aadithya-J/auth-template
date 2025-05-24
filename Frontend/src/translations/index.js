@@ -159,7 +159,7 @@ export const translations = {
     invalidServerResponse: "Invalid response from server",
     loginFailed: "Login failed",
     loginErrorMessage: "An error occurred while logging in. Please try again.",
-
+    word: "Word",
     // Login page
     logo: "Logo",
     learnPlayGrow: "Learn. Play. Grow",
@@ -444,6 +444,7 @@ export const translations = {
     microphone_access_error: "Microphone access error",
     transcription_failed: "Transcription failed",
     audio_upload_error: "Audio upload error",
+    transcribing: "Transcribing...",
   },
   ta: {
     mainMenu: "முதன்மை மெனு",
