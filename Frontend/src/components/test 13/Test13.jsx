@@ -112,6 +112,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
     console.warn("Speech synthesis not supported in this browser.");
   }
 };
+/*
   const parseTranscript = (transcript) => {
     if (!transcript) return [];
 
@@ -140,6 +141,197 @@ function Test13({ suppressResultPage = false, onComplete }) {
     toast.warn(t("could_not_understand_numbers"));
     return []; // Return empty if parsing fails
   };
+*/
+/*
+const parseTranscript = (transcriptInput) => {
+  // Use the langData from the component's scope.
+  // It will reflect the currently selected language.
+  const currentLangData = test13Translations[language] || test13Translations.en;
+  const digitMap = currentLangData.digitMap || {};
+
+  if (!transcriptInput || transcriptInput.trim() === "") {
+    console.log("parseTranscript: Input is empty or only whitespace.");
+    return [];
+  }
+
+  // Normalize: lowercase, remove typical punctuation, trim whitespace
+  let processedTranscript = transcriptInput
+    .toLowerCase()
+    .replace(/[.,!?]/g, "")
+    .trim();
+  // console.log("parseTranscript: Initial processedTranscript:", processedTranscript);
+
+  // Sort digitMap keys by length, descending.
+  const sortedWords = Object.keys(digitMap).sort((a, b) => b.length - a.length);
+
+  for (const word of sortedWords) {
+    // Using global regex replacement. \b ensures whole word match.
+    const regex = new RegExp(`\\b${word}\\b`, "gi"); // global, case-insensitive
+    processedTranscript = processedTranscript.replace(regex, String(digitMap[word]));
+  }
+  // console.log("parseTranscript: Transcript after digitMap replacement:", processedTranscript);
+
+  // Remove any remaining non-digit characters, BUT KEEP SPACES.
+  let numbersAndSpaces = processedTranscript.replace(/[^\d\s]/g, "");
+  // console.log("parseTranscript: Transcript after stripping non-digits (except spaces):", numbersAndSpaces);
+
+  // Trim whitespace from ends and normalize multiple spaces within to single spaces.
+  let cleaned = numbersAndSpaces.trim().replace(/\s+/g, " ");
+  // console.log("parseTranscript: Cleaned transcript (only digits and single spaces):", cleaned);
+
+  if (cleaned === "") {
+    console.warn(
+      "parseTranscript: Cleaned transcript is empty after processing. Original:",
+      transcriptInput
+    );
+    // This function no longer shows a toast here.
+    // It returns an empty array, and `evaluateAnswer` will decide on user feedback.
+    return [];
+  }
+
+  // Attempt 1: Treat as space-separated single digits
+  const spaceSplit = cleaned.split(" ").filter(s => s !== ""); // Filter out empty strings
+
+  if (
+    spaceSplit.length > 0 &&
+    spaceSplit.every((item) => /^\d$/.test(item) && item.length === 1) // Ensures each part is a single digit
+  ) {
+    // console.log("parseTranscript: Parsed via spaceSplit:", spaceSplit.map(Number));
+    return spaceSplit.map(Number);
+  }
+
+  // Attempt 2: Treat as a concatenated string of digits
+  const concatenated = cleaned.replace(/\s+/g, ""); // Remove all spaces
+  if (concatenated.length > 0 && /^\d+$/.test(concatenated)) {
+    // console.log("parseTranscript: Parsed via concatenated:", concatenated.split("").map(Number));
+    return concatenated.split("").map(Number);
+  }
+
+  console.warn(
+    "parseTranscript: Could not reliably parse. Original:", transcriptInput,
+    "Processed up to (cleaned):", cleaned,
+    "SpaceSplit attempt failed on:", spaceSplit,
+    "Concatenated attempt failed on:", concatenated
+  );
+  
+  return []; 
+};
+*/
+ 
+
+const parseTranscript = (transcriptInput) => {
+  // Get the digitMap for the current language, fallback to English if language-specific map is missing/empty
+  const currentLangData = test13Translations[language] || test13Translations.en;
+  let digitMap = currentLangData.digitMap || {};
+
+  // If the current language's digitMap is empty or undefined, try to fallback to English's digitMap
+  if (Object.keys(digitMap).length === 0 && language !== "en" && test13Translations.en && test13Translations.en.digitMap) {
+    console.warn(`parseTranscript: No digitMap for language "${language}", falling back to English digitMap.`);
+    digitMap = test13Translations.en.digitMap;
+  }
+  
+  if (Object.keys(digitMap).length === 0) {
+      console.error(`parseTranscript: Critical - No digitMap available for language "${language}" and no English fallback. Cannot parse.`);
+      return [];
+  }
+
+
+  if (!transcriptInput || transcriptInput.trim() === "") {
+    console.log("parseTranscript: Input is empty or only whitespace (early exit).");
+    return [];
+  }
+
+  // 1. Normalize: lowercase, remove typical punctuation, trim whitespace
+  let processedTranscript = transcriptInput
+    .toLowerCase() // Convert to lowercase for consistent matching
+    .replace(/[.,!?]/g, "") // Remove common punctuation
+    .trim();
+  console.log(`parseTranscript STAGE 1: Initial processed input: "${processedTranscript}" (Original: "${transcriptInput}")`);
+
+  // 2. Replace words from digitMap
+  // Sort digitMap keys by length (descending) to replace longer matches first.
+  // This is important if you have multi-word numbers mapped, e.g. "twenty one" and "one".
+  const sortedWords = Object.keys(digitMap).sort(
+    (a, b) => b.length - a.length
+  );
+
+  let anyReplacementMade = false;
+  for (const word of sortedWords) {
+    // Escape any special regex characters in the 'word' key from the digitMap.
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    // Unicode-aware regex for word boundaries:
+    // (?<!\p{L}) - Asserts that the match is not preceded by a Unicode letter.
+    // (?!\p{L}) - Asserts that the match is not followed by a Unicode letter.
+    // 'u' flag enables full Unicode matching.
+    // 'g' flag for global replacement.
+    // 'i' flag for case-insensitivity (though input is already lowercased, this is belt-and-suspenders).
+    const regex = new RegExp(`(?<!\\p{L})${escapedWord}(?!\\p{L})`, "gui");
+
+    if (regex.test(processedTranscript)) { // Check if the word exists before attempting replacement
+      processedTranscript = processedTranscript.replace(regex, String(digitMap[word]));
+      anyReplacementMade = true;
+      console.log(`parseTranscript STAGE 2: After replacing "${word}" with "${digitMap[word]}": "${processedTranscript}"`);
+    }
+  }
+
+  if (!anyReplacementMade && processedTranscript.length > 0 && !(/^\s*[\d\s]+\s*$/.test(processedTranscript))) {
+    console.warn(`parseTranscript STAGE 2: No replacements made from digitMap, and transcript is not purely digits/spaces. Transcript: "${processedTranscript}"`);
+  } else if (anyReplacementMade) {
+    console.log(`parseTranscript STAGE 2: Final after all potential digitMap replacements: "${processedTranscript}"`);
+  }
+
+
+  // 3. Remove any remaining non-digit characters, BUT KEEP SPACES.
+  // This step is crucial for cleaning up any residual non-numeric text
+  // that wasn't part of the digitMap or any other words mixed in.
+  let numbersAndSpaces = processedTranscript.replace(/[^\d\s]/gu, ""); // Added 'u' flag for Unicode
+  console.log(`parseTranscript STAGE 3: After stripping all non-digits (except spaces): "${numbersAndSpaces}"`);
+
+  // 4. Trim whitespace from ends and normalize multiple spaces within to single spaces.
+  let cleaned = numbersAndSpaces.trim().replace(/\s+/g, " ");
+  console.log(`parseTranscript STAGE 4: Final cleaned (should be only digits and single spaces): "${cleaned}"`);
+
+  if (cleaned === "") {
+    console.warn(
+      `parseTranscript STAGE 4: Cleaned transcript is empty. Original input: "${transcriptInput}", Processed before final clean (numbersAndSpaces): "${numbersAndSpaces}"`
+    );
+    return [];
+  }
+
+  // 5. Attempt to parse the cleaned string into an array of numbers
+  // Attempt 1: Treat as space-separated single digits (e.g., "4 9")
+  const spaceSplit = cleaned.split(" ").filter((s) => s !== ""); // Filter out empty strings from split
+
+  if (
+    spaceSplit.length > 0 &&
+    spaceSplit.every((item) => /^\d$/.test(item) && item.length === 1) // Ensure each part is a single digit
+  ) {
+    const result = spaceSplit.map(Number);
+    console.log("parseTranscript STAGE 5: Parsed successfully via spaceSplit:", result);
+    return result;
+  }
+  console.log("parseTranscript STAGE 5: Failed to parse via spaceSplit. Current spaceSplit array:", spaceSplit);
+
+
+  // Attempt 2: Treat as a concatenated string of digits (e.g., "49" if spaces were missing or removed)
+  const concatenated = cleaned.replace(/\s+/g, ""); // Remove all spaces
+  if (concatenated.length > 0 && /^\d+$/.test(concatenated)) { // Check if it's purely digits
+    const result = concatenated.split("").map(Number);
+    console.log("parseTranscript STAGE 5: Parsed successfully via concatenated digits:", result);
+    return result;
+  }
+  console.log("parseTranscript STAGE 5: Failed to parse via concatenated digits. Current concatenated string:", concatenated);
+
+
+  // If all parsing attempts fail
+  console.warn(
+    "parseTranscript STAGE 5: All parsing attempts failed. Could not reliably parse numbers.",
+    `Original Input: "${transcriptInput}"`,
+    `Cleaned String (final before parse attempts): "${cleaned}"`
+  );
+  return [];
+};
 
   // Ref to hold the current value of isRecording for use in callbacks
   const isRecordingRef = useRef(isRecording);
@@ -159,6 +351,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
       setIsTranscribing(true);
       setEvaluationResult(null);
       try {
+        console.log("Attempting to upload audio for language:", language);
         const response = await fetch(`${backendURL}/transcribe`, {
           method: "POST",
           body: formData,
@@ -166,9 +359,12 @@ function Test13({ suppressResultPage = false, onComplete }) {
 
         const result = await response.json();
         console.log("Transcription API Response:", result); // Detailed logging
+        console.log("Raw transcription from backend:", result.transcription);
+        console.log("Language sent to backend for this transcription:", language);
+        console.log("Full API Response from /transcribe:", result);
 
         if (response.ok) {
-          setTranscript(result.transcription || "0 0");
+          setTranscript(result.transcription || "");
           setGameState("evaluating");
         } else {
           console.error("Transcription error response:", result);
@@ -369,12 +565,47 @@ function Test13({ suppressResultPage = false, onComplete }) {
       mode === "forward" ? currentSequence : [...currentSequence].reverse();
 
     // If we couldn't parse any numbers from the transcript
-    if (userAnswer.length === 0) {
+    /*if (userAnswer.length === 0) {
       toast.warning(t("could_not_understand_numbers_clearly"));
       setTranscript("");
       setGameState("presenting");
       return;
     }
+    */
+    if (userAnswer.length === 0 && transcript && transcript.trim() !== "") {
+      toast.warning(t("could_not_understand_numbers_clearly")); // New, more specific toast
+      setTranscript(""); // Clear the confusing transcript
+
+      // Treat as an incorrect answer / error
+      if (mode === "forward") setForwardErrors((prev) => prev + 1);
+      else setReverseErrors((prev) => prev + 1);
+
+      const currentModeErrors = mode === "forward" ? forwardErrors + 1 : reverseErrors + 1;
+      if (currentModeErrors >= MAX_ERRORS) {
+        moveToNextMode();
+      } else {
+        moveToNextSequence();
+      }
+      return; // Exit after handling this specific parse failure
+    }
+
+    // Case 2: Transcript was empty to begin with (or STT returned nothing)
+    // This also implies userAnswer.length will be 0.
+    if (userAnswer.length === 0 && (!transcript || transcript.trim() === "")) {
+        toast.info(t("no_response_recorded_try_next")); // Feedback for no input
+        // Treat as an error
+        if (mode === "forward") setForwardErrors((prev) => prev + 1);
+        else setReverseErrors((prev) => prev + 1);
+
+        const currentModeErrors = mode === "forward" ? forwardErrors + 1 : reverseErrors + 1;
+        if (currentModeErrors >= MAX_ERRORS) {
+            moveToNextMode();
+        } else {
+            moveToNextSequence();
+        }
+        return;
+    }
+
 
     let isCorrect =
       userAnswer.length === correctAnswer.length &&
@@ -411,6 +642,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
     moveToNextSequence,
     moveToNextMode,
     t,
+    speakText
   ]);
 
   // --- Effect to update the ref with the latest digit presentation logic ---
