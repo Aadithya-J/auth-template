@@ -14,7 +14,7 @@ import {
 import { backendURL } from "../../definedURL";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
-
+import { useLanguage } from "../../contexts/LanguageContext.jsx";
 const WORDS = [
   {
     id: 1,
@@ -342,7 +342,7 @@ export default function PhonemeGame({
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [currentTranscriptionStatus, setCurrentTranscriptionStatus] =
     useState("idle");
-
+  const { language } = useLanguage();
   const audioRef = useRef(null);
   const inputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -452,7 +452,7 @@ export default function PhonemeGame({
       const filename = `phoneme_game_child_${childId}_word_${currentWordIndex}_${Date.now()}.wav`;
       const file = new File([audioBlob], filename, { type: "audio/wav" });
       formData.append("file", file);
-
+      formData.append("language", language);
       console.log(`Uploading audio for word index: ${currentWordIndex}`);
       setCurrentTranscriptionStatus("pending");
       setIsTranscribing(true);
