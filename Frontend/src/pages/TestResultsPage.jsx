@@ -30,14 +30,10 @@ const TestResultsTable = () => {
   const [selectedTestForReport, setSelectedTestForReport] = useState(null); // For TestReportPopup
   const [showReportPopup, setShowReportPopup] = useState(false);
 
-  const [
-    selectedContinuousAssessment,
-    setSelectedContinuousAssessment,
-  ] = useState(null); // For new popup
-  const [
-    showContinuousDetailPopup,
-    setShowContinuousDetailPopup,
-  ] = useState(false);
+  const [selectedContinuousAssessment, setSelectedContinuousAssessment] =
+    useState(null); // For new popup
+  const [showContinuousDetailPopup, setShowContinuousDetailPopup] =
+    useState(false);
 
   const [userDetails, setUserDetails] = useState({});
   const [showCumulativeReport, setShowCumulativeReport] = useState(false); // For TestReportPopup's cumulative view
@@ -240,13 +236,10 @@ const TestResultsTable = () => {
     const fetchChildDetails = async () => {
       if (!childId || !tokenId) return;
       try {
-        const response = await axios.get(
-          `${backendURL}/child/getChild/${childId}`,
-          {
-            headers: { authorization: `Bearer ${tokenId}` },
-          }
-        );
-        setChildDetails(response.data.data);
+        const response = await axios.get(`${backendURL}/getChild/${childId}`, {
+          headers: { authorization: `Bearer ${tokenId}` },
+        });
+        setChildDetails(response.data.child);
       } catch (error) {
         console.error("Error fetching child details:", error);
       }
@@ -398,7 +391,7 @@ const TestResultsTable = () => {
               {/* User Information */}
               <div className="flex-1 text-white">
                 <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left">
-                  {childDetails.name || "Vimal"}
+                  {childDetails.name}
                 </h1>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8">
                   {userDetails.role && (
@@ -436,7 +429,9 @@ const TestResultsTable = () => {
                 {/* Student Info Banner */}
                 <div className="mt-4 flex flex-col md:flex-row gap-4 md:gap-8 bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
-                    <span className="text-blue-100">{t("viewingResultsFor")}</span>
+                    <span className="text-blue-100">
+                      {t("viewingResultsFor")}
+                    </span>
                     <span className="ml-2 font-semibold">
                       {childDetails.name || "Student"}
                     </span>

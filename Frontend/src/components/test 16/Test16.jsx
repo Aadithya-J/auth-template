@@ -188,17 +188,26 @@ const SoundPlayer = ({ pair, onTimeout }) => {
   const audioRef = useRef(null);
   const lottieRef = useRef(null);
 
+  // Start the animation loop when component mounts
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(1);
+      lottieRef.current.play();
+      lottieRef.current.loop = true;
+    }
+
+    return () => {
+      if (lottieRef.current) {
+        lottieRef.current.stop();
+      }
+    };
+  }, []);
+
   const handlePlay = () => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       audioRef.current.play();
       setIsPlaying(true);
-
-      // Play Lottie animation
-      if (lottieRef.current) {
-        lottieRef.current.setSpeed(1);
-        lottieRef.current.play();
-      }
     }
   };
 
@@ -209,19 +218,9 @@ const SoundPlayer = ({ pair, onTimeout }) => {
     const handleEnded = () => {
       setIsPlaying(false);
       setPlayCount((prev) => prev + 1);
-
-      // Pause the animation when audio ends
-      if (lottieRef.current) {
-        lottieRef.current.pause();
-      }
     };
 
     audio.addEventListener("ended", handleEnded);
-
-    // Set animation to first frame (static) on mount
-    if (lottieRef.current) {
-      lottieRef.current.goToAndStop(0, true); // Go to first frame
-    }
 
     return () => {
       audio.removeEventListener("ended", handleEnded);
@@ -245,9 +244,8 @@ const SoundPlayer = ({ pair, onTimeout }) => {
         <Lottie
           lottieRef={lottieRef}
           animationData={speakerbirdAnimation}
-          loop={false}
-          autoplay={false}
-          onComplete={() => lottieRef.current?.goToAndStop(0, true)}
+          loop={true}  // Set to true for continuous looping
+          autoplay={true}  // Start automatically
           style={{ height: "100%", width: "100%" }}
         />
       </div>
