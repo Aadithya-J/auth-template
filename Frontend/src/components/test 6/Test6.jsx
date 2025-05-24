@@ -5,6 +5,7 @@ import { useLanguage } from "../../contexts/LanguageContext.jsx";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import wordLists from "./wordLists.json";
+import { improveTranscriptionAccuracy } from './accuracyImprover';
 
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -129,12 +130,50 @@ const useTranscriptionService = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setTranscript(result.transcription);
+        //setTranscript(result.transcription);
+        //setTranscriptionReady(true);
+        //return result.transcription
+        const rawTranscript = result.transcription;
+        //const targetWordsForLanguage = wordListsFromFile[language] || wordListsFromFile.en;
+        const targetWordsForLanguage = wordLists[language] || wordLists.en;
+        const safeTargetWords = Array.isArray(targetWordsForLanguage) ? targetWordsForLanguage : [];
+        //const correctedTranscript = improveTranscriptionAccuracy(rawTranscript, safeTargetWords);
+        //setTranscript(correctedTranscript);
+        //setTranscriptionReady(true);
+        //return correctedTranscript; 
+         if (typeof rawTranscript !== 'string') {
+            console.error("Raw transcript is not a string:", rawTranscript);
+            setTranscript("");
+            setTranscriptionReady(true); 
+            return ""; 
+        }
+        if (!Array.isArray(safeTargetWords) || safeTargetWords.length === 0) { // Added check for empty array
+            console.warn("safeTargetWords is not a valid array or is empty. Using raw transcript for language:", language, "Content:", safeTargetWords);
+            // Use the raw transcript if target words aren't available/valid for correction
+            const cleanedRawTranscript = String(rawTranscript) // Ensure rawTranscript is string
+                                            .toLowerCase()
+                                            .replace(/[.,!?;:"']/g, "")
+                                            .split(/\s+/)
+                                            .filter(word => word.length > 0)
+                                            .join(" ");
+            setTranscript(cleanedRawTranscript);
+            setTranscriptionReady(true);
+            return cleanedRawTranscript;
+        }
+
+        const correctedTranscript = improveTranscriptionAccuracy(rawTranscript, safeTargetWords);
+        
+        // console.log("Corrected transcript:", correctedTranscript);
+
+        setTranscript(correctedTranscript);
         setTranscriptionReady(true);
-        return result.transcription;
+        return correctedTranscript;
+        
+
       } else {
         console.error("Error during transcription:", response.statusText);
         toast.error("Transcription failed. Please try again.");
+        setTranscript(""); // Clear transcript on error
         return null;
       }
     } catch (error) {
