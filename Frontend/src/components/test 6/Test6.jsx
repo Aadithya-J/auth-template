@@ -5,8 +5,8 @@ import { useLanguage } from "../../contexts/LanguageContext.jsx";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import wordLists from "./wordLists.json";
-import { improveTranscriptionAccuracy } from './accuracyImprover';
-
+import { improveTranscriptionAccuracy } from "./accuracyImprover";
+import ancientPaper from "../../assets/reading-test/ancientPaper.png";
 import "react-toastify/dist/ReactToastify.css";
 import {
   ArrowRightCircle,
@@ -23,12 +23,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import coralBackground from "../../assets/reading-test/coralBackground.png";
 import coralineImage from "../../assets/reading-test/coralineImage.png";
 import shellImage from "../../assets/reading-test/shellImage.png";
-import actualSpyglassImage from "../../assets/reading-test/shellImage.png";
-import actualTreasureChestImage from "../../assets/reading-test/starfish.png";
-import actualSeaweedImage from "../../assets/reading-test/shellImage.png";
-import fishImage1 from "../../assets/reading-test/fishimage2.png";
-import fishImage2 from "../../assets/reading-test/fishimage2.png";
-import staticStarfishImage from "../../assets/reading-test/starfish.png";
 
 // Audio Recording Hook
 const useAudioRecorder = (onAudioRecorded) => {
@@ -130,46 +124,44 @@ const useTranscriptionService = () => {
 
       if (response.ok) {
         const result = await response.json();
-        //setTranscript(result.transcription);
-        //setTranscriptionReady(true);
-        //return result.transcription
         const rawTranscript = result.transcription;
-        //const targetWordsForLanguage = wordListsFromFile[language] || wordListsFromFile.en;
         const targetWordsForLanguage = wordLists[language] || wordLists.en;
-        const safeTargetWords = Array.isArray(targetWordsForLanguage) ? targetWordsForLanguage : [];
-        //const correctedTranscript = improveTranscriptionAccuracy(rawTranscript, safeTargetWords);
-        //setTranscript(correctedTranscript);
-        //setTranscriptionReady(true);
-        //return correctedTranscript; 
-         if (typeof rawTranscript !== 'string') {
-            console.error("Raw transcript is not a string:", rawTranscript);
-            setTranscript("");
-            setTranscriptionReady(true); 
-            return ""; 
+        const safeTargetWords = Array.isArray(targetWordsForLanguage)
+          ? targetWordsForLanguage
+          : [];
+        if (typeof rawTranscript !== "string") {
+          console.error("Raw transcript is not a string:", rawTranscript);
+          setTranscript("");
+          setTranscriptionReady(true);
+          return "";
         }
-        if (!Array.isArray(safeTargetWords) || safeTargetWords.length === 0) { // Added check for empty array
-            console.warn("safeTargetWords is not a valid array or is empty. Using raw transcript for language:", language, "Content:", safeTargetWords);
-            // Use the raw transcript if target words aren't available/valid for correction
-            const cleanedRawTranscript = String(rawTranscript) // Ensure rawTranscript is string
-                                            .toLowerCase()
-                                            .replace(/[.,!?;:"']/g, "")
-                                            .split(/\s+/)
-                                            .filter(word => word.length > 0)
-                                            .join(" ");
-            setTranscript(cleanedRawTranscript);
-            setTranscriptionReady(true);
-            return cleanedRawTranscript;
+        if (!Array.isArray(safeTargetWords) || safeTargetWords.length === 0) {
+          // Added check for empty array
+          console.warn(
+            "safeTargetWords is not a valid array or is empty. Using raw transcript for language:",
+            language,
+            "Content:",
+            safeTargetWords
+          );
+          const cleanedRawTranscript = String(rawTranscript)
+            .toLowerCase()
+            .replace(/[.,!?;:"']/g, "")
+            .split(/\s+/)
+            .filter((word) => word.length > 0)
+            .join(" ");
+          setTranscript(cleanedRawTranscript);
+          setTranscriptionReady(true);
+          return cleanedRawTranscript;
         }
 
-        const correctedTranscript = improveTranscriptionAccuracy(rawTranscript, safeTargetWords);
-        
-        // console.log("Corrected transcript:", correctedTranscript);
+        const correctedTranscript = improveTranscriptionAccuracy(
+          rawTranscript,
+          safeTargetWords
+        );
 
         setTranscript(correctedTranscript);
         setTranscriptionReady(true);
         return correctedTranscript;
-        
-
       } else {
         console.error("Error during transcription:", response.statusText);
         toast.error("Transcription failed. Please try again.");
@@ -283,7 +275,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [currentWords, setCurrentWords] = useState([]);
   const [wordShells, setWordShells] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordsPerBatch, setWordsPerBatch] = useState(4);
+  const [wordsPerBatch, setWordsPerBatch] = useState(16);
   const wordIntervalRef = useRef(null);
   const [tutorialPhase, setTutorialPhase] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
@@ -314,20 +306,22 @@ function Test6({ suppressResultPage = false, onComplete }) {
     useAudioRecorder(transcribeAudio);
 
   useEffect(() => {
-  if (!showTutorial && gameState === "active") {
-    const words = wordLists[language] || wordLists.en;
-    setCurrentWords(words);
-    setWordShells(words.map((word, index) => ({
-      id: index,
-      word,
-      collected: false,
-      glowing: false,
-    })));
-    
-    // Initialize progress to first batch
-    setGameProgress((wordsPerBatch / words.length) * 100);
-  }
-}, [language, showTutorial, gameState]);
+    if (!showTutorial && gameState === "active") {
+      const words = wordLists[language] || wordLists.en;
+      setCurrentWords(words);
+      setWordShells(
+        words.map((word, index) => ({
+          id: index,
+          word,
+          collected: false,
+          glowing: false,
+        }))
+      );
+
+      // Initialize progress to first batch
+      setGameProgress((wordsPerBatch / words.length) * 100);
+    }
+  }, [language, showTutorial, gameState]);
 
   const startWordBatches = (words) => {
     setCurrentWordIndex(0);
@@ -484,151 +478,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
     }
   };
 
-  const coralineVariants = {
-    hidden: { x: -300, opacity: 0 },
-    entering: {
-      x: 0,
-      opacity: 1,
-      transition: { type: "spring", damping: 12, stiffness: 100 },
-    },
-    idle: {
-      y: [0, -10, 0],
-      transition: {
-        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-      },
-    },
-    talking: {
-      y: [0, -5, 0],
-      x: [0, 3, -3, 0],
-      rotate: [0, 1, -1, 0],
-      transition: {
-        y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-        x: { duration: 0.5, repeat: Infinity, ease: "easeInOut" },
-        rotate: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
-      },
-    },
-    excited: {
-      y: [0, -15, 0],
-      scale: [1, 1.05, 1],
-      transition: {
-        y: { duration: 0.8, repeat: 3, ease: "easeInOut" },
-        scale: { duration: 0.8, repeat: 3, ease: "easeInOut" },
-      },
-    },
-    happy: {
-      rotate: [0, 3, -3, 0],
-      scale: [1, 1.1, 1],
-      transition: {
-        rotate: { duration: 1, repeat: 2 },
-        scale: { duration: 1, repeat: 2 },
-      },
-    },
-    confused: {
-      rotate: [0, -5, 5, 0],
-      x: [0, -5, 5, 0],
-      transition: {
-        rotate: { duration: 1.5, repeat: 2 },
-        x: { duration: 1.5, repeat: 2 },
-      },
-    },
-    warning: {
-      scale: [1, 1.2, 1],
-      y: [0, -20, 0],
-      transition: {
-        scale: { duration: 0.5, repeat: 2 },
-        y: { duration: 0.5, repeat: 2 },
-      },
-    },
-    focused: {
-      scale: [1, 0.95, 1],
-      y: [0, 5, 0],
-      transition: {
-        scale: { duration: 2, repeat: Infinity },
-        y: { duration: 2, repeat: Infinity },
-      },
-    },
-    celebrating: {
-      y: [0, -20, 0],
-      rotate: [0, 10, -10, 0],
-      scale: [1, 1.1, 1],
-      transition: {
-        y: { duration: 1, repeat: 3 },
-        rotate: { duration: 0.5, repeat: 6 },
-        scale: { duration: 1, repeat: 3 },
-      },
-    },
-    encouraging: {
-      y: [0, -5, 0],
-      x: [0, 3, -3, 0],
-      rotate: [0, 2, -2, 0],
-      transition: {
-        y: { duration: 1.5, repeat: 2 },
-        x: { duration: 0.8, repeat: 4 },
-        rotate: { duration: 1, repeat: 3 },
-      },
-    },
-  };
-
-  const shellVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: { y: 0, opacity: 1 },
-    glowing: {
-      scale: [1, 1.15, 1],
-      filter:
-        "drop-shadow(0 0 12px rgba(72, 187, 120, 0.8)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
-      transition: { duration: 1, repeat: Infinity, ease: "easeInOut" },
-    },
-    collected: {
-      y: -100,
-      opacity: 0,
-      scale: 0.5,
-      transition: { duration: 0.5 },
-    },
-  };
-
-  const containerWidth = isSidebarExpanded
-    ? "calc(100% - 16rem)"
-    : "calc(100% - 7rem)";
-
-  const fishAnimations = [
-    {
-      src: fishImage1,
-      alt: "Swimming fish",
-      width: "w-20",
-      initial: { x: "-100%", y: "60vh", opacity: 0.8 },
-      animate: {
-        x: "110vw",
-        y: ["60vh", "58vh", "62vh", "60vh"],
-        opacity: [0.8, 1, 0.8],
-      },
-      transition: { duration: 20, repeat: Infinity, ease: "linear", delay: 2 },
-    },
-    {
-      src: fishImage2,
-      alt: "School of fish",
-      width: "w-32",
-      initial: { x: "110vw", y: "70vh", scaleX: -1, opacity: 0.7 },
-      animate: {
-        x: "-100%",
-        y: ["70vh", "73vh", "68vh", "70vh"],
-        opacity: [0.7, 0.9, 0.7],
-      },
-      transition: { duration: 28, repeat: Infinity, ease: "linear", delay: 8 },
-    },
-    {
-      src: fishImage1,
-      alt: "Small swimming fish",
-      width: "w-16",
-      initial: { x: "-100%", y: "75vh", opacity: 0.9 },
-      animate: {
-        x: "110vw",
-        y: ["75vh", "72vh", "75vh"],
-        opacity: [0.9, 1, 0.9],
-      },
-      transition: { duration: 15, repeat: Infinity, ease: "linear", delay: 5 },
-    },
-  ];
-
   const visibleWords = wordShells.slice(
     currentWordIndex,
     currentWordIndex + wordsPerBatch
@@ -636,8 +485,8 @@ function Test6({ suppressResultPage = false, onComplete }) {
 
   return (
     <div
-      className="min-h-screen overflow-hidden relative"
-      style={{ width: containerWidth, marginLeft: "1rem" }}
+      className="fixed inset-0 overflow-y-auto flex items-center justify-center p-4 md:p-8 bg-cover bg-center"
+      style={{ backgroundImage: `url(${coralBackground})` }}
     >
       {showTutorial && (
         <>
@@ -789,47 +638,8 @@ function Test6({ suppressResultPage = false, onComplete }) {
         Back to Tests
       </Link>
 
-      {/* Background image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center z-0"
-        style={{ backgroundImage: `url(${coralBackground})` }}
-      />
-
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Seaweed */}
-        <motion.img
-          src={actualSeaweedImage}
-          alt="Seaweed swaying"
-          className="absolute bottom-0 left-10 h-40 opacity-80"
-          animate={{
-            rotate: [0, -3, 3, -2, 2, 0],
-            y: [0, -4, 4, 0],
-            skewX: [0, 1, -1, 0],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.img
-          src={actualSeaweedImage}
-          alt="Seaweed swaying"
-          className="absolute bottom-0 right-5 h-32 opacity-70"
-          animate={{
-            rotate: [0, 2, -2, 3, -3, 0],
-            y: [0, -3, 3, 0],
-            skewX: [0, -1.5, 1.5, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1.5,
-          }}
-        />
-
         {/* Bubbles */}
         {Array.from({ length: 15 }).map((_, i) => (
           <motion.div
@@ -854,114 +664,75 @@ function Test6({ suppressResultPage = false, onComplete }) {
             }}
           />
         ))}
-
-        {/* Moving Fish */}
-        {fishAnimations.map((fish, index) => (
-          <motion.img
-            key={`fish-${index}`}
-            src={fish.src}
-            alt={fish.alt}
-            className={`absolute ${fish.width} object-contain pointer-events-none`}
-            initial={fish.initial}
-            animate={fish.animate}
-            transition={fish.transition}
-          />
-        ))}
-
-        {/* Decorative Starfish */}
-        <motion.img
-          src={staticStarfishImage}
-          alt="Starfish"
-          className="absolute bottom-5 left-[15%] w-16 h-16 opacity-80"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.8, y: [0, -3, 0] }}
-          transition={{
-            delay: 1,
-            duration: 1.5,
-            y: { repeat: Infinity, duration: 5, ease: "easeInOut" },
-          }}
-        />
-        <motion.img
-          src={staticStarfishImage}
-          alt="Starfish"
-          className="absolute bottom-8 right-[20%] w-12 h-12 opacity-70 rotate-[15deg]"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.7, y: [0, 2, -2, 0] }}
-          transition={{
-            delay: 1.8,
-            duration: 1.5,
-            y: { repeat: Infinity, duration: 6, ease: "easeInOut" },
-          }}
-        />
       </div>
 
       {/* Main content container */}
       {!showTutorial && (
         <>
-          <div className="relative z-10 container mx-auto px-4 py-8">
+          <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-8">
             {/* Progress bar */}
-            <div className="mb-8">
+            <div className="mb-8 w-full px-4 sm:px-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-teal-700 font-bold">Reef Progress</span>
-                <span className="text-teal-600 font-bold">{gameProgress}%</span>
+                <span className="text-green-400 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                  Reef Progress
+                </span>
+                <span className="text-teal-600 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                  {gameProgress}%
+                </span>
               </div>
               <ProgressBar progress={gameProgress} />
             </div>
 
-            {/* Word Shell Grid - Now showing only the current batch */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8 place-items-center w-full max-w-8xl">
-              {isTutorialComplete &&
-                visibleWords.map((shell) => (
-                  <motion.div
-                    key={shell.id}
-                    className="relative flex items-center justify-center 
-           w-[52rem] h-[52rem] sm:w-[32rem] sm:h-[32rem] 
-           md:w-[36rem] md:h-[36rem] lg:w-[44rem] lg:h-[44rem] 
-           cursor-pointer"
-                    variants={shellVariants}
-                    initial="hidden"
-                    animate={shell.glowing ? "glowing" : "visible"}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                  >
-                    <img
-                      src={shellImage}
-                      className="w-full h-full object-contain"
-                      alt={`Shell with word ${shell.word}`}
-                    />
-                    <span
-                      className="absolute text-center 
-                  text-2xl md:text-4xl font-bold text-teal-900"
+            {/* Ancient paper container with responsive sizing */}
+            <div className="relative mb-8 w-full max-w-4xl mx-auto">
+              <div className="relative" style={{ paddingTop: "75%" }}>
+                {/* Adjust aspect ratio */}
+                <img
+                  src={ancientPaper}
+                  className="absolute top-0 left-0 w-full h-full object-contain"
+                  alt="Ancient paper background"
+                />
+                {/* Responsive grid */}
+                <div className="absolute inset-0 grid grid-cols-4 grid-rows-4">
+                  {visibleWords.map((wordObj, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-center"
                     >
-                      {shell.word}
-                    </span>
-                  </motion.div>
-                ))}
+                      <span className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black text-center break-words leading-tight">
+                        {wordObj.word}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Transcription area with RecordingControls */}
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/30 w-full max-w-8xl">
-              <div className="flex flex-col md:flex-row gap-6 items-center justify-between w-full">
-                <RecordingControls
-                  isRecording={isRecording}
-                  onStartRecording={startRecording}
-                  onStopRecording={stopRecording}
-                  showEels={showEels}
-                  largeSize={true} // Add this prop
-                />
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 w-full">
+              <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="w-full md:w-auto">
+                  <RecordingControls
+                    isRecording={isRecording}
+                    onStartRecording={startRecording}
+                    onStopRecording={stopRecording}
+                    showEels={showEels}
+                    largeSize={true} // Add this prop
+                  />
+                </div>
+                {/* Next Words Button - position it below the paper */}
                 {currentWordIndex + wordsPerBatch < currentWords.length && (
                   <motion.button
                     onClick={() => {
                       const newIndex = currentWordIndex + wordsPerBatch;
                       setCurrentWordIndex(newIndex);
-                      // Update progress based on how many words we've completed
                       const progress = Math.min(
                         100,
                         (newIndex / currentWords.length) * 100
                       );
                       setGameProgress(progress);
                     }}
-                    className="mt-2 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-700 to-cyan-500
- text-white rounded-full shadow-lg"
+                    className="mt-4 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-700 to-cyan-500 text-white rounded-full shadow-lg mx-auto"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -983,38 +754,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
           </div>
         </>
       )}
-
-      {/* Treasure Chest */}
-      <motion.div
-        className="fixed bottom-8 right-8 z-20"
-        animate={{
-          y: [0, -10, 0],
-          rotate: [0, 3, -3, 0],
-        }}
-        transition={{
-          y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-          rotate: { duration: 7, repeat: Infinity, ease: "easeInOut" },
-        }}
-      >
-        <img
-          src={actualTreasureChestImage}
-          className="w-24 h-24 object-contain"
-          alt="Treasure Chest"
-        />
-        <AnimatePresence>
-          {collectedTreasures.length > 0 && (
-            <motion.div
-              key={collectedTreasures.length}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              className="absolute -top-3 -right-3 bg-amber-400 rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold text-white shadow-md"
-            >
-              {collectedTreasures.length}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
 
       {/* Reward animations */}
       <AnimatePresence>
@@ -1065,39 +804,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Spyglass animation */}
-      <AnimatePresence>
-        {showSpyglass && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0, rotate: -90 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={{
-              scale: 0,
-              opacity: 0,
-              rotate: 90,
-              transition: { duration: 0.4 },
-            }}
-            transition={{ type: "spring", damping: 10, stiffness: 100 }}
-            className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
-          >
-            <motion.img
-              src={actualSpyglassImage}
-              alt="Spyglass looking"
-              className="w-72 h-72 md:w-96 md:h-96"
-              animate={{
-                y: [0, -15, 10, 0],
-                rotate: [0, 2, -2, 3, -3, 0],
-              }}
-              transition={{
-                y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </div>
   );
