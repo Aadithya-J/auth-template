@@ -306,7 +306,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[180px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-200 border-l min-w-[180px]">
                                   <div className="flex items-center">
                                     <Gem className="mr-3 h-5 w-5 text-emerald-500" />
                                     <span className="whitespace-nowrap">
@@ -314,7 +314,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[180px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l  min-w-[180px]">
                                   <div className="flex items-center">
                                     <CloudFog className="mr-3 h-5 w-5 text-rose-500" />
                                     <span className="whitespace-nowrap">
@@ -322,7 +322,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[120px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l min-w-[120px]">
                                   <div className="flex items-center">
                                     <BarChart3 className="mr-3 h-5 w-5 text-sky-500" />
                                     <span className="whitespace-nowrap">

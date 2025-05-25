@@ -98,21 +98,21 @@ const CharacterDialog = ({ onComplete }) => {
             />
           </motion.div>
 
-          {/* Enhanced glass-morphism dialog box */}
+          {/* Enhanced greenish-gold glass-morphism dialog box */}
           <motion.div
-            className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+            className="bg-gradient-to-br from-green-800/70 to-yellow-800/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
-            {/* Enhanced decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
-            <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
+            {/* Decorative green-gold accents */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-lime-300 to-amber-300"></div>
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-emerald-400/20 rounded-full filter blur-xl"></div>
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-amber-300/20 rounded-full filter blur-xl"></div>
+            <div className="absolute top-1/2 right-8 w-24 h-24 bg-lime-400/10 rounded-full filter blur-lg"></div>
+            <div className="absolute bottom-8 left-8 w-32 h-32 bg-green-300/10 rounded-full filter blur-lg"></div>
 
-            {/* Enhanced animated dialog text */}
+            {/* Dialog text */}
             <motion.div
               key={currentDialog}
               initial={{ opacity: 0, x: 20 }}
@@ -124,14 +124,14 @@ const CharacterDialog = ({ onComplete }) => {
               <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
             </motion.div>
 
-            {/* Enhanced progress indicators */}
+            {/* Progress indicators */}
             <div className="flex justify-center gap-3 mb-8 lg:mb-10">
               {dialog.map((_, index) => (
                 <motion.div
                   key={index}
                   className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
                     index <= currentDialog
-                      ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                      ? "bg-gradient-to-r from-white to-lime-200 shadow-lg"
                       : "bg-white/30"
                   }`}
                   initial={{ scale: 0.8 }}
@@ -144,7 +144,7 @@ const CharacterDialog = ({ onComplete }) => {
               ))}
             </div>
 
-            {/* Enhanced animated action button */}
+            {/* Action button */}
             <div className="flex justify-center">
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -152,8 +152,8 @@ const CharacterDialog = ({ onComplete }) => {
                 onClick={handleNext}
                 className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
                   currentDialog < dialog.length - 1
-                    ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
-                    : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
+                    ? "bg-gradient-to-r from-white to-lime-100 text-green-900 hover:from-lime-50 hover:to-amber-100 hover:shadow-lime-200/50"
+                    : "bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:from-amber-600 hover:to-yellow-600 hover:shadow-amber-500/50"
                 }`}
               >
                 {currentDialog < dialog.length - 1 ? (
@@ -227,7 +227,7 @@ const QuestionTimer = ({ duration, onComplete }) => {
       <div className="relative h-3 w-full rounded-full bg-gray-200/80 overflow-hidden">
         {/* Glow effect */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20"
+          className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-yellow-400/20"
           animate={{
             opacity: [0.3, 0.6, 0.3],
           }}
@@ -243,7 +243,7 @@ const QuestionTimer = ({ duration, onComplete }) => {
           className={`h-full rounded-full relative ${
             timeLeft < duration * 0.3
               ? "bg-gradient-to-r from-red-500 to-pink-500"
-              : "bg-gradient-to-r from-blue-500 to-purple-500"
+              : "bg-gradient-to-r from-emerald-500 to-yellow-500"
           }`}
           initial={{ width: "100%" }}
           animate={{ width: `${progress}%` }}
@@ -306,24 +306,70 @@ const QuestionDisplay = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="bg-black/50 backdrop-blur-md rounded-3xl p-8 shadow-2xl w-full max-w-3xl mx-auto border-2 border-white/40"
+      className="relative bg-gradient-to-br from-emerald-900/30 via-gray-900/50 to-amber-900/30 backdrop-blur-md rounded-3xl p-8 shadow-2xl w-full max-w-3xl mx-auto border-2 border-emerald-400/20 overflow-hidden"
     >
-      <div className="text-center mb-4 text-white font-semibold text-2xl">
-        Question {index + 1} of {totalQuestions}
+      {/* Glowing decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-60" />
+      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-emerald-400/10 blur-xl" />
+      <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-amber-400/10 blur-xl" />
+
+      {/* Progress indicator */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-emerald-200 font-bold text-lg tracking-wider">
+          QUESTION <span className="text-amber-200">{index + 1}</span> /{" "}
+          {totalQuestions}
+        </div>
+        <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 text-sm font-medium">
+          {Math.round(((index + 1) / totalQuestions) * 100)}% COMPLETE
+        </div>
       </div>
 
-      <QuestionTimer duration={8} onComplete={onTimeout} />
-
-      <div className="flex justify-center my-10">
+      {/* Progress bar */}
+      <div className="mb-8 relative h-2 bg-gray-800/50 rounded-full overflow-hidden">
         <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="py-6 px-12 rounded-2xl text-5xl font-bold border-4 border-blue-400 bg-white/90 shadow-lg"
+          className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-400 to-amber-300"
+          initial={{ width: "0%" }}
+          animate={{ width: `${((index + 1) / totalQuestions) * 100}%` }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          {questionData.word}
+          <motion.div
+            className="absolute top-0 right-0 h-full w-1 bg-white"
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      {/* Timer */}
+      <QuestionTimer
+        duration={8}
+        onComplete={onTimeout}
+        colorStart="#4CAF50" // green
+        colorEnd="#FFD700" // gold
+      />
+
+      {/* Word display */}
+      <div className="flex justify-center my-10 relative">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative"
+        >
+          <div className="absolute -inset-3 bg-emerald-300/20 blur-xl rounded-2xl" />
+          <motion.div
+            whileHover={{ scale: 1.03, rotate: 0.5 }}
+            whileTap={{ scale: 0.98 }}
+            className="relative py-8 px-16 rounded-xl text-5xl font-bold border-2 border-emerald-400/40 bg-gray-900/80 text-amber-100 shadow-lg backdrop-blur-sm"
+          >
+            {questionData.word}
+            <div className="absolute top-0 left-0 w-full h-full border border-white/10 rounded-xl pointer-events-none" />
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Options grid with better visibility */}
+      <div className="grid grid-cols-2 gap-4">
         {questionData.options.map((option, optionIndex) => (
           <OptionButton
             key={optionIndex}
@@ -334,63 +380,47 @@ const QuestionDisplay = ({
           />
         ))}
       </div>
+
+      {/* Bottom accent */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-40" />
     </motion.div>
   );
 };
 
-const ProgressBar = ({ current, total }) => {
-  const progress = (current / total) * 100;
-
-  return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-xl font-semibold text-white/90">Progress</span>
-        <span className="text-xl font-bold text-white">
-          {current}/{total} ({Math.round(progress)}%)
-        </span>
-      </div>
-      <div className="w-full h-8 bg-gray-300/50 rounded-full overflow-hidden shadow-inner">
-        <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 relative"
-          initial={{ width: "0%" }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-white/20"
-            animate={{
-              opacity: [0, 0.3, 0],
-              x: ["-100%", "100%"],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
+// Enhanced OptionButton component
 const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
   return (
     <motion.button
-      whileHover={!isDisabled && { y: -5, scale: 1.03 }}
-      whileTap={!isDisabled && { scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      className={`py-5 px-6 rounded-xl text-2xl font-medium transition-all duration-200 ${
-        isDisabled
-          ? "border-2 border-gray-400 text-gray-400 bg-white/20"
-          : isSelected
-          ? "border-2 border-blue-500 text-white bg-gradient-to-br from-blue-600 to-blue-800 shadow-lg"
-          : "border-2 border-blue-400 text-blue-800 bg-white/90 hover:bg-blue-100 shadow-md"
-      }`}
+      whileHover={!isDisabled ? { scale: 1.03 } : {}}
+      whileTap={!isDisabled ? { scale: 0.98 } : {}}
       onClick={onClick}
       disabled={isDisabled}
+      className={`p-5 rounded-xl text-xl font-semibold transition-all duration-200 relative overflow-hidden
+        ${
+          isSelected
+            ? "bg-gradient-to-br from-emerald-300 to-amber-300 text-gray-900 shadow-lg ring-2 ring-amber-200 shadow-amber-300/30"
+            : "bg-gray-800/80 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 hover:bg-gray-800/60"
+        }
+        ${isDisabled && !isSelected ? "opacity-70" : ""}`}
     >
       {option}
+      {isSelected && (
+        <motion.div
+          className="absolute inset-0 bg-white/20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          transition={{ duration: 0.3 }}
+        />
+      )}
+      {/* Corner accents */}
+      {!isSelected && (
+        <>
+          <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-emerald-400/50" />
+          <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-emerald-400/50" />
+          <div className="absolute bottom-1 left-1 w-2 h-2 border-b border-l border-emerald-400/50" />
+          <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-emerald-400/50" />
+        </>
+      )}
     </motion.button>
   );
 };
@@ -529,11 +559,6 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <ProgressBar
-                current={currentQuestionIndex + 1}
-                total={quizQuestions.length}
-              />
-
               <QuestionDisplay
                 questionData={quizQuestions[currentQuestionIndex]}
                 index={currentQuestionIndex}

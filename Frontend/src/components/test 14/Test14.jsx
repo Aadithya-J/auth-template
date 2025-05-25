@@ -11,10 +11,25 @@ import {
   MicOff,
   Loader2,
 } from "lucide-react";
+import {
+  FaArrowRight,
+  FaChevronRight,
+  FaCheck,
+  FaArrowLeft,
+} from "react-icons/fa";
 import { backendURL } from "../../definedURL";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { useLanguage } from "../../contexts/LanguageContext.jsx";
+import backgroundImage from "../../assets/sound-blending/background.png";
+import characterImage from "../../assets/sound-blending/dolphin.png";
+import { useNavigate } from "react-router-dom";
+const dialog = [
+  "Welcome to Blender’s Bay, a magical place where word waves and swirling whirlpools help us blend sounds together!",
+  "I’m Blenda the Dolphin, your guide on this journey. Let’s dive into the gentle waves and swirl the sounds to create new words!",
+  "Are you ready? Let’s see what words we can make by blending these sounds together!",
+];
+
 const WORDS = [
   {
     id: 1,
@@ -342,17 +357,19 @@ export default function PhonemeGame({
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [currentTranscriptionStatus, setCurrentTranscriptionStatus] =
     useState("idle");
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const audioRef = useRef(null);
   const inputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const streamRef = useRef(null);
   const isRecordingRef = useRef(isRecording);
-
+  const [showIntro, setShowIntro] = useState(true);
+  const [currentDialog, setCurrentDialog] = useState(0);
   const childId = localStorage.getItem("childId") || (student && student.id);
   const token = localStorage.getItem("access_token");
 
+  const navigate = useNavigate();
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
@@ -750,118 +767,6 @@ export default function PhonemeGame({
     }
   };
 
-  if (gameState === "results") {
-    const incorrectCount = responses.filter((r) => !r.isCorrect).length;
-    const rawScore = Math.max(0, 20 - incorrectCount);
-    const finalScore = Math.min(10, Math.max(0, Math.round(rawScore / 2)));
-    const percentage = Math.max(
-      0,
-      Math.min(100, Math.round((finalScore / 10) * 100))
-    );
-
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-50 p-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6"
-        >
-          <div className="text-center">
-            <motion.div
-              initial={{ y: -20 }}
-              animate={{ y: 0 }}
-              className="inline-block bg-blue-100 p-3 rounded-full mb-4"
-            >
-              {finalScore >= 8 ? "🎉" : finalScore >= 5 ? "👍" : "🌱"}
-            </motion.div>
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600">
-              Test Completed!
-            </h1>
-            {/* Show error message if submission failed */}
-            {error && (
-              <p className="mt-4 text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200">
-                {error}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col items-center space-y-4">
-            <motion.div
-              initial={{ rotate: -180 }}
-              animate={{ rotate: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="relative"
-            >
-              <svg className="w-36 h-36" viewBox="0 0 36 36">
-                <path
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="#e6e6e6"
-                  strokeWidth="3"
-                />
-                <motion.path
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="url(#gradient)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  initial={{ strokeDasharray: "0, 100" }}
-                  animate={{ strokeDasharray: `${percentage}, 100` }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                />
-                <defs>
-                  <linearGradient
-                    id="gradient"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="100%"
-                  >
-                    <stop offset="0%" stopColor="#4F46E5" />
-                    <stop offset="100%" stopColor="#60A5FA" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500"
-                >
-                  {finalScore}/10
-                </motion.span>
-                <span className="text-sm font-medium text-blue-800">
-                  {responses.filter((r) => r.isCorrect).length}/{WORDS.length}{" "}
-                  correct
-                </span>
-              </div>
-            </motion.div>
-          </div>
-          <div className="max-h-64 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50 p-1">
-            <AnimatePresence>
-              {responses.map((item, index) => (
-                <ResultCard
-                  key={item.wordId || index}
-                  item={item}
-                  index={index}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
-          {/* Button depends on suppressResultPage */}
-          <Button
-            onClick={() => onComplete && onComplete(finalScore)}
-            variant="primary"
-            className="w-full"
-          >
-            <ArrowRight className="h-5 w-5" />
-            {suppressResultPage ? "Next Test" : "Finish"}
-          </Button>
-        </motion.div>
-      </div>
-    );
-  }
-
   const currentWord = WORDS[currentWordIndex];
   const progress = Math.min(100, (currentWordIndex / WORDS.length) * 100);
 
@@ -906,234 +811,588 @@ export default function PhonemeGame({
         );
     }
   };
-
+  const handleNext = () => {
+    if (currentDialog < dialog.length - 1) {
+      setCurrentDialog((prev) => prev + 1);
+    } else {
+      setShowIntro(false);
+    }
+  };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-50 p-6">
-      <AnimatePresence>
-        {isSubmittingAll && <LoadingOverlay message={loadingMessage} />}
-      </AnimatePresence>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 space-y-6"
-      >
-        {/* Progress Bar */}
-        <div className="space-y-1">
-          <ProgressBar progress={progress} />
-          <div className="flex justify-between text-xs text-blue-500">
-            <span>Start</span>
-            <span>
-              Word {currentWordIndex + 1} of {WORDS.length}
-            </span>
-            <span>Finish</span>
+    <>
+      {showIntro ? (
+        <>
+          {/* Blurred background with animated overlay */}
+          <div className="fixed inset-0 z-40">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                filter: "blur(8px)",
+              }}
+            />
+            <motion.div
+              className="absolute inset-0 bg-black/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            />
           </div>
-        </div>
 
-        {/* Header Text */}
-        <div className="text-center space-y-1">
-          <motion.h2
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600"
-          >
-            Blend the Sounds!
-          </motion.h2>
-          <p className="text-blue-600 font-medium">
-            {showResponseArea
-              ? "Enter or say the word you heard"
-              : "Listen carefully"}
-          </p>
-        </div>
-
-        {/* Error Display */}
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm"
-          >
-            <div className="flex items-center">
-              <div className="mr-2">⚠️</div>
-              <p>{error}</p>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Central Icon */}
-        <motion.div
-          animate={{ scale: isPlayingSound || isRecording ? [1, 1.1, 1] : 1 }}
-          transition={{
-            duration: 1,
-            repeat: isPlayingSound || isRecording ? Infinity : 0,
-            ease: "easeInOut",
-          }}
-          className="flex justify-center text-8xl my-6"
-        >
-          {/* Determine icon based on state */}
-          {isPlayingSound
-            ? "👂"
-            : showResponseArea
-            ? isRecording
-              ? "🎙️"
-              : isTranscribing
-              ? "💬"
-              : currentTranscriptionStatus === "done"
-              ? "✅"
-              : "✏️"
-            : "🔊"}
-        </motion.div>
-
-        {/* Initial State: Play Sounds Button */}
-        {!showResponseArea && !showFinalSubmitButton && (
-          <div className="space-y-4">
+          {/* Main content container */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-blue-50 rounded-lg p-4 shadow-sm border border-blue-100"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, type: "spring" }}
+              className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
             >
-              <p className="text-center text-blue-700">
-                Listen to the sounds and combine them to form a word
-              </p>
-            </motion.div>
-            <Button
-              onClick={playCurrentWordSounds}
-              disabled={isPlayingSound}
-              variant={isPlayingSound ? "secondary" : "primary"}
-              className="w-full"
-            >
-              <Volume2 className="h-5 w-5" />
-              {isPlayingSound ? "Playing Sounds..." : "Play Sounds"}
-            </Button>
-          </div>
-        )}
-
-        {/* Response State: Input Field, Record Button, Submit/Skip */}
-        {showResponseArea && !showFinalSubmitButton && (
-          <div className="space-y-3">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-100"
-            >
-              <p className="text-center font-medium text-blue-700">
-                What word did you hear?
-              </p>
-            </motion.div>
-
-            {/* Transcription Status */}
-            {renderTranscriptionStatus()}
-
-            {/* Input Field */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="w-full"
-            >
-              <input
-                ref={inputRef}
-                type="text"
-                value={userInput}
-                onChange={handleInputChange}
-                placeholder="Type or Record your answer"
-                className="w-full px-4 py-3 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center font-medium text-blue-800 placeholder-blue-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                onKeyPress={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    userInput.trim() &&
-                    !isRecording &&
-                    !isTranscribing
-                  ) {
-                    handleSubmitResponse();
-                  }
+              {/* Floating character on the left */}
+              <motion.div
+                initial={{ y: -40, opacity: 0 }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  scale: [1, 1.03, 1],
+                  rotate: [0, 2, -2, 0],
                 }}
-                disabled={
-                  isRecording ||
-                  isTranscribing ||
-                  isPlayingSound ||
-                  isSubmittingAll
-                }
-              />
-            </motion.div>
-
-            {/* Action Buttons Container */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-col gap-2 w-full"
-            >
-              {/* Top Row: Record / Submit */}
-              <div className="flex flex-col sm:flex-row gap-2">
-                {/* Record/Stop Button */}
-                <Button
-                  onClick={isRecording ? stopListening : startListening}
-                  variant={isRecording ? "danger" : "secondary"}
-                  className="flex-1 order-1"
-                  disabled={isPlayingSound || isTranscribing || isSubmittingAll}
-                >
-                  {isRecording ? (
-                    <MicOff className="h-5 w-5" />
-                  ) : (
-                    <Mic className="h-5 w-5" />
-                  )}
-                  {isRecording ? "Stop Recording" : "Record Answer"}
-                </Button>
-
-                {/* Submit Button */}
-                <Button
-                  onClick={handleSubmitResponse}
-                  variant="success"
-                  className="flex-1 order-2"
-                  disabled={
-                    !userInput.trim() ||
-                    isRecording ||
-                    isTranscribing ||
-                    isPlayingSound ||
-                    isSubmittingAll
-                  }
-                >
-                  <Check className="h-5 w-5" />
-                  Submit Answer
-                </Button>
-              </div>
-              {/* Bottom Row: Skip Button */}
-              <Button
-                onClick={skipWord}
-                variant="warning"
-                className="w-full order-3"
-                disabled={
-                  isPlayingSound ||
-                  isRecording ||
-                  isTranscribing ||
-                  isSubmittingAll
-                }
+                transition={{
+                  y: { duration: 0.6, ease: "backOut" },
+                  opacity: { duration: 0.8 },
+                  scale: {
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut",
+                  },
+                  rotate: {
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="flex-shrink-0 order-2 lg:order-1"
               >
-                <SkipForward className="h-5 w-5" /> Skip Word
-              </Button>
+                <img
+                  src={characterImage}
+                  alt="Blenda the Dolphin"
+                  className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
+                />
+              </motion.div>
+
+              {/* Enhanced glass-morphism dialog box */}
+              <motion.div
+                className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, type: "spring" }}
+              >
+                {/* Enhanced decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
+                <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
+
+                {/* Enhanced animated dialog text */}
+                <motion.div
+                  key={currentDialog}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+                >
+                  <span className="drop-shadow-lg">
+                    {dialog[currentDialog]}
+                  </span>
+                </motion.div>
+
+                {/* Enhanced progress indicators */}
+                <div className="flex justify-center gap-3 mb-8 lg:mb-10">
+                  {dialog.map((_, index) => (
+                    <motion.div
+                      key={index}
+                      className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+                        index <= currentDialog
+                          ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
+                          : "bg-white/30"
+                      }`}
+                      initial={{ scale: 0.8 }}
+                      animate={{
+                        scale: index === currentDialog ? 1.3 : 1,
+                        y: index === currentDialog ? -4 : 0,
+                      }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    />
+                  ))}
+                </div>
+
+                {/* Enhanced animated action button */}
+                <div className="flex justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNext}
+                    className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
+                      currentDialog < dialog.length - 1
+                        ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
+                        : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
+                    }`}
+                  >
+                    {currentDialog < dialog.length - 1 ? (
+                      <>
+                        <span className="drop-shadow-sm">Next</span>
+                        <FaChevronRight className="mt-0.5 drop-shadow-sm" />
+                      </>
+                    ) : (
+                      <>
+                        <span className="drop-shadow-sm">{t("imReady")}</span>
+                        <FaCheck className="mt-0.5 drop-shadow-sm" />
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
-        )}
-
-        {/* Final Submit Button State */}
-        {showFinalSubmitButton && (
-          <div className="text-center space-y-4 pt-4">
-            <p className="text-lg font-semibold text-blue-800">
-              All words attempted!
-            </p>
-            <Button
-              onClick={handleFinalSubmit}
-              variant="primary"
-              className="w-full max-w-xs mx-auto"
-              isLoading={isSubmittingAll}
-            >
-              Submit All Results
-            </Button>
+        </>
+      ) : (
+        <>
+          {/* Game Page with Ocean Background */}
+          <div className="fixed inset-0 z-40">
+            {/* background   */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="absolute inset-0 bg-black/20" />
           </div>
-        )}
-      </motion.div>
-    </div>
+
+          {/* Main game content */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 ">
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              onClick={() => navigate("/taketests")}
+              className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaArrowLeft className="text-blue-600" />
+              {t("BacktoTests")}
+            </motion.button>
+            <AnimatePresence>
+              {isSubmittingAll && <LoadingOverlay message={loadingMessage} />}
+            </AnimatePresence>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", damping: 10 }}
+              className="w-full max-w-2xl bg-gradient-to-br from-cyan-600/80 to-white/30 rounded-3xl shadow-2xl p-8 space-y-8 backdrop-blur-md border-2 border-white/40 relative overflow-hidden"
+            >
+              {/* Progress Bar with Wave Design */}
+              <div className="space-y-3 relative z-10">
+                <div className="relative h-5 bg-white/30 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-[#3FB8AF] to-[#7E6BC4] rounded-full relative"
+                    style={{ width: `${progress}%` }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.8 }}
+                  >
+                    <div className="absolute inset-0 bg-[url('/images/wave-pattern.png')] bg-[length:20px_10px] opacity-40" />
+                  </motion.div>
+                </div>
+                <div className="flex justify-between text-lg font-medium text-black-900">
+                  <span>Start</span>
+                  <span className="text-black-900 font-bold">
+                    Word {currentWordIndex + 1} of {WORDS.length}
+                  </span>
+                  <span>Finish</span>
+                </div>
+              </div>
+
+              {/* Header with Dolphin Animation */}
+              <div className="text-center space-y-4 relative z-10">
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="relative inline-block"
+                >
+                  <motion.h2
+                    className="text-4xl font-bold bg-clip-text text-[#F6F9FC]/90"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    Blend the Sounds!
+                  </motion.h2>
+                  <motion.div
+                    animate={{ x: [0, 15, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                    }}
+                    className="absolute -right-12 -top-6 text-5xl"
+                  >
+                    🐬
+                  </motion.div>
+                </motion.div>
+                <motion.p
+                  className="text-blue-700 font-semibold text-xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {showResponseArea
+                    ? "Enter or say the word you heard"
+                    : "Listen carefully to the sounds"}
+                </motion.p>
+              </div>
+
+              {/* Error Display with Bubble Effect */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  className="bg-[#1B2B34]/90 border-2 border-[#FFC9DE] text-white p-4 rounded-xl shadow-lg"
+                >
+                  <div className="flex items-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="mr-3 text-2xl"
+                    >
+                      ⚠️
+                    </motion.div>
+                    <p className="text-lg">{error}</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Central Interactive Element */}
+              <motion.div
+                className="flex justify-center my-8 relative z-10"
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="relative">
+                  {/* Base Circle */}
+                  <motion.div
+                    animate={{
+                      scale: isPlayingSound || isRecording ? [1, 1.1, 1] : 1,
+                      rotate: isPlayingSound || isRecording ? [0, 5, -5, 0] : 0,
+                      background: isPlayingSound
+                        ? "radial-gradient(circle, #3FB8AF, #7E6BC4)"
+                        : showResponseArea
+                        ? isRecording
+                          ? "radial-gradient(circle, #FFC9DE, #7E6BC4)"
+                          : "radial-gradient(circle, #A7D676, #3FB8AF)"
+                        : "radial-gradient(circle, #7E6BC4, #3FB8AF)",
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: isPlayingSound || isRecording ? Infinity : 0,
+                      ease: "easeInOut",
+                    }}
+                    className="w-40 h-40 rounded-full flex items-center justify-center shadow-xl border-4 border-white/40"
+                  >
+                    {/* Dynamic Content */}
+                    {isPlayingSound ? (
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.8, 1, 0.8],
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                        }}
+                        className="text-7xl"
+                      >
+                        🌊
+                      </motion.div>
+                    ) : showResponseArea ? (
+                      isRecording ? (
+                        <motion.div
+                          animate={{ scale: [0.9, 1.1] }}
+                          transition={{
+                            duration: 0.5,
+                            repeat: Infinity,
+                            repeatType: "reverse",
+                          }}
+                          className="text-7xl"
+                        >
+                          🎤
+                        </motion.div>
+                      ) : isTranscribing ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          className="text-7xl"
+                        >
+                          🌀
+                        </motion.div>
+                      ) : currentTranscriptionStatus === "done" ? (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="text-7xl"
+                        >
+                          ✨
+                        </motion.div>
+                      ) : (
+                        <div className="text-7xl">🔊</div>
+                      )
+                    ) : (
+                      <div className="text-7xl">🐚</div>
+                    )}
+                  </motion.div>
+
+                  {/* Pulsing Ring Effect */}
+                  {(isPlayingSound || isRecording) && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0.7 }}
+                      animate={{ scale: 1.5, opacity: 0 }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                      }}
+                      className="absolute inset-0 border-4 border-[#7E6BC4] rounded-full pointer-events-none"
+                    />
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Initial State: Play Sounds Button */}
+              {!showResponseArea && !showFinalSubmitButton && (
+                <div className="space-y-6 relative z-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-gradient-to-br from-[#1B2B34]/80 via-[#1B2B34]/50 to-[#1B2B34]/40 rounded-xl p-5 shadow-lg border border-[#3FB8AF]/40"
+                  >
+                    <p className="text-center text-xl text-white">
+                      Listen to the sounds and combine them to form a word
+                    </p>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Button
+                      onClick={playCurrentWordSounds}
+                      disabled={isPlayingSound}
+                      className="w-full bg-gradient-to-r from-[#3FB8AF] to-[#7E6BC4] hover:from-[#7E6BC4] hover:to-[#3FB8AF] text-white font-bold py-4 text-xl rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105"
+                    >
+                      {isPlayingSound ? (
+                        <motion.span
+                          animate={{ opacity: [0.6, 1, 0.6] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                          className="flex items-center justify-center gap-3"
+                        >
+                          <Volume2 className="h-6 w-6" /> Playing Sounds...
+                        </motion.span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-3">
+                          <Volume2 className="h-6 w-6" /> Play Sounds
+                        </span>
+                      )}
+                    </Button>
+                  </motion.div>
+                </div>
+              )}
+
+              {/* Response State: Input Field, Record Button, Submit/Skip */}
+              {showResponseArea && !showFinalSubmitButton && (
+                <div className="space-y-6 relative z-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-[#1B2B34]/90 rounded-xl p-5 shadow-lg border border-[#A7D676]/40"
+                  >
+                    <p className="text-center text-xl font-semibold text-white">
+                      What word did you hear?
+                    </p>
+                  </motion.div>
+
+                  {/* Transcription Status */}
+                  {renderTranscriptionStatus()}
+
+                  {/* Input Field with Wave Underline */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="relative"
+                  >
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={userInput}
+                      onChange={handleInputChange}
+                      placeholder="Type or Record your answer"className="w-full px-5 py-4 rounded-xl bg-white/30 backdrop-blur-md border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/70 focus:border-transparent text-center font-semibold text-xl text-black placeholder-black/50 shadow-lg"
+
+                      onKeyPress={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          userInput.trim() &&
+                          !isRecording &&
+                          !isTranscribing
+                        ) {
+                          handleSubmitResponse();
+                        }
+                      }}
+                      disabled={
+                        isRecording ||
+                        isTranscribing ||
+                        isPlayingSound ||
+                        isSubmittingAll
+                      }
+                    />
+                    <motion.div
+                      animate={{
+                        scaleX: [1, 1.05, 1],
+                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-[#3FB8AF] to-transparent opacity-80"
+                    />
+                  </motion.div>
+
+                  {/* Action Buttons */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="grid grid-cols-2 gap-4"
+                  >
+                    {/* Record Button */}
+                    <Button
+                      onClick={isRecording ? stopListening : startListening}
+                      className={`rounded-xl py-4 text-xl font-bold shadow-lg transition-all ${
+                        isRecording
+                          ? "bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] animate-pulse"
+                          : "bg-gradient-to-r from-[#7E6BC4] to-[#9D8BDE] hover:from-[#9D8BDE] hover:to-[#7E6BC4]"
+                      }`}
+                      disabled={
+                        isPlayingSound || isTranscribing || isSubmittingAll
+                      }
+                    >
+                      {isRecording ? (
+                        <motion.span
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 0.5, repeat: Infinity }}
+                          className="flex items-center justify-center gap-3"
+                        >
+                          <MicOff className="h-6 w-6" /> Stop
+                        </motion.span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-3">
+                          <Mic className="h-6 w-6" /> Record
+                        </span>
+                      )}
+                    </Button>
+
+                    {/* Submit Button */}
+                    <Button
+                      onClick={handleSubmitResponse}
+                      className="bg-gradient-to-r from-[#A7D676] to-[#C1E89C] hover:from-[#C1E89C] hover:to-[#A7D676] text-[#1B2B34] font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
+                      disabled={
+                        !userInput.trim() ||
+                        isRecording ||
+                        isTranscribing ||
+                        isPlayingSound ||
+                        isSubmittingAll
+                      }
+                    >
+                      <Check className="h-6 w-6" /> Submit
+                    </Button>
+
+                    {/* Skip Button - Full width below */}
+                    <Button
+                      onClick={skipWord}
+                      className="col-span-2 bg-gradient-to-r from-[#FFC9DE] to-[#FFD9E8] text-[#1B2B34] font-bold py-4 text-xl rounded-xl shadow-lg hover:from-[#FFD9E8] hover:to-[#FFC9DE] transition-all transform hover:scale-[1.01]"
+                      disabled={
+                        isPlayingSound ||
+                        isRecording ||
+                        isTranscribing ||
+                        isSubmittingAll
+                      }
+                    >
+                      <SkipForward className="h-6 w-6" /> Skip Word
+                    </Button>
+                  </motion.div>
+                </div>
+              )}
+
+              {/* Final Submit Button State */}
+              {showFinalSubmitButton && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center space-y-6 pt-6 relative z-10"
+                >
+                  <motion.p
+                    className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#A7D676]"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    All words attempted!
+                  </motion.p>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      onClick={handleFinalSubmit}
+                      className="bg-gradient-to-r from-[#3FB8AF] via-[#7E6BC4] to-[#FFC9DE] hover:from-[#FFC9DE] hover:via-[#7E6BC4] hover:to-[#3FB8AF] text-white font-bold py-5 px-10 rounded-xl shadow-xl text-xl relative overflow-hidden"
+                      isLoading={isSubmittingAll}
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-3">
+                        <Send className="h-6 w-6" /> Submit All Results
+                      </span>
+                      <motion.div
+                        animate={{
+                          x: ["-100%", "100%"],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      />
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
