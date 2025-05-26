@@ -275,7 +275,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [currentWords, setCurrentWords] = useState([]);
   const [wordShells, setWordShells] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordsPerBatch, setWordsPerBatch] = useState(16);
+  const [wordsPerBatch, setWordsPerBatch] = useState(12); // Changed from 16 to 12
   const wordIntervalRef = useRef(null);
   const [tutorialPhase, setTutorialPhase] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
@@ -325,7 +325,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
 
   const startWordBatches = (words) => {
     setCurrentWordIndex(0);
-    setWordsPerBatch(4); // 15 seconds for each batch
+    setWordsPerBatch(12); // Changed from 4 to 12, ensure this aligns with your intent or remove if not needed
   };
 
   useEffect(() => {
@@ -684,22 +684,18 @@ function Test6({ suppressResultPage = false, onComplete }) {
             </div>
 
             {/* Ancient paper container with responsive sizing */}
-            <div className="relative mb-8 w-full max-w-4xl mx-auto">
-              <div className="relative" style={{ paddingTop: "75%" }}>
-                {/* Adjust aspect ratio */}
+            <div className="relative mb-8 w-full max-w-3xl mx-auto">
+              <div className="relative h-[600px] max-h-[600px]">
                 <img
                   src={ancientPaper}
-                  className="absolute top-0 left-0 w-full h-full object-contain"
+                  className="w-full h-full object-cover rounded-lg"
                   alt="Ancient paper background"
                 />
-                {/* Responsive grid */}
-                <div className="absolute inset-0 grid grid-cols-4 grid-rows-4">
+                {/* Responsive grid - positioned absolutely over the image */}
+                <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-1 p-24 pr-48"> {/* Changed grid-cols-4 to grid-cols-3 */}
                   {visibleWords.map((wordObj, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-center"
-                    >
-                      <span className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black text-center break-words leading-tight">
+                    <div key={index} className="flex items-center justify-center rounded-md shadow-sm p-4">
+                      <span className="text-sm md:text-base lg:text-lg font-bold text-black text-center leading-tight">
                         {wordObj.word}
                       </span>
                     </div>

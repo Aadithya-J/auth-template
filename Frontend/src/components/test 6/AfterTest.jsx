@@ -142,7 +142,7 @@ const TestResults = () => {
   return (
     <>
       <motion.div
-        className="min-h-screen w-full overflow-y-auto bg-cover bg-center bg-no-repeat bg-fixed"
+        className="fixed inset-0 overflow-y-auto bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${islandImage})` }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -486,6 +486,16 @@ const TestResults = () => {
                           >
                             <RefreshCw className="w-5 h-5 mr-2" />
                             Try Again
+                          </motion.button>
+                          <motion.button
+                            onClick={() => navigate("/")}
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-50 flex items-center justify-center mx-auto mt-4"
+                            whileHover={{
+                              boxShadow: "0px 5px 15px rgba(14, 165, 233, 0.4)",
+                            }}
+                          >
+                            <Compass className="w-5 h-5 mr-2" />
+                            Go Home
                           </motion.button>
                         </motion.div>
                       )}
