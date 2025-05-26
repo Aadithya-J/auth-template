@@ -112,119 +112,11 @@ function Test13({ suppressResultPage = false, onComplete }) {
     console.warn("Speech synthesis not supported in this browser.");
   }
 };
-/*
-  const parseTranscript = (transcript) => {
-    if (!transcript) return [];
-
-    // Use language-specific digit map
-    const digitMap = langData.digitMap;
-
-    // Normalize: lowercase, remove punctuation, replace number words
-    let cleaned = transcript.toLowerCase().replace(/[.,!?]/g, "");
-    Object.entries(digitMap).forEach(([word, digit]) => {
-      cleaned = cleaned.replace(new RegExp(`\\b${word}\\b`, "g"), digit);
-    });
-
-    // Attempt to split by space and validate
-    const spaceSplit = cleaned.trim().split(/\s+/);
-    if (spaceSplit.every((item) => /^\d$/.test(item))) {
-      return spaceSplit.map(Number);
-    }
-
-    // Attempt to treat as concatenated digits
-    const concatenated = cleaned.replace(/\s+/g, "");
-    if (/^\d+$/.test(concatenated)) {
-      return concatenated.split("").map(Number);
-    }
-
-    console.warn("Could not reliably parse transcript:", transcript);
-    toast.warn(t("could_not_understand_numbers"));
-    return []; // Return empty if parsing fails
-  };
-*/
-/*
-const parseTranscript = (transcriptInput) => {
-  // Use the langData from the component's scope.
-  // It will reflect the currently selected language.
-  const currentLangData = test13Translations[language] || test13Translations.en;
-  const digitMap = currentLangData.digitMap || {};
-
-  if (!transcriptInput || transcriptInput.trim() === "") {
-    console.log("parseTranscript: Input is empty or only whitespace.");
-    return [];
-  }
-
-  // Normalize: lowercase, remove typical punctuation, trim whitespace
-  let processedTranscript = transcriptInput
-    .toLowerCase()
-    .replace(/[.,!?]/g, "")
-    .trim();
-  // console.log("parseTranscript: Initial processedTranscript:", processedTranscript);
-
-  // Sort digitMap keys by length, descending.
-  const sortedWords = Object.keys(digitMap).sort((a, b) => b.length - a.length);
-
-  for (const word of sortedWords) {
-    // Using global regex replacement. \b ensures whole word match.
-    const regex = new RegExp(`\\b${word}\\b`, "gi"); // global, case-insensitive
-    processedTranscript = processedTranscript.replace(regex, String(digitMap[word]));
-  }
-  // console.log("parseTranscript: Transcript after digitMap replacement:", processedTranscript);
-
-  // Remove any remaining non-digit characters, BUT KEEP SPACES.
-  let numbersAndSpaces = processedTranscript.replace(/[^\d\s]/g, "");
-  // console.log("parseTranscript: Transcript after stripping non-digits (except spaces):", numbersAndSpaces);
-
-  // Trim whitespace from ends and normalize multiple spaces within to single spaces.
-  let cleaned = numbersAndSpaces.trim().replace(/\s+/g, " ");
-  // console.log("parseTranscript: Cleaned transcript (only digits and single spaces):", cleaned);
-
-  if (cleaned === "") {
-    console.warn(
-      "parseTranscript: Cleaned transcript is empty after processing. Original:",
-      transcriptInput
-    );
-    // This function no longer shows a toast here.
-    // It returns an empty array, and `evaluateAnswer` will decide on user feedback.
-    return [];
-  }
-
-  // Attempt 1: Treat as space-separated single digits
-  const spaceSplit = cleaned.split(" ").filter(s => s !== ""); // Filter out empty strings
-
-  if (
-    spaceSplit.length > 0 &&
-    spaceSplit.every((item) => /^\d$/.test(item) && item.length === 1) // Ensures each part is a single digit
-  ) {
-    // console.log("parseTranscript: Parsed via spaceSplit:", spaceSplit.map(Number));
-    return spaceSplit.map(Number);
-  }
-
-  // Attempt 2: Treat as a concatenated string of digits
-  const concatenated = cleaned.replace(/\s+/g, ""); // Remove all spaces
-  if (concatenated.length > 0 && /^\d+$/.test(concatenated)) {
-    // console.log("parseTranscript: Parsed via concatenated:", concatenated.split("").map(Number));
-    return concatenated.split("").map(Number);
-  }
-
-  console.warn(
-    "parseTranscript: Could not reliably parse. Original:", transcriptInput,
-    "Processed up to (cleaned):", cleaned,
-    "SpaceSplit attempt failed on:", spaceSplit,
-    "Concatenated attempt failed on:", concatenated
-  );
-  
-  return []; 
-};
-*/
  
-
 const parseTranscript = (transcriptInput) => {
-  // Get the digitMap for the current language, fallback to English if language-specific map is missing/empty
   const currentLangData = test13Translations[language] || test13Translations.en;
   let digitMap = currentLangData.digitMap || {};
 
-  // If the current language's digitMap is empty or undefined, try to fallback to English's digitMap
   if (Object.keys(digitMap).length === 0 && language !== "en" && test13Translations.en && test13Translations.en.digitMap) {
     console.warn(`parseTranscript: No digitMap for language "${language}", falling back to English digitMap.`);
     digitMap = test13Translations.en.digitMap;
@@ -241,31 +133,19 @@ const parseTranscript = (transcriptInput) => {
     return [];
   }
 
-  // 1. Normalize: lowercase, remove typical punctuation, trim whitespace
   let processedTranscript = transcriptInput
     .toLowerCase() // Convert to lowercase for consistent matching
     .replace(/[.,!?]/g, "") // Remove common punctuation
     .trim();
   console.log(`parseTranscript STAGE 1: Initial processed input: "${processedTranscript}" (Original: "${transcriptInput}")`);
 
-  // 2. Replace words from digitMap
-  // Sort digitMap keys by length (descending) to replace longer matches first.
-  // This is important if you have multi-word numbers mapped, e.g. "twenty one" and "one".
   const sortedWords = Object.keys(digitMap).sort(
     (a, b) => b.length - a.length
   );
 
   let anyReplacementMade = false;
   for (const word of sortedWords) {
-    // Escape any special regex characters in the 'word' key from the digitMap.
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-    // Unicode-aware regex for word boundaries:
-    // (?<!\p{L}) - Asserts that the match is not preceded by a Unicode letter.
-    // (?!\p{L}) - Asserts that the match is not followed by a Unicode letter.
-    // 'u' flag enables full Unicode matching.
-    // 'g' flag for global replacement.
-    // 'i' flag for case-insensitivity (though input is already lowercased, this is belt-and-suspenders).
     const regex = new RegExp(`(?<!\\p{L})${escapedWord}(?!\\p{L})`, "gui");
 
     if (regex.test(processedTranscript)) { // Check if the word exists before attempting replacement
@@ -281,14 +161,8 @@ const parseTranscript = (transcriptInput) => {
     console.log(`parseTranscript STAGE 2: Final after all potential digitMap replacements: "${processedTranscript}"`);
   }
 
-
-  // 3. Remove any remaining non-digit characters, BUT KEEP SPACES.
-  // This step is crucial for cleaning up any residual non-numeric text
-  // that wasn't part of the digitMap or any other words mixed in.
-  let numbersAndSpaces = processedTranscript.replace(/[^\d\s]/gu, ""); // Added 'u' flag for Unicode
   console.log(`parseTranscript STAGE 3: After stripping all non-digits (except spaces): "${numbersAndSpaces}"`);
 
-  // 4. Trim whitespace from ends and normalize multiple spaces within to single spaces.
   let cleaned = numbersAndSpaces.trim().replace(/\s+/g, " ");
   console.log(`parseTranscript STAGE 4: Final cleaned (should be only digits and single spaces): "${cleaned}"`);
 
@@ -299,8 +173,6 @@ const parseTranscript = (transcriptInput) => {
     return [];
   }
 
-  // 5. Attempt to parse the cleaned string into an array of numbers
-  // Attempt 1: Treat as space-separated single digits (e.g., "4 9")
   const spaceSplit = cleaned.split(" ").filter((s) => s !== ""); // Filter out empty strings from split
 
   if (
@@ -313,8 +185,6 @@ const parseTranscript = (transcriptInput) => {
   }
   console.log("parseTranscript STAGE 5: Failed to parse via spaceSplit. Current spaceSplit array:", spaceSplit);
 
-
-  // Attempt 2: Treat as a concatenated string of digits (e.g., "49" if spaces were missing or removed)
   const concatenated = cleaned.replace(/\s+/g, ""); // Remove all spaces
   if (concatenated.length > 0 && /^\d+$/.test(concatenated)) { // Check if it's purely digits
     const result = concatenated.split("").map(Number);
@@ -323,8 +193,6 @@ const parseTranscript = (transcriptInput) => {
   }
   console.log("parseTranscript STAGE 5: Failed to parse via concatenated digits. Current concatenated string:", concatenated);
 
-
-  // If all parsing attempts fail
   console.warn(
     "parseTranscript STAGE 5: All parsing attempts failed. Could not reliably parse numbers.",
     `Original Input: "${transcriptInput}"`,
@@ -333,7 +201,6 @@ const parseTranscript = (transcriptInput) => {
   return [];
 };
 
-  // Ref to hold the current value of isRecording for use in callbacks
   const isRecordingRef = useRef(isRecording);
   useEffect(() => {
     isRecordingRef.current = isRecording;
@@ -383,22 +250,18 @@ const parseTranscript = (transcriptInput) => {
   );
 
   const stopListening = useCallback(() => {
-    // console.log("Attempting to stop listening...");
-
-    // Stop the media recorder if it's recording
+ 
     if (
       mediaRecorderRef.current &&
       mediaRecorderRef.current.state === "recording"
     ) {
       try {
         mediaRecorderRef.current.stop();
-        // console.log("MediaRecorder.stop() called.");
       } catch (e) {
         console.error("Error stopping MediaRecorder:", e);
       }
     }
 
-    // Stop all tracks on the stream
     if (window.stream) {
       try {
         window.stream.getTracks().forEach((track) => {
@@ -411,51 +274,37 @@ const parseTranscript = (transcriptInput) => {
       window.stream = null;
     }
 
-    // Clean up the recorder reference *after* stopping
     mediaRecorderRef.current = null;
 
-    // Update state: Use ref to check *current* value before setting
     if (isRecordingRef.current) {
       setIsRecording(false);
     }
-    // This function is the single source of truth for setting isRecording=false
-  }, [isRecordingRef]); // Depend on the ref wrapper state
+  }, [isRecordingRef]); 
 
   const startListening = useCallback(() => {
-    // console.log("Attempting to start listening...");
     if (isRecordingRef.current) {
-      // Check ref first
-      // console.log("Already recording (ref check), returning.");
       return;
     }
 
     setTranscript("");
     setEvaluationResult(null);
-    // console.log("Requesting user media...");
 
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-        //  console.log("Got user media stream.");
         window.stream = stream;
         let localAudioChunks = [];
 
-        // Add listener for stream track ending unexpectedly
         if (stream.getAudioTracks().length > 0) {
           stream.getAudioTracks()[0].onended = () => {
             console.warn("Audio track ended unexpectedly!");
-            // Attempt cleanup if the track ends prematurely
             stopListening();
           };
         }
 
         const newMediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = newMediaRecorder;
-        //  console.log("New MediaRecorder created.");
-
-        // Add onstart listener
         newMediaRecorder.onstart = () => {
-          // console.log("MediaRecorder onstart event fired. State:", newMediaRecorder.state);
         };
 
         // Simplified ondataavailable
@@ -493,17 +342,13 @@ const parseTranscript = (transcriptInput) => {
         // Start recording
         try {
           newMediaRecorder.start();
-          // console.log("MediaRecorder.start() called. Initial state:", newMediaRecorder.state);
-          // It might still be 'inactive' immediately after start, 'onstart' confirms transition
         } catch (e) {
           console.error("Error calling MediaRecorder.start():", e);
           stopListening(); // Cleanup on start error
           return; // Don't proceed to set state if start failed
         }
 
-        // Set state *after* starting
         setIsRecording(true);
-        //  console.log("Set isRecording to true *after* media recorder start call.");
       })
       .catch((error) => {
         console.error("Error accessing microphone (getUserMedia):", error);
@@ -564,19 +409,9 @@ const parseTranscript = (transcriptInput) => {
     const correctAnswer =
       mode === "forward" ? currentSequence : [...currentSequence].reverse();
 
-    // If we couldn't parse any numbers from the transcript
-    /*if (userAnswer.length === 0) {
-      toast.warning(t("could_not_understand_numbers_clearly"));
-      setTranscript("");
-      setGameState("presenting");
-      return;
-    }
-    */
     if (userAnswer.length === 0 && transcript && transcript.trim() !== "") {
       toast.warning(t("could_not_understand_numbers_clearly")); // New, more specific toast
-      setTranscript(""); // Clear the confusing transcript
-
-      // Treat as an incorrect answer / error
+      setTranscript(""); 
       if (mode === "forward") setForwardErrors((prev) => prev + 1);
       else setReverseErrors((prev) => prev + 1);
 
@@ -586,11 +421,9 @@ const parseTranscript = (transcriptInput) => {
       } else {
         moveToNextSequence();
       }
-      return; // Exit after handling this specific parse failure
+      return;
     }
 
-    // Case 2: Transcript was empty to begin with (or STT returned nothing)
-    // This also implies userAnswer.length will be 0.
     if (userAnswer.length === 0 && (!transcript || transcript.trim() === "")) {
         toast.info(t("no_response_recorded_try_next")); // Feedback for no input
         // Treat as an error
@@ -644,15 +477,12 @@ const parseTranscript = (transcriptInput) => {
     t,
     speakText
   ]);
-
-  // --- Effect to update the ref with the latest digit presentation logic ---
   useEffect(() => {
     // Store a function that will call whatever is in the ref
     presentNextDigitLogicRef.current = (sequence, index) => {
       if (index >= sequence.length) {
         setDisplayedDigit(null);
         timeoutRef.current = setTimeout(() => {
-          // console.log("Presentation finished, setting gameState to listening");
           setGameState("listening");
         }, 500);
         return;
@@ -675,7 +505,6 @@ const parseTranscript = (transcriptInput) => {
 
   // --- Cleanup Effect ---
   useEffect(() => {
-    // Cleanup on unmount
     return () => {
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -683,7 +512,6 @@ const parseTranscript = (transcriptInput) => {
     };
   }, [stopListening]);
 
-  // Effect to trigger presentation
   useEffect(() => {
     if (gameState === "presenting" && sequenceIndex < sequences.length) {
       setCurrentSequence(sequences[sequenceIndex]);

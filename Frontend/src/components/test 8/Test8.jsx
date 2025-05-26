@@ -19,13 +19,14 @@ import blinkCharacter from "../../assets/visual-test/BlinkingStone.png";
 
 const CharacterDialog = ({ onComplete }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
+  const { t } = useLanguage();
 
   const dialog = [
-    "👁️ Hello, explorer... I am Blink, the Eye of Vision Rock.",
-    "🌀 This place is full of sneaky shapes. Some look almost the same… but only one is a perfect match.",
-    "🔍 Use your eyes. Look carefully. Find the one that matches exactly.",
-    "🏆 If you choose right, I'll reward you with the Shell of Sight 🐚 and the Lens of Truth 🔮. They will help you see things others can't!",
-    "⚔️ Are you ready? Let's see how sharp your eyes really are!",
+    "🦉 Hoo-hoo... Greetings, traveler. I am Gearhart, guardian of Clockwork Grove.",
+    "🌲 This forest is alive with rhythm. Its trees tick, whirl, and chime in curious patterns.",
+    "⏱️ Here, your task is not just to see, but to notice... the slightest shift, the tiniest difference — in shape, in sequence, in time.",
+    "🔍 Look closely. Choose the mark that matches the rhythm — perfectly, precisely.",
+    "⚙️ Ready yourself. Time in the Grove waits for no one...",
   ];
 
   const handleNext = () => {
@@ -163,7 +164,7 @@ const CharacterDialog = ({ onComplete }) => {
                   </>
                 ) : (
                   <>
-                    <span className="drop-shadow-sm">I'm Ready!</span>
+                    <span className="drop-shadow-sm">{t("imReady")}</span>
                     <FaCheck className="mt-0.5 drop-shadow-sm" />
                   </>
                 )}
@@ -356,11 +357,11 @@ const QuestionDisplay = ({
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="absolute -inset-3 bg-emerald-300/20 blur-xl rounded-2xl" />
+          <div className="absolute -inset-3 bg-yellow-300/10 blur-xl rounded-2xl" />
           <motion.div
             whileHover={{ scale: 1.03, rotate: 0.5 }}
             whileTap={{ scale: 0.98 }}
-            className="relative py-8 px-16 rounded-xl text-5xl font-bold border-2 border-emerald-400/40 bg-gray-900/80 text-amber-100 shadow-lg backdrop-blur-sm"
+            className="relative py-8 px-16 rounded-xl text-5xl font-bold border-2 border-yellow-400/30 bg-slate-800/90 text-yellow-100 shadow-2xl shadow-amber-500/20 backdrop-blur-md"
           >
             {questionData.word}
             <div className="absolute top-0 left-0 w-full h-full border border-white/10 rounded-xl pointer-events-none" />

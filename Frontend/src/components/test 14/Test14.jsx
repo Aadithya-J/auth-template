@@ -798,14 +798,14 @@ export default function PhonemeGame({
         );
       case "typed":
         return (
-          <div className="flex items-center justify-center gap-2 text-gray-600 h-6 text-sm">
+          <div className="flex items-center justify-center gap-2 text-black-600 h-6 text-sm">
             Typed input
           </div>
         );
       case "idle":
       default:
         return (
-          <div className="h-6 text-gray-500 text-sm text-center">
+          <div className="h-6 text-black-500 text-lg text-center">
             Ready to record or type
           </div>
         );
@@ -884,17 +884,17 @@ export default function PhonemeGame({
 
               {/* Enhanced glass-morphism dialog box */}
               <motion.div
-                className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+                className="bg-gradient-to-br from-cyan-800/70 via-blue-900/70 to-indigo-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, type: "spring" }}
               >
-                {/* Enhanced decorative elements */}
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
-                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
-                <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
-                <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
-                <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
+                {/* Oceanic decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-cyan-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-sky-400/20 rounded-full filter blur-xl"></div>
+                <div className="absolute top-1/2 right-8 w-24 h-24 bg-indigo-300/10 rounded-full filter blur-lg"></div>
+                <div className="absolute bottom-8 left-8 w-32 h-32 bg-blue-300/10 rounded-full filter blur-lg"></div>
 
                 {/* Enhanced animated dialog text */}
                 <motion.div
@@ -1048,7 +1048,7 @@ export default function PhonemeGame({
                   </motion.div>
                 </motion.div>
                 <motion.p
-                  className="text-blue-700 font-semibold text-xl"
+                  className="text-black-700 font-semibold text-xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
@@ -1185,9 +1185,10 @@ export default function PhonemeGame({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-gradient-to-br from-[#1B2B34]/80 via-[#1B2B34]/50 to-[#1B2B34]/40 rounded-xl p-5 shadow-lg border border-[#3FB8AF]/40"
+                    className="bg-gradient-to-brfrom-[#093B54]/80 via-[#0E5A75]/50 to-[#1289A7]/40
+ rounded-xl p-5 shadow-lg border border-[#3FB8AF]/40"
                   >
-                    <p className="text-center text-xl text-white">
+                    <p className="text-center text-xl text-black font-semibold">
                       Listen to the sounds and combine them to form a word
                     </p>
                   </motion.div>
@@ -1222,13 +1223,14 @@ export default function PhonemeGame({
               {/* Response State: Input Field, Record Button, Submit/Skip */}
               {showResponseArea && !showFinalSubmitButton && (
                 <div className="space-y-6 relative z-10">
+                  {/* Prompt Box */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-[#1B2B34]/90 rounded-xl p-5 shadow-lg border border-[#A7D676]/40"
+                    className="bg-blue/20 rounded-xl p-5 shadow-lg border border-[#00D4FF]/40"
                   >
-                    <p className="text-center text-xl font-semibold text-white">
+                    <p className="text-center text-xl font-semibold text-black">
                       What word did you hear?
                     </p>
                   </motion.div>
@@ -1236,7 +1238,7 @@ export default function PhonemeGame({
                   {/* Transcription Status */}
                   {renderTranscriptionStatus()}
 
-                  {/* Input Field with Wave Underline */}
+                  {/* Input Field */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1248,8 +1250,8 @@ export default function PhonemeGame({
                       type="text"
                       value={userInput}
                       onChange={handleInputChange}
-                      placeholder="Type or Record your answer"className="w-full px-5 py-4 rounded-xl bg-white/30 backdrop-blur-md border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/70 focus:border-transparent text-center font-semibold text-xl text-black placeholder-black/50 shadow-lg"
-
+                      placeholder="Type or Record your answer"
+                      className="w-full px-5 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-200/70 focus:border-transparent text-center font-semibold text-lg text-black-700 placeholder-blue-700 shadow-lg"
                       onKeyPress={(e) => {
                         if (
                           e.key === "Enter" &&
@@ -1277,7 +1279,7 @@ export default function PhonemeGame({
                         repeat: Infinity,
                         ease: "linear",
                       }}
-                      className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-[#3FB8AF] to-transparent opacity-80"
+                      className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-80"
                     />
                   </motion.div>
 
@@ -1293,9 +1295,9 @@ export default function PhonemeGame({
                       onClick={isRecording ? stopListening : startListening}
                       className={`rounded-xl py-4 text-xl font-bold shadow-lg transition-all ${
                         isRecording
-                          ? "bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] animate-pulse"
-                          : "bg-gradient-to-r from-[#7E6BC4] to-[#9D8BDE] hover:from-[#9D8BDE] hover:to-[#7E6BC4]"
-                      }`}
+                          ? "bg-gradient-to-r from-rose-500 to-pink-400 animate-pulse"
+                          : "bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-cyan-500 hover:to-sky-600"
+                      } text-white`}
                       disabled={
                         isPlayingSound || isTranscribing || isSubmittingAll
                       }
@@ -1318,7 +1320,7 @@ export default function PhonemeGame({
                     {/* Submit Button */}
                     <Button
                       onClick={handleSubmitResponse}
-                      className="bg-gradient-to-r from-[#A7D676] to-[#C1E89C] hover:from-[#C1E89C] hover:to-[#A7D676] text-[#1B2B34] font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
+                      className="bg-gradient-to-r from-teal-400 to-green-300 hover:from-green-300 hover:to-teal-400 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
                       disabled={
                         !userInput.trim() ||
                         isRecording ||
@@ -1330,10 +1332,10 @@ export default function PhonemeGame({
                       <Check className="h-6 w-6" /> Submit
                     </Button>
 
-                    {/* Skip Button - Full width below */}
+                    {/* Skip Button - Full width */}
                     <Button
                       onClick={skipWord}
-                      className="col-span-2 bg-gradient-to-r from-[#FFC9DE] to-[#FFD9E8] text-[#1B2B34] font-bold py-4 text-xl rounded-xl shadow-lg hover:from-[#FFD9E8] hover:to-[#FFC9DE] transition-all transform hover:scale-[1.01]"
+                      className="col-span-2 bg-gradient-to-r from-sky-200 to-cyan-100 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg hover:from-cyan-100 hover:to-sky-200 transition-all transform hover:scale-[1.01]"
                       disabled={
                         isPlayingSound ||
                         isRecording ||
