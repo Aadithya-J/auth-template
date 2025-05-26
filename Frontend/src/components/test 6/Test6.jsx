@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react"; // Added useMemo
 import { useNavigate, Link } from "react-router-dom";
 import { backendURL } from "../../definedURL";
 import { useLanguage } from "../../contexts/LanguageContext.jsx";
@@ -99,7 +99,8 @@ const useTranscriptionService = () => {
   const [transcript, setTranscript] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptionReady, setTranscriptionReady] = useState(false);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage(); // Assuming t is needed here for toast messages
+
   const transcribeAudio = async (audioBlob) => {
     const formData = new FormData();
 
@@ -136,7 +137,6 @@ const useTranscriptionService = () => {
           return "";
         }
         if (!Array.isArray(safeTargetWords) || safeTargetWords.length === 0) {
-          // Added check for empty array
           console.warn(
             "safeTargetWords is not a valid array or is empty. Using raw transcript for language:",
             language,
@@ -164,13 +164,13 @@ const useTranscriptionService = () => {
         return correctedTranscript;
       } else {
         console.error("Error during transcription:", response.statusText);
-        toast.error("Transcription failed. Please try again.");
+        toast.error(t("transcriptionFailedTryAgain"));
         setTranscript(""); // Clear transcript on error
         return null;
       }
     } catch (error) {
       console.error("Error uploading audio:", error);
-      toast.error("Error uploading audio. Please try again.");
+      toast.error(t("errorUploadingAudioTryAgain"));
       return null;
     } finally {
       setIsTranscribing(false);
@@ -190,6 +190,7 @@ const useTranscriptionService = () => {
 const useTestSubmission = (onTestComplete) => {
   const [testResults, setTestResults] = useState([]);
   const navigate = useNavigate();
+  const { t } = useLanguage(); // Assuming t is needed here for toast messages
 
   const submitTest = async (
     transcript,
@@ -228,7 +229,7 @@ const useTestSubmission = (onTestComplete) => {
         if (suppressResultPage && typeof onTestComplete === "function") {
           onTestComplete(score);
         } else {
-          toast.success(`Test submitted! Score: ${score}%`, {
+          toast.success(t("testSubmittedWithScore").replace("{score}", score), {
             position: "top-center",
             onClose: () =>
               navigate("/results", {
@@ -238,7 +239,7 @@ const useTestSubmission = (onTestComplete) => {
         }
         return { success: true, score };
       } else {
-        toast.error("Failed to submit test. Please try again.");
+        toast.error(t("failedToSubmitTestPleaseTryAgain"));
         return { success: false };
       }
     } catch (error) {
@@ -247,7 +248,9 @@ const useTestSubmission = (onTestComplete) => {
         response: error.response?.data,
         status: error.response?.status,
       });
-      toast.error("An error occurred while submitting the test.");
+      // Ensure 'anErrorOccurredWhileSubmittingTheTestPleaseTryAgain' exists in your translations
+      // If not, use a more generic one like 'errorOccurred'
+      toast.error(t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") || t("errorOccurred"));
       return { success: false };
     }
   };
@@ -281,17 +284,17 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [showTutorial, setShowTutorial] = useState(true);
   const [isTutorialComplete, setIsTutorialComplete] = useState(false);
 
-  const tutorialMessages = [
-    "👋 Hello there, young explorer!",
-    "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
-    "🌊 This is a special place where words grow like coral!",
-    "📖 Your job is to read each word on the glowing shells out loud.",
-    "✨ They'll start easy and get a little harder — but I believe in you!",
-    "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
-    "🔭 and my magical Coral Spyglass to help you on your journey.",
-    "📚 Let's get reading!",
-    "🚀 Are you ready to attempt the mission?",
-  ];
+  const tutorialMessages = useMemo(() => [
+    t("tutorialHelloExplorer"),
+    t("tutorialCoralineIntro"),
+    t("tutorialGlyphReefDescription"),
+    t("tutorialReadingTask"),
+    t("tutorialDifficulty"),
+    t("tutorialShellOfFluency"),
+    t("tutorialCoralSpyglass"),
+    t("tutorialLetsGetReading"),
+    t("tutorialReadyForMission"),
+  ], [t]);
 
   const {
     transcript,
@@ -317,25 +320,18 @@ function Test6({ suppressResultPage = false, onComplete }) {
           glowing: false,
         }))
       );
-
-      // Initialize progress to first batch
       setGameProgress((wordsPerBatch / words.length) * 100);
     }
-  }, [language, showTutorial, gameState]);
+  }, [language, showTutorial, gameState, wordsPerBatch]); // Added wordsPerBatch
 
-  const startWordBatches = (words) => {
-    setCurrentWordIndex(0);
-    setWordsPerBatch(4); // 15 seconds for each batch
-  };
+  // Removed startWordBatches as it wasn't being called and its logic could be inline or part of other effects.
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsSidebarExpanded(false);
-        //setWordsPerBatch(3); // Show fewer words on mobile
       } else {
         setIsSidebarExpanded(true);
-        //setWordsPerBatch(5);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -352,16 +348,15 @@ function Test6({ suppressResultPage = false, onComplete }) {
       setGameState("intro");
       setCoralineVisible(true);
       setCoralineAnimationState("entering");
-
-      // Remove the auto-progression logic
       setTutorialPhase(0);
-      setIntroMessage(tutorialMessages[0]);
+      if (tutorialMessages.length > 0) { // Ensure tutorialMessages is populated
+          setIntroMessage(tutorialMessages[0]);
+      }
     };
 
     introSequence();
-  }, [showTutorial]);
+  }, [showTutorial, tutorialMessages]); // Added tutorialMessages dependency
 
-  // Add this function to handle the "Next" button click
   const handleNextTutorialStep = () => {
     if (tutorialPhase < tutorialMessages.length - 1) {
       setTutorialPhase((prev) => prev + 1);
@@ -377,18 +372,18 @@ function Test6({ suppressResultPage = false, onComplete }) {
     if (file) {
       setSelectedFile(file);
       setCoralineAnimationState("excited");
-      setIntroMessage("Excellent! Let me listen to that recording...");
-      await transcribeAudio(file);
+      setIntroMessage(t("coralineExcellentRecording"));
+      // Call transcribeAudio once and use its result
       const currentTranscript = await transcribeAudio(file);
 
       if (currentTranscript) {
         setCoralineAnimationState("happy");
-        setIntroMessage("Great job! I heard your words clearly.");
+        setIntroMessage(t("coralineHeardClearly"));
         setGameProgress((prev) => Math.min(prev + 30, 70));
         glowCorrectWords(currentTranscript);
       } else {
         setCoralineAnimationState("confused");
-        setIntroMessage("Hmm, I couldn't quite make that out. Try again?");
+        setIntroMessage(t("coralineCouldntMakeOut"));
       }
 
       setTimeout(() => {
@@ -423,7 +418,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
       toast.info(t("transcriptionNotReady"));
       setShowEels(true);
       setCoralineAnimationState("warning");
-      setIntroMessage("Wait! I need to hear your voice first!");
+      setIntroMessage(t("coralineNeedYourVoice"));
       setTimeout(() => {
         setShowEels(false);
         setCoralineAnimationState("idle");
@@ -433,7 +428,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
     }
 
     setCoralineAnimationState("focused");
-    setIntroMessage("Let me check your pronunciation...");
+    setIntroMessage(t("coralineCheckingPronunciation"));
     setGameProgress(85);
 
     const { success, score } = await submitTest(
@@ -448,11 +443,11 @@ function Test6({ suppressResultPage = false, onComplete }) {
         setGameState("success");
         setCoralineAnimationState("celebrating");
         setIntroMessage(
-          `Amazing! Your score is ${score}%! You've earned a treasure!`
+          t("coralineAmazingScore").replace("{score}", score)
         );
         const newTreasure = {
           id: Date.now(),
-          name: `Shell #${collectedTreasures.length + 1}`,
+          name: `${t("shellNamePrefix")}${collectedTreasures.length + 1}`,
           image: shellImage,
           score,
         };
@@ -468,13 +463,11 @@ function Test6({ suppressResultPage = false, onComplete }) {
       } else {
         setGameState("failure");
         setCoralineAnimationState("encouraging");
-        setIntroMessage(`You scored ${score}%. Keep practicing and try again!`);
+        setIntroMessage(t("coralineScoreKeepPracticing").replace("{score}", score));
       }
     } else {
       setCoralineAnimationState("confused");
-      setIntroMessage(
-        "Something went wrong with the reef magic. Let's try once more!"
-      );
+      setIntroMessage(t("coralineReefMagicError"));
     }
   };
 
@@ -490,7 +483,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
     >
       {showTutorial && (
         <>
-          {/* Blurred background with animated overlay */}
           <div className="fixed inset-0 z-40">
             <div className="absolute inset-0 bg-black/30 backdrop-blur-md" />
             <motion.div
@@ -500,8 +492,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
               transition={{ duration: 0.5 }}
             />
           </div>
-
-          {/* Main content container */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -509,7 +499,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
               transition={{ duration: 0.5, type: "spring" }}
               className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
             >
-              {/* Floating character on the left */}
               <motion.div
                 initial={{ y: -40, opacity: 0 }}
                 animate={{
@@ -537,28 +526,23 @@ function Test6({ suppressResultPage = false, onComplete }) {
               >
                 <img
                   src={coralineImage}
-                  alt="Coraline"
+                  alt={t("altCoralineCharacter")}
                   className="h-64 sm:h-80 lg:h-96 xl:h-[500px] object-contain"
                 />
               </motion.div>
-
-              {/* Enhanced glass-morphism dialog box */}
               <motion.div
                 className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, type: "spring" }}
               >
-                {/* Enhanced decorative elements */}
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
                 <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
                 <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
                 <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
                 <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
-
-                {/* Enhanced animated dialog text */}
                 <motion.div
-                  key={tutorialPhase}
+                  key={tutorialPhase} // Ensures re-render on phase change for animation
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
@@ -566,11 +550,10 @@ function Test6({ suppressResultPage = false, onComplete }) {
                   className="text-2xl sm:text-3xl lg:text-4xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 flex items-center font-serif font-medium leading-relaxed px-4"
                 >
                   <span className="drop-shadow-lg">
-                    {tutorialMessages[tutorialPhase]}
+                    {/* Display current intro message, which is set based on tutorialMessages */}
+                    {introMessage}
                   </span>
                 </motion.div>
-
-                {/* Enhanced progress indicators */}
                 <div className="flex justify-center gap-3 mb-8 lg:mb-10">
                   {tutorialMessages.map((_, index) => (
                     <motion.div
@@ -589,8 +572,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     />
                   ))}
                 </div>
-
-                {/* Enhanced animated action button */}
                 <div className="flex justify-center">
                   <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
@@ -612,13 +593,13 @@ function Test6({ suppressResultPage = false, onComplete }) {
                   >
                     {tutorialPhase < tutorialMessages.length - 1 ? (
                       <>
-                        <span className="drop-shadow-sm">Next</span>
+                        <span className="drop-shadow-sm">{t("next")}</span> {/* Use existing 'next' key */}
                         <span className="drop-shadow-sm">➔</span>
                       </>
                     ) : (
                       <>
                         <span className="drop-shadow-sm">
-                          "🧭 Aye, I'm ready!"
+                          {t("buttonTutorialConfirmReady")}
                         </span>
                       </>
                     )}
@@ -629,18 +610,14 @@ function Test6({ suppressResultPage = false, onComplete }) {
           </div>
         </>
       )}
-      {/* Back button at left most end */}
       <Link
         to="/taketests"
         className="absolute top-4 left-0 z-50 flex items-center gap-2 bg-white/80 hover:bg-white text-teal-800 font-medium py-2 px-4 rounded-full shadow-md transition-all"
       >
         <ChevronLeft className="h-5 w-5" />
-        Back to Tests
+        {t("backToTests")}
       </Link>
-
-      {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Bubbles */}
         {Array.from({ length: 15 }).map((_, i) => (
           <motion.div
             key={`bubble-${i}`}
@@ -665,16 +642,13 @@ function Test6({ suppressResultPage = false, onComplete }) {
           />
         ))}
       </div>
-
-      {/* Main content container */}
       {!showTutorial && (
         <>
           <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-8">
-            {/* Progress bar */}
             <div className="mb-8 w-full px-4 sm:px-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-green-400 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                  Reef Progress
+                  {t("labelReefProgress")}
                 </span>
                 <span className="text-teal-600 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                   {gameProgress}%
@@ -682,21 +656,17 @@ function Test6({ suppressResultPage = false, onComplete }) {
               </div>
               <ProgressBar progress={gameProgress} />
             </div>
-
-            {/* Ancient paper container with responsive sizing */}
             <div className="relative mb-8 w-full max-w-4xl mx-auto">
               <div className="relative" style={{ paddingTop: "75%" }}>
-                {/* Adjust aspect ratio */}
                 <img
                   src={ancientPaper}
                   className="absolute top-0 left-0 w-full h-full object-contain"
-                  alt="Ancient paper background"
+                  alt={t("altAncientPaperBackground")}
                 />
-                {/* Responsive grid */}
                 <div className="absolute inset-0 grid grid-cols-4 grid-rows-4">
                   {visibleWords.map((wordObj, index) => (
                     <div
-                      key={index}
+                      key={index} // Make sure index is unique for the current visibleWords
                       className="flex items-center justify-center"
                     >
                       <span className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black text-center break-words leading-tight">
@@ -707,20 +677,19 @@ function Test6({ suppressResultPage = false, onComplete }) {
                 </div>
               </div>
             </div>
-
-            {/* Transcription area with RecordingControls */}
             <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 w-full">
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="w-full md:w-auto">
+                  {/* Assuming RecordingControls will get 't' prop if needed inside it */}
                   <RecordingControls
                     isRecording={isRecording}
                     onStartRecording={startRecording}
                     onStopRecording={stopRecording}
                     showEels={showEels}
-                    largeSize={true} // Add this prop
+                    largeSize={true}
+                    t={t} // Pass t if RecordingControls uses it internally
                   />
                 </div>
-                {/* Next Words Button - position it below the paper */}
                 {currentWordIndex + wordsPerBatch < currentWords.length && (
                   <motion.button
                     onClick={() => {
@@ -736,7 +705,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Next Words <ChevronRight className="h-5 w-5" />
+                    {t("buttonNextWords")} <ChevronRight className="h-5 w-5" />
                   </motion.button>
                 )}
                 <div className="flex flex-col md:flex-row gap-6 w-full sm:w-auto">
@@ -746,7 +715,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     transcriptionReady={transcriptionReady}
                     onSubmit={handleSubmit}
                     t={t}
-                    largeSize={true} // Add this prop
+                    largeSize={true}
                   />
                 </div>
               </div>
@@ -754,8 +723,6 @@ function Test6({ suppressResultPage = false, onComplete }) {
           </div>
         </>
       )}
-
-      {/* Reward animations */}
       <AnimatePresence>
         {showReward && (
           <motion.div
@@ -769,7 +736,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
               <motion.img
                 src={shellImage}
                 className="w-36 h-36 mx-auto mb-4"
-                alt="Earned Shell"
+                alt={t("altEarnedShellImage")}
                 animate={{
                   y: [0, -15, 0],
                   rotate: [0, 15, -15, 0, 360],
@@ -783,10 +750,10 @@ function Test6({ suppressResultPage = false, onComplete }) {
                 className="text-3xl font-bold text-yellow-900 mb-2"
                 style={{ textShadow: "1px 1px 2px white" }}
               >
-                Shell of Fluency Earned!
+                {t("titleShellOfFluencyEarned")}
               </h3>
               <p className="text-yellow-800 text-lg mb-6">
-                Your pronunciation is shining!
+                {t("messagePronunciationShining")}
               </p>
               <motion.button
                 className="px-8 py-3 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-full font-bold shadow-lg text-lg"
@@ -798,7 +765,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowReward(false)}
               >
-                Collect Treasure!
+                {t("buttonCollectTreasure")}
               </motion.button>
             </div>
           </motion.div>
@@ -808,8 +775,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
     </div>
   );
 }
-// --- Sub-Components (ProgressBar, SpeechBubble, RecordingControls, FileUploadButton, SubmitButton) ---
-// ProgressBar Component
+
 const ProgressBar = ({ progress }) => (
   <div className="w-full bg-teal-100/60 rounded-full h-6 overflow-hidden border-2 border-teal-200/70 shadow-inner relative">
     <motion.div
@@ -818,11 +784,11 @@ const ProgressBar = ({ progress }) => (
       animate={{ width: `${progress}%` }}
       transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
     >
-      {progress > 5 && ( // Show percentage earlier
+      {progress > 5 && (
         <motion.span
           className="absolute left-0 top-0 bottom-0 bg-white/20"
           style={{ width: "100%" }}
-          animate={{ x: ["-100%", "100%"] }} // Shimmer effect
+          animate={{ x: ["-100%", "100%"] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
@@ -836,8 +802,8 @@ const ProgressBar = ({ progress }) => (
   </div>
 );
 
-// Speech Bubble Component
-const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm }) => (
+// Speech Bubble Component - Assuming 't' is passed as a prop or useLanguage is used internally
+const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm, t }) => (
   <AnimatePresence>
     {visible && (
       <motion.div
@@ -853,7 +819,7 @@ const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm }) => (
         }}
       >
         <p className="text-xl md:text-2xl font-medium text-teal-900 mb-4">
-          {text}
+          {text} {/* This 'text' prop should already be translated if it's dynamic from Test6 */}
         </p>
         {isLastMessage && (
           <div className="flex justify-center gap-6 mt-6">
@@ -866,7 +832,7 @@ const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm }) => (
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-lg font-semibold shadow-lg"
               onClick={onConfirm}
             >
-              Yes, I'm ready!
+              {t && t("buttonModalYesImReady")} {/* Check if t is provided */}
             </motion.button>
           </div>
         )}
@@ -875,16 +841,17 @@ const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm }) => (
   </AnimatePresence>
 );
 
-// Recording Controls Component
+// Recording Controls Component - Assuming 't' is passed as a prop
 const RecordingControls = ({
   isRecording,
   onStartRecording,
   onStopRecording,
-  showEels, // This seems tied to Coraline's image in original, adjust if needed
+  showEels,
+  t // Added t as a prop
 }) => (
   <div className="flex items-center gap-4 relative">
     <AnimatePresence>
-      {showEels && ( // This uses coralineImage. Replace with an actual eel image if desired.
+      {showEels && (
         <motion.div
           initial={{ opacity: 0, x: -50, rotate: -30 }}
           animate={{ opacity: 1, x: 0, rotate: 0 }}
@@ -892,14 +859,13 @@ const RecordingControls = ({
           className="absolute -top-16 -left-12 z-10"
         >
           <img
-            src={coralineImage} // Placeholder, ideally a unique "eel" or "warning" graphic
-            className="w-24 h-24 object-contain transform scale-x-[-1] " // Flipped Coraline as "eel"
-            alt="Warning sign"
+            src={coralineImage}
+            className="w-24 h-24 object-contain transform scale-x-[-1] "
+            alt={t("altWarningSignImage")}
           />
         </motion.div>
       )}
     </AnimatePresence>
-
     <div className="relative">
       <motion.button
         onClick={onStartRecording}
@@ -910,7 +876,7 @@ const RecordingControls = ({
               ? "opacity-60 cursor-not-allowed bg-gray-200 border-2 border-gray-300"
               : "bg-white border-2 border-teal-500 shadow-lg hover:bg-teal-50"
           }`}
-        aria-label="Start recording"
+        aria-label={t("startRecording")}
         whileHover={
           !isRecording
             ? {
@@ -927,7 +893,6 @@ const RecordingControls = ({
           }`}
         />
       </motion.button>
-
       {isRecording && (
         <motion.span
           className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"
@@ -936,7 +901,6 @@ const RecordingControls = ({
         />
       )}
     </div>
-
     <motion.button
       onClick={onStopRecording}
       disabled={!isRecording}
@@ -946,7 +910,7 @@ const RecordingControls = ({
             ? "opacity-60 cursor-not-allowed bg-gray-200 border-2 border-gray-300"
             : "bg-red-500 border-2 border-red-600 shadow-lg hover:bg-red-400"
         }`}
-      aria-label="Stop recording"
+      aria-label={t("stopRecording")}
       whileHover={
         isRecording
           ? {
@@ -961,7 +925,6 @@ const RecordingControls = ({
         className={`h-7 w-7 ${!isRecording ? "text-gray-500" : "text-white"}`}
       />
     </motion.button>
-
     {isRecording && (
       <motion.div
         className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm text-red-600 rounded-full border border-red-200 shadow-md"
@@ -973,7 +936,7 @@ const RecordingControls = ({
         }}
       >
         <Mic className="h-5 w-5" />
-        <span className="text-sm font-semibold">Recording</span>
+        <span className="text-sm font-semibold">{t("recording")}</span>
         <span className="inline-flex gap-0.5">
           {"...".split("").map((char, i) => (
             <motion.span
@@ -990,18 +953,17 @@ const RecordingControls = ({
   </div>
 );
 
-// File Upload Button Component
 const FileUploadButton = ({ onFileUpload, t }) => (
   <div className="relative w-full sm:w-auto">
     <input
       type="file"
-      accept="audio/*,.m4a,.mp3,.wav,.ogg" // More specific audio types
+      accept="audio/*,.m4a,.mp3,.wav,.ogg"
       onChange={onFileUpload}
       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-      aria-label="Upload audio file"
+      aria-label={t("ariaLabelUploadAudioFile")}
       id="audioUpload"
     />
-    <motion.label // Changed button to label for better accessibility with file input
+    <motion.label
       htmlFor="audioUpload"
       className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-lg shadow-md text-sm font-medium cursor-pointer"
       whileHover={{ y: -2, boxShadow: "0 6px 15px rgba(56, 189, 248, 0.3)" }}
@@ -1013,7 +975,6 @@ const FileUploadButton = ({ onFileUpload, t }) => (
   </div>
 );
 
-// Submit Button Component
 const SubmitButton = ({ isTranscribing, transcriptionReady, onSubmit, t }) => {
   const isDisabled = isTranscribing || !transcriptionReady;
   return (

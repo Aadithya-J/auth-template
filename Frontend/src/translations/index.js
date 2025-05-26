@@ -445,6 +445,85 @@ export const translations = {
     transcription_failed: "Transcription failed",
     audio_upload_error: "Audio upload error",
     transcribing: "Transcribing...",
+
+    //Added new for Reading Efficiency Test
+    transcriptionFailedTryAgain: "Transcription failed. Please try again.",
+    errorUploadingAudioTryAgain: "Error uploading audio. Please try again.",
+    testSubmittedWithScore: "Test submitted! Score: {score}%", // {score} is a placeholder
+    transcriptionNotReady: "Please record or upload audio before submitting.", // For toast.info(t("transcriptionNotReady"))
+
+    // Test6 - Tutorial Messages (Coraline's dialogue)
+    tutorialHelloExplorer: "👋 Hello there, young explorer!",
+    tutorialCoralineIntro: "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
+    tutorialGlyphReefDescription: "🌊 This is a special place where words grow like coral!",
+    tutorialReadingTask: "📖 Your job is to read each word on the glowing shells out loud.",
+    tutorialDifficulty: "✨ They'll start easy and get a little harder — but I believe in you!",
+    tutorialShellOfFluency: "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
+    tutorialCoralSpyglass: "🔭 and my magical Coral Spyglass to help you on your journey.",
+    tutorialLetsGetReading: "📚 Let's get reading!",
+    tutorialReadyForMission: "🚀 Are you ready to attempt the mission?",
+    buttonTutorialConfirmReady: "🧭 Aye, I'm ready!", // Specific for tutorial button
+
+    // Test6 - Coraline's dynamic messages during the test
+    coralineExcellentRecording: "Excellent! Let me listen to that recording...",
+    coralineHeardClearly: "Great job! I heard your words clearly.",
+    coralineCouldntMakeOut: "Hmm, I couldn't quite make that out. Try again?",
+    coralineNeedYourVoice: "Wait! I need to hear your voice first!",
+    coralineCheckingPronunciation: "Let me check your pronunciation...",
+    coralineAmazingScore: "Amazing! Your score is {score}%! You've earned a treasure!", // {score} is a placeholder
+    shellNamePrefix: "Shell #", // For dynamic names like "Shell #1"
+    coralineScoreKeepPracticing: "You scored {score}%. Keep practicing and try again!", // {score} is a placeholder
+    coralineReefMagicError: "Something went wrong with the reef magic. Let's try once more!",
+
+    // Test6 - UI Labels, Alts, Aria-Labels
+    altCoralineCharacter: "Coraline",
+    labelReefProgress: "Reef Progress",
+    altAncientPaperBackground: "Ancient paper background",
+    buttonNextWords: "Next Words",
+    altEarnedShellImage: "Earned Shell",
+    titleShellOfFluencyEarned: "Shell of Fluency Earned!",
+    messagePronunciationShining: "Your pronunciation is shining!",
+    buttonCollectTreasure: "Collect Treasure!",
+    buttonModalYesImReady: "Yes, I'm ready!", 
+    altWarningSignImage: "Warning sign",
+    ariaLabelUploadAudioFile: "Upload audio file",
+
+    //Added new words for Visual Descrimination Test
+
+    visualTestBlinkDialogWelcome: "👁️ Hello, explorer... I am Blink, the Eye of Vision Rock.",
+    visualTestBlinkDialogSneakyShapes: "🌀 This place is full of sneaky shapes. Some look almost the same… but only one is a perfect match.",
+    visualTestBlinkDialogLookCarefully: "🔍 Use your eyes. Look carefully. Find the one that matches exactly.",
+    visualTestBlinkDialogReward: "🏆 If you choose right, I'll reward you with the Shell of Sight 🐚 and the Lens of Truth 🔮. They will help you see things others can't!",
+    visualTestBlinkDialogReadyPrompt: "⚔️ Are you ready? Let's see how sharp your eyes really are!",
+    altBlinkTheGuardian: "Blink the Guardian",
+    buttonImReady: "I'm Ready!",
+
+    // --- Visual Test (In-Game UI) ---
+    labelTimeRemaining: "Time Remaining",
+    labelQuestionOutOfTotal: "Question {index} of {total}", // Placeholders for dynamic values
+    labelProgress: "Progress", // For the progress bar label
+    visualTestSelectStudentError: "Please select a student before taking the test", // Specific error
+    visualTestCompleted: "Test Completed!",
+    visualTestScoreOutOfTotal: "You got {score} out of {total} correct", // Placeholders
+
+
+
+
+    soundTestEchoDialogAhoy: "👋 Ahoy there, little explorer!",
+    soundTestEchoDialogIntro: "I'm Sir Echo, the echo crab! 🦀✨",
+    soundTestEchoDialogIsleDescription: "This is Whispering Isle... where sounds bounce and secrets hide! 🌫️👂",
+    soundTestEchoDialogTwoSounds: "I'll play two sounds for you 🎧🎧",
+    soundTestEchoDialogYourJob: "Your job is to tell me…",
+    soundTestEchoDialogAreTheySame: "Are they the SAME? ✅",
+    soundTestEchoDialogOrDifferent: "Or DIFFERENT? ❌",
+    soundTestEchoDialogReadyPirate: "Ready to listen like a pirate pro? 🏴‍☠️🦜",
+    altSirEchoTheCrab: "Sir Echo the Crab",
+
+    buttonPlayingAudio: "Playing...",
+    buttonPlayAudio: "Play Audio",
+    labelListeningCarefully: "Listening carefully...",
+    soundTestApiName: "Test 16: Sound Discrimination",
+
   },
   ta: {
     mainMenu: "முதன்மை மெனு",
@@ -907,7 +986,82 @@ export const translations = {
     microphone_access_error: "மைக்ரோஃபோன் அணுகல் பிழை",
     transcription_failed: "எழுத்துப்பதிவு தோல்வியடைந்தது",
     audio_upload_error: "ஆடியோ பதிவேற்றப் பிழை",
-  },
+
+    //added new words for reading proficiency
+    transcriptionFailedTryAgain: "படியெடுத்தல் தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
+    errorUploadingAudioTryAgain: "ஆடியோவைப் பதிவேற்றுவதில் பிழை. மீண்டும் முயற்சிக்கவும்.",
+    testSubmittedWithScore: "சோதனை சமர்ப்பிக்கப்பட்டது! மதிப்பெண்: {score}%",
+    transcriptionNotReady: "சமர்ப்பிக்கும் முன் ஆடியோவைப் பதிவுசெய்யவும் அல்லது பதிவேற்றவும்.",
+
+    tutorialHelloExplorer: "👋 வணக்கம், இளம் ஆய்வாளரே!",
+    tutorialCoralineIntro: "🦑 நான் கோரலைன் தி கிராக்கன், கிளிஃப் ரீஃபின் நட்பு நூலகர்.",
+    tutorialGlyphReefDescription: "🌊 இது ஒரு சிறப்பு இடம், இங்கே வார்த்தைகள் பவளம் போல வளரும்!",
+    tutorialReadingTask: "📖 ஒளிரும் சிப்பிகளில் உள்ள ஒவ்வொரு வார்த்தையையும் சத்தமாகப் படிப்பது உங்கள் வேலை.",
+    tutorialDifficulty: "✨ அவை எளிதாகத் தொடங்கி கொஞ்சம் கடினமாக மாறும் - ஆனால் நான் உன்னை நம்புகிறேன்!",
+    tutorialShellOfFluency: "🏆 கவனமாகப் படியுங்கள், நீங்கள் சரள ஓட்டத்தின் சிப்பியைப் 🐚 பெறுவீர்கள்.",
+    tutorialCoralSpyglass: "🔭 மற்றும் என் மாயாஜால பவள தொலைநோக்கி உங்கள் பயணத்தில் உங்களுக்கு உதவும்.",
+    tutorialLetsGetReading: "📚 வாருங்கள் படிக்கலாம்!",
+    tutorialReadyForMission: "🚀 நீங்கள் பயணத்திற்கு தயாரா?",
+    buttonTutorialConfirmReady: "🧭 ஆம், நான் தயார்!",
+
+    coralineExcellentRecording: "அற்புதம்! அந்தப் பதிவைக் கேட்கிறேன்...",
+    coralineHeardClearly: "சிறந்த வேலை! உங்கள் வார்த்தைகளை நான் தெளிவாகக் கேட்டேன்.",
+    coralineCouldntMakeOut: "ம்ம், என்னால் அதை சரியாகப் புரிந்து கொள்ள முடியவில்லை. மீண்டும் முயற்சிக்கவா?",
+    coralineNeedYourVoice: "பொறு! முதலில் உன் குரலை நான் கேட்க வேண்டும்!",
+    coralineCheckingPronunciation: "உங்கள் உச்சரிப்பை நான் சரிபார்க்கிறேன்...",
+    coralineAmazingScore: "அற்புதம்! உங்கள் மதிப்பெண் {score}%! நீங்கள் ஒரு புதையலைப் பெற்றுள்ளீர்கள்!",
+    shellNamePrefix: "சிப்பி #",
+    coralineScoreKeepPracticing: "நீங்கள் {score}% மதிப்பெண் பெற்றீர்கள். பயிற்சி செய்து மீண்டும் முயற்சிக்கவும்!",
+    coralineReefMagicError: "பவளப்பாறை மாயத்தில் ஏதோ தவறு நடந்துவிட்டது. மீண்டும் ஒருமுறை முயற்சிப்போம்!",
+
+    altCoralineCharacter: "கோரலைன்",
+    labelReefProgress: "பவளப்பாறை முன்னேற்றம்",
+    altAncientPaperBackground: "பண்டைய காகித பின்னணி",
+    buttonNextWords: "அடுத்த வார்த்தைகள்",
+    altEarnedShellImage: "பெறப்பட்ட சிப்பி",
+    titleShellOfFluencyEarned: "சரளமான ஓட்டத்தின் சிப்பி பெறப்பட்டது!",
+    messagePronunciationShining: "உங்கள் உச்சரிப்பு பிரகாசிக்கிறது!",
+    buttonCollectTreasure: "புதையலை சேகரி!",
+    buttonModalYesImReady: "ஆம், நான் தயார்!",
+    altWarningSignImage: "எச்சரிக்கை குறி",
+    ariaLabelUploadAudioFile: "ஆடியோ கோப்பைப் பதிவேற்று",
+
+    //New words for Visual Descrimination Test
+        // --- Visual Test (Blink's Dialog) ---
+    visualTestBlinkDialogWelcome: "👁️ வணக்கம், தேடுபவரே... நான் பிளிங்க், விஷன் பாறையின் கண்.",
+    visualTestBlinkDialogSneakyShapes: "🌀 இந்த இடம் தந்திரமான வடிவங்கள் நிறைந்தது. சில கிட்டத்தட்ட ஒரே மாதிரியாக இருக்கும்... ஆனால் ஒன்று மட்டுமே சரியான பொருத்தம்.",
+    visualTestBlinkDialogLookCarefully: "🔍 உங்கள் கண்களைப் பயன்படுத்துங்கள். கவனமாகப் பாருங்கள். சரியாகப் பொருந்தக்கூடிய ஒன்றைக் கண்டறியவும்.",
+    visualTestBlinkDialogReward: "🏆 நீங்கள் சரியாகத் தேர்ந்தெடுத்தால், நான் உங்களுக்கு பார்வையின் சிப்பி 🐚 மற்றும் உண்மையின் லென்ஸ் 🔮 பரிசளிப்பேன். அவை மற்றவர்கள் பார்க்க முடியாதவற்றைப் பார்க்க உதவும்!",
+    visualTestBlinkDialogReadyPrompt: "⚔️ நீங்கள் தயாரா? உங்கள் கண்கள் எவ்வளவு கூர்மையானவை என்று பார்ப்போம்!",
+    altBlinkTheGuardian: "பிளிங்க் தி கார்டியன்",
+    buttonImReady: "நான் தயார்!",
+
+    // --- Visual Test (In-Game UI) ---
+    labelTimeRemaining: "மீதமுள்ள நேரம்",
+    labelQuestionOutOfTotal: "கேள்வி {index} / {total}",
+    labelProgress: "முன்னேற்றம்",
+    visualTestSelectStudentError: "சோதனையை எடுப்பதற்கு முன் ஒரு மாணவரைத் தேர்ந்தெடுக்கவும்",
+    visualTestCompleted: "சோதனை முடிந்தது!",
+    visualTestScoreOutOfTotal: "{total}க்கு {score} சரியாகப் பெற்றீர்கள்",
+
+
+        // --- Sound Discrimination Test (Echo Crab's Dialog) ---
+    soundTestEchoDialogAhoy: "👋 வணக்கம், குட்டி தேடுபவரே!",
+    soundTestEchoDialogIntro: "நான் சர் எக்கோ, எதிரொலி நண்டு! 🦀✨",
+    soundTestEchoDialogIsleDescription: "இது கிசுகிசுக்கும் தீவு... இங்கே ஒலிகள் எதிரொலிக்கும், ரகசியங்கள் மறையும்! 🌫️👂",
+    soundTestEchoDialogTwoSounds: "நான் உங்களுக்காக இரண்டு ஒலிகளை இசைப்பேன் 🎧🎧",
+    soundTestEchoDialogYourJob: "நீங்கள் எனக்குச் சொல்ல வேண்டியது...",
+    soundTestEchoDialogAreTheySame: "அவை ஒன்றா? ✅",
+    soundTestEchoDialogOrDifferent: "அல்லது வேறுபட்டவையா? ❌",
+    soundTestEchoDialogReadyPirate: "ஒரு கடற்கொள்ளையர் நிபுணரைப் போல கேட்கத் தயாரா? 🏴‍☠️🦜",
+    altSirEchoTheCrab: "சர் எக்கோ தி நண்டு",
+
+    // --- Sound Discrimination Test (In-Game UI) ---
+    buttonPlayingAudio: "இசைக்கிறது...",
+    buttonPlayAudio: "ஆடியோவை இயக்கு",
+    labelListeningCarefully: "கவனமாகக் கேட்கிறேன்...",
+    soundTestApiName: "சோதனை 16: ஒலி பாகுபாடு",
+      },
   hi: {
     // Navigation
     mainMenu: "मुख्य मेनू",
@@ -1354,6 +1508,78 @@ export const translations = {
     microphone_access_error: "माइक्रोफ़ोन एक्सेस त्रुटि",
     transcription_failed: "ट्रांसक्रिप्शन विफल",
     audio_upload_error: "ऑडियो अपलोड त्रुटि",
+    //Added new words for Hindi reading proficiency
+   
+    transcriptionFailedTryAgain: "ट्रांसक्रिप्शन विफल रहा। कृपया पुनः प्रयास करें।",
+    errorUploadingAudioTryAgain: "ऑडियो अपलोड करने में त्रुटि। कृपया पुनः प्रयास करें।",
+    testSubmittedWithScore: "परीक्षण सबमिट किया गया! स्कोर: {score}%",
+    transcriptionNotReady: "सबमिट करने से पहले कृपया ऑडियो रिकॉर्ड करें या अपलोड करें।",
+
+    tutorialHelloExplorer: "👋 नमस्ते, युवा अन्वेषक!",
+    tutorialCoralineIntro: "🦑 मैं कोरलिन द क्रैकन, ग्लिफ रीफ की मिलनसार लाइब्रेरियन हूँ।",
+    tutorialGlyphReefDescription: "🌊 यह एक विशेष स्थान है जहाँ शब्द मूंगे की तरह उगते हैं!",
+    tutorialReadingTask: "📖 चमकते हुए सीपियों पर लिखे हर शब्द को जोर से पढ़ना आपका काम है।",
+    tutorialDifficulty: "✨ वे आसान शुरू होंगे और थोड़े कठिन होते जाएंगे - लेकिन मुझे आप पर विश्वास है!",
+    tutorialShellOfFluency: "🏆 ध्यान से पढ़ें और आप प्रवाह की सीपी 🐚 अर्जित करेंगे।",
+    tutorialCoralSpyglass: "🔭 और मेरी जादुई मूंगा दूरबीन आपकी यात्रा में आपकी मदद करेगी।",
+    tutorialLetsGetReading: "📚 चलो पढ़ना शुरू करें!",
+    tutorialReadyForMission: "🚀 क्या आप मिशन के लिए तैयार हैं?",
+    buttonTutorialConfirmReady: "🧭 हाँ, मैं तैयार हूँ!",
+
+    coralineExcellentRecording: "बहुत बढ़िया! मुझे वह रिकॉर्डिंग सुनने दो...",
+    coralineHeardClearly: "बहुत अच्छा काम! मैंने आपके शब्द स्पष्ट रूप से सुने।",
+    coralineCouldntMakeOut: "हम्म, मैं ठीक से समझ नहीं पाया। फिर से कोशिश करें?",
+    coralineNeedYourVoice: "रुको! मुझे पहले तुम्हारी आवाज़ सुननी है!",
+    coralineCheckingPronunciation: "मैं आपके उच्चारण की जाँच कर रही हूँ...",
+    coralineAmazingScore: "अद्भुत! आपका स्कोर {score}% है! आपने एक खजाना अर्जित किया है!",
+    shellNamePrefix: "सीपी #",
+    coralineScoreKeepPracticing: "आपने {score}% स्कोर किया। अभ्यास करते रहें और पुनः प्रयास करें!",
+    coralineReefMagicError: "रीफ के जादू में कुछ गड़बड़ हो गई। चलो एक बार और कोशिश करते हैं!",
+
+    altCoralineCharacter: "कोरलिन",
+    labelReefProgress: "रीफ प्रगति",
+    altAncientPaperBackground: "प्राचीन कागज पृष्ठभूमि",
+    buttonNextWords: "अगले शब्द",
+    altEarnedShellImage: "अर्जित सीपी",
+    titleShellOfFluencyEarned: "प्रवाह की सीपी अर्जित!",
+    messagePronunciationShining: "आपका उच्चारण चमक रहा है!",
+    buttonCollectTreasure: "खजाना इकट्ठा करो!",
+    buttonModalYesImReady: "हाँ, मैं तैयार हूँ!",
+    altWarningSignImage: "चेतावनी संकेत",
+    ariaLabelUploadAudioFile: "ऑडियो फ़ाइल अपलोड करें",
+
+    // --- Visual Test (Blink's Dialog) ---
+    visualTestBlinkDialogWelcome: "👁️ नमस्ते, अन्वेषक... मैं ब्लिंक हूँ, विजन रॉक की आँख।",
+    visualTestBlinkDialogSneakyShapes: "🌀 यह स्थान चालाक आकृतियों से भरा है। कुछ लगभग एक जैसे दिखते हैं... लेकिन केवल एक ही सटीक मेल खाता है।",
+    visualTestBlinkDialogLookCarefully: "🔍 अपनी आँखों का प्रयोग करें। ध्यान से देखें। जो बिल्कुल मेल खाता है उसे ढूंढें।",
+    visualTestBlinkDialogReward: "🏆 यदि आप सही चुनते हैं, तो मैं आपको दृष्टि का कवच 🐚 और सत्य का लेंस 🔮 पुरस्कार के रूप में दूंगा। वे आपको वह चीजें देखने में मदद करेंगे जो दूसरे नहीं देख सकते!",
+    visualTestBlinkDialogReadyPrompt: "⚔️ क्या आप तैयार हैं? देखते हैं आपकी आँखें कितनी तेज हैं!",
+    altBlinkTheGuardian: "ब्लिंक द गार्डियन",
+    buttonImReady: "मैं तैयार हूँ!",
+
+    // --- Visual Test (In-Game UI) ---
+    labelTimeRemaining: "शेष समय",
+    labelQuestionOutOfTotal: "प्रश्न {index} / {total}",
+    labelProgress: "प्रगति",
+    visualTestSelectStudentError: "परीक्षा देने से पहले कृपया एक छात्र का चयन करें",
+    visualTestCompleted: "परीक्षा पूरी हुई!",
+    visualTestScoreOutOfTotal: "आपने {total} में से {score} सही किए",
+
+    soundTestEchoDialogAhoy: "👋 नमस्ते, नन्हे अन्वेषक!",
+    soundTestEchoDialogIntro: "मैं सर इको, प्रतिध्वनि केकड़ा हूँ! 🦀✨",
+    soundTestEchoDialogIsleDescription: "यह फुसफुसाता द्वीप है... जहाँ ध्वनियाँ गूंजती हैं और रहस्य छिपते हैं! 🌫️👂",
+    soundTestEchoDialogTwoSounds: "मैं तुम्हारे लिए दो ध्वनियाँ बजाऊंगा 🎧🎧",
+    soundTestEchoDialogYourJob: "तुम्हें मुझे बताना है...",
+    soundTestEchoDialogAreTheySame: "क्या वे समान हैं? ✅",
+    soundTestEchoDialogOrDifferent: "या भिन्न हैं? ❌",
+    soundTestEchoDialogReadyPirate: "एक समुद्री डाकू विशेषज्ञ की तरह सुनने के लिए तैयार हैं? 🏴‍☠️🦜",
+    altSirEchoTheCrab: "सर इको द केकड़ा",
+
+    // --- Sound Discrimination Test (In-Game UI) ---
+    buttonPlayingAudio: "चल रहा है...",
+    buttonPlayAudio: "ऑडियो चलाएं",
+    labelListeningCarefully: "ध्यान से सुन रहा हूँ...",
+    soundTestApiName: "परीक्षण 16: ध्वनि विभेदन",
   },
   ml: {
     mainMenu: "മുഖ്യ മെന്ന്",
