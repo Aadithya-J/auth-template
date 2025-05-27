@@ -24,11 +24,7 @@ import { useLanguage } from "../../contexts/LanguageContext.jsx";
 import backgroundImage from "../../assets/sound-blending/background.png";
 import characterImage from "../../assets/sound-blending/dolphin.png";
 import { useNavigate } from "react-router-dom";
-const dialog = [
-  "Welcome to Blender’s Bay, a magical place where word waves and swirling whirlpools help us blend sounds together!",
-  "I’m Blenda the Dolphin, your guide on this journey. Let’s dive into the gentle waves and swirl the sounds to create new words!",
-  "Are you ready? Let’s see what words we can make by blending these sounds together!",
-];
+
 
 const WORDS = [
   {
@@ -190,7 +186,7 @@ const ProgressBar = ({ progress }) => (
 );
 ProgressBar.propTypes = { progress: PropTypes.number.isRequired };
 
-const ResultCard = ({ item, index }) => (
+const ResultCard = ({ item, index,t }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -203,7 +199,7 @@ const ResultCard = ({ item, index }) => (
   >
     <div className="flex justify-between items-center">
       <span className="font-medium text-blue-900">
-        Word {index + 1}: <span className="font-bold">{item.word}</span>
+        {t("phonemeBlendingResultCardWordLabel", { indexPlusOne: index + 1 })} <span className="font-bold">{item.word}</span>
       </span>
       <span
         className={`flex items-center font-bold ${
@@ -231,18 +227,18 @@ const ResultCard = ({ item, index }) => (
     </div>
     <div className="mt-2 text-sm text-blue-800">
       <p>
-        You said:{" "}
+        {t("phonemeBlendingResultCardYouSaid")}{" "}
         <span
           className={`font-medium ${
             item.isCorrect ? "text-green-600" : "text-red-500"
           }`}
         >
-          {item.response || "No response"}
+          {item.response || t("phonemeBlendingResultCardNoResponse")}
         </span>
       </p>
       {!item.isCorrect && (
         <p className="text-blue-700 mt-1">
-          Correct answer: <span className="font-medium">{item.word}</span>
+          {t("phonemeBlendingResultCardCorrectAnswer")} <span className="font-medium">{item.word}</span>
         </p>
       )}
     </div>
@@ -264,6 +260,8 @@ const Button = ({
   children,
   className = "",
   isLoading = false,
+  loadingTextKey = "phonemeBlendingLoadingProcessing", // Default loading text key
+  t // ADD t as a prop
 }) => {
   const baseStyle =
     "py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm";
@@ -312,8 +310,7 @@ Button.propTypes = {
   className: PropTypes.string,
   isLoading: PropTypes.bool,
 };
-
-const LoadingOverlay = ({ message = "Processing..." }) => (
+const LoadingOverlay = ({ messageKey = "phonemeBlendingLoadingProcessing", t }) => ( 
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -331,11 +328,12 @@ const LoadingOverlay = ({ message = "Processing..." }) => (
           className="w-16 h-16 rounded-full border-4 border-blue-100 border-t-blue-600"
         />
       </div>
-      <p className="mt-4 text-blue-800 font-medium">{message}</p>
+      <p className="mt-4 text-blue-800 font-medium">{t(messageKey)}</p>
     </div>
   </motion.div>
 );
-LoadingOverlay.propTypes = { message: PropTypes.string };
+
+LoadingOverlay.propTypes = {messageKey: PropTypes.string, t: PropTypes.func.isRequired,};
 
 export default function PhonemeGame({
   onComplete,
@@ -369,38 +367,17 @@ export default function PhonemeGame({
   const childId = localStorage.getItem("childId") || (student && student.id);
   const token = localStorage.getItem("access_token");
 
+const dialogIntroTexts = [
+  t("phonemeBlendingIntroDialog1"),
+  t("phonemeBlendingIntroDialog2"),
+  t("phonemeBlendingIntroDialog3"),
+];
   const navigate = useNavigate();
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
 
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) audioRef.current.pause();
-      stopListening();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (
-      showResponseArea &&
-      !isRecording &&
-      !isTranscribing &&
-      inputRef.current
-    ) {
-      inputRef.current.focus();
-    }
-  }, [showResponseArea, isRecording, isTranscribing]);
-
-  useEffect(() => {
-    console.log(`Word changed to index: ${currentWordIndex}. Resetting state.`);
-    setUserInput("");
-    setCurrentTranscriptionStatus("idle");
-    setError(null);
-    setIsRecording(false);
-    setIsTranscribing(false);
-    stopListening();
-  }, [currentWordIndex]);
+  
 
   const playSound = (src) => {
     return new Promise((resolve, reject) => {
@@ -421,9 +398,7 @@ export default function PhonemeGame({
         })
         .catch((e) => {
           console.error("Audio playback failed:", src, e);
-          setError(
-            `Failed to play sound. Please try again or check permissions.`
-          );
+          setError(t("phonemeBlendingErrorPlaySound"));
           resolve();
         });
     });
@@ -450,7 +425,7 @@ export default function PhonemeGame({
       setShowResponseArea(true);
     } catch (err) {
       console.error("Error in playCurrentWordSounds:", err);
-      setError("An error occurred while playing sounds.");
+      setError(t("phonemeBlendingErrorPlayingSounds"));
       setIsPlayingSound(false);
       setShowResponseArea(true);
     }
@@ -504,16 +479,14 @@ export default function PhonemeGame({
           });
           setCurrentTranscriptionStatus(transcribedText ? "done" : "error");
           if (!transcribedText) {
-            setError("Transcription returned empty. Please type or try again.");
+            setError(t("phonemeBlendingErrorTranscriptionEmpty"));
           }
         } else {
           console.error(
             `Transcription failed for index ${currentWordIndex}:`,
             result
           );
-          setError(
-            `Transcription failed. Please type your answer or try recording again.`
-          );
+          setError(t("phonemeBlendingErrorTranscriptionFailedGeneral"));
           setCurrentTranscriptionStatus("error");
         }
       } catch (error) {
@@ -521,13 +494,13 @@ export default function PhonemeGame({
           `Error uploading/transcribing audio for index ${currentWordIndex}:`,
           error
         );
-        setError("Error processing audio. Please type your answer.");
+        setError(t("phonemeBlendingErrorProcessingAudio"));
         setCurrentTranscriptionStatus("error");
       } finally {
         setIsTranscribing(false);
       }
     },
-    [childId, currentWordIndex, backendURL]
+    [childId, currentWordIndex, backendURL,language,t]
   );
 
   const stopListening = useCallback(() => {
@@ -557,7 +530,7 @@ export default function PhonemeGame({
         return "idle";
       });
     }
-  }, [isRecordingRef]);
+  }, [isRecordingRef,currentTranscriptionStatus]);
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) {
@@ -598,7 +571,7 @@ export default function PhonemeGame({
           };
           recorder.onerror = (event) => {
             console.error("MediaRecorder error:", event.error);
-            setError("Recording error. Please type or try again.");
+            setError(t("phonemeBlendingErrorRecording"));
             setCurrentTranscriptionStatus("error");
             stopListening();
           };
@@ -606,7 +579,7 @@ export default function PhonemeGame({
           recorder.start();
         } catch (error) {
           console.error("Error creating/starting MediaRecorder:", error);
-          setError("Could not start recording. Check permissions/refresh.");
+          setError(t("phonemeBlendingErrorStartRecording"));
           setCurrentTranscriptionStatus("error");
           stopListening();
           setIsRecording(false);
@@ -614,11 +587,38 @@ export default function PhonemeGame({
       })
       .catch((error) => {
         console.error("getUserMedia error:", error);
-        setError("Could not access microphone. Check permissions.");
+        setError(t("phonemeBlendingErrorMicAccess"));
         setCurrentTranscriptionStatus("error");
         setIsRecording(false);
       });
-  }, [stopListening, uploadAudio]);
+  }, [stopListening, uploadAudio,t, isTranscribing]);
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) audioRef.current.pause();
+      stopListening();
+    };
+  }, [stopListening]);
+
+  useEffect(() => {
+    if (
+      showResponseArea &&
+      !isRecording &&
+      !isTranscribing &&
+      inputRef.current
+    ) {
+      inputRef.current.focus();
+    }
+  }, [showResponseArea, isRecording, isTranscribing]);
+
+  useEffect(() => {
+    console.log(`Word changed to index: ${currentWordIndex}. Resetting state.`);
+    setUserInput("");
+    setCurrentTranscriptionStatus("idle");
+    setError(null);
+    setIsRecording(false);
+    setIsTranscribing(false);
+    stopListening();
+  }, [currentWordIndex,stopListening]);
 
   const handleInputChange = (e) => {
     const typedValue = e.target.value;
@@ -677,7 +677,7 @@ export default function PhonemeGame({
 
   const handleSubmitResponse = () => {
     if (!userInput.trim()) {
-      setError("Please enter or record a word before submitting.");
+      setError(t("phonemeBlendingErrorNoInputSubmit"));
       return;
     }
     console.log(`Submitting user input: "${userInput}"`);
@@ -692,7 +692,7 @@ export default function PhonemeGame({
   const handleFinalSubmit = async () => {
     console.log("Handling final submission.");
     setIsSubmittingAll(true);
-    setLoadingMessage("Submitting your results...");
+    setLoadingMessageKey("phonemeBlendingLoadingSubmitting"); // Use a key for LoadingOverlay
     await finishGame(responses);
     setIsSubmittingAll(false);
   };
@@ -701,7 +701,7 @@ export default function PhonemeGame({
     const effectiveChildId = childId;
     if (!effectiveChildId) {
       console.error("Cannot submit results: childId is missing.");
-      setError("Cannot submit results: Student ID not found.");
+      setError(t("phonemeBlendingErrorSubmitNoChildId"));
       setIsSubmittingAll(false);
       return;
     }
@@ -753,9 +753,7 @@ export default function PhonemeGame({
         "Error submitting results:",
         err.response?.data || err.message
       );
-      setError(
-        "Failed to save results. Please try again later or contact support."
-      );
+      setError(t("phonemeBlendingErrorSubmitFailed"));
 
       if (suppressResultPage && typeof onComplete === "function") {
         console.log("Error submitting, but calling onComplete with score 0.");
@@ -775,44 +773,44 @@ export default function PhonemeGame({
       case "recording":
         return (
           <div className="flex items-center justify-center gap-2 text-red-600 h-6">
-            <Mic className="h-4 w-4 animate-pulse" /> Recording...
+            <Mic className="h-4 w-4 animate-pulse" /> {t("phonemeBlendingStatusRecording")}
           </div>
         );
       case "pending":
         return (
           <div className="flex items-center justify-center gap-2 text-blue-600 h-6">
-            <Loader2 className="h-4 w-4 animate-spin" /> Transcribing...
+            <Loader2 className="h-4 w-4 animate-spin" /> {t("phonemeBlendingStatusTranscribing")}
           </div>
         );
       case "done":
         return (
           <div className="flex items-center justify-center gap-2 text-green-600 h-6">
-            <Check className="h-4 w-4" /> Done. Ready to submit.
+            <Check className="h-4 w-4" />  {t("phonemeBlendingStatusDone")}
           </div>
         );
       case "error":
         return (
           <div className="flex items-center justify-center gap-2 text-red-600 h-6">
-            <X className="h-4 w-4" /> Transcription failed.
+            <X className="h-4 w-4" /> {t("phonemeBlendingStatusError")}
           </div>
         );
       case "typed":
         return (
           <div className="flex items-center justify-center gap-2 text-black-600 h-6 text-sm">
-            Typed input
+             {t("phonemeBlendingStatusTyped")}
           </div>
         );
       case "idle":
       default:
         return (
           <div className="h-6 text-black-500 text-lg text-center">
-            Ready to record or type
+            {t("phonemeBlendingStatusIdle")}
           </div>
         );
     }
   };
   const handleNext = () => {
-    if (currentDialog < dialog.length - 1) {
+    if (currentDialog < dialogIntroTexts.length - 1) {
       setCurrentDialog((prev) => prev + 1);
     } else {
       setShowIntro(false);
@@ -877,7 +875,7 @@ export default function PhonemeGame({
               >
                 <img
                   src={characterImage}
-                  alt="Blenda the Dolphin"
+                  alt={t("altBlendaTheDolphin")}
                   className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
                 />
               </motion.div>
@@ -906,13 +904,13 @@ export default function PhonemeGame({
                   className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
                 >
                   <span className="drop-shadow-lg">
-                    {dialog[currentDialog]}
+                    {dialogIntroTexts[currentDialog]}
                   </span>
                 </motion.div>
 
                 {/* Enhanced progress indicators */}
                 <div className="flex justify-center gap-3 mb-8 lg:mb-10">
-                  {dialog.map((_, index) => (
+                  {dialogIntroTexts.map((_, index) => (
                     <motion.div
                       key={index}
                       className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
@@ -937,14 +935,14 @@ export default function PhonemeGame({
                     whileTap={{ scale: 0.95 }}
                     onClick={handleNext}
                     className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
-                      currentDialog < dialog.length - 1
+                      currentDialog < dialogIntroTexts.length - 1
                         ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
                         : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
                     }`}
                   >
-                    {currentDialog < dialog.length - 1 ? (
+                    {currentDialog < dialogIntroTexts.length - 1 ? (
                       <>
-                        <span className="drop-shadow-sm">Next</span>
+                        <span className="drop-shadow-sm">{t("next")}</span>
                         <FaChevronRight className="mt-0.5 drop-shadow-sm" />
                       </>
                     ) : (
@@ -990,7 +988,7 @@ export default function PhonemeGame({
               {t("BacktoTests")}
             </motion.button>
             <AnimatePresence>
-              {isSubmittingAll && <LoadingOverlay message={loadingMessage} />}
+              {isSubmittingAll && <LoadingOverlay messageKey={loadingMessageKey} t={t} />}
             </AnimatePresence>
 
             <motion.div
@@ -1013,11 +1011,11 @@ export default function PhonemeGame({
                   </motion.div>
                 </div>
                 <div className="flex justify-between text-lg font-medium text-black-900">
-                  <span>Start</span>
+                  <span>{t("phonemeBlendingProgressBarStart")}</span>
                   <span className="text-black-900 font-bold">
-                    Word {currentWordIndex + 1} of {WORDS.length}
+                    {t("phonemeBlendingProgressBarWord", { current: currentWordIndex + 1, total: WORDS.length })}
                   </span>
-                  <span>Finish</span>
+                  <span>{t("phonemeBlendingProgressBarFinish")}</span>
                 </div>
               </div>
 
@@ -1033,7 +1031,7 @@ export default function PhonemeGame({
                     className="text-4xl font-bold bg-clip-text text-[#F6F9FC]/90"
                     whileHover={{ scale: 1.05 }}
                   >
-                    Blend the Sounds!
+                    {t("phonemeBlendingHeaderTitle")}
                   </motion.h2>
                   <motion.div
                     animate={{ x: [0, 15, 0] }}
@@ -1054,8 +1052,8 @@ export default function PhonemeGame({
                   transition={{ delay: 0.3 }}
                 >
                   {showResponseArea
-                    ? "Enter or say the word you heard"
-                    : "Listen carefully to the sounds"}
+                    ? t("phonemeBlendingPromptEnterOrSay")
+                    : t("phonemeBlendingPromptListen")}
                 </motion.p>
               </div>
 
@@ -1189,7 +1187,7 @@ export default function PhonemeGame({
  rounded-xl p-5 shadow-lg border border-[#3FB8AF]/40"
                   >
                     <p className="text-center text-xl text-black font-semibold">
-                      Listen to the sounds and combine them to form a word
+                      {t("phonemeBlendingPromptListen")} {/* Reusing the key */}
                     </p>
                   </motion.div>
                   <motion.div
@@ -1208,11 +1206,11 @@ export default function PhonemeGame({
                           transition={{ duration: 1.5, repeat: Infinity }}
                           className="flex items-center justify-center gap-3"
                         >
-                          <Volume2 className="h-6 w-6" /> Playing Sounds...
+                          <Volume2 className="h-6 w-6" /> {t("phonemeBlendingPlayingSoundsButton")}
                         </motion.span>
                       ) : (
                         <span className="flex items-center justify-center gap-3">
-                          <Volume2 className="h-6 w-6" /> Play Sounds
+                          <Volume2 className="h-6 w-6" /> {t("phonemeBlendingPlaySoundsButton")}
                         </span>
                       )}
                     </Button>
@@ -1231,7 +1229,7 @@ export default function PhonemeGame({
                     className="bg-blue/20 rounded-xl p-5 shadow-lg border border-[#00D4FF]/40"
                   >
                     <p className="text-center text-xl font-semibold text-black">
-                      What word did you hear?
+                      {t("phonemeBlendingPromptHeard")}
                     </p>
                   </motion.div>
 
@@ -1250,7 +1248,7 @@ export default function PhonemeGame({
                       type="text"
                       value={userInput}
                       onChange={handleInputChange}
-                      placeholder="Type or Record your answer"
+                      placeholder={t("phonemeBlendingInputPlaceholder")}
                       className="w-full px-5 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-200/70 focus:border-transparent text-center font-semibold text-lg text-black-700 placeholder-blue-700 shadow-lg"
                       onKeyPress={(e) => {
                         if (
@@ -1308,11 +1306,11 @@ export default function PhonemeGame({
                           transition={{ duration: 0.5, repeat: Infinity }}
                           className="flex items-center justify-center gap-3"
                         >
-                          <MicOff className="h-6 w-6" /> Stop
+                          <MicOff className="h-6 w-6" /> {t("phonemeBlendingStopButton")}
                         </motion.span>
                       ) : (
                         <span className="flex items-center justify-center gap-3">
-                          <Mic className="h-6 w-6" /> Record
+                          <Mic className="h-6 w-6" /> {t("phonemeBlendingRecordButton")}
                         </span>
                       )}
                     </Button>
@@ -1329,7 +1327,7 @@ export default function PhonemeGame({
                         isSubmittingAll
                       }
                     >
-                      <Check className="h-6 w-6" /> Submit
+                      <Check className="h-6 w-6" /> {t("phonemeBlendingSubmitButton")}
                     </Button>
 
                     {/* Skip Button - Full width */}
@@ -1343,7 +1341,7 @@ export default function PhonemeGame({
                         isSubmittingAll
                       }
                     >
-                      <SkipForward className="h-6 w-6" /> Skip Word
+                      <SkipForward className="h-6 w-6" /> {t("phonemeBlendingSkipButton")}
                     </Button>
                   </motion.div>
                 </div>
@@ -1361,7 +1359,7 @@ export default function PhonemeGame({
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    All words attempted!
+                    {t("phonemeBlendingAllWordsAttempted")}
                   </motion.p>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -1371,9 +1369,11 @@ export default function PhonemeGame({
                       onClick={handleFinalSubmit}
                       className="bg-gradient-to-r from-[#3FB8AF] via-[#7E6BC4] to-[#FFC9DE] hover:from-[#FFC9DE] hover:via-[#7E6BC4] hover:to-[#3FB8AF] text-white font-bold py-5 px-10 rounded-xl shadow-xl text-xl relative overflow-hidden"
                       isLoading={isSubmittingAll}
+                      loadingTextKey="phonemeBlendingLoadingSubmitting"
+                      t={t}
                     >
                       <span className="relative z-10 flex items-center justify-center gap-3">
-                        <Send className="h-6 w-6" /> Submit All Results
+                        <Send className="h-6 w-6" /> {t("phonemeBlendingSubmitAllButton")}
                       </span>
                       <motion.div
                         animate={{

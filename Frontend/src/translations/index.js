@@ -543,6 +543,83 @@ export const translations = {
     orSeparatorText: "OR",
     statusProcessing: "Processing...",
 
+
+
+    pictureTestIntroDialog1: "🌊 Welcome, traveler, to Crystal Shoals! The tidepools here shimmer with reflections from above.",
+    pictureTestIntroDialog2: "🪞 I am Mira, the mirrorfish, guardian of these hidden images. Each pool holds visions waiting to be recognized.",
+    pictureTestIntroDialog3: "🐚 Your task is simple yet deep: name what you see reflected in the pools, and reveal the world they come from.",
+    pictureTestIntroDialog4: "💧 In return, you shall receive the Shell of Imagery and The Reflecting Pearl, treasures of insight and clarity.",
+    pictureTestIntroDialog5: "✨ Are you ready to peer beyond the ripples and unlock the secrets held in these mirrored waters?",
+    pictureTestButtonNextDialog: "Next",
+    altMiraTheMirrorfish: "Mira the Mirrorfish",
+    altTidepoolReflection: "Tidepool reflection",
+
+// UI Elements & Test Flow (New or specifically for this UI)
+    pictureTestProgressBarTitle: "Test Progress", // If "TestProgress" key doesn't exist or is too generic
+    pictureTestProgressStatus: "{current} of {total} completed", // For dynamic progress text
+
+// Speech prompts (New, specific keys for clarity)
+    speakGreatWhatIsIt: "Great! Can you tell me what it is?",
+    speakCanYouSeeThisPictureInitial: "Can you see this picture?",
+
+
+
+    phonemeBlendingIntroDialog1: "Welcome to Blender’s Bay, a magical place where word waves and swirling whirlpools help us blend sounds together!",
+    phonemeBlendingIntroDialog2: "I’m Blenda the Dolphin, your guide on this journey. Let’s dive into the gentle waves and swirl the sounds to create new words!",
+    phonemeBlendingIntroDialog3: "Are you ready? Let’s see what words we can make by blending these sounds together!",
+    altBlendaTheDolphin: "Blenda the Dolphin",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "Start",
+    phonemeBlendingProgressBarWord: "Word {current} of {total}",
+    phonemeBlendingProgressBarFinish: "Finish",
+    phonemeBlendingHeaderTitle: "Blend the Sounds!",
+    phonemeBlendingPromptListen: "Listen carefully to the sounds", // Also used for "Listen to the sounds and combine them to form a word"
+    phonemeBlendingPromptEnterOrSay: "Enter or say the word you heard",
+    phonemeBlendingPlaySoundsButton: "Play Sounds",
+    phonemeBlendingPlayingSoundsButton: "Playing Sounds...",
+    phonemeBlendingPromptHeard: "What word did you hear?",
+    phonemeBlendingInputPlaceholder: "Type or Record your answer",
+    phonemeBlendingRecordButton: "Record",
+    phonemeBlendingStopButton: "Stop",
+    phonemeBlendingSubmitButton: "Submit",
+    phonemeBlendingSkipButton: "Skip Word",
+    phonemeBlendingAllWordsAttempted: "All words attempted!",
+    phonemeBlendingSubmitAllButton: "Submit All Results",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "Recording...",
+    phonemeBlendingStatusTranscribing: "Transcribing...",
+    phonemeBlendingStatusDone: "Done. Ready to submit.",
+    phonemeBlendingStatusError: "Transcription failed.",
+    phonemeBlendingStatusTyped: "Typed input",
+    phonemeBlendingStatusIdle: "Ready to record or type",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound: "Failed to play sound. Please try again or check permissions.",
+    phonemeBlendingErrorPlayingSounds: "An error occurred while playing sounds.",
+    phonemeBlendingErrorTranscriptionEmpty: "Transcription returned empty. Please type or try again.",
+    phonemeBlendingErrorTranscriptionFailedGeneral: "Transcription failed. Please type your answer or try recording again.",
+    phonemeBlendingErrorProcessingAudio: "Error processing audio. Please type your answer.",
+    phonemeBlendingErrorRecording: "Recording error. Please type or try again.",
+    phonemeBlendingErrorStartRecording: "Could not start recording. Check permissions/refresh.",
+    phonemeBlendingErrorMicAccess: "Could not access microphone. Check permissions.",
+    phonemeBlendingErrorNoInputSubmit: "Please enter or record a word before submitting.",
+    phonemeBlendingErrorSubmitNoChildId: "Cannot submit results: Student ID not found.",
+    phonemeBlendingErrorSubmitFailed: "Failed to save results. Please try again later or contact support.",
+    unknownError: "Unknown error", // Fallback for MediaRecorder error
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "Processing...", // Default for Button isLoading & LoadingOverlay
+    phonemeBlendingLoadingSubmitting: "Submitting your results...", // For final submit
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "Word {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "You said:",
+    phonemeBlendingResultCardNoResponse: "No response",
+    phonemeBlendingResultCardCorrectAnswer: "Correct answer:",
+    
+
   },
   ta: {
     mainMenu: "முதன்மை மெனு",
@@ -835,6 +912,7 @@ export const translations = {
     noStudentsFoundMessage: "மாணவர்கள் எவரும் கிடைக்கவில்லை",
     tryAdjustingSearch: "உங்கள் தேடல் அளவுகோல்களை சரிசெய்ய முயற்சிக்கவும்",
     selectStudentButton: "மாணவரைத் தேர்ந்தெடுக்கவும்",
+    imReady: "நான் தயார்!",
 
     // TestResultsPage
     viewingResultsFor: "இதற்கான முடிவுகளைக் காண்கிறது:",
@@ -1080,6 +1158,8 @@ export const translations = {
     buttonPlayAudio: "ஆடியோவை இயக்கு",
     labelListeningCarefully: "கவனமாகக் கேட்கிறேன்...",
     soundTestApiName: "சோதனை 16: ஒலி பாகுபாடு",
+    sameSounds: "ஒரே ஒலிகள்",
+    differentSounds: "வெவ்வேறு ஒலிகள்",
 
     // Add these to your Tamil translations
 // Picture Recognition Test Specific - Tamil
@@ -1100,7 +1180,80 @@ export const translations = {
     takeNewTestButton: "புதிய தேர்வு எடுக்கவும்",
     orSeparatorText: "அல்லது",
     statusProcessing: "செயலாக்கத்தில் உள்ளது...",
-      },
+
+    // Picture Recognition Test - Intro Dialog (Mira the Mirrorfish) - Tamil
+    pictureTestIntroDialog1: "🌊 பயணியே, கிரிஸ்டல் ஷோல்ஸுக்கு வரவேற்கிறோம்! இங்குள்ள அலை குளங்கள் மேலிருந்து வரும் பிரதிபலிப்புகளால் மின்னுகின்றன.",
+    pictureTestIntroDialog2: "🪞 நான் மீரா, கண்ணாடி மீன், இந்த மறைந்திருக்கும் படங்களின் பாதுகாவலர். ஒவ்வொரு குளமும் அடையாளம் காணப்பட காத்திருக்கும் காட்சிகளைக் கொண்டுள்ளது.",
+    pictureTestIntroDialog3: "🐚 உங்கள் பணி எளிமையானது ஆனால் ஆழமானது: குளங்களில் பிரதிபலிப்பதைப் பெயரிடுங்கள், மேலும் அவை வந்த உலகத்தை வெளிப்படுத்துங்கள்.",
+    pictureTestIntroDialog4: "💧 बदले में, உங்களுக்கு கற்பனையின் கவசம் மற்றும் பிரதிபலிக்கும் முத்து கிடைக்கும், அவை உள்ளொளி மற்றும் தெளிவின் பொக்கிஷங்கள்.",
+    pictureTestIntroDialog5: "✨ அலைகளுக்கு அப்பால் உற்றுப் பார்க்கவும், இந்த பிரதிபலித்த நீரில் மறைந்திருக்கும் ரகசியங்களைத் திறக்கவும் நீங்கள் தயாரா?",
+    pictureTestButtonNextDialog: "அடுத்து",
+    altMiraTheMirrorfish: "மீரா கண்ணாடி மீன்",
+    altTidepoolReflection: "அலை குளத்தின் பிரதிபலிப்பு",
+
+// UI Elements & Test Flow - Tamil
+    pictureTestProgressBarTitle: "தேர்வு முன்னேற்றம்",
+    pictureTestProgressStatus: "{total}-இல் {current} முடிந்தது",
+
+// Speech prompts - Tamil
+    speakGreatWhatIsIt: "அற்புதம்! இது என்னவென்று சொல்ல முடியுமா?",
+    speakCanYouSeeThisPictureInitial: "இந்தப் படத்தை உங்களால் பார்க்க முடிகிறதா?",
+
+    phonemeBlendingIntroDialog1: "பிளெண்டர்ஸ் பே-க்கு வரவேற்கிறோம், இது ஒரு மாயாஜால இடம், இங்கு வார்த்தை அலைகளும் சுழலும் நீர்ச்சுழிகளும் ஒலிகளை ஒன்றாக கலக்க உதவுகின்றன!",
+    phonemeBlendingIntroDialog2: "நான் பிளெண்டா டால்பின், இந்த பயணத்தில் உங்கள் வழிகாட்டி. மென்மையான அலைகளில் மூழ்கி, புதிய வார்த்தைகளை உருவாக்க ஒலிகளை சுழற்றுவோம்!",
+    phonemeBlendingIntroDialog3: "நீங்கள் தயாரா? இந்த ஒலிகளைக் கலந்து என்ன வார்த்தைகளை உருவாக்க முடியும் என்று பார்ப்போம்!",
+    altBlendaTheDolphin: "பிளெண்டா டால்பின்",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "தொடங்கு",
+    phonemeBlendingProgressBarWord: "வார்த்தை {total}-இல் {current}",
+    phonemeBlendingProgressBarFinish: "முடி",
+    phonemeBlendingHeaderTitle: "ஒலிகளைக் கலந்திடுங்கள்!",
+    phonemeBlendingPromptListen: "ஒலிகளைக் கவனமாகக் கேளுங்கள்",
+    phonemeBlendingPromptEnterOrSay: "நீங்கள் கேட்ட வார்த்தையை உள்ளிடவும் அல்லது சொல்லவும்",
+    phonemeBlendingPlaySoundsButton: "ஒலிகளை இயக்கு",
+    phonemeBlendingPlayingSoundsButton: "ஒலிகள் இயக்கப்படுகின்றன...",
+    phonemeBlendingPromptHeard: "நீங்கள் என்ன வார்த்தையைக் கேட்டீர்கள்?",
+    phonemeBlendingInputPlaceholder: "உங்கள் பதிலை தட்டச்சு செய்யவும் அல்லது பதிவு செய்யவும்",
+    phonemeBlendingRecordButton: "பதிவு செய்",
+    phonemeBlendingStopButton: "நிறுத்து",
+    phonemeBlendingSubmitButton: "சமர்ப்பி",
+    phonemeBlendingSkipButton: "வார்த்தையைத் தவிர்",
+    phonemeBlendingAllWordsAttempted: "அனைத்து வார்த்தைகளும் முயற்சிக்கப்பட்டன!",
+    phonemeBlendingSubmitAllButton: "அனைத்து முடிவுகளையும் சமர்ப்பி",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "பதிவாகிறது...",
+    phonemeBlendingStatusTranscribing: "படியெடுக்கப்படுகிறது...",
+    phonemeBlendingStatusDone: "முடிந்தது. சமர்ப்பிக்கத் தயார்.",
+    phonemeBlendingStatusError: "படியெடுத்தல் தோல்வியடைந்தது.",
+    phonemeBlendingStatusTyped: "தட்டச்சு செய்த உள்ளீடு",
+    phonemeBlendingStatusIdle: "பதிவு செய்ய அல்லது தட்டச்சு செய்ய தயார்",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound: "ஒலியை இயக்குவதில் தோல்வி. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது அனுமதிகளைச் சரிபார்க்கவும்.",
+    phonemeBlendingErrorPlayingSounds: "ஒலிகளை இயக்கும்போது ஒரு பிழை ஏற்பட்டது.",
+    phonemeBlendingErrorTranscriptionEmpty: "படியெடுத்தல் காலியாக வந்தது. தயவுசெய்து தட்டச்சு செய்யவும் அல்லது மீண்டும் முயற்சிக்கவும்.",
+    phonemeBlendingErrorTranscriptionFailedGeneral: "படியெடுத்தல் தோல்வியடைந்தது. தயவுசெய்து உங்கள் பதிலை தட்டச்சு செய்யவும் அல்லது மீண்டும் பதிவு செய்ய முயற்சிக்கவும்.",
+    phonemeBlendingErrorProcessingAudio: "ஆடியோவைச் செயலாக்குவதில் பிழை. தயவுசெய்து உங்கள் பதிலை தட்டச்சு செய்யவும்.",
+    phonemeBlendingErrorRecording: "பதிவுப் பிழை. தயவுசெய்து தட்டச்சு செய்யவும் அல்லது மீண்டும் முயற்சிக்கவும்.",
+    phonemeBlendingErrorStartRecording: "பதிவைத் தொடங்க முடியவில்லை. அனுமதிகளைச் சரிபார்க்கவும்/புதுப்பிக்கவும்.",
+    phonemeBlendingErrorMicAccess: "மைக்ரோஃபோனை அணுக முடியவில்லை. அனுமதிகளைச் சரிபார்க்கவும்.",
+    phonemeBlendingErrorNoInputSubmit: "சமர்ப்பிக்கும் முன் ஒரு வார்த்தையை உள்ளிடவும் அல்லது பதிவு செய்யவும்.",
+    phonemeBlendingErrorSubmitNoChildId: "முடிவுகளைச் சமர்ப்பிக்க முடியாது: மாணவர் ஐடி கிடைக்கவில்லை.",
+    phonemeBlendingErrorSubmitFailed: "முடிவுகளைச் சேமிப்பதில் தோல்வி. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும் அல்லது ஆதரவைத் தொடர்பு கொள்ளவும்.",
+    unknownError: "அறியப்படாத பிழை",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "செயலாக்கத்தில்...",
+    phonemeBlendingLoadingSubmitting: "உங்கள் முடிவுகள் சமர்ப்பிக்கப்படுகின்றன...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "வார்த்தை {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "நீங்கள் சொன்னது:",
+    phonemeBlendingResultCardNoResponse: "பதில் இல்லை",
+    phonemeBlendingResultCardCorrectAnswer: "சரியான பதில்:",
+  },
   hi: {
     // Navigation
     mainMenu: "मुख्य मेनू",
@@ -1638,6 +1791,84 @@ export const translations = {
     takeNewTestButton: "नई परीक्षा दें",
     orSeparatorText: "या",
     statusProcessing: "संसाधित हो रहा है...",
+    sameSounds: "एक जैसी ध्वनियाँ",
+    differentSounds: "अलग ध्वनियाँ",
+
+
+    pictureTestIntroDialog1: "🌊 यात्री, क्रिस्टल शोल्स में आपका स्वागत है! यहाँ के ज्वार-भाटे ऊपर से आने वाले प्रतिबिंबों से झिलमिलाते हैं।",
+    pictureTestIntroDialog2: "🪞 मैं मीरा हूँ, दर्पणमछली, इन छिपी हुई छवियों की संरक्षिका। प्रत्येक कुंड में पहचानने की प्रतीक्षा कर रहे दृश्य हैं।",
+    pictureTestIntroDialog3: "🐚 आपका कार्य सरल किन्तु गहरा है: कुंडों में जो प्रतिबिंबित हो रहा है उसका नाम बताएं, और वह दुनिया प्रकट करें जहाँ से वे आए हैं।",
+    pictureTestIntroDialog4: "💧 बदले में, आपको कल्पना का कवच और प्रतिबिंबित मोती प्राप्त होगा, जो अंतर्दृष्टि और स्पष्टता के खजाने हैं।",
+    pictureTestIntroDialog5: "✨ क्या आप लहरों से परे झाँकने और इन प्रतिबिंबित जलों में छिपे रहस्यों को खोलने के लिए तैयार हैं?",
+    pictureTestButtonNextDialog: "अगला",
+    altMiraTheMirrorfish: "मीरा दर्पणमछली",
+    altTidepoolReflection: "ज्वार कुंड का प्रतिबिंब",
+
+// UI Elements & Test Flow - Hindi
+    pictureTestProgressBarTitle: "परीक्षा प्रगति",
+    pictureTestProgressStatus: "{total} में से {current} पूर्ण",
+
+// Speech prompts - Hindi
+    speakGreatWhatIsIt: "बहुत बढ़िया! क्या आप बता सकते हैं कि यह क्या है?",
+    speakCanYouSeeThisPictureInitial: "क्या आप यह चित्र देख सकते हैं?",
+
+
+    phonemeBlendingIntroDialog1: "ब्लेंडर बे में आपका स्वागत है, एक जादुई जगह जहाँ शब्द तरंगें और घूमते भंवर हमें ध्वनियों को एक साथ मिलाने में मदद करते हैं!",
+    phonemeBlendingIntroDialog2: "मैं ब्लेंडा डॉल्फिन हूँ, इस यात्रा में आपकी मार्गदर्शक। आइए कोमल लहरों में गोता लगाएँ और नई शब्द बनाने के लिए ध्वनियों को घुमाएँ!",
+    phonemeBlendingIntroDialog3: "क्या आप तैयार हैं? आइए देखें कि इन ध्वनियों को मिलाकर हम कौन से शब्द बना सकते हैं!",
+    altBlendaTheDolphin: "ब्लेंडा डॉल्फिन",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "शुरू",
+    phonemeBlendingProgressBarWord: "शब्द {total} में से {current}",
+    phonemeBlendingProgressBarFinish: "समाप्त",
+    phonemeBlendingHeaderTitle: "ध्वनियों को मिलाएं!",
+    phonemeBlendingPromptListen: "ध्यान से ध्वनियों को सुनें",
+    phonemeBlendingPromptEnterOrSay: "आपने जो शब्द सुना उसे लिखें या बोलें",
+    phonemeBlendingPlaySoundsButton: "ध्वनियाँ चलाएँ",
+    phonemeBlendingPlayingSoundsButton: "ध्वनियाँ चल रहीं हैं...",
+    phonemeBlendingPromptHeard: "आपने कौन सा शब्द सुना?",
+    phonemeBlendingInputPlaceholder: "अपना उत्तर टाइप करें या रिकॉर्ड करें",
+    phonemeBlendingRecordButton: "रिकॉर्ड करें",
+    phonemeBlendingStopButton: "रोकें",
+    phonemeBlendingSubmitButton: "जमा करें",
+    phonemeBlendingSkipButton: "शब्द छोड़ें",
+    phonemeBlendingAllWordsAttempted: "सभी शब्दों का प्रयास किया गया!",
+    phonemeBlendingSubmitAllButton: "सभी परिणाम जमा करें",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "रिकॉर्डिंग हो रही है...",
+    phonemeBlendingStatusTranscribing: "ट्रांसक्राइब हो रहा है...",
+    phonemeBlendingStatusDone: "हो गया। जमा करने के लिए तैयार।",
+    phonemeBlendingStatusError: "ट्रांसक्रिप्शन विफल।",
+    phonemeBlendingStatusTyped: "टाइप किया गया इनपुट",
+    phonemeBlendingStatusIdle: "रिकॉर्ड करने या टाइप करने के लिए तैयार",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound: "ध्वनि चलाने में विफल। कृपया पुनः प्रयास करें या अनुमतियाँ जांचें।",
+    phonemeBlendingErrorPlayingSounds: "ध्वनियाँ चलाते समय एक त्रुटि हुई।",
+    phonemeBlendingErrorTranscriptionEmpty: "ट्रांसक्रिप्शन खाली मिला। कृपया टाइप करें या पुनः प्रयास करें।",
+    phonemeBlendingErrorTranscriptionFailedGeneral: "ट्रांसक्रिप्शन विफल। कृपया अपना उत्तर टाइप करें या पुनः रिकॉर्ड करने का प्रयास करें।",
+    phonemeBlendingErrorProcessingAudio: "ऑडियो संसाधित करने में त्रुटि। कृपया अपना उत्तर टाइप करें।",
+    phonemeBlendingErrorRecording: "रिकॉर्डिंग त्रुटि। कृपया टाइप करें या पुनः प्रयास करें।",
+    phonemeBlendingErrorStartRecording: "रिकॉर्डिंग शुरू नहीं हो सकी। अनुमतियाँ जांचें/रिफ्रेश करें।",
+    phonemeBlendingErrorMicAccess: "माइक्रोफ़ोन तक पहुँच नहीं हो सकी। अनुमतियाँ जांचें।",
+    phonemeBlendingErrorNoInputSubmit: "कृपया जमा करने से पहले एक शब्द दर्ज करें या रिकॉर्ड करें।",
+    phonemeBlendingErrorSubmitNoChildId: "परिणाम जमा नहीं किए जा सकते: छात्र आईडी नहीं मिली।",
+    phonemeBlendingErrorSubmitFailed: "परिणाम सहेजने में विफल। कृपया बाद में पुनः प्रयास करें या सहायता से संपर्क करें।",
+    unknownError: "अज्ञात त्रुटि",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "संसाधित हो रहा है...",
+    phonemeBlendingLoadingSubmitting: "आपके परिणाम जमा किए जा रहे हैं...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "शब्द {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "आपने कहा:",
+    phonemeBlendingResultCardNoResponse: "कोई प्रतिक्रिया नहीं",
+    phonemeBlendingResultCardCorrectAnswer: "सही उत्तर:",
+
+    imReady: "मैं तैयार हूँ!",
   },
   ml: {
     mainMenu: "മുഖ്യ മെന്ന്",
@@ -2692,6 +2923,86 @@ export const translations = {
     takeNewTestButton: "ಹೊಸ ಪರೀಕ್ಷೆ ತೆಗೆದುಕೊಳ್ಳಿ",
     orSeparatorText: "ಅಥವಾ",
     statusProcessing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+
+
+     pictureTestIntroDialog1: "🌊 ಪ್ರವಾಸಿಗರೇ, ಕ್ರಿಸ್ಟಲ್ ಶೋಲ್ಸ್‌ಗೆ ಸ್ವಾಗತ! ಇಲ್ಲಿನ ಅಲೆಗಳ ಕೊಳಗಳು ಮೇಲಿನಿಂದ ಬರುವ ಪ್ರತಿಬಿಂಬಗಳಿಂದ ಹೊಳೆಯುತ್ತವೆ.",
+    pictureTestIntroDialog2: "🪞 ನಾನು ಮೀರಾ, ಕನ್ನಡಿ ಮೀನು, ಈ ಗುಪ್ತ ಚಿತ್ರಗಳ ರಕ್ಷಕಿ. ಪ್ರತಿಯೊಂದು ಕೊಳವೂ ಗುರುತಿಸಲ್ಪಡಲು ಕಾಯುತ್ತಿರುವ ದೃಶ್ಯಗಳನ್ನು ಹೊಂದಿದೆ.",
+    pictureTestIntroDialog3: "🐚 ನಿಮ್ಮ ಕೆಲಸ ಸರಳವಾದರೂ ಆಳವಾಗಿದೆ: ಕೊಳಗಳಲ್ಲಿ ಪ್ರತಿಬಿಂಬಿತವಾಗುವುದನ್ನು ಹೆಸರಿಸಿ, ಮತ್ತು ಅವು ಬಂದಿರುವ ಜಗತ್ತನ್ನು ಬಹಿರಂಗಪಡಿಸಿ.",
+    pictureTestIntroDialog4: "💧 ಬದಲಿಗೆ, ನಿಮಗೆ ಕಲ್ಪನೆಯ ಕವಚ ಮತ್ತು ಪ್ರತಿಬಿಂಬಿಸುವ ಮುತ್ತು ದೊರೆಯುತ್ತದೆ, ಅವು ಒಳನೋಟ ಮತ್ತು ಸ್ಪಷ್ಟತೆಯ ನಿಧಿಗಳು.",
+    pictureTestIntroDialog5: "✨ ಅಲೆಗಳಾಚೆ ಇಣುಕಿ ನೋಡಲು ಮತ್ತು ಈ ಪ್ರತಿಬಿಂಬಿತ ನೀರಲ್ಲಿ ಅಡಗಿರುವ ರಹಸ್ಯಗಳನ್ನು ತೆರೆಯಲು ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+    pictureTestButtonNextDialog: "ಮುಂದೆ",
+    altMiraTheMirrorfish: "ಮೀರಾ ಕನ್ನಡಿ ಮೀನು",
+    altTidepoolReflection: "ಅಲೆ ಕೊಳದ ಪ್ರತಿಬಿಂಬ",
+
+// UI Elements & Test Flow - Kannada
+    pictureTestProgressBarTitle: "ಪರೀಕ್ಷಾ ಪ್ರಗತಿ",
+    pictureTestProgressStatus: "{total} ರಲ್ಲಿ {current} ಪೂರ್ಣಗೊಂಡಿದೆ",
+
+// Speech prompts - Kannada
+    speakGreatWhatIsIt: "ಅದ್ಭುತ! ಇದು ಏನು ಎಂದು ಹೇಳಬಲ್ಲಿರಾ?",
+    speakCanYouSeeThisPictureInitial: "ನೀವು ಈ ಚಿತ್ರವನ್ನು ನೋಡಬಹುದೇ?",
+
+
+    // Test14.jsx - Phoneme Blending Game (Blenda the Dolphin) - Kannada
+
+    // Intro Dialog
+    phonemeBlendingIntroDialog1: "ಬ್ಲೆಂಡರ್ಸ್ ಬೇಗೆ ಸ್ವಾಗತ, ಇದು ಒಂದು ಮಾಂತ್ರಿಕ ಸ್ಥಳ, ಇಲ್ಲಿ ಶಬ್ದ ತರಂಗಗಳು ಮತ್ತು ಸುಳಿಯುವ ಸುಂಟರಗಾಳಿಗಳು ನಮಗೆ ಧ್ವನಿಗಳನ್ನು ಒಟ್ಟಿಗೆ ಮಿಶ್ರಣ ಮಾಡಲು ಸಹಾಯ ಮಾಡುತ್ತವೆ!",
+    phonemeBlendingIntroDialog2: "ನಾನು ಬ್ಲೆಂಡಾ ಡಾಲ್ಫಿನ್, ಈ ಪಯಣದಲ್ಲಿ ನಿಮ್ಮ ಮಾರ್ಗದರ್ಶಿ. ಬನ್ನಿ, ಮೃದುವಾದ ಅಲೆಗಳಲ್ಲಿ ಧುಮುಕೋಣ ಮತ್ತು ಹೊಸ ಶಬ್ದಗಳನ್ನು ರಚಿಸಲು ಧ್ವನಿಗಳನ್ನು ಸುಳಿಯೋಣ!",
+    phonemeBlendingIntroDialog3: "ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ? ಈ ಧ್ವನಿಗಳನ್ನು ಮಿಶ್ರಣ ಮಾಡಿ ನಾವು ಯಾವ ಶಬ್ದಗಳನ್ನು ಮಾಡಬಹುದು ನೋಡೋಣ!",
+    altBlendaTheDolphin: "ಬ್ಲೆಂಡಾ ಡಾಲ್ಫಿನ್",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "ಪ್ರಾರಂಭ",
+    phonemeBlendingProgressBarWord: "ಪದ {total} ರಲ್ಲಿ {current}",
+    phonemeBlendingProgressBarFinish: "ಮುಕ್ತಾಯ",
+    phonemeBlendingHeaderTitle: "ಧ್ವನಿಗಳನ್ನು ಮಿಶ್ರಣ ಮಾಡಿ!",
+    phonemeBlendingPromptListen: "ಗಮನವಿಟ್ಟು ಧ್ವನಿಗಳನ್ನು ಆಲಿಸಿರಿ",
+    phonemeBlendingPromptEnterOrSay: "ನೀವು ಕೇಳಿದ ಪದವನ್ನು ನಮೂದಿಸಿ ಅಥವಾ ಹೇಳಿ",
+    phonemeBlendingPlaySoundsButton: "ಧ್ವನಿಗಳನ್ನು ಪ್ಲೇ ಮಾಡಿ",
+    phonemeBlendingPlayingSoundsButton: "ಧ್ವನಿಗಳು ಪ್ಲೇ ಆಗುತ್ತಿವೆ...",
+    phonemeBlendingPromptHeard: "ನೀವು ಯಾವ ಪದವನ್ನು ಕೇಳಿದಿರಿ?",
+    phonemeBlendingInputPlaceholder: "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+    phonemeBlendingRecordButton: "ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+    phonemeBlendingStopButton: "ನಿಲ್ಲಿಸಿ",
+    phonemeBlendingSubmitButton: "ಸಲ್ಲಿಸಿ",
+    phonemeBlendingSkipButton: "ಪದವನ್ನು ಬಿಟ್ಟುಬಿಡಿ",
+    phonemeBlendingAllWordsAttempted: "ಎಲ್ಲಾ ಪದಗಳನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ!",
+    phonemeBlendingSubmitAllButton: "ಎಲ್ಲಾ ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಿ",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "ರೆಕಾರ್ಡಿಂಗ್ ಆಗುತ್ತಿದೆ...",
+    phonemeBlendingStatusTranscribing: "ಲಿಪ್ಯಂತರಿಸಲಾಗುತ್ತಿದೆ...",
+    phonemeBlendingStatusDone: "ಮುಗಿದಿದೆ. ಸಲ್ಲಿಸಲು ಸಿದ್ಧ.",
+    phonemeBlendingStatusError: "ಲಿಪ್ಯಂತರಣ ವಿಫಲವಾಯಿತು.",
+    phonemeBlendingStatusTyped: "ಟೈಪ್ ಮಾಡಿದ ಇನ್‌ಪುಟ್",
+    phonemeBlendingStatusIdle: "ರೆಕಾರ್ಡ್ ಮಾಡಲು ಅಥವಾ ಟೈಪ್ ಮಾಡಲು ಸಿದ್ಧ",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound: "ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    phonemeBlendingErrorPlayingSounds: "ಧ್ವನಿಗಳನ್ನು ಪ್ಲೇ ಮಾಡುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ.",
+    phonemeBlendingErrorTranscriptionEmpty: "ಲಿಪ್ಯಂತರಣ ಖಾಲಿಯಾಗಿ ಬಂದಿದೆ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorTranscriptionFailedGeneral: "ಲಿಪ್ಯಂತರಣ ವಿಫಲವಾಯಿತು. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorProcessingAudio: "ಆಡಿಯೋ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ.",
+    phonemeBlendingErrorRecording: "ರೆಕಾರ್ಡಿಂಗ್ ದೋಷ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorStartRecording: "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ/ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+    phonemeBlendingErrorMicAccess: "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    phonemeBlendingErrorNoInputSubmit: "ಸಲ್ಲಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಒಂದು ಪದವನ್ನು ನಮೂದಿಸಿ ಅಥವಾ ರೆಕಾರ್ಡ್ ಮಾಡಿ.",
+    phonemeBlendingErrorSubmitNoChildId: "ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: ವಿದ್ಯಾರ್ಥಿ ಐಡಿ ಕಂಡುಬಂದಿಲ್ಲ.",
+    phonemeBlendingErrorSubmitFailed: "ಫಲಿತಾಂಶಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+    unknownError: "ಅಪರಿಚಿತ ದೋಷ",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+    phonemeBlendingLoadingSubmitting: "ನಿಮ್ಮ ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "ಪದ {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "ನೀವು ಹೇಳಿದ್ದು:",
+    phonemeBlendingResultCardNoResponse: "ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇಲ್ಲ",
+    phonemeBlendingResultCardCorrectAnswer: "ಸರಿಯಾದ ಉತ್ತರ:",
+
+
+    imReady: "ನಾನು ಸಿದ್ಧ!",
   },
   mr: {
     mainMenu: "मुख्य मेनू",
