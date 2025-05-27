@@ -7,8 +7,10 @@ import images from "../../Data/imageData";
 import { backendURL } from "../../definedURL";
 import PictureCard from "./PictureCard";
 import ProgressTracker from "./ProgressTracker";
-import { useLanguage } from "../../contexts/LanguageContext.jsx";
+import { useLanguage } from "../../contexts/LanguageContext.jsx"; // Already present
+
 const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
+  const { language, t } = useLanguage(); // Correctly placed
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canSee, setCanSee] = useState(null);
   const [answer, setAnswer] = useState("");
@@ -23,16 +25,19 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const [testId, setTestId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { language, t } = useLanguage();
+
   const mediaRecorderRef = useRef(null);
   const isRecordingRef = useRef(false);
+
   const getCorrectAnswer = (image) => {
+    // This logic remains data-driven, t() is not applicable here directly
     return language === "ta"
       ? image.correctAnswerTamil
       : language === "hi"
       ? image.correctAnswerHindi
       : image.correctAnswer;
   };
+
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);
@@ -49,7 +54,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         type: "audio/wav",
       });
       formData.append("file", file);
-      formData.append("language", language);
+      formData.append("language", language); // Backend uses this for transcription language
       setIsTranscribing(true);
       setError(null);
       try {
@@ -73,21 +78,20 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             setDescription(transcription);
           }
 
-          toast.success("Transcription received!");
+          toast.success(t("transcriptionReceived"));
         } else {
-          const errorMsg =
-            result.error || "Transcription failed. Please try again.";
-          setError(errorMsg);
+          const errorMsg = result.error || t("transcriptionFailedTryAgain");
+          setError(errorMsg); // errorMsg is either from backend or a translated fallback
           toast.error(errorMsg);
         }
       } catch (error) {
-        setError("Error uploading audio. Please check connection.");
-        toast.error("Error uploading audio. Please check connection.");
+        setError(t("errorUploadingAudioCheckConnection"));
+        toast.error(t("errorUploadingAudioCheckConnection"));
       } finally {
         setIsTranscribing(false);
       }
     },
-    [step]
+    [step, language, t] // Added t and language to dependencies
   );
 
   const stopListening = useCallback(() => {
@@ -99,7 +103,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         mediaRecorderRef.current.stop();
       } catch (e) {
         console.error("Error stopping MediaRecorder:", e);
-        toast.error("Error stopping recording");
+        toast.error(t("errorStoppingRecording"));
       }
     }
     if (window.stream) {
@@ -109,7 +113,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         });
       } catch (e) {
         console.error("Error stopping stream tracks:", e);
-        toast.error("Error stopping microphone");
+        toast.error(t("errorStoppingMicrophone"));
       }
       window.stream = null;
     }
@@ -117,7 +121,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     if (isRecordingRef.current) {
       setIsRecording(false);
     }
-  }, []);
+  }, [t]); // Added t to dependencies
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) return;
@@ -132,7 +136,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
 
         if (stream.getAudioTracks().length > 0) {
           stream.getAudioTracks()[0].onended = () => {
-            stopListening();
+            stopListening(); 
           };
         }
 
@@ -153,12 +157,12 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           if (localAudioChunks.length > 0) {
             const audioBlob = new Blob(localAudioChunks, { type: mimeType });
             localAudioChunks = [];
-            await uploadAudio(audioBlob);
+            await uploadAudio(audioBlob); // uploadAudio uses t
           }
         };
 
         newMediaRecorder.onerror = (event) => {
-          toast.error(`Recording error: ${event.error.name}`);
+          toast.error(t("recordingErrorPrefix") + (event.error.name || 'Unknown error'));
           stopListening();
         };
 
@@ -167,15 +171,15 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           isRecordingRef.current = true;
           setIsRecording(true);
         } catch (e) {
-          toast.error("Failed to start recording.");
+          toast.error(t("failedToStartRecording"));
           stopListening();
         }
       })
       .catch((error) => {
-        setError("Could not access microphone. Please check permissions.");
-        toast.error("Could not access microphone. Please check permissions.");
+        setError(t("couldNotAccessMicrophoneCheckPermissions"));
+        toast.error(t("couldNotAccessMicrophoneCheckPermissions"));
       });
-  }, [uploadAudio, stopListening]);
+  }, [uploadAudio, stopListening, t]); // Added t
 
   const toggleRecording = useCallback(() => {
     if (isRecording) {
@@ -208,11 +212,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } else {
       setStep(2);
-      speakText(
-        language === "ta"
-          ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?"
-          : "Great! Can you tell me what it is?"
-      );
+      speakText(t("whatIsIt")); // Assumes 'whatIsIt' translation includes "Great!" or is sufficient
     }
   };
 
@@ -223,7 +223,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     } else if (step === 3 && description.trim()) {
       handleSubmit();
     } else {
-      toast.warning("Please complete this step before proceeding.");
+      toast.warning(t("pleaseCompleteStepBeforeProceeding"));
     }
   };
 
@@ -252,9 +252,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     const childId = localStorage.getItem("childId");
 
     if (!childId) {
-      toast.error(
-        "No student data found. Please select a student before taking the test."
-      );
+      toast.error(t("noStudentDataFoundPleaseSelectAStudentBeforeTakingTheTest"));
       return;
     }
 
@@ -285,14 +283,14 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               0
           );
         } else {
-          toast.success("Test submitted successfully!");
+          toast.success(t("testSubmittedSuccessfully"));
           setTestId(response.data.id);
           await fetchTestResults(response.data.id);
         }
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error("Failed to submit test. Please try again.");
+      toast.error(t("failedToSubmitTestPleaseTryAgain"));
     } finally {
       setIsLoading(false);
     }
@@ -325,7 +323,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } catch (error) {
       console.error("Error fetching test results:", error);
-      toast.error("Failed to load test results. Please try again later.");
+      toast.error(t("failedToLoadTestResultsTryAgainLater"));
     } finally {
       setIsLoading(false);
     }
@@ -343,19 +341,13 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   };
 
   useEffect(() => {
-    setTimeout(
-      () =>
-        speakText(
-          language === "ta"
-            ? "இது என்ன என்று சொல்ல முடியுமா?"
-            : "Can you see this picture?"
-        ),
-      2000
-    );
+    setTimeout(() => speakText(t("canYouSeeThisPicture")), 2000);
     return () => {
       stopListening();
     };
-  }, [stopListening]);
+  }, [stopListening, t]); 
+
+  
 
   if (isLoading) {
     return (
@@ -375,7 +367,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             animate={{ y: 0, opacity: 1 }}
             className="text-blue-700 text-lg font-medium"
           >
-            Processing your results...
+            {t("processingYourResults")}
           </motion.p>
         </div>
       </motion.div>
@@ -396,7 +388,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               animate={{ y: 0 }}
               className="text-2xl md:text-3xl font-bold text-white text-center"
             >
-              Picture Recognition Test Results
+              {t("pictureRecognitionTestResultsTitle")}
             </motion.h1>
           </div>
 
@@ -408,22 +400,22 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     <thead className="bg-blue-100">
                       <tr>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Image
+                          {t("imageColumn")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Your Answer
+                          {t("yourAnswerColumn")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Correct
+                          {t("correctAnswerColumn")} 
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Score
+                          {t("score")}
                         </th>
                         <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Description
+                          {t("description")}
                         </th>
                         <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Feedback
+                          {t("feedback")}
                         </th>
                       </tr>
                     </thead>
@@ -441,7 +433,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                           <td className="px-4 py-2 md:px-6 md:py-4 whitespace-nowrap">
                             <img
                               src={response.image}
-                              alt="question"
+                              alt={t("altQuestionImage")}
                               className="h-12 w-12 md:h-16 md:w-16 object-contain rounded-md"
                             />
                           </td>
@@ -487,7 +479,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="mb-4 md:mb-0">
                       <h2 className="text-xl font-bold text-blue-800">
-                        Final Score
+                        {t("finalScore")}
                       </h2>
                       <p className="text-3xl font-bold text-blue-600">
                         {testResults.score}/{testResults.responses.length * 2}
@@ -500,7 +492,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                         onClick={() => window.location.reload()}
                         className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-md transition-all duration-300"
                       >
-                        Take New Test
+                        {t("takeNewTestButton")}
                       </motion.button>
                     </div>
                   </div>
@@ -539,7 +531,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         >
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 md:p-6">
             <motion.h1
-              key={step}
+              key={`step_title_${step}`} // Added key for re-animation on step change
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3 }}
@@ -556,9 +548,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           <div className="p-4 md:p-6">
             <div className="flex justify-center mb-6 md:mb-8">
               <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200 }}
+                key={currentImage.imageUrl} // Added key for re-animation on image change
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
                 className="w-full max-w-md"
               >
                 <PictureCard imageName={currentImage.imageUrl} />
@@ -590,6 +583,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               </motion.div>
             ) : (
               <motion.div
+                key={`input_area_step_${step}`} // Added key for re-animation
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="space-y-4 md:space-y-6"
@@ -612,7 +606,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
 
                   <div className="flex items-center justify-center space-x-4">
                     <div className="h-px bg-blue-200 flex-1"></div>
-                    <span className="text-blue-500 font-medium">OR</span>
+                    <span className="text-blue-500 font-medium">{t("orSeparatorText")}</span>
                     <div className="h-px bg-blue-200 flex-1"></div>
                   </div>
 
@@ -632,7 +626,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                           transition={{ repeat: Infinity, duration: 1 }}
                           className="w-3 h-3 bg-white rounded-full"
                         />
-                        <span>Processing...</span>
+                        <span>{t("statusProcessing")}</span>
                       </>
                     ) : isRecording ? (
                       <>
@@ -665,7 +659,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-red-500 text-sm text-center"
                   >
-                    {error}
+                    {error} {/* Error message is already translated when setError is called */}
                   </motion.div>
                 )}
 
@@ -679,6 +673,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                         : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
                     } text-white font-semibold px-6 py-2 md:px-8 md:py-3 rounded-lg shadow-md transition-all duration-300`}
                     onClick={handleNext}
+                    disabled={isTranscribing || (step === 2 && !answer.trim()) || (step === 3 && !description.trim())} // Basic disable logic
                   >
                     {currentIndex === images.length - 1
                       ? t("submitTest")
