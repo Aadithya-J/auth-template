@@ -1320,7 +1320,7 @@ export default function PhonemeGame({
                     {/* Submit Button */}
                     <Button
                       onClick={handleSubmitResponse}
-                      className="bg-gradient-to-r from-teal-400 to-green-300 hover:from-green-300 hover:to-teal-400 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
+                      className="text-white bg-gradient-to-r from-teal-600 to-green-500 hover:from-green-300 hover:to-teal-400 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
                       disabled={
                         !userInput.trim() ||
                         isRecording ||
@@ -1335,7 +1335,7 @@ export default function PhonemeGame({
                     {/* Skip Button - Full width */}
                     <Button
                       onClick={skipWord}
-                      className="col-span-2 bg-gradient-to-r from-sky-200 to-cyan-100 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg hover:from-cyan-100 hover:to-sky-200 transition-all transform hover:scale-[1.01]"
+                      className="col-span-2 bg-gradient-to-r from-sky-800 to-cyan-500 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg hover:from-cyan-100 hover:to-sky-200 transition-all transform hover:scale-[1.01]"
                       disabled={
                         isPlayingSound ||
                         isRecording ||

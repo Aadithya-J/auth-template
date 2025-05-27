@@ -32,20 +32,6 @@ const symbols = [
   "☯",
   "☺",
 ];
-const runeSymbols = [
-  "◯", // Circle Rune
-  "△", // Triangle Rune
-  "◻️", // Square Rune
-  "✶", // Star Rune
-  "ᚠ", // Fehu (Norse rune)
-  "ᛃ", // Jera (Norse rune)
-  "ᛒ", // Berkana (Norse rune)
-  "☉", // Sun Rune
-  "🜂", // Alchemy Fire Symbol
-  "🜁", // Alchemy Air Symbol
-  "⚚", // Caduceus (magical staff)
-  "𝌆", // Fantasy circle glyph
-];
 
 type DifficultyLevel = {
   name: string;
@@ -77,14 +63,13 @@ interface SymbolSequenceProps {
 const CharacterDialog = ({ onComplete, t }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
   const dialog = [
-  "👋 Welcome to Rune Rock!",
-  "🪨✨ These floating stones are full of glowing runes.",
-  "👁️‍🗨️ Watch the runes light up in a special order.",
-  "🧠🔢 Then, tap them in the same order to solve the puzzle.",
-  "🎯 Stay focused and have fun!",
-  "🚀 Are you ready?",
-];
-
+    "👋 Welcome to Rune Rock!",
+    "🪨✨ These floating stones are full of glowing runes.",
+    "👁️‍🗨️ Watch the runes light up in a special order.",
+    "🧠🔢 Then, tap them in the same order to solve the puzzle.",
+    "🎯 Stay focused and have fun!",
+    "🚀 Are you ready?",
+  ];
 
   const handleNext = () => {
     if (currentDialog < dialog.length - 1) {
@@ -253,6 +238,23 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showIntro, setShowIntro] = useState(true);
+  const [availableSymbols, setAvailableSymbols] = useState<string[]>([]);
+
+  const generateAvailableSymbols = (sequence: string[], difficulty: number) => {
+    const requiredSymbols = [...sequence];
+    const remainingSymbols = symbols.filter(
+      (s) => !requiredSymbols.includes(s)
+    );
+    const shuffledRemaining = [...remainingSymbols].sort(
+      () => 0.5 - Math.random()
+    );
+    const additionalCount =
+      difficultyLevels[difficulty].cardsToShow - requiredSymbols.length;
+    const additionalSymbols = shuffledRemaining.slice(0, additionalCount);
+    return [...requiredSymbols, ...additionalSymbols].sort(
+      () => 0.5 - Math.random()
+    );
+  };
   // Save game state to localStorage whenever it changes
   useEffect(() => {
     if (gameState !== "welcome") {
@@ -394,7 +396,8 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
       0,
       difficultyLevels[difficulty].sequenceLength
     );
-
+    const newAvailableSymbols = generateAvailableSymbols(seq, difficulty);
+    setAvailableSymbols(newAvailableSymbols);
     setCurrentSequence(seq);
     setUserSequence([]);
     setTimeLeft(difficultyLevels[difficulty].timeToView / 1000);
@@ -952,7 +955,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                     {t("availableSymbols").toUpperCase()}
                   </h3>
                   <div className="flex justify-center flex-wrap gap-6 my-8">
-                    {getAvailableSymbols().map((symbol, index) => (
+                    {availableSymbols.map((symbol, index) => (
                       <motion.button
                         key={index}
                         onClick={() => selectSymbol(symbol)}

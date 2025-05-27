@@ -689,7 +689,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative mx-auto p-10 sm:p-12 lg:p-16 rounded-3xl border-2 border-green-400/50 shadow-2xl backdrop-blur-lg bg-gradient-to-br from-green-400/40 via-green-600/40 to-green-800/40 max-w-4xl w-full"
+      className="relative mx-auto p-10 sm:p-12 lg:p-16 rounded-3xl border-2 border-green-400/30 shadow-2xl backdrop-blur-lg bg-gradient-to-br from-green-400/30 via-green-600/30 to-green-800/30 max-w-4xl w-full"
     >
       {/* Enhanced decorative elements */}
       <div className="absolute -top-16 -left-16 w-60 h-60 bg-green-400/30 rounded-full filter blur-3xl animate-pulse"></div>
@@ -713,7 +713,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
       </div>
 
       <motion.h2
-        className="text-5xl font-bold text-black mb-8 text-center drop-shadow-sm"
+        className="text-5xl font-bold text-white/80 mb-8 text-center drop-shadow-sm"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -727,7 +727,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <p className="text-2xl text-black leading-relaxed text-center font-medium">
+        <p className="text-2xl text-white/80 leading-relaxed text-center font-medium">
           {t("welcome_memory_game")}
         </p>
 
@@ -744,7 +744,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
               <span className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-green-500 text-white font-bold text-xl">
                 {num}
               </span>
-              <span className="text-2xl text-black font-semibold ">
+              <span className="text-2xl text-white/80 font-semibold ">
                 {num === 1 && t("listen_carefully_numbers")}
                 {num === 2 && t("repeat_back_exactly")}
                 {num === 3 && t("start_easy_get_harder")}
@@ -787,7 +787,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.6 }}
-      className="text-center p-12 max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-green-400/40 via-green-600/40 to-green-800/40 backdrop-blur-lg border-2 border-green-400/30 shadow-2xl"
+      className="text-center p-12 max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-green-400/30 via-green-600/30 to-green-800/30 backdrop-blur-lg border-2 border-green-400/30 shadow-2xl"
     >
       <motion.div
         className="mb-10"
@@ -799,7 +799,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
       </motion.div>
 
       <motion.h2
-        className="text-5xl font-bold text-black mb-10"
+        className="text-5xl font-bold text-white/80 mb-10"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -813,22 +813,22 @@ function Test13({ suppressResultPage = false, onComplete }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <p className="text-2xl text-black/90 leading-relaxed font-medium">
+        <p className="text-2xl text-white/80 leading-relaxed font-medium">
           {t("now_exciting_twist")}
         </p>
 
         <motion.div
-          className="bg-white/20 p-10 rounded-2xl max-w-3xl mx-auto border-2 border-green-400/30 backdrop-blur"
+          className="p-10 rounded-2xl max-w-3xl mx-auto border-2 border-green-400/30 backdrop-blur"
           whileHover={{ scale: 1.01 }}
         >
-          <p className="text-2xl text-black font-medium">
+          <p className="text-2xl text-white/80 font-medium">
             {t("if_i_say")}{" "}
-            <span className="font-bold text-green-600 bg-white/30 px-3 py-1 rounded-lg">
+            <span className="font-bold text-white/80 px-3 py-1 rounded-lg">
               1 - 3 - 5
             </span>
             <br />
             {t("you_say")}{" "}
-            <span className="font-bold text-green-600 bg-white/30 px-3 py-1 rounded-lg">
+            <span className="font-bold text-white/80  px-3 py-1 rounded-lg">
               5 - 3 - 1
             </span>
           </p>
@@ -837,7 +837,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
 
       <motion.button
         onClick={handleStartReverse}
-        className="group relative px-10 py-5 bg-green-500/40 border-2 border-green-500/50 text-black text-2xl font-bold rounded-xl shadow-lg transition-all duration-300 hover:bg-green-500/60 backdrop-blur"
+        className="group relative px-10 py-5 bg-green-500/40 border-2 border-green-500/50 text-white/80 text-2xl font-bold rounded-xl shadow-lg transition-all duration-300 hover:bg-green-500/60 backdrop-blur"
         whileHover={{ scale: 1.03, y: -2 }}
         whileTap={{ scale: 0.98 }}
         initial={{ opacity: 0, y: 20 }}
@@ -858,36 +858,135 @@ function Test13({ suppressResultPage = false, onComplete }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="relative h-96 w-96 flex items-center justify-center">
+      {/* Enhanced digit display container */}
+      <motion.div
+        className="relative h-96 w-96 flex items-center justify-center"
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        {/* Mystical glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-green-300/30 to-green-500/20 rounded-full filter blur-3xl animate-pulse" />
+
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-green-400/60 rounded-full"
+            animate={{
+              x: [0, Math.sin(i) * 100, 0],
+              y: [0, Math.cos(i) * 100, 0],
+              opacity: [0.3, 0.8, 0.3],
+            }}
+            transition={{
+              duration: 4 + i,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            style={{
+              left: `${20 + i * 10}%`,
+              top: `${20 + i * 10}%`,
+            }}
+          />
+        ))}
+
         <AnimatePresence>
           {displayedDigit !== null && (
             <motion.div
               key={digitIndex}
-              initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+              initial={{ opacity: 0, scale: 0.3, rotateY: -90 }}
               animate={{
                 opacity: 1,
                 scale: 1,
-                rotate: 0,
-                transition: { type: "spring", stiffness: 300, damping: 15 },
+                rotateY: 0,
+                transition: {
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 25,
+                  opacity: { duration: 0.3 },
+                },
               }}
-              exit={{ opacity: 0, scale: 0.5, rotate: 10 }}
+              exit={{
+                opacity: 0,
+                scale: 0.3,
+                rotateY: 90,
+                transition: { duration: 0.4 },
+              }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              <div className="text-[10rem] font-bold text-black p-16 bg-green-500/30 rounded-3xl backdrop-blur-lg border-2 border-green-400/30 ">
-                {displayedDigit}
-              </div>
+              {/* Enhanced digit box with mystical theme */}
+              <motion.div
+                className="relative text-[10rem] font-bold text-white p-16 rounded-3xl backdrop-blur-xl border shadow-2xl overflow-hidden"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.25) 50%, rgba(5, 150, 105, 0.15) 100%)",
+                  borderColor: "rgba(34, 197, 94, 0.4)",
+                  borderWidth: "2px",
+                }}
+                animate={{
+                  boxShadow: [
+                    "0 0 30px rgba(34, 197, 94, 0.3)",
+                    "0 0 50px rgba(34, 197, 94, 0.5)",
+                    "0 0 30px rgba(34, 197, 94, 0.3)",
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {/* Inner glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-transparent to-green-600/10 rounded-3xl" />
+
+                {/* Mystical corner decorations */}
+                <div className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2 border-green-400/60 rounded-tl-lg" />
+                <div className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2 border-green-400/60 rounded-tr-lg" />
+                <div className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2 border-green-400/60 rounded-bl-lg" />
+                <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2 border-green-400/60 rounded-br-lg" />
+
+                <span className="relative z-10 drop-shadow-lg">
+                  {displayedDigit}
+                </span>
+
+                {/* Subtle animated background pattern */}
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.3) 0%, transparent 50%)",
+                  }}
+                />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
+      {/* Enhanced instruction message */}
       <motion.div
-        className="text-4xl font-bold text-black bg-green-500/30 px-10 py-6 rounded-2xl shadow-lg backdrop-blur border-2 border-green-400/30"
-        initial={{ opacity: 0, y: 20 }}
+        className="relative text-4xl font-bold text-white px-12 py-8 rounded-2xl shadow-xl backdrop-blur-xl border-2 overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(34, 197, 94, 0.15) 50%, rgba(0, 0, 0, 0.3) 100%)",
+          borderColor: "rgba(34, 197, 94, 0.4)",
+        }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.3, type: "spring" }}
       >
-        {t("listen_carefully")}
+        {/* Mystical background shimmer */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/10 to-transparent"
+          animate={{ x: [-300, 300] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <span className="relative z-10 drop-shadow-lg">
+          {t("listen_carefully")}
+        </span>
+
+        {/* Corner accents */}
+        <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-green-400/60" />
+        <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-green-400/60" />
+        <div className="absolute bottom-3 left-3 w-4 h-4 border-l-2 border-b-2 border-green-400/60" />
+        <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-green-400/60" />
       </motion.div>
     </motion.div>
   );
@@ -897,34 +996,82 @@ function Test13({ suppressResultPage = false, onComplete }) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="flex flex-col items-center space-y-10 p-12 max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-green-200/20 via-green-400/20 to-green-600/20 backdrop-blur-lg border-2 border-green-400/30 shadow-2xl"
+      className="relative flex flex-col items-center space-y-10 p-12 max-w-4xl mx-auto rounded-3xl backdrop-blur-xl border-2 shadow-2xl overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(34, 197, 94, 0.08) 25%, rgba(16, 185, 129, 0.12) 50%, rgba(5, 150, 105, 0.08) 75%, rgba(0, 0, 0, 0.4) 100%)",
+        borderColor: "rgba(34, 197, 94, 0.3)",
+      }}
     >
+      {/* Animated background elements */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-400/60 to-transparent">
+        <motion.div
+          className="h-full bg-green-400"
+          animate={{ x: [-100, "100vw"] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          style={{ width: "100px" }}
+        />
+      </div>
+
+      {/* Floating mystical orbs */}
+      {[...Array(4)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-3 h-3 bg-green-400/40 rounded-full blur-sm"
+          animate={{
+            x: [0, Math.random() * 200 - 100],
+            y: [0, Math.random() * 200 - 100],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{
+            duration: 6 + i * 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{
+            left: `${20 + i * 20}%`,
+            top: `${20 + i * 15}%`,
+          }}
+        />
+      ))}
+
       <motion.h3
-        className="text-3xl font-bold text-black"
+        className="relative text-3xl font-bold text-white text-center z-10"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        {mode === "forward"
-          ? t("repeat_numbers_order")
-          : t("say_numbers_reverse")}
+        <span className="drop-shadow-lg">
+          {mode === "forward"
+            ? t("repeat_numbers_order")
+            : t("say_numbers_reverse")}
+        </span>
       </motion.h3>
 
-      <div className="flex flex-col items-center gap-8 w-full">
+      <div className="flex flex-col items-center gap-8 w-full z-10">
         <div className="flex items-center gap-8">
           <motion.button
             onClick={stopListening}
             disabled={!isRecording}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`relative rounded-2xl h-20 w-20 flex items-center justify-center transition-all duration-300 shadow-lg border-2 ${
+            className={`relative rounded-2xl h-20 w-20 flex items-center justify-center transition-all duration-300 shadow-lg border-2 backdrop-blur-lg overflow-hidden ${
               !isRecording
-                ? "bg-white/20 cursor-not-allowed text-black/50 border-green-400/20"
-                : "bg-green-500/50 hover:bg-green-500/60 text-white border-green-500/60"
+                ? "bg-black/30 cursor-not-allowed text-white/50 border-green-400/20"
+                : "bg-green-500/40 hover:bg-green-500/50 text-white border-green-500/60"
             }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
+            {/* Button glow effect */}
+            {isRecording && (
+              <motion.div
+                className="absolute inset-0 bg-green-400/20 rounded-2xl"
+                animate={{ opacity: [0.2, 0.5, 0.2] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            )}
+
             {isRecording ? <MicOff size={40} /> : <Mic size={40} />}
             {isRecording && (
               <motion.span
@@ -939,14 +1086,27 @@ function Test13({ suppressResultPage = false, onComplete }) {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3 px-8 py-4 bg-white/30 text-black rounded-xl border-2 border-green-400/30 backdrop-blur"
+              className="flex items-center gap-3 px-8 py-4 backdrop-blur-xl text-white rounded-xl border-2 border-green-400/30 overflow-hidden relative"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(34, 197, 94, 0.1) 100%)",
+              }}
             >
-              <span className="text-xl font-bold">{t("recording")}</span>
-              <div className="flex gap-1">
+              {/* Pulsing background */}
+              <motion.div
+                className="absolute inset-0 bg-green-400/10"
+                animate={{ opacity: [0.1, 0.3, 0.1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+
+              <span className="text-xl font-bold relative z-10">
+                {t("recording")}
+              </span>
+              <div className="flex gap-1 relative z-10">
                 {[0, 0.3, 0.6].map((delay) => (
                   <motion.span
                     key={delay}
-                    className="h-3 w-3 bg-green-500 rounded-full"
+                    className="h-3 w-3 bg-green-400 rounded-full"
                     animate={{ scale: [1, 1.5, 1] }}
                     transition={{ repeat: Infinity, duration: 1.2, delay }}
                   />
@@ -956,19 +1116,31 @@ function Test13({ suppressResultPage = false, onComplete }) {
           )}
         </div>
 
-        {/* Visualizer for audio input */}
+        {/* Enhanced audio visualizer */}
         {isRecording && (
           <motion.div
-            className="w-full max-w-md h-6 bg-white/20 rounded-full overflow-hidden flex items-center gap-1 px-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="relative w-full max-w-md h-8 backdrop-blur-lg rounded-full overflow-hidden flex items-center gap-1 px-3 border border-green-400/30"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(34, 197, 94, 0.08) 100%)",
+            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
           >
+            {/* Animated background wave */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-green-400/10 via-green-300/20 to-green-400/10"
+              animate={{ x: [-100, 100] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
-                className="h-3 bg-green-500 rounded-full flex-1 origin-bottom"
+                className="h-4 bg-gradient-to-t from-green-500 to-green-300 rounded-full flex-1 origin-bottom relative z-10"
                 animate={{
-                  height: [3, Math.random() * 20 + 3, 3],
+                  height: [4, Math.random() * 24 + 4, 4],
+                  opacity: [0.6, 1, 0.6],
                 }}
                 transition={{
                   repeat: Infinity,
@@ -981,66 +1153,112 @@ function Test13({ suppressResultPage = false, onComplete }) {
         )}
       </div>
 
+      {/* Enhanced transcription loading */}
       {isTranscribing && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex flex-col items-center space-y-6"
+          className="flex flex-col items-center space-y-6 relative z-10"
         >
-          <motion.div
-            className="w-24 h-24 relative"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <div className="absolute inset-0 border-4 border-white/50 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-green-500 rounded-full border-t-transparent"></div>
+          <motion.div className="relative w-24 h-24">
+            {/* Multiple rotating rings */}
+            <motion.div
+              className="absolute inset-0 border-2 border-green-400/30 rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="absolute inset-2 border-2 border-green-500/50 rounded-full border-t-transparent"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="absolute inset-4 border-2 border-green-300/70 rounded-full border-r-transparent"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Loader2 className="w-12 h-12 text-green-500 animate-spin" />
+              <Loader2 className="w-8 h-8 text-green-400" />
             </div>
           </motion.div>
-          <div className="text-2xl text-black font-bold">
+          <div className="text-2xl text-white font-bold drop-shadow-lg">
             {t("processing_your_answer")}
           </div>
         </motion.div>
       )}
 
+      {/* Enhanced transcript display */}
       {transcript && !isTranscribing && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-2xl text-center"
+          className="text-2xl text-center relative z-10"
         >
-          <p className="text-xl text-black/80 mb-2">{t("you_said")}:</p>
-          <p className="text-3xl font-bold text-black bg-white/30 px-6 py-4 rounded-xl">
-            {transcript}
+          <p className="text-xl text-white/80 mb-2 drop-shadow">
+            {t("you_said")}:
           </p>
+          <motion.p
+            className="text-3xl font-bold text-white px-6 py-4 rounded-xl backdrop-blur-lg border border-green-400/30 relative overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(34, 197, 94, 0.1) 100%)",
+            }}
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring" }}
+          >
+            {/* Subtle shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/10 to-transparent"
+              animate={{ x: [-200, 200] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <span className="relative z-10 drop-shadow">{transcript}</span>
+          </motion.p>
         </motion.div>
       )}
 
+      {/* Enhanced evaluation feedback */}
       <AnimatePresence>
         {evaluationResult && (
           <motion.div
             key="evaluationFeedback"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="flex flex-col items-center space-y-6 mt-8"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            className="flex flex-col items-center space-y-6 mt-8 relative z-10"
           >
             {evaluationResult === "correct" ? (
               <>
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  className="relative"
                 >
-                  <CheckCircle size={60} className="text-green-500" />
+                  <CheckCircle
+                    size={60}
+                    className="text-green-400 drop-shadow-lg"
+                  />
+                  {/* Success glow */}
+                  <motion.div
+                    className="absolute inset-0 bg-green-400/30 rounded-full blur-xl"
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/30 text-black px-10 py-6 rounded-2xl border-2 border-green-400/30 backdrop-blur"
+                  className="backdrop-blur-xl text-white px-10 py-6 rounded-2xl border-2 border-green-400/30 relative overflow-hidden"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.15) 100%)",
+                  }}
                 >
-                  <span className="text-3xl font-bold">{t("correct")}!</span>
+                  <span className="text-3xl font-bold drop-shadow-lg">
+                    {t("correct")}!
+                  </span>
                 </motion.div>
                 <motion.div
                   className="text-4xl"
@@ -1056,26 +1274,38 @@ function Test13({ suppressResultPage = false, onComplete }) {
             ) : (
               <>
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ scale: 0, rotate: 180 }}
+                  animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  className="relative"
                 >
-                  <XCircle size={60} className="text-green-500" />
+                  <XCircle
+                    size={60}
+                    className="text-green-400 drop-shadow-lg"
+                  />
+                  {/* Gentle glow for incorrect answer */}
+                  <motion.div
+                    className="absolute inset-0 bg-green-400/20 rounded-full blur-xl"
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/30 text-black px-10 py-6 rounded-2xl border-2 border-green-400/30 backdrop-blur"
+                  className="backdrop-blur-xl text-white px-10 py-6 rounded-2xl border-2 border-green-400/30 relative overflow-hidden"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(34, 197, 94, 0.1) 100%)",
+                  }}
                 >
-                  <span className="text-3xl font-bold">
+                  <span className="text-3xl font-bold drop-shadow-lg">
                     {t("lets_try_next_one")}
                   </span>
                 </motion.div>
                 <motion.div
                   className="text-4xl"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
+                  animate={{ scale: [1, 1.1, 1] }}
                   transition={{ repeat: Infinity, duration: 1.5 }}
                 >
                   💪
@@ -1093,18 +1323,57 @@ function Test13({ suppressResultPage = false, onComplete }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="rounded-3xl p-12 max-w-4xl mx-auto mt-12 text-center bg-gradient-to-br from-green-200/20 via-green-400/20 to-green-600/20 backdrop-blur-lg border-2 border-green-400/30 shadow-2xl"
+      className="relative rounded-3xl p-12 max-w-4xl mx-auto mt-12 text-center backdrop-blur-xl border-2 shadow-2xl overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(34, 197, 94, 0.08) 25%, rgba(16, 185, 129, 0.12) 50%, rgba(5, 150, 105, 0.08) 75%, rgba(0, 0, 0, 0.4) 100%)",
+        borderColor: "rgba(34, 197, 94, 0.3)",
+      }}
     >
+      {/* Celebratory floating elements */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-green-400/50 rounded-full"
+          animate={{
+            x: [0, Math.sin(i) * 200],
+            y: [0, Math.cos(i) * 200],
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            delay: i * 0.5,
+            ease: "easeInOut",
+          }}
+          style={{
+            left: `${50}%`,
+            top: `${50}%`,
+          }}
+        />
+      ))}
+
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 300 }}
+        className="relative"
       >
-        <CheckCircle size={100} className="mx-auto text-green-500 mb-8" />
+        <CheckCircle
+          size={100}
+          className="mx-auto text-green-400 mb-8 drop-shadow-lg"
+        />
+        {/* Success aura */}
+        <motion.div
+          className="absolute inset-0 bg-green-400/20 rounded-full blur-2xl"
+          animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
       </motion.div>
 
       <motion.h2
-        className="text-5xl font-bold text-black mb-12"
+        className="text-5xl font-bold text-white mb-12 drop-shadow-lg relative z-10"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -1113,32 +1382,57 @@ function Test13({ suppressResultPage = false, onComplete }) {
       </motion.h2>
 
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12"
+        className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12 relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
         <motion.div
-          className="bg-white/30 p-10 rounded-2xl border-2 border-green-400/30 backdrop-blur"
-          whileHover={{ y: -5 }}
+          className="backdrop-blur-xl p-10 rounded-2xl border-2 border-green-400/30 relative overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(34, 197, 94, 0.1) 100%)",
+          }}
+          whileHover={{ y: -5, scale: 1.02 }}
+          transition={{ type: "spring" }}
         >
-          <h3 className="text-2xl text-black/80 mb-4">{t("forward_score")}</h3>
-          <p className="text-5xl font-bold text-green-600">
+          {/* Subtle animated background */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-green-400/5 to-transparent"
+            animate={{ opacity: [0.05, 0.15, 0.05] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+          <h3 className="text-2xl text-white/90 mb-4 relative z-10 drop-shadow">
+            {t("forward_score")}
+          </h3>
+          <p className="text-5xl font-bold text-green-400 relative z-10 drop-shadow-lg">
             {forwardScore}{" "}
-            <span className="text-3xl text-black/60">
+            <span className="text-3xl text-white/60">
               / {STARTING_FORWARD_SEQUENCES.length}
             </span>
           </p>
         </motion.div>
 
         <motion.div
-          className="bg-white/30 p-10 rounded-2xl border-2 border-green-400/30 backdrop-blur"
-          whileHover={{ y: -5 }}
+          className="backdrop-blur-xl p-10 rounded-2xl border-2 border-green-400/30 relative overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(34, 197, 94, 0.1) 100%)",
+          }}
+          whileHover={{ y: -5, scale: 1.02 }}
+          transition={{ type: "spring" }}
         >
-          <h3 className="text-2xl text-black/80 mb-4">{t("reverse_score")}</h3>
-          <p className="text-5xl font-bold text-green-600">
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-green-400/5 to-transparent"
+            animate={{ opacity: [0.05, 0.15, 0.05] }}
+            transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+          />
+          <h3 className="text-2xl text-white/90 mb-4 relative z-10 drop-shadow">
+            {t("reverse_score")}
+          </h3>
+          <p className="text-5xl font-bold text-green-400 relative z-10 drop-shadow-lg">
             {reverseScore}{" "}
-            <span className="text-3xl text-black/60">
+            <span className="text-3xl text-white/60">
               / {STARTING_REVERSE_SEQUENCES.length}
             </span>
           </p>
@@ -1146,15 +1440,28 @@ function Test13({ suppressResultPage = false, onComplete }) {
       </motion.div>
 
       <motion.div
-        className="bg-gradient-to-r from-white/30 to-green-400/30 p-12 rounded-2xl mb-12 border-2 border-green-400/30 backdrop-blur"
+        className="backdrop-blur-xl p-12 rounded-2xl mb-12 border-2 border-green-400/30 relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 50%, rgba(5, 150, 105, 0.15) 100%)",
+        }}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.6 }}
       >
-        <h3 className="text-3xl text-black/80 mb-4">{t("final_score")}</h3>
-        <p className="text-7xl font-extrabold text-green-600">
+        {/* Animated background shimmer */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/10 to-transparent"
+          animate={{ x: [-300, 300] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <h3 className="text-3xl text-white/90 mb-4 relative z-10 drop-shadow">
+          {t("final_score")}
+        </h3>
+        <p className="text-7xl font-extrabold text-green-400 relative z-10 drop-shadow-lg">
           {Math.round((forwardScore + reverseScore) / 2)}{" "}
-          <span className="text-4xl text-black/60">/ 10</span>
+          <span className="text-4xl text-white/60">/ 10</span>
         </p>
       </motion.div>
 
@@ -1163,24 +1470,34 @@ function Test13({ suppressResultPage = false, onComplete }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="flex flex-col items-center gap-8"
+          className="flex flex-col items-center gap-8 relative z-10"
         >
           <motion.button
             onClick={submitResults}
             whileHover={{
               scale: 1.05,
-              boxShadow: "0 10px 25px -5px rgba(74, 222, 128, 0.4)",
+              boxShadow: "0 10px 30px rgba(34, 197, 94, 0.4)",
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative inline-flex items-center justify-center gap-4 px-12 py-6 bg-green-500/50 border-2 border-green-500/60 text-white text-2xl font-bold rounded-2xl shadow-lg transition-all duration-300 backdrop-blur"
+            className="group relative inline-flex items-center justify-center gap-4 px-12 py-6 border-2 border-green-500/60 text-white text-2xl font-bold rounded-2xl shadow-lg transition-all duration-300 backdrop-blur-xl overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.4) 100%)",
+            }}
           >
-            <Send size={28} />
-            <span>{t("submit_results")}</span>
-            <div className="absolute inset-0 rounded-2xl bg-green-400/30 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+            {/* Button shine effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              animate={{ x: [-200, 200] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            <Send size={28} className="relative z-10" />
+            <span className="relative z-10">{t("submit_results")}</span>
           </motion.button>
 
           <motion.div
-            className="text-xl text-black/70"
+            className="text-xl text-white/70 drop-shadow relative z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
@@ -1381,15 +1698,15 @@ function Test13({ suppressResultPage = false, onComplete }) {
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
-                  <span className="text-lg font-medium text-black-600">
+                  <span className="text-lg font-medium text-white">
                     {t("mode")}:{" "}
-                    <span className="font-bold capitalize text-black-600">
+                    <span className="font-bold capitalize text-white">
                       {mode}
                     </span>
                   </span>
-                  <span className="text-lg font-medium text-black-600">
+                  <span className="text-lg font-medium text-white">
                     {t("sequence")}:{" "}
-                    <span className="font-bold text-black-600">
+                    <span className="font-bold text-white">
                       {sequenceIndex + 1}
                     </span>{" "}
                     / <span className="text-gray-600">{sequences.length}</span>

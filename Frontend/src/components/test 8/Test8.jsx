@@ -1,12 +1,12 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { backendURL } from "../../definedURL";
 import { useLanguage } from "../../contexts/LanguageContext";
-import questions from "./questions.json";
+import questionsData from "./questions.json"; // Renamed for clarity if it's not just 'questions'
 import {
   FaArrowRight,
   FaChevronRight,
@@ -18,20 +18,23 @@ import backgroundImage from "../../assets/visual-test/rockvision.png";
 import blinkCharacter from "../../assets/visual-test/BlinkingStone.png";
 
 const CharacterDialog = ({ onComplete }) => {
-  const [currentDialog, setCurrentDialog] = useState(0);
+  const [currentDialog, setcurrentDialog] = useState(0);
   const { t } = useLanguage();
 
-  const dialog = [
-    "🦉 Hoo-hoo... Greetings, traveler. I am Gearhart, guardian of Clockwork Grove.",
-    "🌲 This forest is alive with rhythm. Its trees tick, whirl, and chime in curious patterns.",
-    "⏱️ Here, your task is not just to see, but to notice... the slightest shift, the tiniest difference — in shape, in sequence, in time.",
-    "🔍 Look closely. Choose the mark that matches the rhythm — perfectly, precisely.",
-    "⚙️ Ready yourself. Time in the Grove waits for no one...",
-  ];
+  const dialogs = useMemo(
+    () => [
+      t("visualTestBlinkDialogWelcome"),
+      t("visualTestBlinkDialogSneakyShapes"),
+      t("visualTestBlinkDialogLookCarefully"),
+      t("visualTestBlinkDialogReward"),
+      t("visualTestBlinkDialogReadyPrompt"),
+    ],
+    [t]
+  );
 
   const handleNext = () => {
-    if (currentDialog < dialog.length - 1) {
-      setCurrentDialog(currentDialog + 1);
+    if (currentDialog < dialogs.length - 1) {
+      setcurrentDialog(currentDialog + 1);
     } else {
       onComplete();
     }
@@ -39,7 +42,6 @@ const CharacterDialog = ({ onComplete }) => {
 
   return (
     <>
-      {/* Blurred background with animated overlay */}
       <div className="fixed inset-0 z-40">
         <div
           className="absolute inset-0"
@@ -57,8 +59,6 @@ const CharacterDialog = ({ onComplete }) => {
           transition={{ duration: 0.5 }}
         />
       </div>
-
-      {/* Main content container */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -66,7 +66,6 @@ const CharacterDialog = ({ onComplete }) => {
           transition={{ duration: 0.5, type: "spring" }}
           className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
         >
-          {/* Floating character on the left */}
           <motion.div
             initial={{ y: -40, opacity: 0 }}
             animate={{
@@ -94,7 +93,7 @@ const CharacterDialog = ({ onComplete }) => {
           >
             <img
               src={blinkCharacter}
-              alt="Blink the Guardian"
+              alt={t("altBlinkTheGuardian")}
               className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
             />
           </motion.div>
@@ -122,12 +121,12 @@ const CharacterDialog = ({ onComplete }) => {
               transition={{ duration: 0.4 }}
               className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
             >
-              <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
+              <span className="drop-shadow-lg">{dialogs[currentDialog]}</span>
             </motion.div>
 
             {/* Progress indicators */}
             <div className="flex justify-center gap-3 mb-8 lg:mb-10">
-              {dialog.map((_, index) => (
+              {dialogs.map((_, index) => (
                 <motion.div
                   key={index}
                   className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
@@ -152,14 +151,14 @@ const CharacterDialog = ({ onComplete }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
                 className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
-                  currentDialog < dialog.length - 1
+                  currentDialog < dialogs.length - 1
                     ? "bg-gradient-to-r from-white to-lime-100 text-green-900 hover:from-lime-50 hover:to-amber-100 hover:shadow-lime-200/50"
                     : "bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:from-amber-600 hover:to-yellow-600 hover:shadow-amber-500/50"
                 }`}
               >
-                {currentDialog < dialog.length - 1 ? (
+                {currentDialog < dialogs.length - 1 ? (
                   <>
-                    <span className="drop-shadow-sm">Next</span>
+                    <span className="drop-shadow-sm">{t("next")}</span>
                     <FaChevronRight className="mt-0.5 drop-shadow-sm" />
                   </>
                 ) : (
@@ -178,6 +177,7 @@ const CharacterDialog = ({ onComplete }) => {
 };
 
 const QuestionTimer = ({ duration, onComplete }) => {
+  const { t } = useLanguage();
   const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
@@ -185,11 +185,9 @@ const QuestionTimer = ({ duration, onComplete }) => {
       onComplete();
       return;
     }
-
     const timer = setTimeout(() => {
       setTimeLeft(timeLeft - 1);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, [timeLeft, onComplete]);
 
@@ -212,7 +210,9 @@ const QuestionTimer = ({ duration, onComplete }) => {
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="text-sm font-medium text-white">Time Remaining</span>
+          <span className="text-sm font-medium text-white">
+            {t("labelTimeRemaining")}
+          </span>
         </div>
         <motion.span
           className="text-lg font-bold text-white bg-clip-text text-transparent"
@@ -221,12 +221,11 @@ const QuestionTimer = ({ duration, onComplete }) => {
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 500 }}
         >
-          {timeLeft}s
+          {timeLeft}
+          {t("seconds")}
         </motion.span>
       </div>
-
       <div className="relative h-3 w-full rounded-full bg-gray-200/80 overflow-hidden">
-        {/* Glow effect */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-yellow-400/20"
           animate={{
@@ -238,8 +237,6 @@ const QuestionTimer = ({ duration, onComplete }) => {
             ease: "easeInOut",
           }}
         />
-
-        {/* Main progress bar */}
         <motion.div
           className={`h-full rounded-full relative ${
             timeLeft < duration * 0.3
@@ -248,28 +245,16 @@ const QuestionTimer = ({ duration, onComplete }) => {
           }`}
           initial={{ width: "100%" }}
           animate={{ width: `${progress}%` }}
-          transition={{
-            duration: 1,
-            ease: "linear",
-          }}
+          transition={{ duration: 1, ease: "linear" }}
         >
-          {/* Animated pulse effect when time is low */}
           {timeLeft < 3 && (
             <motion.div
               className="absolute inset-0 bg-white/30 rounded-full"
-              animate={{
-                opacity: [0, 0.5, 0],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-              }}
+              animate={{ opacity: [0, 0.5, 0], scale: [1, 1.2, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
             />
           )}
         </motion.div>
-
-        {/* Progress ticks */}
         <div className="absolute inset-0 flex">
           {[...Array(duration - 1)].map((_, i) => (
             <div
@@ -291,6 +276,7 @@ const QuestionDisplay = ({
   onAnswer,
   onTimeout,
 }) => {
+  const { t } = useLanguage();
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleAnswer = (option) => {
@@ -388,6 +374,39 @@ const QuestionDisplay = ({
   );
 };
 
+const ProgressBarComponent = ({ current, total }) => {
+  // Renamed to avoid conflict if imported elsewhere
+  const { t } = useLanguage();
+  const progress = total > 0 ? (current / total) * 100 : 0;
+
+  return (
+    <div className="mb-8">
+      <div className="flex justify-between items-center mb-3">
+        <span className="text-xl font-semibold text-white/90">
+          {t("labelProgress")}
+        </span>
+        <span className="text-xl font-bold text-white">
+          {current}/{total} ({Math.round(progress)}%)
+        </span>
+      </div>
+      <div className="w-full h-8 bg-gray-300/50 rounded-full overflow-hidden shadow-inner">
+        <motion.div
+          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 relative"
+          initial={{ width: "0%" }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-white/20"
+            animate={{ opacity: [0, 0.3, 0], x: ["-100%", "100%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 // Enhanced OptionButton component
 const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
   return (
@@ -426,8 +445,9 @@ const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
   );
 };
 
-const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
-  const { language } = useLanguage();
+// Assuming the main component is for a Visual Test, filename AudioQuiz.jsx might be a misnomer
+const VisualTest = ({ suppressResultPage = false, onComplete }) => {
+  const { language, t } = useLanguage(); // t is available here
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [score, setScore] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -441,8 +461,12 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   useEffect(() => {
     const langKey =
       language === "ta" ? "tamil" : language === "hi" ? "hindi" : "english";
-    setQuizQuestions(questions[langKey]);
-    setSelectedOptions(Array(questions[langKey].length).fill(null));
+    // Ensure questionsData[langKey] exists and is an array
+    const questionsForLang = Array.isArray(questionsData[langKey])
+      ? questionsData[langKey]
+      : [];
+    setQuizQuestions(questionsForLang);
+    setSelectedOptions(Array(questionsForLang.length).fill(null));
   }, [language]);
 
   const handleAnswer = (option) => {
@@ -450,7 +474,10 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
     newSelectedOptions[currentQuestionIndex] = option;
     setSelectedOptions(newSelectedOptions);
 
-    if (option === quizQuestions[currentQuestionIndex].correct) {
+    if (
+      quizQuestions[currentQuestionIndex] &&
+      option === quizQuestions[currentQuestionIndex].correct
+    ) {
       setScore(score + 1);
     }
 
@@ -465,8 +492,11 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
   const handleTimeout = () => {
     const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[currentQuestionIndex] = null; // Mark as timeout/unanswered
-    setSelectedOptions(newSelectedOptions);
+    if (currentQuestionIndex < newSelectedOptions.length) {
+      // Boundary check
+      newSelectedOptions[currentQuestionIndex] = null;
+      setSelectedOptions(newSelectedOptions);
+    }
 
     if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -486,14 +516,14 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
     const childId = localStorage.getItem("childId");
 
     if (!childId) {
-      toast.error("Please select a student before taking the test");
+      toast.error(t("visualTestSelectStudentError"));
       setIsSubmitting(false);
       return;
     }
 
     try {
       const response = await axios.post(
-        `${backendURL}/addVisual`,
+        `${backendURL}/addVisual`, // Endpoint for visual test
         {
           child_id: childId,
           options: selectedOptions,
@@ -511,17 +541,21 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         if (suppressResultPage && typeof onComplete === "function") {
           onComplete(score);
         } else {
-          toast.success("Test submitted successfully!", {
+          toast.success(t("testSubmittedSuccessfully"), {
+            // Existing key
             position: "top-center",
-            onClose: () => navigate("/"),
+            onClose: () => navigate("/"), // Or to a results page
           });
         }
       } else {
-        toast.error("Failed to submit test. Please try again.");
+        toast.error(t("failedToSubmitTestPleaseTryAgain")); // Existing key
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error("An error occurred while submitting the test.");
+      toast.error(
+        t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") ||
+          t("errorOccurred")
+      ); // Existing keys
     } finally {
       setIsSubmitting(false);
     }
@@ -529,6 +563,20 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
 
   if (showCharacter) {
     return <CharacterDialog onComplete={startTest} />;
+  }
+
+  // Ensure quizQuestions and currentQuestionIndex are valid before rendering QuestionDisplay
+  const currentQuestionData = quizQuestions[currentQuestionIndex];
+  if (!quizStarted && !quizCompleted) {
+    // Initial loading or pre-start state
+    return (
+      <div
+        className="fixed inset-0 overflow-y-auto flex items-center justify-center p-4 md:p-8 bg-cover bg-center"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        {/* Optional: Loading spinner or message */}
+      </div>
+    );
   }
 
   return (
@@ -546,31 +594,33 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
         whileTap={{ scale: 0.95 }}
       >
         <FaArrowLeft className="text-blue-600" />
-        Back to Tests
+        {t("backToTests")} {/* Existing key */}
       </motion.button>
 
-      {quizStarted && !quizCompleted && (
-        <div className="w-full max-w-4xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentQuestionIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="w-full"
-            >
-              <QuestionDisplay
-                questionData={quizQuestions[currentQuestionIndex]}
-                index={currentQuestionIndex}
-                totalQuestions={quizQuestions.length}
-                onAnswer={handleAnswer}
-                onTimeout={handleTimeout}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      )}
+      {quizStarted &&
+        !quizCompleted &&
+        currentQuestionData && ( // Check currentQuestionData
+          <div className="w-full max-w-4xl mx-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentQuestionIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                <QuestionDisplay
+                  questionData={currentQuestionData}
+                  index={currentQuestionIndex}
+                  totalQuestions={quizQuestions.length}
+                  onAnswer={handleAnswer}
+                  onTimeout={handleTimeout}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
 
       {quizCompleted && (
         <div className="w-full max-w-4xl mx-auto">
@@ -587,13 +637,14 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
               className="mb-6"
             >
               <h2 className="text-3xl font-bold text-white mb-2">
-                Test Completed!
+                {t("visualTestCompleted")}
               </h2>
               <p className="text-xl text-blue-300">
-                You got {score} out of {quizQuestions.length} correct
+                {t("visualTestScoreOutOfTotal")
+                  .replace("{score}", score)
+                  .replace("{total}", quizQuestions.length)}
               </p>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -620,17 +671,16 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
                     >
                       ↻
                     </motion.span>
-                    Submitting...
+                    {t("submitting")} {/* Existing key */}
                   </span>
                 ) : (
-                  "Submit Results"
+                  t("submitResults") // Existing key
                 )}
               </motion.button>
             </motion.div>
           </motion.div>
         </div>
       )}
-
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -647,4 +697,4 @@ const AudioQuiz = ({ suppressResultPage = false, onComplete }) => {
   );
 };
 
-export default AudioQuiz;
+export default VisualTest; // Changed export name to reflect component's purpose

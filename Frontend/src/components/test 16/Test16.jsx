@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react"; // Added useMemo
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,24 +20,25 @@ import speakerbirdAnimation from "../../assets/sound-test/speakerbird.json";
 import backgroundImage from "../../assets/sound-test/whispering-isle.png";
 import echoCharacter from "../../assets/sound-test/echo-crab.png";
 
-const CharacterDialog = ({ onComplete, t }) => {
-  const [currentDialog, setCurrentDialog] = useState(0);
+const CharacterDialog = ({ onComplete }) => {
+  const { t } = useLanguage(); 
+  const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
 
-  const dialog = [
-    "👋 Ahoy there, little explorer!",
-    "I'm Sir Echo, the echo crab! 🦀✨",
-    "This is Whispering Isle... where sounds bounce and secrets hide! 🌫️👂",
-    "I'll play two sounds for you 🎧🎧",
-    "Your job is to tell me…",
-    "Are they the SAME? ✅",
-    "Or DIFFERENT? ❌",
-    "Ready to listen like a pirate pro? 🏴‍☠️🦜",
-    "Let's begin!",
-  ];
+  const dialogs = useMemo(() => [
+    t("soundTestEchoDialogAhoy"),
+    t("soundTestEchoDialogIntro"),
+    t("soundTestEchoDialogIsleDescription"),
+    t("soundTestEchoDialogTwoSounds"),
+    t("soundTestEchoDialogYourJob"),
+    t("soundTestEchoDialogAreTheySame"),
+    t("soundTestEchoDialogOrDifferent"),
+    t("soundTestEchoDialogReadyPirate"),
+    t("imReady"),
+  ], [t]);
 
   const handleNext = () => {
-    if (currentDialog < dialog.length - 1) {
-      setCurrentDialog(currentDialog + 1);
+    if (currentDialogIndex < dialogs.length - 1) {
+      setCurrentDialogIndex(currentDialogIndex + 1);
     } else {
       onComplete();
     }
@@ -45,7 +46,6 @@ const CharacterDialog = ({ onComplete, t }) => {
 
   return (
     <>
-      {/* Blurred background with animated overlay */}
       <div className="fixed inset-0 z-40">
         <div
           className="absolute inset-0"
@@ -63,8 +63,6 @@ const CharacterDialog = ({ onComplete, t }) => {
           transition={{ duration: 0.5 }}
         />
       </div>
-
-      {/* Main content container */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -72,7 +70,6 @@ const CharacterDialog = ({ onComplete, t }) => {
           transition={{ duration: 0.5, type: "spring" }}
           className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
         >
-          {/* Floating character on the left */}
           <motion.div
             initial={{ y: -40, opacity: 0 }}
             animate={{
@@ -100,70 +97,61 @@ const CharacterDialog = ({ onComplete, t }) => {
           >
             <img
               src={echoCharacter}
-              alt="Sir Echo the Crab"
+              alt={t("altSirEchoTheCrab")}
               className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
             />
           </motion.div>
-
-          {/* Enhanced glass-morphism dialog box */}
           <motion.div
             className="bg-gradient-to-br from-blue-900/70 to-teal-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
-            {/* Enhanced decorative elements */}
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-500 to-teal-500"></div>
             <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
             <div className="absolute -top-20 -left-20 w-40 h-40 bg-teal-400/20 rounded-full filter blur-xl"></div>
             <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
             <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
-
-            {/* Enhanced animated dialog text */}
             <motion.div
-              key={currentDialog}
+              key={currentDialogIndex}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.4 }}
               className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
             >
-              <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
+              <span className="drop-shadow-lg">{dialogs[currentDialogIndex]}</span>
             </motion.div>
-
-            {/* Enhanced progress indicators */}
             <div className="flex justify-center gap-3 mb-8 lg:mb-10">
-              {dialog.map((_, index) => (
+              {dialogs.map((_, index) => (
                 <motion.div
                   key={index}
                   className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
-                    index <= currentDialog
+                    index <= currentDialogIndex
                       ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
                       : "bg-white/30"
                   }`}
                   initial={{ scale: 0.8 }}
                   animate={{
-                    scale: index === currentDialog ? 1.3 : 1,
-                    y: index === currentDialog ? -4 : 0,
+                    scale: index === currentDialogIndex ? 1.3 : 1,
+                    y: index === currentDialogIndex ? -4 : 0,
                   }}
                   transition={{ type: "spring", stiffness: 300 }}
                 />
               ))}
             </div>
-
-            {/* Enhanced animated action button */}
             <div className="flex justify-center">
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleNext}
                 className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
-                  currentDialog < dialog.length - 1
+                  currentDialogIndex < dialogs.length - 1
                     ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
                     : "bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 text-white hover:from-blue-600 hover:via-purple-600 hover:to-teal-600 hover:shadow-purple-500/50"
                 }`}
               >
-                {currentDialog < dialog.length - 1 ? (
+                {currentDialogIndex < dialogs.length - 1 ? (
                   <>
                     <span className="drop-shadow-sm">{t("next")}</span>
                     <FaChevronRight className="mt-0.5 drop-shadow-sm" />
@@ -184,6 +172,8 @@ const CharacterDialog = ({ onComplete, t }) => {
 };
 
 const SoundPlayer = ({ pair, onTimeout }) => {
+  const { t } = useLanguage(); 
+  const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const lottieRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -309,8 +299,8 @@ const SoundQuestion = ({
   totalQuestions,
   onAnswer,
   onTimeout,
-  t,
 }) => {
+  const { t } = useLanguage(); // t is now fetched here
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasAnswered, setHasAnswered] = useState(false);
 
@@ -323,6 +313,12 @@ const SoundQuestion = ({
     }, 500);
   };
 
+  // Reset state when pair changes (new question)
+  useEffect(() => {
+    setSelectedOption(null);
+    setHasAnswered(false);
+  }, [pair]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -334,9 +330,7 @@ const SoundQuestion = ({
       <div className="text-center mb-4 text-white font-semibold text-2xl">
         {t("question")} {index + 1} {t("of")} {totalQuestions}
       </div>
-
-      <SoundPlayer pair={pair} onTimeout={onTimeout} />
-
+      {pair && <SoundPlayer pair={pair} onTimeout={onTimeout} />} {/* Ensure pair is defined */}
       <div className="flex justify-center gap-6 mt-10">
         <motion.button
           whileHover={!hasAnswered && { scale: 1.05 }}
@@ -353,7 +347,6 @@ const SoundQuestion = ({
         >
           {t("sameSounds")}
         </motion.button>
-
         <motion.button
           whileHover={!hasAnswered && { scale: 1.05 }}
           whileTap={!hasAnswered && { scale: 0.95 }}
@@ -374,9 +367,9 @@ const SoundQuestion = ({
   );
 };
 
-// Rest of the component remains the same...
-const ProgressBar = ({ current, total, t }) => {
-  const progress = (current / total) * 100;
+const ProgressBarComponent = ({ current, total }) => { // Renamed ProgressBar to avoid conflicts
+  const { t } = useLanguage(); 
+  const progress = total > 0 ? (current / total) * 100 : 0;
 
   return (
     <div className="mb-8">
@@ -397,15 +390,8 @@ const ProgressBar = ({ current, total, t }) => {
         >
           <motion.div
             className="absolute inset-0 bg-white/20"
-            animate={{
-              opacity: [0, 0.3, 0],
-              x: ["-100%", "100%"],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "linear",
-            }}
+            animate={{ opacity: [0, 0.3, 0], x: ["-100%", "100%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           />
         </motion.div>
       </div>
@@ -418,28 +404,14 @@ const SoundDiscriminationTest = ({
   onComplete,
 }) => {
   const { t, language } = useLanguage();
-  const wordPairs = [
-    ["dog", "hog"],
-    ["gate", "cake"],
-    ["bun", "bun"],
-    ["let", "net"],
-    ["ride", "ride"],
-    ["man", "man"],
-    ["pit", "bit"],
-    ["thing", "sing"],
-    ["nut", "ton"],
-    ["big", "big"],
-    ["no", "mow"],
-    ["pot", "top"],
-    ["pat", "pat"],
-    ["shut", "just"],
-    ["name", "game"],
-    ["raw", "war"],
-    ["feet", "seat"],
-    ["fun", "fun"],
-    ["day", "bay"],
-    ["in", "on"],
-  ];
+  
+  const wordPairs = useMemo(() => [ 
+    ["dog", "hog"], ["gate", "cake"], ["bun", "bun"], ["let", "net"],
+    ["ride", "ride"], ["man", "man"], ["pit", "bit"], ["thing", "sing"],
+    ["nut", "ton"], ["big", "big"], ["no", "mow"], ["pot", "top"],
+    ["pat", "pat"], ["shut", "just"], ["name", "game"], ["raw", "war"],
+    ["feet", "seat"], ["fun", "fun"], ["day", "bay"], ["in", "on"],
+  ], []);
 
   const [score, setScore] = useState(0);
   const [showCharacter, setShowCharacter] = useState(true);
@@ -458,21 +430,23 @@ const SoundDiscriminationTest = ({
   };
 
   const handleAnswer = (isSame) => {
-    const correctAnswer =
-      wordPairs[currentQuestionIndex][0] === wordPairs[currentQuestionIndex][1];
-    const isCorrect = isSame === correctAnswer;
+    if (currentQuestionIndex >= wordPairs.length) return; 
+
+    const currentPair = wordPairs[currentQuestionIndex];
+    const correctAnswer = currentPair[0] === currentPair[1];
+    const isUserCorrect = isSame === correctAnswer;
 
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[currentQuestionIndex] = isSame;
     setSelectedOptions(newSelectedOptions);
 
-    if (isCorrect) {
-      setScore(score + 1);
+    if (isUserCorrect) {
+      setScore((prevScore) => prevScore + 1);
     }
 
     setTimeout(() => {
       if (currentQuestionIndex < wordPairs.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       } else {
         setTestCompleted(true);
       }
@@ -480,12 +454,14 @@ const SoundDiscriminationTest = ({
   };
 
   const handleTimeout = () => {
+    if (currentQuestionIndex >= wordPairs.length) return; // Safety check
+
     const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[currentQuestionIndex] = null; // Mark as unanswered
+    newSelectedOptions[currentQuestionIndex] = null; 
     setSelectedOptions(newSelectedOptions);
 
     if (currentQuestionIndex < wordPairs.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     } else {
       setTestCompleted(true);
     }
@@ -497,7 +473,7 @@ const SoundDiscriminationTest = ({
     const childId = localStorage.getItem("childId");
 
     if (!childId) {
-      toast.error(t("selectStudentFirst"));
+      toast.error(t("selectStudentFirst")); // Using existing key
       setIsSubmitting(false);
       return;
     }
@@ -506,9 +482,10 @@ const SoundDiscriminationTest = ({
       const response = await axios.post(
         `${backendURL}/addTest16`,
         {
-          childId: childId,
-          test_name: "Test 16: Sound Discrimination",
+          childId: childId, // Ensure backend expects 'childId'
+          test_name: t("soundTestApiName"), // Can be translated if needed for display
           score: score,
+          // selectedOptions: selectedOptions, // Send if backend needs detailed answers
         },
         {
           headers: {
@@ -522,25 +499,27 @@ const SoundDiscriminationTest = ({
         if (suppressResultPage && typeof onComplete === "function") {
           onComplete(score);
         } else {
-          toast.success(t("testSubmittedSuccess"), {
+          toast.success(t("testSubmittedSuccessfully"), { // Using existing key
             position: "top-center",
-            onClose: () => navigate("/"),
+            onClose: () => navigate("/"), // Or to a results page
           });
         }
       } else {
-        toast.error(t("submitFailedTryAgain"));
+        toast.error(t("failedToSubmitTestPleaseTryAgain")); // Using existing key
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error(t("submitErrorTryAgain"));
+      toast.error(t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") || t("errorOccurred")); // Using existing key
     } finally {
       setIsSubmitting(false);
     }
   };
 
   if (showCharacter) {
-    return <CharacterDialog onComplete={startTest} t={t} />;
+    return <CharacterDialog onComplete={startTest} />;
   }
+
+  const currentPair = wordPairs[currentQuestionIndex];
 
   return (
     <div
@@ -560,7 +539,7 @@ const SoundDiscriminationTest = ({
         {t("backToTests")}
       </motion.button>
 
-      {testStarted && !testCompleted && (
+      {testStarted && !testCompleted && currentPair && (
         <div className="w-full max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -571,19 +550,16 @@ const SoundDiscriminationTest = ({
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <ProgressBar
+              <ProgressBarComponent 
                 current={currentQuestionIndex + 1}
                 total={wordPairs.length}
-                t={t}
               />
-
               <SoundQuestion
-                pair={wordPairs[currentQuestionIndex]}
+                pair={currentPair}
                 index={currentQuestionIndex}
                 totalQuestions={wordPairs.length}
                 onAnswer={handleAnswer}
                 onTimeout={handleTimeout}
-                t={t}
               />
             </motion.div>
           </AnimatePresence>
@@ -612,7 +588,6 @@ const SoundDiscriminationTest = ({
                 {t("correct")}
               </p>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -630,16 +605,12 @@ const SoundDiscriminationTest = ({
                   <span className="flex items-center justify-center">
                     <motion.span
                       animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       className="inline-block mr-2"
                     >
                       ↻
                     </motion.span>
-                    {t("submitting")}...
+                    {t("submitting")}
                   </span>
                 ) : (
                   t("submitResults")
@@ -649,7 +620,6 @@ const SoundDiscriminationTest = ({
           </motion.div>
         </div>
       )}
-
       <ToastContainer
         position="top-center"
         autoClose={3000}
