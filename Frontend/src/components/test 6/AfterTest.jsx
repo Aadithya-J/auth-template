@@ -142,7 +142,7 @@ const TestResults = () => {
   return (
     <>
       <motion.div
-        className="min-h-screen w-full overflow-y-auto bg-cover bg-center bg-no-repeat bg-fixed"
+        className="fixed inset-0 overflow-y-auto bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${islandImage})` }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -306,7 +306,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[180px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-200 border-l min-w-[180px]">
                                   <div className="flex items-center">
                                     <Gem className="mr-3 h-5 w-5 text-emerald-500" />
                                     <span className="whitespace-nowrap">
@@ -314,7 +314,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[180px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l  min-w-[180px]">
                                   <div className="flex items-center">
                                     <CloudFog className="mr-3 h-5 w-5 text-rose-500" />
                                     <span className="whitespace-nowrap">
@@ -322,7 +322,7 @@ const TestResults = () => {
                                     </span>
                                   </div>
                                 </th>
-                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l border-sky-200 min-w-[120px]">
+                                <th className="py-3 px-4 text-left font-semibold text-sky-800 border-b-2 border-sky-300 border-l min-w-[120px]">
                                   <div className="flex items-center">
                                     <BarChart3 className="mr-3 h-5 w-5 text-sky-500" />
                                     <span className="whitespace-nowrap">
@@ -486,6 +486,16 @@ const TestResults = () => {
                           >
                             <RefreshCw className="w-5 h-5 mr-2" />
                             Try Again
+                          </motion.button>
+                          <motion.button
+                            onClick={() => navigate("/")}
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-50 flex items-center justify-center mx-auto mt-4"
+                            whileHover={{
+                              boxShadow: "0px 5px 15px rgba(14, 165, 233, 0.4)",
+                            }}
+                          >
+                            <Compass className="w-5 h-5 mr-2" />
+                            Go Home
                           </motion.button>
                         </motion.div>
                       )}

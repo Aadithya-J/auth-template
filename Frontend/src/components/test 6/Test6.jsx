@@ -250,7 +250,10 @@ const useTestSubmission = (onTestComplete) => {
       });
       // Ensure 'anErrorOccurredWhileSubmittingTheTestPleaseTryAgain' exists in your translations
       // If not, use a more generic one like 'errorOccurred'
-      toast.error(t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") || t("errorOccurred"));
+      toast.error(
+        t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") ||
+          t("errorOccurred")
+      );
       return { success: false };
     }
   };
@@ -278,23 +281,26 @@ function Test6({ suppressResultPage = false, onComplete }) {
   const [currentWords, setCurrentWords] = useState([]);
   const [wordShells, setWordShells] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordsPerBatch, setWordsPerBatch] = useState(16);
+  const [wordsPerBatch, setWordsPerBatch] = useState(12); // Changed from 16 to 12
   const wordIntervalRef = useRef(null);
   const [tutorialPhase, setTutorialPhase] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
   const [isTutorialComplete, setIsTutorialComplete] = useState(false);
 
-  const tutorialMessages = useMemo(() => [
-    t("tutorialHelloExplorer"),
-    t("tutorialCoralineIntro"),
-    t("tutorialGlyphReefDescription"),
-    t("tutorialReadingTask"),
-    t("tutorialDifficulty"),
-    t("tutorialShellOfFluency"),
-    t("tutorialCoralSpyglass"),
-    t("tutorialLetsGetReading"),
-    t("tutorialReadyForMission"),
-  ], [t]);
+  const tutorialMessages = useMemo(
+    () => [
+      t("tutorialHelloExplorer"),
+      t("tutorialCoralineIntro"),
+      t("tutorialGlyphReefDescription"),
+      t("tutorialReadingTask"),
+      t("tutorialDifficulty"),
+      t("tutorialShellOfFluency"),
+      t("tutorialCoralSpyglass"),
+      t("tutorialLetsGetReading"),
+      t("tutorialReadyForMission"),
+    ],
+    [t]
+  );
 
   const {
     transcript,
@@ -324,7 +330,10 @@ function Test6({ suppressResultPage = false, onComplete }) {
     }
   }, [language, showTutorial, gameState, wordsPerBatch]); // Added wordsPerBatch
 
-  // Removed startWordBatches as it wasn't being called and its logic could be inline or part of other effects.
+  const startWordBatches = (words) => {
+    setCurrentWordIndex(0);
+    setWordsPerBatch(12); // Changed from 4 to 12, ensure this aligns with your intent or remove if not needed
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -349,8 +358,9 @@ function Test6({ suppressResultPage = false, onComplete }) {
       setCoralineVisible(true);
       setCoralineAnimationState("entering");
       setTutorialPhase(0);
-      if (tutorialMessages.length > 0) { // Ensure tutorialMessages is populated
-          setIntroMessage(tutorialMessages[0]);
+      if (tutorialMessages.length > 0) {
+        // Ensure tutorialMessages is populated
+        setIntroMessage(tutorialMessages[0]);
       }
     };
 
@@ -442,9 +452,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
       if (score >= 70) {
         setGameState("success");
         setCoralineAnimationState("celebrating");
-        setIntroMessage(
-          t("coralineAmazingScore").replace("{score}", score)
-        );
+        setIntroMessage(t("coralineAmazingScore").replace("{score}", score));
         const newTreasure = {
           id: Date.now(),
           name: `${t("shellNamePrefix")}${collectedTreasures.length + 1}`,
@@ -463,7 +471,9 @@ function Test6({ suppressResultPage = false, onComplete }) {
       } else {
         setGameState("failure");
         setCoralineAnimationState("encouraging");
-        setIntroMessage(t("coralineScoreKeepPracticing").replace("{score}", score));
+        setIntroMessage(
+          t("coralineScoreKeepPracticing").replace("{score}", score)
+        );
       }
     } else {
       setCoralineAnimationState("confused");
@@ -593,7 +603,8 @@ function Test6({ suppressResultPage = false, onComplete }) {
                   >
                     {tutorialPhase < tutorialMessages.length - 1 ? (
                       <>
-                        <span className="drop-shadow-sm">{t("next")}</span> {/* Use existing 'next' key */}
+                        <span className="drop-shadow-sm">{t("next")}</span>{" "}
+                        {/* Use existing 'next' key */}
                         <span className="drop-shadow-sm">➔</span>
                       </>
                     ) : (
@@ -656,20 +667,25 @@ function Test6({ suppressResultPage = false, onComplete }) {
               </div>
               <ProgressBar progress={gameProgress} />
             </div>
-            <div className="relative mb-8 w-full max-w-4xl mx-auto">
-              <div className="relative" style={{ paddingTop: "75%" }}>
+
+            {/* Ancient paper container with responsive sizing */}
+            <div className="relative mb-8 w-full max-w-3xl mx-auto">
+              <div className="relative h-[600px] max-h-[600px]">
                 <img
                   src={ancientPaper}
-                  className="absolute top-0 left-0 w-full h-full object-contain"
-                  alt={t("altAncientPaperBackground")}
+                  className="w-full h-full object-cover rounded-lg"
+                  alt="Ancient paper background"
                 />
-                <div className="absolute inset-0 grid grid-cols-4 grid-rows-4">
+                {/* Responsive grid - positioned absolutely over the image */}
+                <div className="absolute inset-4 grid grid-cols-3 grid-rows-4 gap-1 p-24 pr-48">
+                  {" "}
+                  {/* Changed grid-cols-4 to grid-cols-3 */}
                   {visibleWords.map((wordObj, index) => (
                     <div
-                      key={index} // Make sure index is unique for the current visibleWords
-                      className="flex items-center justify-center"
+                      key={index}
+                      className="flex items-center justify-center rounded-md shadow-sm p-4"
                     >
-                      <span className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black text-center break-words leading-tight">
+                      <span className="text-md md:text-base lg:text-xl font-bold text-black text-center leading-tight">
                         {wordObj.word}
                       </span>
                     </div>
@@ -803,7 +819,13 @@ const ProgressBar = ({ progress }) => (
 );
 
 // Speech Bubble Component - Assuming 't' is passed as a prop or useLanguage is used internally
-const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm, t }) => (
+const SpeechBubble = ({
+  text,
+  visible,
+  isLastMessage = false,
+  onConfirm,
+  t,
+}) => (
   <AnimatePresence>
     {visible && (
       <motion.div
@@ -819,7 +841,8 @@ const SpeechBubble = ({ text, visible, isLastMessage = false, onConfirm, t }) =>
         }}
       >
         <p className="text-xl md:text-2xl font-medium text-teal-900 mb-4">
-          {text} {/* This 'text' prop should already be translated if it's dynamic from Test6 */}
+          {text}{" "}
+          {/* This 'text' prop should already be translated if it's dynamic from Test6 */}
         </p>
         {isLastMessage && (
           <div className="flex justify-center gap-6 mt-6">
@@ -847,7 +870,7 @@ const RecordingControls = ({
   onStartRecording,
   onStopRecording,
   showEels,
-  t // Added t as a prop
+  t, // Added t as a prop
 }) => (
   <div className="flex items-center gap-4 relative">
     <AnimatePresence>

@@ -267,48 +267,53 @@ export default function ContinuousAssessment() {
 
   const handleSubmitResults = async () => {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      const totalScore = results.reduce((sum, result) => sum + (Number(result.score) || 0), 0);
-      
+      const totalScore = results.reduce(
+        (sum, result) => sum + (Number(result.score) || 0),
+        0
+      );
+
       const payload = {
         child_id: student.id, // Assuming student object has an id field
-        results: results.map(result => ({
+        results: results.map((result) => ({
           name: result.name,
-          score: result.score
+          score: result.score,
         })),
         total_score: totalScore,
-        total_tests: results.length
+        total_tests: results.length,
       };
 
-      const response = await fetch('http://localhost:3000/api/continuous-assessment/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/continuous-assessment/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await response.json();
 
       if (data.success) {
         // Show success message or redirect
-        alert('Results submitted successfully!');
+        alert("Results submitted successfully!");
         // Optionally redirect to dashboard
         // window.location.href = '/dashboard';
       } else {
-        throw new Error(data.message || 'Failed to submit results');
+        throw new Error(data.message || "Failed to submit results");
       }
     } catch (error) {
-      console.error('Error submitting results:', error);
-      alert('Failed to submit results. Please try again.');
+      console.error("Error submitting results:", error);
+      alert("Failed to submit results. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   if (loadingStudent) {
     return (

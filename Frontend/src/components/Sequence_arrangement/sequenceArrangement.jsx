@@ -652,7 +652,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
       )}
 
       {(gameState === "practice" || gameState === "test") && (
-        <div className="flex flex-col items-center min-h-screen relative pt-20 pb-10 px-4">
+        <div className="flex flex-col items-center justify-center min-h-screen relative px-4 py-10">
           <motion.div
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -664,8 +664,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                 whileHover={{ scale: 1.05, x: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/taketests")}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500
- text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-yellow-400"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-yellow-400"
               >
                 <motion.span
                   animate={{ x: [-2, 0, -2] }}
@@ -687,7 +686,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                     />
                   </svg>
                 </motion.span>
-                <span className="font-semibold">Back to Tests</span>
+                <span className="font-semibold text-lg">Back to Tests</span>
               </motion.button>
               {gameState === "test" && (
                 <motion.div
@@ -696,7 +695,9 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   className="flex items-center gap-4 bg-black/60 backdrop-blur-md rounded-full px-6 py-3 border-2 border-amber-400/50"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-300 font-bold">Progress:</span>
+                    <span className="text-amber-300 font-bold text-lg">
+                      Progress:
+                    </span>
                     <div className="flex gap-1">
                       {Array(10)
                         .fill(0)
@@ -706,7 +707,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: index * 0.05 }}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            className={`w-4 h-4 rounded-full transition-all duration-300 ${
                               index <= currentItem
                                 ? "bg-gradient-to-r from-amber-400 to-yellow-500 shadow-lg"
                                 : "bg-white/30"
@@ -720,8 +721,8 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                     whileHover={{ scale: 1.1 }}
                     className="flex items-center gap-2 text-amber-300"
                   >
-                    <span className="text-2xl">🏆</span>
-                    <span className="font-bold">
+                    <span className="text-3xl">🏆</span>
+                    <span className="font-bold text-xl">
                       {score.correct}/{score.total}
                     </span>
                   </motion.div>
@@ -736,7 +737,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                   onClick={() => setShowInfoDialog(true)}
                   className="p-3 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-amber-300"
                 >
-                  <IoIosInformationCircleOutline className="text-2xl text-white" />
+                  <IoIosInformationCircleOutline className="text-3xl text-white" />
                 </motion.button>
 
                 {(gameState === "practice" || gameState === "test") && (
@@ -748,31 +749,35 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-red-400"
                   >
-                    <span className="text-lg">🚪</span>
-                    <span className="font-semibold">{t("skipTest")}</span>
+                    <span className="text-2xl">🚪</span>
+                    <span className="font-semibold text-lg">
+                      {t("skipTest")}
+                    </span>
                   </motion.button>
                 )}
               </div>
             </div>
           </motion.div>
-          <div className="max-w-4xl w-full mx-auto bg-black/50 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-2 border-amber-300/30">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-amber-300">
+
+          {/* Main Content Box - Now Larger and Centered */}
+          <div className="w-full max-w-5xl mx-auto bg-black/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border-2 border-amber-300/30">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-amber-300">
                 {gameState === "practice"
                   ? t("practiceRound")
                   : `${t("round")} ${currentItem + 1} ${t("of")} 10`}
               </h2>
             </div>
 
-            <div className="h-[450px] w-full flex flex-col justify-between">
+            <div className="min-h-[500px] w-full flex flex-col justify-center">
               {showExample ? (
                 <div className="w-full">
-                  <div className="space-y-4 w-full">
-                    <div className="flex flex-col mt-20 items-center w-full">
-                      <h3 className="text-2xl font-bold text-amber-300 mb-8">
+                  <div className="space-y-6 w-full">
+                    <div className="flex flex-col items-center w-full">
+                      <h3 className="text-3xl font-bold text-amber-300 mb-10">
                         {t("rememberSequence")}
                       </h3>
-                      <div className="flex justify-center gap-6 w-full">
+                      <div className="flex justify-center gap-8 w-full">
                         {(gameState === "practice"
                           ? practiceSequence
                           : testItems[currentItem]
@@ -790,7 +795,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                           >
                             <motion.div
                               whileHover={{ scale: 1.1 }}
-                              className="w-28 h-28 cursor-pointer bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-5xl border-4 border-amber-300"
+                              className="w-32 h-32 cursor-pointer bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-6xl border-4 border-amber-300"
                             >
                               {animals[animal.name]}
                             </motion.div>
@@ -802,10 +807,10 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                           initial={{ scale: 0 }}
                           animate={{ scale: showTimer ? 1 : 0 }}
                           transition={{ delay: 0.6 }}
-                          className="relative w-64 h-64 mt-3 mx-auto" // mt-8 for spacing; mx-auto to center if needed
+                          className="relative w-72 h-72 mt-8 mx-auto"
                         >
                           {/* Background Halo */}
-                          <div className="absolute inset-x-10 inset-y-10 rounded-full bg-amber-950/30 z-0"></div>
+                          <div className="absolute inset-x-12 inset-y-12 rounded-full bg-amber-950/30 z-0"></div>
 
                           {/* Lottie Clock Animation */}
                           <Lottie
@@ -821,7 +826,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                             animate={{ scale: [1, 1.1, 1] }}
                             transition={{ duration: 1, repeat: Infinity }}
                           >
-                            <span className="text-4xl font-bold text-white drop-shadow-md">
+                            <span className="text-5xl font-bold text-white drop-shadow-md">
                               {timer}
                             </span>
                           </motion.div>
@@ -832,102 +837,116 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                 </div>
               ) : (
                 <div className="w-full">
-                  <div className="space-y-6 w-full">
-                    <div className="space-y-8 w-full">
-                      <div className="grid grid-cols-4 gap-6 w-full max-w-2xl mx-auto mb-12">
-                        {selectedCards.map((card, index) => (
+                  <div className="space-y-8 w-full">
+                    <div className="grid grid-cols-4 gap-8 w-full max-w-3xl mx-auto mb-16">
+                      {selectedCards.map((card, index) => (
+                        <motion.div
+                          key={`selected-${index}`}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="relative w-32 h-32 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-6xl border-4 border-amber-300 group cursor-pointer"
+                          onClick={() => removeCard(index)}
+                        >
+                          {animals[card.name]}
                           <motion.div
-                            key={`selected-${index}`}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="relative w-28 h-28 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-5xl border-4 border-amber-300 group cursor-pointer"
-                            onClick={() => removeCard(index)}
+                            className="absolute inset-0 bg-black/0 group-hover:bg-black/60 rounded-xl flex items-center justify-center"
+                            initial={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
                           >
-                            {animals[card.name]}
-                            <motion.div
-                              className="absolute inset-0 bg-black/0 group-hover:bg-black/60 rounded-xl flex items-center justify-center"
-                              initial={{ opacity: 0 }}
-                              whileHover={{ opacity: 1 }}
-                            >
-                              <span className="text-white text-base font-semibold">
-                                {t("remove")}
-                              </span>
-                            </motion.div>
+                            <span className="text-white text-lg font-semibold">
+                              {t("remove")}
+                            </span>
+                          </motion.div>
+                        </motion.div>
+                      ))}
+                      {Array(4 - selectedCards.length)
+                        .fill(0)
+                        .map((_, index) => (
+                          <motion.div
+                            key={`empty-${index}`}
+                            initial={{
+                              scale: 0,
+                              boxShadow: "0 0 0px rgba(255, 215, 0, 0)",
+                            }}
+                            animate={{
+                              scale: 1,
+                              boxShadow: [
+                                "0 0 0px rgba(255, 215, 0, 0)",
+                                "0 0 20px rgba(255, 215, 0, 0.8)",
+                                "0 0 0px rgba(255, 215, 0, 0)",
+                              ],
+                            }}
+                            transition={{
+                              delay: index * 0.1,
+                              duration: 2,
+                              repeat: Infinity,
+                              repeatType: "loop",
+                            }}
+                            className="w-32 h-32 bg-amber-900/20 rounded-xl shadow-lg flex items-center justify-center text-5xl text-amber-200 border-2 border-amber-700/30"
+                          >
+                            ?
                           </motion.div>
                         ))}
-                        {Array(4 - selectedCards.length)
-                          .fill(0)
-                          .map((_, index) => (
+                    </div>
+
+                    <div className="relative">
+                      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+                      <div className="py-10">
+                        <h3 className="text-2xl font-semibold text-amber-300 text-center mb-8">
+                          {t("availableChoices")}
+                        </h3>
+                        <div className="grid grid-cols-6 gap-8 w-full max-w-4xl mx-auto">
+                          {availableCards.map((card, index) => (
                             <motion.div
-                              key={`empty-${index}`}
+                              key={`available-${index}`}
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ delay: index * 0.1 }}
-                              className="w-28 h-28 bg-amber-900/20 rounded-xl shadow-lg flex items-center justify-center text-4xl text-amber-200 border-2 border-amber-700/30"
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="w-32 h-32 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-6xl border-4 border-amber-300 cursor-pointer"
+                              onClick={() => selectCard(card, index)}
                             >
-                              ?
+                              {animals[card.name]}
                             </motion.div>
                           ))}
-                      </div>
-
-                      <div className="relative">
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
-                        <div className="py-8">
-                          <h3 className="text-lg font-semibold text-amber-300 text-center mb-6">
-                            {t("availableChoices")}
-                          </h3>
-                          <div className="grid grid-cols-6 gap-6 w-full max-w-3xl mx-auto">
-                            {availableCards.map((card, index) => (
-                              <motion.div
-                                key={`available-${index}`}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                className="w-28 h-28 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl shadow-lg flex items-center justify-center text-5xl border-4 border-amber-300 cursor-pointer"
-                                onClick={() => selectCard(card, index)}
-                              >
-                                {animals[card.name]}
-                              </motion.div>
-                            ))}
-                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="flex justify-center gap-4 w-full">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={tryAgain}
-                        className="px-6 py-3 bg-gradient-to-r from-amber-700 to-amber-600 text-white rounded-full font-semibold shadow-md hover:shadow-lg"
-                      >
-                        ↻ {t("tryAgain")}
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={checkAnswer}
-                        disabled={selectedCards.length < 4}
-                        className="px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-full font-semibold shadow-md hover:shadow-lg disabled:opacity-50"
-                      >
-                        ✓ {t("checkAnswer")}
-                      </motion.button>
-                    </div>
+                  <div className="flex justify-center gap-6 w-full mt-10">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={tryAgain}
+                      className="px-8 py-4 bg-gradient-to-r from-amber-700 to-amber-600 text-white rounded-full font-semibold text-xl shadow-md hover:shadow-lg"
+                    >
+                      ↻ {t("tryAgain")}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={checkAnswer}
+                      disabled={selectedCards.length < 4}
+                      className="px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-full font-semibold text-xl shadow-md hover:shadow-lg disabled:opacity-50"
+                    >
+                      ✓ {t("checkAnswer")}
+                    </motion.button>
                   </div>
                 </div>
               )}
             </div>
           </div>
+
           <AnimatePresence>
             {feedback.message && (
               <motion.div
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
-                className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 p-6 rounded-2xl shadow-xl z-50 ${
+                className={`fixed bottom-8 left-[45%] transform -translate-x-1/2 p-6 rounded-2xl shadow-xl z-50 ${
                   feedback.isCorrect
                     ? "bg-gradient-to-r from-green-500 to-emerald-500"
                     : "bg-gradient-to-r from-red-500 to-rose-500"
@@ -942,7 +961,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                     repeat: Infinity,
                     repeatType: "reverse",
                   }}
-                  className="text-white font-bold text-xl text-center"
+                  className="text-white font-bold text-2xl text-center"
                 >
                   {feedback.message}
                   {feedback.isCorrect ? " 🎉" : " 😢"}

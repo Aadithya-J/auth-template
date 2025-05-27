@@ -8,7 +8,7 @@ export const translations = {
     analytics: "Analytics",
     language: "Language",
     account: "Account",
-
+    BacktoTests:"Back to Tests",
     // Languages
     english: "English",
     tamil: "தமிழ்",

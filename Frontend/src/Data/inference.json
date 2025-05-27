@@ -101,8 +101,8 @@
     "Sound Discrimination Test": {
       "id": 16,
       "scoreRange": {
-        "difficulty": [0, 7],
-        "strong": [8, 10]
+        "difficulty": [0, 14],
+        "strong": [15, 20]
       },
       "description": "Can't distinguish similar sounds (e.g., \"bit\" vs. \"pit\").",
       "remedies": [

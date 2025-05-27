@@ -14,6 +14,7 @@ import {
   FaPlay,
 } from "react-icons/fa";
 import Lottie from "lottie-react";
+import AudioPlayer from "react-h5-audio-player";
 import speakerbirdAnimation from "../../assets/sound-test/speakerbird.json";
 // Images
 import backgroundImage from "../../assets/sound-test/whispering-isle.png";
@@ -174,59 +175,42 @@ const SoundPlayer = ({ pair, onTimeout }) => {
   const { t } = useLanguage(); 
   const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
-  const audioRef = useRef(null);
   const lottieRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const [audioError, setAudioError] = useState(null);
+  const [glow, setGlow] = useState(false);
 
-  useEffect(() => {
-    if (lottieRef.current) {
-      lottieRef.current.setSpeed(1);
-      lottieRef.current.play();
-      lottieRef.current.loop = true;
-    }
-    return () => {
-      if (lottieRef.current) {
-        lottieRef.current.stop();
-      }
-    };
-  }, []);
-
-  const handlePlay = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+  const handleClick = () => {
+    document.querySelector(".rhap_play-pause-button")?.click();
+    setGlow(true);
+    setTimeout(() => setGlow(false), 300); // glow lasts 300ms
   };
-
-  useEffect(() => {
-    // Ensure pair is defined and has two elements
-    if (pair && pair.length === 2 && pair[0] && pair[1]) {
-      const audio = new Audio(`/audio/${pair[0]}_${pair[1]}.m4a`);
-      audioRef.current = audio;
-
-      const handleEnded = () => {
-        setIsPlaying(false);
-        setPlayCount((prev) => prev + 1);
-      };
-
-      audio.addEventListener("ended", handleEnded);
-
-      return () => {
-        audio.removeEventListener("ended", handleEnded);
-        audio.pause();
-        audioRef.current = null;
-      };
-    }
-  }, [pair]);
-
+  // Handle play count and timeout
   useEffect(() => {
     if (playCount >= 2) {
-      const timer = setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         onTimeout();
-      }, 5000); // Consider making timeout duration configurable or a prop
-      return () => clearTimeout(timer);
+      }, 5000);
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
     }
   }, [playCount, onTimeout]);
+
+  const handleAudioEnd = () => {
+    setPlayCount((prev) => prev + 1);
+  };
+
+  const handleAudioError = (error) => {
+    console.error("Audio error:", error);
+    setAudioError("Failed to load audio");
+    // Fallback - simulate playback completion
+    timeoutRef.current = setTimeout(() => {
+      setPlayCount((prev) => prev + 1);
+    }, 2000);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -239,27 +223,70 @@ const SoundPlayer = ({ pair, onTimeout }) => {
           style={{ height: "100%", width: "100%" }}
         />
       </div>
+
+      <div className="w-full max-w-md mb-6">
+        <AudioPlayer
+          src={`/audio/${pair[0]}_${pair[1]}.m4a`}
+          onEnded={handleAudioEnd}
+          onError={handleAudioError}
+          customProgressBarSection={[
+            "MAIN_CONTROLS",
+            "PROGRESS_BAR",
+            "DURATION",
+          ]}
+          customControlsSection={[]}
+          customAdditionalControls={[]}
+          showJumpControls={false}
+          layout="horizontal"
+          style={{ opacity: 0, position: "absolute", pointerEvents: "none" }}
+        />
+      </div>
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handlePlay}
-        disabled={isPlaying}
-        className={`flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold text-lg shadow-lg ${
-          isPlaying
-            ? "bg-gray-500 cursor-not-allowed"
-            : "bg-gradient-to-r from-blue-500 to-teal-500 text-white hover:from-blue-600 hover:to-teal-600"
-        }`}
+        whileHover={{
+          scale: 1.05,
+          boxShadow: "0 0 20px rgba(59, 130, 246, 0.7)",
+        }}
+        whileTap={{
+          scale: 0.95,
+          boxShadow: "0 0 10px rgba(59, 130, 246, 0.5)",
+        }}
+        onClick={handleClick}
+        className={`
+  relative p-8 rounded-full 
+  bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 
+  text-white shadow-xl 
+  transition-all duration-300
+  ${glow ? "ring-4 ring-cyan-300/60" : ""}
+  overflow-hidden
+`}
       >
-        <FaPlay />
-        {isPlaying ? t("buttonPlayingAudio") : t("buttonPlayAudio")}
+        {/* Glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-blue-600/0 rounded-full" />
+
+        {/* Button content */}
+        <FaPlay className="text-3xl" />
+
+        {/* Pulse animation when glowing */}
+        {glow && (
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-blue-300/30"
+            initial={{ scale: 1, opacity: 0.7 }}
+            animate={{ scale: 1.3, opacity: 0 }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeOut",
+            }}
+          />
+        )}
       </motion.button>
-      {isPlaying && (
+      {audioError && (
         <motion.div
-          className="text-center mt-4 text-blue-200 font-medium text-lg"
+          className="text-center mt-4 text-red-400 font-medium text-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          {t("labelListeningCarefully")}
+          {audioError} - Continuing in 2 seconds...
         </motion.div>
       )}
     </div>
