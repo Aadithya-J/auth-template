@@ -8,7 +8,7 @@ export const translations = {
     analytics: "Analytics",
     language: "Language",
     account: "Account",
-    BacktoTests:"Back to Tests",
+    BacktoTests: "Back to Tests",
     // Languages
     english: "English",
     tamil: "தமிழ்",
@@ -454,12 +454,18 @@ export const translations = {
 
     // Test6 - Tutorial Messages (Coraline's dialogue)
     tutorialHelloExplorer: "👋 Hello there, young explorer!",
-    tutorialCoralineIntro: "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
-    tutorialGlyphReefDescription: "🌊 This is a special place where words grow like coral!",
-    tutorialReadingTask: "📖 Your job is to read each word on the glowing shells out loud.",
-    tutorialDifficulty: "✨ They'll start easy and get a little harder — but I believe in you!",
-    tutorialShellOfFluency: "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
-    tutorialCoralSpyglass: "🔭 and my magical Coral Spyglass to help you on your journey.",
+    tutorialCoralineIntro:
+      "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
+    tutorialGlyphReefDescription:
+      "🌊 This is a special place where words grow like coral!",
+    tutorialReadingTask:
+      "📖 Your job is to read each word on the glowing shells out loud.",
+    tutorialDifficulty:
+      "✨ They'll start easy and get a little harder — but I believe in you!",
+    tutorialShellOfFluency:
+      "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
+    tutorialCoralSpyglass:
+      "🔭 and my magical Coral Spyglass to help you on your journey.",
     tutorialLetsGetReading: "📚 Let's get reading!",
     tutorialReadyForMission: "🚀 Are you ready to attempt the mission?",
     buttonTutorialConfirmReady: "🧭 Aye, I'm ready!", // Specific for tutorial button
@@ -470,10 +476,13 @@ export const translations = {
     coralineCouldntMakeOut: "Hmm, I couldn't quite make that out. Try again?",
     coralineNeedYourVoice: "Wait! I need to hear your voice first!",
     coralineCheckingPronunciation: "Let me check your pronunciation...",
-    coralineAmazingScore: "Amazing! Your score is {score}%! You've earned a treasure!", // {score} is a placeholder
+    coralineAmazingScore:
+      "Amazing! Your score is {score}%! You've earned a treasure!", // {score} is a placeholder
     shellNamePrefix: "Shell #", // For dynamic names like "Shell #1"
-    coralineScoreKeepPracticing: "You scored {score}%. Keep practicing and try again!", // {score} is a placeholder
-    coralineReefMagicError: "Something went wrong with the reef magic. Let's try once more!",
+    coralineScoreKeepPracticing:
+      "You scored {score}%. Keep practicing and try again!", // {score} is a placeholder
+    coralineReefMagicError:
+      "Something went wrong with the reef magic. Let's try once more!",
 
     // Test6 - UI Labels, Alts, Aria-Labels
     altCoralineCharacter: "Coraline",
@@ -484,17 +493,22 @@ export const translations = {
     titleShellOfFluencyEarned: "Shell of Fluency Earned!",
     messagePronunciationShining: "Your pronunciation is shining!",
     buttonCollectTreasure: "Collect Treasure!",
-    buttonModalYesImReady: "Yes, I'm ready!", 
+    buttonModalYesImReady: "Yes, I'm ready!",
     altWarningSignImage: "Warning sign",
     ariaLabelUploadAudioFile: "Upload audio file",
 
     //Added new words for Visual Descrimination Test
 
-    visualTestBlinkDialogWelcome: "👁️ Hello, explorer... I am Blink, the Eye of Vision Rock.",
-    visualTestBlinkDialogSneakyShapes: "🌀 This place is full of sneaky shapes. Some look almost the same… but only one is a perfect match.",
-    visualTestBlinkDialogLookCarefully: "🔍 Use your eyes. Look carefully. Find the one that matches exactly.",
-    visualTestBlinkDialogReward: "🏆 If you choose right, I'll reward you with the Shell of Sight 🐚 and the Lens of Truth 🔮. They will help you see things others can't!",
-    visualTestBlinkDialogReadyPrompt: "⚔️ Are you ready? Let's see how sharp your eyes really are!",
+    visualTestBlinkDialogWelcome:
+      "👁️ Hello, explorer... I am Blink, the Eye of Vision Rock.",
+    visualTestBlinkDialogSneakyShapes:
+      "🌀 This place is full of sneaky shapes. Some look almost the same… but only one is a perfect match.",
+    visualTestBlinkDialogLookCarefully:
+      "🔍 Use your eyes. Look carefully. Find the one that matches exactly.",
+    visualTestBlinkDialogReward:
+      "🏆 If you choose right, I'll reward you with the Shell of Sight 🐚 and the Lens of Truth 🔮. They will help you see things others can't!",
+    visualTestBlinkDialogReadyPrompt:
+      "⚔️ Are you ready? Let's see how sharp your eyes really are!",
     altBlinkTheGuardian: "Blink the Guardian",
     buttonImReady: "I'm Ready!",
 
@@ -502,16 +516,15 @@ export const translations = {
     labelTimeRemaining: "Time Remaining",
     labelQuestionOutOfTotal: "Question {index} of {total}", // Placeholders for dynamic values
     labelProgress: "Progress", // For the progress bar label
-    visualTestSelectStudentError: "Please select a student before taking the test", // Specific error
+    visualTestSelectStudentError:
+      "Please select a student before taking the test", // Specific error
     visualTestCompleted: "Test Completed!",
     visualTestScoreOutOfTotal: "You got {score} out of {total} correct", // Placeholders
 
-
-
-
     soundTestEchoDialogAhoy: "👋 Ahoy there, little explorer!",
     soundTestEchoDialogIntro: "I'm Sir Echo, the echo crab! 🦀✨",
-    soundTestEchoDialogIsleDescription: "This is Whispering Isle... where sounds bounce and secrets hide! 🌫️👂",
+    soundTestEchoDialogIsleDescription:
+      "This is Whispering Isle... where sounds bounce and secrets hide! 🌫️👂",
     soundTestEchoDialogTwoSounds: "I'll play two sounds for you 🎧🎧",
     soundTestEchoDialogYourJob: "Your job is to tell me…",
     soundTestEchoDialogAreTheySame: "Are they the SAME? ✅",
@@ -524,6 +537,118 @@ export const translations = {
     labelListeningCarefully: "Listening carefully...",
     soundTestApiName: "Test 16: Sound Discrimination",
 
+    //Picture Recognition Test
+    transcriptionReceived: "Transcription received!",
+    errorUploadingAudioCheckConnection:
+      "Error uploading audio. Please check connection.",
+    errorStoppingRecording: "Error stopping recording",
+    errorStoppingMicrophone: "Error stopping microphone",
+    recordingErrorPrefix: "Recording error: ", // Used as: t("recordingErrorPrefix") + event.error.name
+    couldNotAccessMicrophoneCheckPermissions:
+      "Could not access microphone. Please check permissions.",
+    pleaseCompleteStepBeforeProceeding:
+      "Please complete this step before proceeding.",
+    failedToLoadTestResultsTryAgainLater:
+      "Failed to load test results. Please try again later.",
+    processingYourResults: "Processing your results...",
+    pictureRecognitionTestResultsTitle: "Picture Recognition Test Results",
+    imageColumn: "Image",
+    yourAnswerColumn: "Your Answer",
+    correctAnswerColumn: "Correct Answer",
+    altQuestionImage: "Question image",
+    takeNewTestButton: "Take New Test",
+    orSeparatorText: "OR",
+    statusProcessing: "Processing...",
+
+    pictureTestIntroDialog1:
+      "🌊 Welcome, traveler, to Crystal Shoals! The tidepools here shimmer with reflections from above.",
+    pictureTestIntroDialog2:
+      "🪞 I am Mira, the mirrorfish, guardian of these hidden images. Each pool holds visions waiting to be recognized.",
+    pictureTestIntroDialog3:
+      "🐚 Your task is simple yet deep: name what you see reflected in the pools, and reveal the world they come from.",
+    pictureTestIntroDialog4:
+      "💧 In return, you shall receive the Shell of Imagery and The Reflecting Pearl, treasures of insight and clarity.",
+    pictureTestIntroDialog5:
+      "✨ Are you ready to peer beyond the ripples and unlock the secrets held in these mirrored waters?",
+    pictureTestButtonNextDialog: "Next",
+    altMiraTheMirrorfish: "Mira the Mirrorfish",
+    altTidepoolReflection: "Tidepool reflection",
+
+    // UI Elements & Test Flow (New or specifically for this UI)
+    pictureTestProgressBarTitle: "Test Progress", // If "TestProgress" key doesn't exist or is too generic
+    pictureTestProgressStatus: "{current} of {total} completed", // For dynamic progress text
+
+    // Speech prompts (New, specific keys for clarity)
+    speakGreatWhatIsIt: "Great! Can you tell me what it is?",
+    speakCanYouSeeThisPictureInitial: "Can you see this picture?",
+
+    phonemeBlendingIntroDialog1:
+      "Welcome to Blender’s Bay, a magical place where word waves and swirling whirlpools help us blend sounds together!",
+    phonemeBlendingIntroDialog2:
+      "I’m Blenda the Dolphin, your guide on this journey. Let’s dive into the gentle waves and swirl the sounds to create new words!",
+    phonemeBlendingIntroDialog3:
+      "Are you ready? Let’s see what words we can make by blending these sounds together!",
+    altBlendaTheDolphin: "Blenda the Dolphin",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "Start",
+    phonemeBlendingProgressBarWord: "Word {current} of {total}",
+    phonemeBlendingProgressBarFinish: "Finish",
+    phonemeBlendingHeaderTitle: "Blend the Sounds!",
+    phonemeBlendingPromptListen: "Listen carefully to the sounds", // Also used for "Listen to the sounds and combine them to form a word"
+    phonemeBlendingPromptEnterOrSay: "Enter or say the word you heard",
+    phonemeBlendingPlaySoundsButton: "Play Sounds",
+    phonemeBlendingPlayingSoundsButton: "Playing Sounds...",
+    phonemeBlendingPromptHeard: "What word did you hear?",
+    phonemeBlendingInputPlaceholder: "Type or Record your answer",
+    phonemeBlendingRecordButton: "Record",
+    phonemeBlendingStopButton: "Stop",
+    phonemeBlendingSubmitButton: "Submit",
+    phonemeBlendingSkipButton: "Skip Word",
+    phonemeBlendingAllWordsAttempted: "All words attempted!",
+    phonemeBlendingSubmitAllButton: "Submit All Results",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "Recording...",
+    phonemeBlendingStatusTranscribing: "Transcribing...",
+    phonemeBlendingStatusDone: "Done. Ready to submit.",
+    phonemeBlendingStatusError: "Transcription failed.",
+    phonemeBlendingStatusTyped: "Typed input",
+    phonemeBlendingStatusIdle: "Ready to record or type",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound:
+      "Failed to play sound. Please try again or check permissions.",
+    phonemeBlendingErrorPlayingSounds:
+      "An error occurred while playing sounds.",
+    phonemeBlendingErrorTranscriptionEmpty:
+      "Transcription returned empty. Please type or try again.",
+    phonemeBlendingErrorTranscriptionFailedGeneral:
+      "Transcription failed. Please type your answer or try recording again.",
+    phonemeBlendingErrorProcessingAudio:
+      "Error processing audio. Please type your answer.",
+    phonemeBlendingErrorRecording: "Recording error. Please type or try again.",
+    phonemeBlendingErrorStartRecording:
+      "Could not start recording. Check permissions/refresh.",
+    phonemeBlendingErrorMicAccess:
+      "Could not access microphone. Check permissions.",
+    phonemeBlendingErrorNoInputSubmit:
+      "Please enter or record a word before submitting.",
+    phonemeBlendingErrorSubmitNoChildId:
+      "Cannot submit results: Student ID not found.",
+    phonemeBlendingErrorSubmitFailed:
+      "Failed to save results. Please try again later or contact support.",
+    unknownError: "Unknown error", // Fallback for MediaRecorder error
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "Processing...", // Default for Button isLoading & LoadingOverlay
+    phonemeBlendingLoadingSubmitting: "Submitting your results...", // For final submit
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "Word {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "You said:",
+    phonemeBlendingResultCardNoResponse: "No response",
+    phonemeBlendingResultCardCorrectAnswer: "Correct answer:",
   },
   ta: {
     mainMenu: "முதன்மை மெனு",
@@ -816,6 +941,7 @@ export const translations = {
     noStudentsFoundMessage: "மாணவர்கள் எவரும் கிடைக்கவில்லை",
     tryAdjustingSearch: "உங்கள் தேடல் அளவுகோல்களை சரிசெய்ய முயற்சிக்கவும்",
     selectStudentButton: "மாணவரைத் தேர்ந்தெடுக்கவும்",
+    imReady: "நான் தயார்!",
 
     // TestResultsPage
     viewingResultsFor: "இதற்கான முடிவுகளைக் காண்கிறது:",
@@ -933,6 +1059,7 @@ export const translations = {
       "சொல்லகராதி அளவுகோல் சோதனையை முடித்ததற்கு நன்றி.",
     submissionError: "சமர்ப்பிப்பு பிழை",
     BackToTests: "டெஸ்ட்களுக்கு திரும்பு",
+    backToTests: "டெஸ்ட்களுக்கு திரும்பு",
     vocabularyScaleTest: "சொல்லகராதி அளவுகோல் சோதனை",
     testSubmittedSuccessfully: "டெஸ்ட் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
     submissionFailedTryAgain:
@@ -988,31 +1115,45 @@ export const translations = {
     audio_upload_error: "ஆடியோ பதிவேற்றப் பிழை",
 
     //added new words for reading proficiency
-    transcriptionFailedTryAgain: "படியெடுத்தல் தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
-    errorUploadingAudioTryAgain: "ஆடியோவைப் பதிவேற்றுவதில் பிழை. மீண்டும் முயற்சிக்கவும்.",
+    transcriptionFailedTryAgain:
+      "படியெடுத்தல் தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
+    errorUploadingAudioTryAgain:
+      "ஆடியோவைப் பதிவேற்றுவதில் பிழை. மீண்டும் முயற்சிக்கவும்.",
     testSubmittedWithScore: "சோதனை சமர்ப்பிக்கப்பட்டது! மதிப்பெண்: {score}%",
-    transcriptionNotReady: "சமர்ப்பிக்கும் முன் ஆடியோவைப் பதிவுசெய்யவும் அல்லது பதிவேற்றவும்.",
+    transcriptionNotReady:
+      "சமர்ப்பிக்கும் முன் ஆடியோவைப் பதிவுசெய்யவும் அல்லது பதிவேற்றவும்.",
 
     tutorialHelloExplorer: "👋 வணக்கம், இளம் ஆய்வாளரே!",
-    tutorialCoralineIntro: "🦑 நான் கோரலைன் தி கிராக்கன், கிளிஃப் ரீஃபின் நட்பு நூலகர்.",
-    tutorialGlyphReefDescription: "🌊 இது ஒரு சிறப்பு இடம், இங்கே வார்த்தைகள் பவளம் போல வளரும்!",
-    tutorialReadingTask: "📖 ஒளிரும் சிப்பிகளில் உள்ள ஒவ்வொரு வார்த்தையையும் சத்தமாகப் படிப்பது உங்கள் வேலை.",
-    tutorialDifficulty: "✨ அவை எளிதாகத் தொடங்கி கொஞ்சம் கடினமாக மாறும் - ஆனால் நான் உன்னை நம்புகிறேன்!",
-    tutorialShellOfFluency: "🏆 கவனமாகப் படியுங்கள், நீங்கள் சரள ஓட்டத்தின் சிப்பியைப் 🐚 பெறுவீர்கள்.",
-    tutorialCoralSpyglass: "🔭 மற்றும் என் மாயாஜால பவள தொலைநோக்கி உங்கள் பயணத்தில் உங்களுக்கு உதவும்.",
+    tutorialCoralineIntro:
+      "🦑 நான் கோரலைன் தி கிராக்கன், கிளிஃப் ரீஃபின் நட்பு நூலகர்.",
+    tutorialGlyphReefDescription:
+      "🌊 இது ஒரு சிறப்பு இடம், இங்கே வார்த்தைகள் பவளம் போல வளரும்!",
+    tutorialReadingTask:
+      "📖 ஒளிரும் சிப்பிகளில் உள்ள ஒவ்வொரு வார்த்தையையும் சத்தமாகப் படிப்பது உங்கள் வேலை.",
+    tutorialDifficulty:
+      "✨ அவை எளிதாகத் தொடங்கி கொஞ்சம் கடினமாக மாறும் - ஆனால் நான் உன்னை நம்புகிறேன்!",
+    tutorialShellOfFluency:
+      "🏆 கவனமாகப் படியுங்கள், நீங்கள் சரள ஓட்டத்தின் சிப்பியைப் 🐚 பெறுவீர்கள்.",
+    tutorialCoralSpyglass:
+      "🔭 மற்றும் என் மாயாஜால பவள தொலைநோக்கி உங்கள் பயணத்தில் உங்களுக்கு உதவும்.",
     tutorialLetsGetReading: "📚 வாருங்கள் படிக்கலாம்!",
     tutorialReadyForMission: "🚀 நீங்கள் பயணத்திற்கு தயாரா?",
     buttonTutorialConfirmReady: "🧭 ஆம், நான் தயார்!",
 
     coralineExcellentRecording: "அற்புதம்! அந்தப் பதிவைக் கேட்கிறேன்...",
-    coralineHeardClearly: "சிறந்த வேலை! உங்கள் வார்த்தைகளை நான் தெளிவாகக் கேட்டேன்.",
-    coralineCouldntMakeOut: "ம்ம், என்னால் அதை சரியாகப் புரிந்து கொள்ள முடியவில்லை. மீண்டும் முயற்சிக்கவா?",
+    coralineHeardClearly:
+      "சிறந்த வேலை! உங்கள் வார்த்தைகளை நான் தெளிவாகக் கேட்டேன்.",
+    coralineCouldntMakeOut:
+      "ம்ம், என்னால் அதை சரியாகப் புரிந்து கொள்ள முடியவில்லை. மீண்டும் முயற்சிக்கவா?",
     coralineNeedYourVoice: "பொறு! முதலில் உன் குரலை நான் கேட்க வேண்டும்!",
     coralineCheckingPronunciation: "உங்கள் உச்சரிப்பை நான் சரிபார்க்கிறேன்...",
-    coralineAmazingScore: "அற்புதம்! உங்கள் மதிப்பெண் {score}%! நீங்கள் ஒரு புதையலைப் பெற்றுள்ளீர்கள்!",
+    coralineAmazingScore:
+      "அற்புதம்! உங்கள் மதிப்பெண் {score}%! நீங்கள் ஒரு புதையலைப் பெற்றுள்ளீர்கள்!",
     shellNamePrefix: "சிப்பி #",
-    coralineScoreKeepPracticing: "நீங்கள் {score}% மதிப்பெண் பெற்றீர்கள். பயிற்சி செய்து மீண்டும் முயற்சிக்கவும்!",
-    coralineReefMagicError: "பவளப்பாறை மாயத்தில் ஏதோ தவறு நடந்துவிட்டது. மீண்டும் ஒருமுறை முயற்சிப்போம்!",
+    coralineScoreKeepPracticing:
+      "நீங்கள் {score}% மதிப்பெண் பெற்றீர்கள். பயிற்சி செய்து மீண்டும் முயற்சிக்கவும்!",
+    coralineReefMagicError:
+      "பவளப்பாறை மாயத்தில் ஏதோ தவறு நடந்துவிட்டது. மீண்டும் ஒருமுறை முயற்சிப்போம்!",
 
     altCoralineCharacter: "கோரலைன்",
     labelReefProgress: "பவளப்பாறை முன்னேற்றம்",
@@ -1027,12 +1168,17 @@ export const translations = {
     ariaLabelUploadAudioFile: "ஆடியோ கோப்பைப் பதிவேற்று",
 
     //New words for Visual Descrimination Test
-        // --- Visual Test (Blink's Dialog) ---
-    visualTestBlinkDialogWelcome: "👁️ வணக்கம், தேடுபவரே... நான் பிளிங்க், விஷன் பாறையின் கண்.",
-    visualTestBlinkDialogSneakyShapes: "🌀 இந்த இடம் தந்திரமான வடிவங்கள் நிறைந்தது. சில கிட்டத்தட்ட ஒரே மாதிரியாக இருக்கும்... ஆனால் ஒன்று மட்டுமே சரியான பொருத்தம்.",
-    visualTestBlinkDialogLookCarefully: "🔍 உங்கள் கண்களைப் பயன்படுத்துங்கள். கவனமாகப் பாருங்கள். சரியாகப் பொருந்தக்கூடிய ஒன்றைக் கண்டறியவும்.",
-    visualTestBlinkDialogReward: "🏆 நீங்கள் சரியாகத் தேர்ந்தெடுத்தால், நான் உங்களுக்கு பார்வையின் சிப்பி 🐚 மற்றும் உண்மையின் லென்ஸ் 🔮 பரிசளிப்பேன். அவை மற்றவர்கள் பார்க்க முடியாதவற்றைப் பார்க்க உதவும்!",
-    visualTestBlinkDialogReadyPrompt: "⚔️ நீங்கள் தயாரா? உங்கள் கண்கள் எவ்வளவு கூர்மையானவை என்று பார்ப்போம்!",
+    // --- Visual Test (Blink's Dialog) ---
+    visualTestBlinkDialogWelcome:
+      "👁️ வணக்கம், தேடுபவரே... நான் பிளிங்க், விஷன் பாறையின் கண்.",
+    visualTestBlinkDialogSneakyShapes:
+      "🌀 இந்த இடம் தந்திரமான வடிவங்கள் நிறைந்தது. சில கிட்டத்தட்ட ஒரே மாதிரியாக இருக்கும்... ஆனால் ஒன்று மட்டுமே சரியான பொருத்தம்.",
+    visualTestBlinkDialogLookCarefully:
+      "🔍 உங்கள் கண்களைப் பயன்படுத்துங்கள். கவனமாகப் பாருங்கள். சரியாகப் பொருந்தக்கூடிய ஒன்றைக் கண்டறியவும்.",
+    visualTestBlinkDialogReward:
+      "🏆 நீங்கள் சரியாகத் தேர்ந்தெடுத்தால், நான் உங்களுக்கு பார்வையின் சிப்பி 🐚 மற்றும் உண்மையின் லென்ஸ் 🔮 பரிசளிப்பேன். அவை மற்றவர்கள் பார்க்க முடியாதவற்றைப் பார்க்க உதவும்!",
+    visualTestBlinkDialogReadyPrompt:
+      "⚔️ நீங்கள் தயாரா? உங்கள் கண்கள் எவ்வளவு கூர்மையானவை என்று பார்ப்போம்!",
     altBlinkTheGuardian: "பிளிங்க் தி கார்டியன்",
     buttonImReady: "நான் தயார்!",
 
@@ -1040,20 +1186,23 @@ export const translations = {
     labelTimeRemaining: "மீதமுள்ள நேரம்",
     labelQuestionOutOfTotal: "கேள்வி {index} / {total}",
     labelProgress: "முன்னேற்றம்",
-    visualTestSelectStudentError: "சோதனையை எடுப்பதற்கு முன் ஒரு மாணவரைத் தேர்ந்தெடுக்கவும்",
+    visualTestSelectStudentError:
+      "சோதனையை எடுப்பதற்கு முன் ஒரு மாணவரைத் தேர்ந்தெடுக்கவும்",
     visualTestCompleted: "சோதனை முடிந்தது!",
     visualTestScoreOutOfTotal: "{total}க்கு {score} சரியாகப் பெற்றீர்கள்",
 
-
-        // --- Sound Discrimination Test (Echo Crab's Dialog) ---
+    // --- Sound Discrimination Test (Echo Crab's Dialog) ---
     soundTestEchoDialogAhoy: "👋 வணக்கம், குட்டி தேடுபவரே!",
     soundTestEchoDialogIntro: "நான் சர் எக்கோ, எதிரொலி நண்டு! 🦀✨",
-    soundTestEchoDialogIsleDescription: "இது கிசுகிசுக்கும் தீவு... இங்கே ஒலிகள் எதிரொலிக்கும், ரகசியங்கள் மறையும்! 🌫️👂",
-    soundTestEchoDialogTwoSounds: "நான் உங்களுக்காக இரண்டு ஒலிகளை இசைப்பேன் 🎧🎧",
+    soundTestEchoDialogIsleDescription:
+      "இது கிசுகிசுக்கும் தீவு... இங்கே ஒலிகள் எதிரொலிக்கும், ரகசியங்கள் மறையும்! 🌫️👂",
+    soundTestEchoDialogTwoSounds:
+      "நான் உங்களுக்காக இரண்டு ஒலிகளை இசைப்பேன் 🎧🎧",
     soundTestEchoDialogYourJob: "நீங்கள் எனக்குச் சொல்ல வேண்டியது...",
     soundTestEchoDialogAreTheySame: "அவை ஒன்றா? ✅",
     soundTestEchoDialogOrDifferent: "அல்லது வேறுபட்டவையா? ❌",
-    soundTestEchoDialogReadyPirate: "ஒரு கடற்கொள்ளையர் நிபுணரைப் போல கேட்கத் தயாரா? 🏴‍☠️🦜",
+    soundTestEchoDialogReadyPirate:
+      "ஒரு கடற்கொள்ளையர் நிபுணரைப் போல கேட்கத் தயாரா? 🏴‍☠️🦜",
     altSirEchoTheCrab: "சர் எக்கோ தி நண்டு",
 
     // --- Sound Discrimination Test (In-Game UI) ---
@@ -1061,8 +1210,134 @@ export const translations = {
     buttonPlayAudio: "ஆடியோவை இயக்கு",
     labelListeningCarefully: "கவனமாகக் கேட்கிறேன்...",
     soundTestApiName: "சோதனை 16: ஒலி பாகுபாடு",
-      },
+    sameSounds: "ஒரே ஒலிகள்",
+    differentSounds: "வெவ்வேறு ஒலிகள்",
+
+    // Add these to your Tamil translations
+    // Picture Recognition Test Specific - Tamil
+    transcriptionReceived: "படியெடுத்தல் பெறப்பட்டது!",
+    errorUploadingAudioCheckConnection:
+      "ஆடியோவைப் பதிவேற்றுவதில் பிழை. தயவுசெய்து இணைப்பைச் சரிபார்க்கவும்.",
+    errorStoppingRecording: "பதிவை நிறுத்துவதில் பிழை",
+    errorStoppingMicrophone: "மைக்ரோஃபோனை நிறுத்துவதில் பிழை",
+    recordingErrorPrefix: "பதிவுப் பிழை: ",
+    couldNotAccessMicrophoneCheckPermissions:
+      "மைக்ரோஃபோனை அணுக முடியவில்லை. தயவுசெய்து அனுமதிகளைச் சரிபார்க்கவும்.",
+    pleaseCompleteStepBeforeProceeding:
+      "தொடர்வதற்கு முன் இந்த படியை முடிக்கவும்.",
+    failedToLoadTestResultsTryAgainLater:
+      "சோதனை முடிவுகளை ஏற்றுவதில் தோல்வி. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்.",
+    processingYourResults: "உங்கள் முடிவுகள் செயலாக்கப்படுகின்றன...",
+    pictureRecognitionTestResultsTitle:
+      "படத்தை அடையாளம் காணும் தேர்வு முடிவுகள்",
+    imageColumn: "படம்",
+    yourAnswerColumn: "உங்கள் பதில்",
+    correctAnswerColumn: "சரியான பதில்",
+    altQuestionImage: "கேள்விப் படம்",
+    takeNewTestButton: "புதிய தேர்வு எடுக்கவும்",
+    orSeparatorText: "அல்லது",
+    statusProcessing: "செயலாக்கத்தில் உள்ளது...",
+
+    // Picture Recognition Test - Intro Dialog (Mira the Mirrorfish) - Tamil
+    pictureTestIntroDialog1:
+      "🌊 பயணியே, கிரிஸ்டல் ஷோல்ஸுக்கு வரவேற்கிறோம்! இங்குள்ள அலை குளங்கள் மேலிருந்து வரும் பிரதிபலிப்புகளால் மின்னுகின்றன.",
+    pictureTestIntroDialog2:
+      "🪞 நான் மீரா, கண்ணாடி மீன், இந்த மறைந்திருக்கும் படங்களின் பாதுகாவலர். ஒவ்வொரு குளமும் அடையாளம் காணப்பட காத்திருக்கும் காட்சிகளைக் கொண்டுள்ளது.",
+    pictureTestIntroDialog3:
+      "🐚 உங்கள் பணி எளிமையானது ஆனால் ஆழமானது: குளங்களில் பிரதிபலிப்பதைப் பெயரிடுங்கள், மேலும் அவை வந்த உலகத்தை வெளிப்படுத்துங்கள்.",
+    pictureTestIntroDialog4:
+      "💧 बदले में, உங்களுக்கு கற்பனையின் கவசம் மற்றும் பிரதிபலிக்கும் முத்து கிடைக்கும், அவை உள்ளொளி மற்றும் தெளிவின் பொக்கிஷங்கள்.",
+    pictureTestIntroDialog5:
+      "✨ அலைகளுக்கு அப்பால் உற்றுப் பார்க்கவும், இந்த பிரதிபலித்த நீரில் மறைந்திருக்கும் ரகசியங்களைத் திறக்கவும் நீங்கள் தயாரா?",
+    pictureTestButtonNextDialog: "அடுத்து",
+    altMiraTheMirrorfish: "மீரா கண்ணாடி மீன்",
+    altTidepoolReflection: "அலை குளத்தின் பிரதிபலிப்பு",
+
+    // UI Elements & Test Flow - Tamil
+    pictureTestProgressBarTitle: "தேர்வு முன்னேற்றம்",
+    pictureTestProgressStatus: "{total}-இல் {current} முடிந்தது",
+
+    // Speech prompts - Tamil
+    speakGreatWhatIsIt: "அற்புதம்! இது என்னவென்று சொல்ல முடியுமா?",
+    speakCanYouSeeThisPictureInitial:
+      "இந்தப் படத்தை உங்களால் பார்க்க முடிகிறதா?",
+
+    phonemeBlendingIntroDialog1:
+      "பிளெண்டர்ஸ் பே-க்கு வரவேற்கிறோம், இது ஒரு மாயாஜால இடம், இங்கு வார்த்தை அலைகளும் சுழலும் நீர்ச்சுழிகளும் ஒலிகளை ஒன்றாக கலக்க உதவுகின்றன!",
+    phonemeBlendingIntroDialog2:
+      "நான் பிளெண்டா டால்பின், இந்த பயணத்தில் உங்கள் வழிகாட்டி. மென்மையான அலைகளில் மூழ்கி, புதிய வார்த்தைகளை உருவாக்க ஒலிகளை சுழற்றுவோம்!",
+    phonemeBlendingIntroDialog3:
+      "நீங்கள் தயாரா? இந்த ஒலிகளைக் கலந்து என்ன வார்த்தைகளை உருவாக்க முடியும் என்று பார்ப்போம்!",
+    altBlendaTheDolphin: "பிளெண்டா டால்பின்",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "தொடங்கு",
+    phonemeBlendingProgressBarWord: "வார்த்தை {total}-இல் {current}",
+    phonemeBlendingProgressBarFinish: "முடி",
+    phonemeBlendingHeaderTitle: "ஒலிகளைக் கலந்திடுங்கள்!",
+    phonemeBlendingPromptListen: "ஒலிகளைக் கவனமாகக் கேளுங்கள்",
+    phonemeBlendingPromptEnterOrSay:
+      "நீங்கள் கேட்ட வார்த்தையை உள்ளிடவும் அல்லது சொல்லவும்",
+    phonemeBlendingPlaySoundsButton: "ஒலிகளை இயக்கு",
+    phonemeBlendingPlayingSoundsButton: "ஒலிகள் இயக்கப்படுகின்றன...",
+    phonemeBlendingPromptHeard: "நீங்கள் என்ன வார்த்தையைக் கேட்டீர்கள்?",
+    phonemeBlendingInputPlaceholder:
+      "உங்கள் பதிலை தட்டச்சு செய்யவும் அல்லது பதிவு செய்யவும்",
+    phonemeBlendingRecordButton: "பதிவு செய்",
+    phonemeBlendingStopButton: "நிறுத்து",
+    phonemeBlendingSubmitButton: "சமர்ப்பி",
+    phonemeBlendingSkipButton: "வார்த்தையைத் தவிர்",
+    phonemeBlendingAllWordsAttempted:
+      "அனைத்து வார்த்தைகளும் முயற்சிக்கப்பட்டன!",
+    phonemeBlendingSubmitAllButton: "அனைத்து முடிவுகளையும் சமர்ப்பி",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "பதிவாகிறது...",
+    phonemeBlendingStatusTranscribing: "படியெடுக்கப்படுகிறது...",
+    phonemeBlendingStatusDone: "முடிந்தது. சமர்ப்பிக்கத் தயார்.",
+    phonemeBlendingStatusError: "படியெடுத்தல் தோல்வியடைந்தது.",
+    phonemeBlendingStatusTyped: "தட்டச்சு செய்த உள்ளீடு",
+    phonemeBlendingStatusIdle: "பதிவு செய்ய அல்லது தட்டச்சு செய்ய தயார்",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound:
+      "ஒலியை இயக்குவதில் தோல்வி. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது அனுமதிகளைச் சரிபார்க்கவும்.",
+    phonemeBlendingErrorPlayingSounds:
+      "ஒலிகளை இயக்கும்போது ஒரு பிழை ஏற்பட்டது.",
+    phonemeBlendingErrorTranscriptionEmpty:
+      "படியெடுத்தல் காலியாக வந்தது. தயவுசெய்து தட்டச்சு செய்யவும் அல்லது மீண்டும் முயற்சிக்கவும்.",
+    phonemeBlendingErrorTranscriptionFailedGeneral:
+      "படியெடுத்தல் தோல்வியடைந்தது. தயவுசெய்து உங்கள் பதிலை தட்டச்சு செய்யவும் அல்லது மீண்டும் பதிவு செய்ய முயற்சிக்கவும்.",
+    phonemeBlendingErrorProcessingAudio:
+      "ஆடியோவைச் செயலாக்குவதில் பிழை. தயவுசெய்து உங்கள் பதிலை தட்டச்சு செய்யவும்.",
+    phonemeBlendingErrorRecording:
+      "பதிவுப் பிழை. தயவுசெய்து தட்டச்சு செய்யவும் அல்லது மீண்டும் முயற்சிக்கவும்.",
+    phonemeBlendingErrorStartRecording:
+      "பதிவைத் தொடங்க முடியவில்லை. அனுமதிகளைச் சரிபார்க்கவும்/புதுப்பிக்கவும்.",
+    phonemeBlendingErrorMicAccess:
+      "மைக்ரோஃபோனை அணுக முடியவில்லை. அனுமதிகளைச் சரிபார்க்கவும்.",
+    phonemeBlendingErrorNoInputSubmit:
+      "சமர்ப்பிக்கும் முன் ஒரு வார்த்தையை உள்ளிடவும் அல்லது பதிவு செய்யவும்.",
+    phonemeBlendingErrorSubmitNoChildId:
+      "முடிவுகளைச் சமர்ப்பிக்க முடியாது: மாணவர் ஐடி கிடைக்கவில்லை.",
+    phonemeBlendingErrorSubmitFailed:
+      "முடிவுகளைச் சேமிப்பதில் தோல்வி. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும் அல்லது ஆதரவைத் தொடர்பு கொள்ளவும்.",
+    unknownError: "அறியப்படாத பிழை",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "செயலாக்கத்தில்...",
+    phonemeBlendingLoadingSubmitting:
+      "உங்கள் முடிவுகள் சமர்ப்பிக்கப்படுகின்றன...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "வார்த்தை {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "நீங்கள் சொன்னது:",
+    phonemeBlendingResultCardNoResponse: "பதில் இல்லை",
+    phonemeBlendingResultCardCorrectAnswer: "சரியான பதில்:",
+  },
   hi: {
+    question: "प्रश्न",
+    complete: "पूर्ण",
     // Navigation
     mainMenu: "मुख्य मेनू",
     dashboard: "डैशबोर्ड",
@@ -1460,6 +1735,7 @@ export const translations = {
       "शब्दावली स्केल टेस्ट पूरा करने के लिए धन्यवाद।",
     submissionError: "सबमिशन त्रुटि",
     BackToTests: "टेस्ट पर वापस जाएं",
+    backToTests: "टेस्ट पर वापस जाएं",
     vocabularyScaleTest: "शब्दावली स्केल टेस्ट",
     testSubmittedSuccessfully: "टेस्ट सफलतापूर्वक जमा हो गया!",
     submissionFailedTryAgain: "सबमिशन विफल। कृपया पुनः प्रयास करें।",
@@ -1509,32 +1785,45 @@ export const translations = {
     transcription_failed: "ट्रांसक्रिप्शन विफल",
     audio_upload_error: "ऑडियो अपलोड त्रुटि",
     //Added new words for Hindi reading proficiency
-   
-    transcriptionFailedTryAgain: "ट्रांसक्रिप्शन विफल रहा। कृपया पुनः प्रयास करें।",
-    errorUploadingAudioTryAgain: "ऑडियो अपलोड करने में त्रुटि। कृपया पुनः प्रयास करें।",
+
+    transcriptionFailedTryAgain:
+      "ट्रांसक्रिप्शन विफल रहा। कृपया पुनः प्रयास करें।",
+    errorUploadingAudioTryAgain:
+      "ऑडियो अपलोड करने में त्रुटि। कृपया पुनः प्रयास करें।",
     testSubmittedWithScore: "परीक्षण सबमिट किया गया! स्कोर: {score}%",
-    transcriptionNotReady: "सबमिट करने से पहले कृपया ऑडियो रिकॉर्ड करें या अपलोड करें।",
+    transcriptionNotReady:
+      "सबमिट करने से पहले कृपया ऑडियो रिकॉर्ड करें या अपलोड करें।",
 
     tutorialHelloExplorer: "👋 नमस्ते, युवा अन्वेषक!",
-    tutorialCoralineIntro: "🦑 मैं कोरलिन द क्रैकन, ग्लिफ रीफ की मिलनसार लाइब्रेरियन हूँ।",
-    tutorialGlyphReefDescription: "🌊 यह एक विशेष स्थान है जहाँ शब्द मूंगे की तरह उगते हैं!",
-    tutorialReadingTask: "📖 चमकते हुए सीपियों पर लिखे हर शब्द को जोर से पढ़ना आपका काम है।",
-    tutorialDifficulty: "✨ वे आसान शुरू होंगे और थोड़े कठिन होते जाएंगे - लेकिन मुझे आप पर विश्वास है!",
-    tutorialShellOfFluency: "🏆 ध्यान से पढ़ें और आप प्रवाह की सीपी 🐚 अर्जित करेंगे।",
-    tutorialCoralSpyglass: "🔭 और मेरी जादुई मूंगा दूरबीन आपकी यात्रा में आपकी मदद करेगी।",
+    tutorialCoralineIntro:
+      "🦑 मैं कोरलिन द क्रैकन, ग्लिफ रीफ की मिलनसार लाइब्रेरियन हूँ।",
+    tutorialGlyphReefDescription:
+      "🌊 यह एक विशेष स्थान है जहाँ शब्द मूंगे की तरह उगते हैं!",
+    tutorialReadingTask:
+      "📖 चमकते हुए सीपियों पर लिखे हर शब्द को जोर से पढ़ना आपका काम है।",
+    tutorialDifficulty:
+      "✨ वे आसान शुरू होंगे और थोड़े कठिन होते जाएंगे - लेकिन मुझे आप पर विश्वास है!",
+    tutorialShellOfFluency:
+      "🏆 ध्यान से पढ़ें और आप प्रवाह की सीपी 🐚 अर्जित करेंगे।",
+    tutorialCoralSpyglass:
+      "🔭 और मेरी जादुई मूंगा दूरबीन आपकी यात्रा में आपकी मदद करेगी।",
     tutorialLetsGetReading: "📚 चलो पढ़ना शुरू करें!",
     tutorialReadyForMission: "🚀 क्या आप मिशन के लिए तैयार हैं?",
     buttonTutorialConfirmReady: "🧭 हाँ, मैं तैयार हूँ!",
 
     coralineExcellentRecording: "बहुत बढ़िया! मुझे वह रिकॉर्डिंग सुनने दो...",
     coralineHeardClearly: "बहुत अच्छा काम! मैंने आपके शब्द स्पष्ट रूप से सुने।",
-    coralineCouldntMakeOut: "हम्म, मैं ठीक से समझ नहीं पाया। फिर से कोशिश करें?",
+    coralineCouldntMakeOut:
+      "हम्म, मैं ठीक से समझ नहीं पाया। फिर से कोशिश करें?",
     coralineNeedYourVoice: "रुको! मुझे पहले तुम्हारी आवाज़ सुननी है!",
     coralineCheckingPronunciation: "मैं आपके उच्चारण की जाँच कर रही हूँ...",
-    coralineAmazingScore: "अद्भुत! आपका स्कोर {score}% है! आपने एक खजाना अर्जित किया है!",
+    coralineAmazingScore:
+      "अद्भुत! आपका स्कोर {score}% है! आपने एक खजाना अर्जित किया है!",
     shellNamePrefix: "सीपी #",
-    coralineScoreKeepPracticing: "आपने {score}% स्कोर किया। अभ्यास करते रहें और पुनः प्रयास करें!",
-    coralineReefMagicError: "रीफ के जादू में कुछ गड़बड़ हो गई। चलो एक बार और कोशिश करते हैं!",
+    coralineScoreKeepPracticing:
+      "आपने {score}% स्कोर किया। अभ्यास करते रहें और पुनः प्रयास करें!",
+    coralineReefMagicError:
+      "रीफ के जादू में कुछ गड़बड़ हो गई। चलो एक बार और कोशिश करते हैं!",
 
     altCoralineCharacter: "कोरलिन",
     labelReefProgress: "रीफ प्रगति",
@@ -1549,11 +1838,16 @@ export const translations = {
     ariaLabelUploadAudioFile: "ऑडियो फ़ाइल अपलोड करें",
 
     // --- Visual Test (Blink's Dialog) ---
-    visualTestBlinkDialogWelcome: "👁️ नमस्ते, अन्वेषक... मैं ब्लिंक हूँ, विजन रॉक की आँख।",
-    visualTestBlinkDialogSneakyShapes: "🌀 यह स्थान चालाक आकृतियों से भरा है। कुछ लगभग एक जैसे दिखते हैं... लेकिन केवल एक ही सटीक मेल खाता है।",
-    visualTestBlinkDialogLookCarefully: "🔍 अपनी आँखों का प्रयोग करें। ध्यान से देखें। जो बिल्कुल मेल खाता है उसे ढूंढें।",
-    visualTestBlinkDialogReward: "🏆 यदि आप सही चुनते हैं, तो मैं आपको दृष्टि का कवच 🐚 और सत्य का लेंस 🔮 पुरस्कार के रूप में दूंगा। वे आपको वह चीजें देखने में मदद करेंगे जो दूसरे नहीं देख सकते!",
-    visualTestBlinkDialogReadyPrompt: "⚔️ क्या आप तैयार हैं? देखते हैं आपकी आँखें कितनी तेज हैं!",
+    visualTestBlinkDialogWelcome:
+      "👁️ नमस्ते, अन्वेषक... मैं ब्लिंक हूँ, विजन रॉक की आँख।",
+    visualTestBlinkDialogSneakyShapes:
+      "🌀 यह स्थान चालाक आकृतियों से भरा है। कुछ लगभग एक जैसे दिखते हैं... लेकिन केवल एक ही सटीक मेल खाता है।",
+    visualTestBlinkDialogLookCarefully:
+      "🔍 अपनी आँखों का प्रयोग करें। ध्यान से देखें। जो बिल्कुल मेल खाता है उसे ढूंढें।",
+    visualTestBlinkDialogReward:
+      "🏆 यदि आप सही चुनते हैं, तो मैं आपको दृष्टि का कवच 🐚 और सत्य का लेंस 🔮 पुरस्कार के रूप में दूंगा। वे आपको वह चीजें देखने में मदद करेंगे जो दूसरे नहीं देख सकते!",
+    visualTestBlinkDialogReadyPrompt:
+      "⚔️ क्या आप तैयार हैं? देखते हैं आपकी आँखें कितनी तेज हैं!",
     altBlinkTheGuardian: "ब्लिंक द गार्डियन",
     buttonImReady: "मैं तैयार हूँ!",
 
@@ -1561,18 +1855,21 @@ export const translations = {
     labelTimeRemaining: "शेष समय",
     labelQuestionOutOfTotal: "प्रश्न {index} / {total}",
     labelProgress: "प्रगति",
-    visualTestSelectStudentError: "परीक्षा देने से पहले कृपया एक छात्र का चयन करें",
+    visualTestSelectStudentError:
+      "परीक्षा देने से पहले कृपया एक छात्र का चयन करें",
     visualTestCompleted: "परीक्षा पूरी हुई!",
     visualTestScoreOutOfTotal: "आपने {total} में से {score} सही किए",
 
     soundTestEchoDialogAhoy: "👋 नमस्ते, नन्हे अन्वेषक!",
     soundTestEchoDialogIntro: "मैं सर इको, प्रतिध्वनि केकड़ा हूँ! 🦀✨",
-    soundTestEchoDialogIsleDescription: "यह फुसफुसाता द्वीप है... जहाँ ध्वनियाँ गूंजती हैं और रहस्य छिपते हैं! 🌫️👂",
+    soundTestEchoDialogIsleDescription:
+      "यह फुसफुसाता द्वीप है... जहाँ ध्वनियाँ गूंजती हैं और रहस्य छिपते हैं! 🌫️👂",
     soundTestEchoDialogTwoSounds: "मैं तुम्हारे लिए दो ध्वनियाँ बजाऊंगा 🎧🎧",
     soundTestEchoDialogYourJob: "तुम्हें मुझे बताना है...",
     soundTestEchoDialogAreTheySame: "क्या वे समान हैं? ✅",
     soundTestEchoDialogOrDifferent: "या भिन्न हैं? ❌",
-    soundTestEchoDialogReadyPirate: "एक समुद्री डाकू विशेषज्ञ की तरह सुनने के लिए तैयार हैं? 🏴‍☠️🦜",
+    soundTestEchoDialogReadyPirate:
+      "एक समुद्री डाकू विशेषज्ञ की तरह सुनने के लिए तैयार हैं? 🏴‍☠️🦜",
     altSirEchoTheCrab: "सर इको द केकड़ा",
 
     // --- Sound Discrimination Test (In-Game UI) ---
@@ -1580,6 +1877,122 @@ export const translations = {
     buttonPlayAudio: "ऑडियो चलाएं",
     labelListeningCarefully: "ध्यान से सुन रहा हूँ...",
     soundTestApiName: "परीक्षण 16: ध्वनि विभेदन",
+
+    transcriptionReceived: "ट्रांसक्रिप्शन प्राप्त हुआ!",
+    errorUploadingAudioCheckConnection:
+      "ऑडियो अपलोड करने में त्रुटि। कृपया कनेक्शन जांचें।",
+    errorStoppingRecording: "रिकॉर्डिंग रोकने में त्रुटि",
+    errorStoppingMicrophone: "माइक्रोफ़ोन रोकने में त्रुटि",
+    recordingErrorPrefix: "रिकॉर्डिंग त्रुटि: ",
+    couldNotAccessMicrophoneCheckPermissions:
+      "माइक्रोफ़ोन तक पहुँच नहीं हो सकी। कृपया अनुमतियाँ जांचें।",
+    pleaseCompleteStepBeforeProceeding:
+      "कृपया आगे बढ़ने से पहले यह चरण पूरा करें।",
+    failedToLoadTestResultsTryAgainLater:
+      "परीक्षा परिणाम लोड करने में विफल। कृपया बाद में पुनः प्रयास करें।",
+    processingYourResults: "आपके परिणामों को संसाधित किया जा रहा है...",
+    pictureRecognitionTestResultsTitle: "चित्र पहचान परीक्षा परिणाम",
+    imageColumn: "चित्र",
+    yourAnswerColumn: "आपका उत्तर",
+    correctAnswerColumn: "सही उत्तर",
+    altQuestionImage: "प्रश्न चित्र",
+    takeNewTestButton: "नई परीक्षा दें",
+    orSeparatorText: "या",
+    statusProcessing: "संसाधित हो रहा है...",
+    sameSounds: "एक जैसी ध्वनियाँ",
+    differentSounds: "अलग ध्वनियाँ",
+
+    pictureTestIntroDialog1:
+      "🌊 यात्री, क्रिस्टल शोल्स में आपका स्वागत है! यहाँ के ज्वार-भाटे ऊपर से आने वाले प्रतिबिंबों से झिलमिलाते हैं।",
+    pictureTestIntroDialog2:
+      "🪞 मैं मीरा हूँ, दर्पणमछली, इन छिपी हुई छवियों की संरक्षिका। प्रत्येक कुंड में पहचानने की प्रतीक्षा कर रहे दृश्य हैं।",
+    pictureTestIntroDialog3:
+      "🐚 आपका कार्य सरल किन्तु गहरा है: कुंडों में जो प्रतिबिंबित हो रहा है उसका नाम बताएं, और वह दुनिया प्रकट करें जहाँ से वे आए हैं।",
+    pictureTestIntroDialog4:
+      "💧 बदले में, आपको कल्पना का कवच और प्रतिबिंबित मोती प्राप्त होगा, जो अंतर्दृष्टि और स्पष्टता के खजाने हैं।",
+    pictureTestIntroDialog5:
+      "✨ क्या आप लहरों से परे झाँकने और इन प्रतिबिंबित जलों में छिपे रहस्यों को खोलने के लिए तैयार हैं?",
+    pictureTestButtonNextDialog: "अगला",
+    altMiraTheMirrorfish: "मीरा दर्पणमछली",
+    altTidepoolReflection: "ज्वार कुंड का प्रतिबिंब",
+
+    // UI Elements & Test Flow - Hindi
+    pictureTestProgressBarTitle: "परीक्षा प्रगति",
+    pictureTestProgressStatus: "{total} में से {current} पूर्ण",
+
+    // Speech prompts - Hindi
+    speakGreatWhatIsIt: "बहुत बढ़िया! क्या आप बता सकते हैं कि यह क्या है?",
+    speakCanYouSeeThisPictureInitial: "क्या आप यह चित्र देख सकते हैं?",
+
+    phonemeBlendingIntroDialog1:
+      "ब्लेंडर बे में आपका स्वागत है, एक जादुई जगह जहाँ शब्द तरंगें और घूमते भंवर हमें ध्वनियों को एक साथ मिलाने में मदद करते हैं!",
+    phonemeBlendingIntroDialog2:
+      "मैं ब्लेंडा डॉल्फिन हूँ, इस यात्रा में आपकी मार्गदर्शक। आइए कोमल लहरों में गोता लगाएँ और नई शब्द बनाने के लिए ध्वनियों को घुमाएँ!",
+    phonemeBlendingIntroDialog3:
+      "क्या आप तैयार हैं? आइए देखें कि इन ध्वनियों को मिलाकर हम कौन से शब्द बना सकते हैं!",
+    altBlendaTheDolphin: "ब्लेंडा डॉल्फिन",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "शुरू",
+    phonemeBlendingProgressBarWord: "शब्द {total} में से {current}",
+    phonemeBlendingProgressBarFinish: "समाप्त",
+    phonemeBlendingHeaderTitle: "ध्वनियों को मिलाएं!",
+    phonemeBlendingPromptListen: "ध्यान से ध्वनियों को सुनें",
+    phonemeBlendingPromptEnterOrSay: "आपने जो शब्द सुना उसे लिखें या बोलें",
+    phonemeBlendingPlaySoundsButton: "ध्वनियाँ चलाएँ",
+    phonemeBlendingPlayingSoundsButton: "ध्वनियाँ चल रहीं हैं...",
+    phonemeBlendingPromptHeard: "आपने कौन सा शब्द सुना?",
+    phonemeBlendingInputPlaceholder: "अपना उत्तर टाइप करें या रिकॉर्ड करें",
+    phonemeBlendingRecordButton: "रिकॉर्ड करें",
+    phonemeBlendingStopButton: "रोकें",
+    phonemeBlendingSubmitButton: "जमा करें",
+    phonemeBlendingSkipButton: "शब्द छोड़ें",
+    phonemeBlendingAllWordsAttempted: "सभी शब्दों का प्रयास किया गया!",
+    phonemeBlendingSubmitAllButton: "सभी परिणाम जमा करें",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "रिकॉर्डिंग हो रही है...",
+    phonemeBlendingStatusTranscribing: "ट्रांसक्राइब हो रहा है...",
+    phonemeBlendingStatusDone: "हो गया। जमा करने के लिए तैयार।",
+    phonemeBlendingStatusError: "ट्रांसक्रिप्शन विफल।",
+    phonemeBlendingStatusTyped: "टाइप किया गया इनपुट",
+    phonemeBlendingStatusIdle: "रिकॉर्ड करने या टाइप करने के लिए तैयार",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound:
+      "ध्वनि चलाने में विफल। कृपया पुनः प्रयास करें या अनुमतियाँ जांचें।",
+    phonemeBlendingErrorPlayingSounds: "ध्वनियाँ चलाते समय एक त्रुटि हुई।",
+    phonemeBlendingErrorTranscriptionEmpty:
+      "ट्रांसक्रिप्शन खाली मिला। कृपया टाइप करें या पुनः प्रयास करें।",
+    phonemeBlendingErrorTranscriptionFailedGeneral:
+      "ट्रांसक्रिप्शन विफल। कृपया अपना उत्तर टाइप करें या पुनः रिकॉर्ड करने का प्रयास करें।",
+    phonemeBlendingErrorProcessingAudio:
+      "ऑडियो संसाधित करने में त्रुटि। कृपया अपना उत्तर टाइप करें।",
+    phonemeBlendingErrorRecording:
+      "रिकॉर्डिंग त्रुटि। कृपया टाइप करें या पुनः प्रयास करें।",
+    phonemeBlendingErrorStartRecording:
+      "रिकॉर्डिंग शुरू नहीं हो सकी। अनुमतियाँ जांचें/रिफ्रेश करें।",
+    phonemeBlendingErrorMicAccess:
+      "माइक्रोफ़ोन तक पहुँच नहीं हो सकी। अनुमतियाँ जांचें।",
+    phonemeBlendingErrorNoInputSubmit:
+      "कृपया जमा करने से पहले एक शब्द दर्ज करें या रिकॉर्ड करें।",
+    phonemeBlendingErrorSubmitNoChildId:
+      "परिणाम जमा नहीं किए जा सकते: छात्र आईडी नहीं मिली।",
+    phonemeBlendingErrorSubmitFailed:
+      "परिणाम सहेजने में विफल। कृपया बाद में पुनः प्रयास करें या सहायता से संपर्क करें।",
+    unknownError: "अज्ञात त्रुटि",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "संसाधित हो रहा है...",
+    phonemeBlendingLoadingSubmitting: "आपके परिणाम जमा किए जा रहे हैं...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "शब्द {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "आपने कहा:",
+    phonemeBlendingResultCardNoResponse: "कोई प्रतिक्रिया नहीं",
+    phonemeBlendingResultCardCorrectAnswer: "सही उत्तर:",
+
+    imReady: "मैं तैयार हूँ!",
   },
   ml: {
     mainMenu: "മുഖ്യ മെന്ന്",
@@ -2136,6 +2549,8 @@ export const translations = {
     takeIndividualTest: "ప్రత్యేక పరీక్ష రాయండి",
   },
   kn: {
+    question: "ಪ್ರಶ್ನೆ",
+    complete: "ಪೂರ್ಣ",
     mainMenu: "ಮುಖ್ಯ ಮೆನು",
     dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
     students: "ವಿದ್ಯಾರ್ಥಿಗಳು",
@@ -2412,6 +2827,355 @@ export const translations = {
     takeAllTests: "ಎಲ್ಲಾ ಪರೀಕ್ಷೆಗಳನ್ನು ಬರೆಯಿರಿ",
     takeFullTest: "ಪೂರ್ಣ ಪರೀಕ್ಷೆ ಬರೆಯಿರಿ",
     takeIndividualTest: "ವೈಯಕ್ತಿಕ ಪರೀಕ್ಷೆ ಬರೆಯಿರಿ",
+    word: "ಪದ",
+    loadingDashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಲೋಡ್ ಆಗುತ್ತಿದೆ",
+    sameSounds: "ಒಂದೇ ರೀತಿಯ ಧ್ವನಿಗಳು",
+    differentSounds: "ವಿಭಿನ್ನ ಧ್ವನಿಗಳು",
+    imReady: "🏴‍☠️ ಹೌದು, ನಾನು ಸಿದ್ಧ!", // Context: Pirate/Game ready
+    //Symbol Sequence Game
+    symbolSequenceTitle: "ಚಿಹ್ನೆ ಅನುಕ್ರಮ ಮೆಮೊರಿ ಆಟ",
+    symbolSequenceDescription:
+      "ನಿಮಗೆ ನಿರ್ದಿಷ್ಟ ಕ್ರಮದಲ್ಲಿ ಚಿಹ್ನೆಗಳ ಸರಣಿಯನ್ನು ತೋರಿಸಲಾಗುತ್ತದೆ. ಅವುಗಳನ್ನು 5 ಸೆಕೆಂಡುಗಳ ಕಾಲ ಎಚ್ಚರಿಕೆಯಿಂದ ನೋಡಿ. ಅವು ಕಣ್ಮರೆಯಾದ ನಂತರ, ನೀವು ನೆನಪಿನಿಂದ ಅದೇ ಅನುಕ್ರಮವನ್ನು ಮರುಸೃಷ್ಟಿಸಬೇಕಾಗುತ್ತದೆ.",
+    chooseDifficulty: "ಕಷ್ಟದ ಮಟ್ಟವನ್ನು ಆರಿಸಿ:",
+    easy: "ಸುಲಭ",
+    medium: "ಮಧ್ಯಮ",
+    hard: "ಕಠಿಣ",
+    symbolsToView: "{count} ಚಿಹ್ನೆಗಳು, ನೋಡಲು {time} ಸೆಕೆಂಡುಗಳು", // Placeholder usage
+    lookCarefully: "5 ಸೆಕೆಂಡುಗಳ ಕಾಲ ಎಚ್ಚರಿಕೆಯಿಂದ ನೋಡಿ:",
+    waitUntilDisappear: "ಚಿಹ್ನೆಗಳು ಕಣ್ಮರೆಯಾಗುವವರೆಗೆ ಕಾಯಿರಿ",
+    recreateSequence: "ಈಗ ಅದೇ ಅನುಕ್ರಮವನ್ನು ಮರುಸೃಷ್ಟಿಸಿ:", // General term
+    availableSymbols: "ಲಭ್ಯವಿರುವ ಚಿಹ್ನೆಗಳು:",
+    quitAssessment: "ಮೌಲ್ಯಮಾಪನದಿಂದ ನಿರ್ಗಮಿಸಿ",
+    // correct: "ಸರಿ!", // Already present
+    incorrect: "ತಪ್ಪು. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ!",
+    yourSequence: "ನಿಮ್ಮ ಅನುಕ್ರಮ:",
+    correctSequence: "ಸರಿಯಾದ ಅನುಕ್ರಮ:",
+    gameComplete: "ಆಟ ಪೂರ್ಣಗೊಂಡಿದೆ!",
+    finalScore: "ನಿಮ್ಮ ಅಂತಿಮ ಅಂಕ",
+    excellentMemory: "ಅತ್ಯುತ್ತಮ ನೆನಪಿನ ಶಕ್ತಿ!",
+    veryGoodJob: "ತುಂಬಾ ಒಳ್ಳೆಯ ಕೆಲಸ!",
+    goodEffort: "ಒಳ್ಳೆಯ ಪ್ರಯತ್ನ!",
+    keepPracticing: "ಸುಧಾರಿಸಲು ಅಭ್ಯಾಸ ಮಾಡುತ್ತಿರಿ!",
+    playAgain: "ಮತ್ತೆ ಆಡಿ",
+    savingResults: "ಫಲಿತಾಂಶಗಳನ್ನು ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+    round: "ಸುತ್ತು:", // Also used as "ಸುತ್ತು"
+    level: "ಮಟ್ಟ:", // Also used as "ಮಟ್ಟ"
+    remove: "ತೆಗೆದುಹಾಕುವುದೇ?", // Or "ತೆಗೆದುಹಾಕಿ" for a button
+    symbolSequenceAssessment: "ಚಿಹ್ನೆ ಅನುಕ್ರಮ ಮೌಲ್ಯಮಾಪನ",
+    backToTests: "ಪರೀಕ್ಷೆಗಳಿಗೆ ಹಿಂತಿರುಗಿ",
+    //Sequence Arrangement
+    checkAnswer: "ಉತ್ತರ ಪರಿಶೀಲಿಸಿ",
+    animalSequenceGame: "ಪ್ರಾಣಿಗಳ ಅನುಕ್ರಮ ಆಟ",
+    matchSequenceDescription:
+      "ಮೊದಲು ತೋರಿಸಿದ ಅನುಕ್ರಮವನ್ನು ಮುಂದಿನದಕ್ಕೆ ಹೊಂದಿಸಿ ಮತ್ತು ನಿಮ್ಮ ನೆನಪಿನ ಶಕ್ತಿಯನ್ನು ಪರೀಕ್ಷಿಸಿ.",
+    letsPlay: "ಆಡೋಣ ಬನ್ನಿ!",
+    howToPlay: "ಆಡುವುದು ಹೇಗೆ",
+    memoryGameDescription:
+      "ಇದು ನೆನಪಿನ ಆಟವಾಗಿದ್ದು, ಇದರಲ್ಲಿ ನೀವು ಪ್ರಾಣಿಗಳ ಅನುಕ್ರಮಗಳನ್ನು ನೆನಪಿಟ್ಟುಕೊಂಡು ಮರುಸೃಷ್ಟಿಸಬೇಕಾಗುತ್ತದೆ.",
+    watchSequence: "ನಾನು ನಿಮಗೆ ಕೆಲವು ಪ್ರಾಣಿಗಳನ್ನು ಕ್ರಮವಾಗಿ ತೋರಿಸುತ್ತೇನೆ",
+    rememberOrder: "ಪ್ರಾಣಿಗಳ ಕ್ರಮವನ್ನು ನೆನಪಿಡಿ",
+    // recreateSequence: "ಲಭ್ಯವಿರುವ ಕಾರ್ಡ್‌ಗಳನ್ನು ಬಳಸಿ ಅದೇ ಅನುಕ್ರಮವನ್ನು ಮರುಸೃಷ್ಟಿಸಿ", // Context specific if needed
+    fiveSecondsToMemorize:
+      "ಪ್ರತಿ ಅನುಕ್ರಮವನ್ನು ನೆನಪಿಟ್ಟುಕೊಳ್ಳಲು ನಿಮಗೆ 5 ಸೆಕೆಂಡುಗಳಿವೆ",
+    gameStructure: "ಆಟದ ರಚನೆ",
+    practiceRound: "ಅಭ್ಯಾಸ ಸುತ್ತು",
+    practiceRoundDescription: "ಆಟದ ಪರಿಚಯಕ್ಕಾಗಿ ಒಂದು ಸರಳ ಅನುಕ್ರಮ",
+    mainTest: "ಮುಖ್ಯ ಪರೀಕ್ಷೆ",
+    mainTestDescription: "ವಿವಿಧ ಕಷ್ಟದ ಹಂತಗಳೊಂದಿಗೆ 10 ವಿಭಿನ್ನ ಅನುಕ್ರಮಗಳು",
+    tips: "ಸಲಹೆಗಳು",
+    focusOnOrder: "ಪ್ರಾಣಿಗಳ ಕ್ರಮದ ಮೇಲೆ ಗಮನಹರಿಸಿ",
+    lookForPatterns: "ಅನುಕ್ರಮಗಳಲ್ಲಿ ಮಾದರಿಗಳನ್ನು ನೋಡಿ",
+    takeYourTime: "ಕಾರ್ಡ್‌ಗಳನ್ನು ಸರಿಯಾಗಿ ಜೋಡಿಸಲು ನಿಮ್ಮ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಿ",
+    removeRearrange: "ಅಗತ್ಯವಿದ್ದರೆ ನೀವು ಕಾರ್ಡ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ ಮರುಜೋಡಿಸಬಹುದು",
+    startPracticeRound: "ಅಭ್ಯಾಸ ಸುತ್ತನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    readyForTest: "ಪರೀಕ್ಷೆಗೆ ಸಿದ್ಧರಿದ್ದೀರಾ?",
+    // testDescription: (covered by general `testDescription`)
+    skipTest: "ಪರೀಕ್ಷೆಯನ್ನು ಬಿಟ್ಟುಬಿಡಿ",
+    aboutTheGame: "ಆಟದ ಬಗ್ಗೆ",
+    showAnimalsInOrder: "ನಾನು ನಿಮಗೆ ಕೆಲವು ಪ್ರಾಣಿಗಳನ್ನು ಕ್ರಮವಾಗಿ ತೋರಿಸುತ್ತೇನೆ",
+    youGotScore: "ನಿಮಗೆ ಸಿಕ್ಕ ಅಂಕಗಳು: ", // Assuming a score follows
+    awesomeMemory: "ಅದ್ಭುತ ನೆನಪಿನ ಶಕ್ತಿ! 🎉",
+    goodJob: "ಒಳ್ಳೆಯ ಕೆಲಸ! 👍",
+    niceTry: "ಒಳ್ಳೆಯ ಪ್ರಯತ್ನ! 😊",
+    finishAndSaveResults: "ಮುಗಿಸಿ ಮತ್ತು ಫಲಿತಾಂಶಗಳನ್ನು ಉಳಿಸಿ",
+    rememberSequence: "ಈ ಅನುಕ್ರಮವನ್ನು ನೆನಪಿಡಿ:",
+    availableChoices: "ಲಭ್ಯವಿರುವ ಆಯ್ಕೆಗಳು",
+    check: "ಪರಿಶೀಲಿಸಿ",
+    of: "ರಲ್ಲಿ", // e.g. ಸುತ್ತು 1 ರಲ್ಲಿ 10
+    greatJob: "ಅದ್ಭುತ ಕೆಲಸ! 🎉",
+    BackToMenu: "ಮೆನುಗೆ ಹಿಂತಿರುಗಿ",
+    //vocab scale specific
+    testCompleted: "ಪರೀಕ್ಷೆ ಪೂರ್ಣಗೊಂಡಿದೆ!",
+    yourFinalScoreIs: "ನಿಮ್ಮ ಅಂತಿಮ ಅಂಕ ",
+    submissionError: "ಸಲ್ಲಿಕೆ ದೋಷ",
+    backTotests: "ಪರೀಕ್ಷೆಗಳಿಗೆ ಹಿಂತಿರುಗಿ", // Typo 'backTotests' as in English
+    submissionFailedTryAgain: "ಸಲ್ಲಿಕೆ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    failedToStartRecording: "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    couldNotAccessMicrophone: "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+    //Auditory
+    could_not_understand_numbers: "ಸಂಖ್ಯೆಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+    could_not_understand_numbers_clearly:
+      "ಸಂಖ್ಯೆಗಳನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ",
+    not_quite_try_next: "ಸರಿಯಾಗಿಲ್ಲ, ಮುಂದಿನದನ್ನು ಪ್ರಯತ್ನಿಸೋಣ",
+    your_turn_say_numbers: "ನಿಮ್ಮ ಸರದಿ. ಸಂಖ್ಯೆಗಳನ್ನು ಹೇಳಿ",
+    your_turn_say_numbers_backwards:
+      "ನಿಮ್ಮ ಸರದಿ. ಸಂಖ್ಯೆಗಳನ್ನು ಹಿಮ್ಮುಖವಾಗಿ ಹೇಳಿ",
+    start_forward_instructions: "ಮುಂದಕ್ಕೆ ಹೇಳುವ ಸೂಚನೆಗಳನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    start_reverse_instructions: "ಹಿಮ್ಮುಖವಾಗಿ ಹೇಳುವ ಸೂಚನೆಗಳನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    no_student_selected: "ಯಾವುದೇ ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾಗಿಲ್ಲ",
+    test_submitted_success:
+      "ಪರೀಕ್ಷೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ! ಅಂಕಗಳು: {{score}}",
+    submit_results_failed: "ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    submit_error_check_connection:
+      "ಸಲ್ಲಿಸುವಲ್ಲಿ ದೋಷ. ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ",
+    memory_test: "ನೆನಪಿನ ಪರೀಕ್ಷೆ",
+    welcome_memory_game: "ನೆನಪಿನ ಆಟಕ್ಕೆ ಸ್ವಾಗತ!",
+    listen_carefully_numbers: "ಸಂಖ್ಯೆಗಳನ್ನು ಎಚ್ಚರಿಕೆಯಿಂದ ಆಲಿಸಿ",
+    repeat_back_exactly: "ನೀವು ಕೇಳಿದ್ದನ್ನು ನಿಖರವಾಗಿ ಪುನರಾವರ್ತಿಸಿ",
+    start_easy_get_harder: "ನಾವು ಸುಲಭವಾಗಿ ಪ್ರಾರಂಭಿಸಿ ಕಷ್ಟಕರವಾಗಿಸುತ್ತೇವೆ",
+    level_up_reverse_challenge: "ಮಟ್ಟ ಹೆಚ್ಚಳ: ಹಿಮ್ಮುಖ ಸವಾಲು!",
+    now_exciting_twist: "ಈಗ ಒಂದು ರೋಚಕ ತಿರುವು!",
+    if_i_say: "ನಾನು ಹೀಗೆ ಹೇಳಿದರೆ",
+    you_say: "ನೀವು ಹೀಗೆ ಹೇಳಿ",
+    start_reverse_challenge: "ಹಿಮ್ಮುಖ ಸವಾಲನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    listen_carefully: "ಗಮನವಿಟ್ಟು ಕೇಳಿ",
+    repeat_numbers_order: "ಸಂಖ್ಯೆಗಳನ್ನು ಕ್ರಮವಾಗಿ ಪುನರಾವರ್ತಿಸಿ",
+    say_numbers_reverse: "ಸಂಖ್ಯೆಗಳನ್ನು ಹಿಮ್ಮುಖವಾಗಿ ಹೇಳಿ",
+    recording: "ರೆಕಾರ್ಡಿಂಗ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+    processing_your_answer: "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ",
+    you_said: "ನೀವು ಹೇಳಿದ್ದು",
+    lets_try_next_one: "ಮುಂದಿನದನ್ನು ಪ್ರಯತ್ನಿಸೋಣ",
+    challenge_complete: "ಸವಾಲು ಪೂರ್ಣಗೊಂಡಿದೆ",
+    forward_score: "ಮುಂದಕ್ಕೆ ಹೇಳಿದ ಅಂಕಗಳು",
+    reverse_score: "ಹಿಮ್ಮುขವಾಗಿ ಹೇಳಿದ ಅಂಕಗಳು",
+    submit_results: "ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಿ",
+    mode: "ವಿಧಾನ",
+    sequence: "ಅನುಕ್ರಮ",
+    errors: "ದೋಷಗಳು",
+    microphone_access_error: "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶ ದೋಷ",
+    transcription_failed: "ಲಿಪ್ಯಂತರ ವಿಫಲವಾಗಿದೆ",
+    audio_upload_error: "ಆಡಿಯೋ ಅಪ್‌ಲೋಡ್ ದೋಷ",
+    transcribing: "ಲಿಪ್ಯಂತರ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+
+    //Added new for Reading Efficiency Test
+    transcriptionFailedTryAgain:
+      "ಲಿಪ್ಯಂತರ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    errorUploadingAudioTryAgain:
+      "ಆಡಿಯೋ ಅಪ್‌ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    testSubmittedWithScore: "ಪರೀಕ್ಷೆ ಸಲ್ಲಿಸಲಾಗಿದೆ! ಅಂಕಗಳು: {score}%",
+    transcriptionNotReady:
+      "ಸಲ್ಲಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಿ ಅಥವಾ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.",
+
+    // Test6 - Tutorial Messages (Coraline's dialogue)
+    tutorialHelloExplorer: "👋 ನಮಸ್ಕಾರ, ಯುವ ಪರಿಶೋಧಕನೇ!",
+    tutorialCoralineIntro:
+      "🦑 ನಾನು ಕೋರಲೈನ್ ದಿ ಕ್ರಾಕನ್, ಗ್ಲಿಫ್ ರೀಫ್‌ನ ಸ್ನೇಹಪರ ಗ್ರಂಥಪಾಲಕಿ.",
+    tutorialGlyphReefDescription:
+      "🌊 ಇದು ಒಂದು ವಿಶೇಷ ಸ್ಥಳ, ಇಲ್ಲಿ ಪದಗಳು ಹವಳದಂತೆ ಬೆಳೆಯುತ್ತವೆ!",
+    tutorialReadingTask:
+      "📖 ಹೊಳೆಯುವ ಚಿಪ್ಪುಗಳ ಮೇಲಿನ ಪ್ರತಿಯೊಂದು ಪದವನ್ನು ಗಟ್ಟಿಯಾಗಿ ಓದುವುದು ನಿಮ್ಮ ಕೆಲಸ.",
+    tutorialDifficulty:
+      "✨ ಅವು ಸುಲಭವಾಗಿ ಪ್ರಾರಂಭವಾಗಿ ಸ್ವಲ್ಪ ಕಷ್ಟವಾಗುತ್ತವೆ — ಆದರೆ ನನಗೆ ನಿನ್ನ ಮೇಲೆ ನಂಬಿಕೆ ಇದೆ!",
+    tutorialShellOfFluency:
+      "🏆 ಎಚ್ಚರಿಕೆಯಿಂದ ಓದಿ ಮತ್ತು ನೀವು ವಾಕ್ಪಟುತ್ವದ ಚಿಪ್ಪನ್ನು 🐚 ಗಳಿಸುವಿರಿ",
+    tutorialCoralSpyglass:
+      "🔭 ಮತ್ತು ನಿಮ್ಮ ಪ್ರಯಾಣದಲ್ಲಿ ನಿಮಗೆ ಸಹಾಯ ಮಾಡಲು ನನ್ನ ಮಾಂತ್ರಿಕ ಹವಳದ ದೂರದರ್ಶಕ.",
+    tutorialLetsGetReading: "📚 ಓದಲು ಪ್ರಾರಂಭಿಸೋಣ!",
+    tutorialReadyForMission:
+      "🚀 ನೀವು ಈ ಕಾರ್ಯಾಚರಣೆಯನ್ನು ಪ್ರಯತ್ನಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+    buttonTutorialConfirmReady: "🧭 ಹೌದು, ನಾನು ಸಿದ್ಧ!",
+
+    // Test6 - Coraline's dynamic messages during the test
+    coralineExcellentRecording: "ಅತ್ಯುತ್ತಮ! ಆ ರೆಕಾರ್ಡಿಂಗ್ ಕೇಳುತ್ತೇನೆ...",
+    coralineHeardClearly:
+      "ಒಳ್ಳೆಯ ಕೆಲಸ! ನಿಮ್ಮ ಮಾತುಗಳನ್ನು ನಾನು ಸ್ಪಷ್ಟವಾಗಿ ಕೇಳಿದೆ.",
+    coralineCouldntMakeOut:
+      "ಹ್ಮ್, ನನಗೆ ಸರಿಯಾಗಿ ಅರ್ಥವಾಗಲಿಲ್ಲ. ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸುತ್ತೀರಾ?",
+    coralineNeedYourVoice: "ತಡಿ! ಮೊದಲು ನಾನು ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಕೇಳಬೇಕು!",
+    coralineCheckingPronunciation: "ನಿಮ್ಮ ಉಚ್ಚಾರಣೆಯನ್ನು ಪರಿಶೀಲಿಸುತ್ತೇನೆ...",
+    coralineAmazingScore:
+      "ಅದ್ಭುತ! ನಿಮ್ಮ ಅಂಕ {score}%! ನೀವು ನಿಧಿಯನ್ನು ಗೆದ್ದಿದ್ದೀರಿ!",
+    shellNamePrefix: "ಚಿಪ್ಪು #",
+    coralineScoreKeepPracticing:
+      "ನೀವು {score}% ಅಂಕ ಗಳಿಸಿದ್ದೀರಿ. ಅಭ್ಯಾಸ ಮಾಡುತ್ತಿರಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ!",
+    coralineReefMagicError:
+      "ರೀಫ್ ಮ್ಯಾಜಿಕ್‌ನಲ್ಲಿ ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸೋಣ!",
+
+    // Test6 - UI Labels, Alts, Aria-Labels
+    altCoralineCharacter: "ಕೋರಲೈನ್",
+    labelReefProgress: "ರೀಫ್ ಪ್ರಗತಿ",
+    altAncientPaperBackground: "ಪ್ರಾಚೀನ ಕಾಗದದ ಹಿನ್ನೆಲೆ",
+    buttonNextWords: "ಮುಂದಿನ ಪದಗಳು",
+    altEarnedShellImage: "ಗಳಿಸಿದ ಚಿಪ್ಪು",
+    titleShellOfFluencyEarned: "ವಾಕ್ಪಟುತ್ವದ ಚಿಪ್ಪು ಗಳಿಸಲಾಗಿದೆ!",
+    messagePronunciationShining: "ನಿಮ್ಮ ಉಚ್ಚಾರಣೆ ಹೊಳೆಯುತ್ತಿದೆ!",
+    buttonCollectTreasure: "ನಿಧಿ ಸಂಗ್ರಹಿಸಿ!",
+    buttonModalYesImReady: "ಹೌದು, ನಾನು ಸಿದ್ಧ!",
+    altWarningSignImage: "ಎಚ್ಚರಿಕೆ ಚಿಹ್ನೆ",
+    ariaLabelUploadAudioFile: "ಆಡಿಯೋ ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+
+    //Visual Descrimination Test
+    visualTestBlinkDialogWelcome:
+      "👁️ ನಮಸ್ಕಾರ, ಪರಿಶೋಧಕನೇ... ನಾನು ಬ್ಲಿಂಕ್, ವಿಷನ್ ರಾಕ್‌ನ ಕಣ್ಣು.",
+    visualTestBlinkDialogSneakyShapes:
+      "🌀 ಈ ಸ್ಥಳವು ಕುತಂತ್ರದ ಆಕಾರಗಳಿಂದ ತುಂಬಿದೆ. ಕೆಲವು ಬಹುತೇಕ ಒಂದೇ ರೀತಿ ಕಾಣುತ್ತವೆ… ಆದರೆ ಕೇವಲ ಒಂದು ಮಾತ್ರ ಪರಿಪೂರ್ಣ ಹೊಂದಾಣಿಕೆಯಾಗಿದೆ.",
+    visualTestBlinkDialogLookCarefully:
+      "🔍 ನಿಮ್ಮ ಕಣ್ಣುಗಳನ್ನು ಬಳಸಿ. ಎಚ್ಚರಿಕೆಯಿಂದ ನೋಡಿ. ನಿಖರವಾಗಿ ಹೊಂದುವ ಒಂದನ್ನು ಹುಡುಕಿ.",
+    visualTestBlinkDialogReward:
+      "🏆 ನೀವು ಸರಿಯಾಗಿ ಆರಿಸಿದರೆ, ನಾನು ನಿಮಗೆ ದೃಷ್ಟಿಯ ಚಿಪ್ಪು 🐚 ಮತ್ತು ಸತ್ಯದ ಮಸೂರವನ್ನು 🔮 ಬಹುಮಾನವಾಗಿ ನೀಡುತ್ತೇನೆ. ಅವು ಇತರರು ನೋಡಲಾಗದ ವಿಷಯಗಳನ್ನು ನೋಡಲು ನಿಮಗೆ ಸಹಾಯ ಮಾಡುತ್ತವೆ!",
+    visualTestBlinkDialogReadyPrompt:
+      "⚔️ ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ? ನಿಮ್ಮ ಕಣ್ಣುಗಳು ಎಷ್ಟು ಚುರುಕಾಗಿವೆ ಎಂದು ನೋಡೋಣ!",
+    altBlinkTheGuardian: "ಬ್ಲಿಂಕ್ ರಕ್ಷಕ", // "ಬ್ಲಿಂಕ್ ದಿ ಗಾರ್ಡಿಯನ್" is also fine
+    buttonImReady: "ನಾನು ಸಿದ್ಧ!", // Can reuse `imReady` if it's general enough
+
+    // --- Visual Test (In-Game UI) ---
+    labelTimeRemaining: "ಉಳಿದ ಸಮಯ",
+    labelQuestionOutOfTotal: "{total} ರಲ್ಲಿ ಪ್ರಶ್ನೆ {index}",
+    labelProgress: "ಪ್ರಗತಿ", // Can reuse `progress`
+    visualTestSelectStudentError:
+      "ಪರೀಕ್ಷೆ ತೆಗೆದುಕೊಳ್ಳುವ ಮೊದಲು ದಯವಿಟ್ಟು ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    visualTestCompleted: "ಪರೀಕ್ಷೆ ಪೂರ್ಣಗೊಂಡಿದೆ!",
+    visualTestScoreOutOfTotal:
+      "ನೀವು {total} ರಲ್ಲಿ {score} ಸರಿಯಾಗಿ ಉತ್ತರಿಸಿದ್ದೀರಿ",
+
+    // Sound Discrimination Test (Sir Echo)
+    soundTestEchoDialogAhoy: "👋 ನಮಸ್ಕಾರ, ಪುಟ್ಟ ಪರಿಶೋಧಕನೇ!",
+    soundTestEchoDialogIntro: "ನಾನು ಸರ್ ಎಕೋ, ಪ್ರತಿಧ್ವನಿ ಏಡಿ! 🦀✨",
+    soundTestEchoDialogIsleDescription:
+      "ಇದು ವಿಸ್ಪರಿಂಗ್ ಐಲ್... ಇಲ್ಲಿ ಧ್ವನಿಗಳು ಪುಟಿಯುತ್ತವೆ ಮತ್ತು ರಹಸ್ಯಗಳು ಅಡಗಿರುತ್ತವೆ! 🌫️👂",
+    soundTestEchoDialogTwoSounds:
+      "ನಾನು ನಿಮಗಾಗಿ ಎರಡು ಧ್ವನಿಗಳನ್ನು ಪ್ಲೇ ಮಾಡುತ್ತೇನೆ 🎧🎧",
+    soundTestEchoDialogYourJob: "ನಿಮ್ಮ ಕೆಲಸವೇನೆಂದರೆ ನನಗೆ ಹೇಳುವುದು...",
+    soundTestEchoDialogAreTheySame: "ಅವು ಒಂದೇ ಆಗಿವೆಯೇ? ✅",
+    soundTestEchoDialogOrDifferent: "ಅಥವಾ ವಿಭಿನ್ನವಾಗಿವೆಯೇ? ❌",
+    soundTestEchoDialogReadyPirate: "ಕಡಲುಗಳ್ಳರಂತೆ ಕೇಳಲು ಸಿದ್ಧರಿದ್ದೀರಾ? 🏴‍☠️🦜",
+    altSirEchoTheCrab: "ಸರ್ ಎಕೋ ಏಡಿ",
+
+    buttonPlayingAudio: "ಪ್ಲೇ ಆಗುತ್ತಿದೆ...",
+    buttonPlayAudio: "ಆಡಿಯೋ ಪ್ಲೇ ಮಾಡಿ",
+    labelListeningCarefully: "ಗಮನವಿಟ್ಟು ಕೇಳುತ್ತಿದ್ದೇನೆ...",
+    soundTestApiName: "ಪರೀಕ್ಷೆ 16: ಧ್ವನಿ ತಾರತಮ್ಯ",
+
+    // Add these to your Kannada translations
+    // Picture Recognition Test Specific - Kannada
+    transcriptionReceived: "ಲಿಪ್ಯಂತರಣ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
+    errorUploadingAudioCheckConnection:
+      "ಆಡಿಯೋ ಅಪ್‌ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    errorStoppingRecording: "ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸುವಲ್ಲಿ ದೋಷ",
+    errorStoppingMicrophone: "ಮೈಕ್ರೊಫೋನ್ ನಿಲ್ಲಿಸುವಲ್ಲಿ ದೋಷ",
+    recordingErrorPrefix: "ರೆಕಾರ್ಡಿಂಗ್ ದೋಷ: ",
+    couldNotAccessMicrophoneCheckPermissions:
+      "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    pleaseCompleteStepBeforeProceeding:
+      "ಮುಂದುವರಿಯುವ ಮೊದಲು ದಯವಿಟ್ಟು ಈ ಹಂತವನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.",
+    failedToLoadTestResultsTryAgainLater:
+      "ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    processingYourResults: "ನಿಮ್ಮ ಫಲಿತಾಂಶಗಳನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+    pictureRecognitionTestResultsTitle: "ಚಿತ್ರ ಗುರುತಿಸುವಿಕೆ ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶಗಳು",
+    imageColumn: "ಚಿತ್ರ",
+    yourAnswerColumn: "ನಿಮ್ಮ ಉತ್ತರ",
+    correctAnswerColumn: "ಸರಿಯಾದ ಉತ್ತರ",
+    altQuestionImage: "ಪ್ರಶ್ನೆ ಚಿತ್ರ",
+    takeNewTestButton: "ಹೊಸ ಪರೀಕ್ಷೆ ತೆಗೆದುಕೊಳ್ಳಿ",
+    orSeparatorText: "ಅಥವಾ",
+    statusProcessing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+
+    pictureTestIntroDialog1:
+      "🌊 ಪ್ರವಾಸಿಗರೇ, ಕ್ರಿಸ್ಟಲ್ ಶೋಲ್ಸ್‌ಗೆ ಸ್ವಾಗತ! ಇಲ್ಲಿನ ಅಲೆಗಳ ಕೊಳಗಳು ಮೇಲಿನಿಂದ ಬರುವ ಪ್ರತಿಬಿಂಬಗಳಿಂದ ಹೊಳೆಯುತ್ತವೆ.",
+    pictureTestIntroDialog2:
+      "🪞 ನಾನು ಮೀರಾ, ಕನ್ನಡಿ ಮೀನು, ಈ ಗುಪ್ತ ಚಿತ್ರಗಳ ರಕ್ಷಕಿ. ಪ್ರತಿಯೊಂದು ಕೊಳವೂ ಗುರುತಿಸಲ್ಪಡಲು ಕಾಯುತ್ತಿರುವ ದೃಶ್ಯಗಳನ್ನು ಹೊಂದಿದೆ.",
+    pictureTestIntroDialog3:
+      "🐚 ನಿಮ್ಮ ಕೆಲಸ ಸರಳವಾದರೂ ಆಳವಾಗಿದೆ: ಕೊಳಗಳಲ್ಲಿ ಪ್ರತಿಬಿಂಬಿತವಾಗುವುದನ್ನು ಹೆಸರಿಸಿ, ಮತ್ತು ಅವು ಬಂದಿರುವ ಜಗತ್ತನ್ನು ಬಹಿರಂಗಪಡಿಸಿ.",
+    pictureTestIntroDialog4:
+      "💧 ಬದಲಿಗೆ, ನಿಮಗೆ ಕಲ್ಪನೆಯ ಕವಚ ಮತ್ತು ಪ್ರತಿಬಿಂಬಿಸುವ ಮುತ್ತು ದೊರೆಯುತ್ತದೆ, ಅವು ಒಳನೋಟ ಮತ್ತು ಸ್ಪಷ್ಟತೆಯ ನಿಧಿಗಳು.",
+    pictureTestIntroDialog5:
+      "✨ ಅಲೆಗಳಾಚೆ ಇಣುಕಿ ನೋಡಲು ಮತ್ತು ಈ ಪ್ರತಿಬಿಂಬಿತ ನೀರಲ್ಲಿ ಅಡಗಿರುವ ರಹಸ್ಯಗಳನ್ನು ತೆರೆಯಲು ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+    pictureTestButtonNextDialog: "ಮುಂದೆ",
+    altMiraTheMirrorfish: "ಮೀರಾ ಕನ್ನಡಿ ಮೀನು",
+    altTidepoolReflection: "ಅಲೆ ಕೊಳದ ಪ್ರತಿಬಿಂಬ",
+
+    // UI Elements & Test Flow - Kannada
+    pictureTestProgressBarTitle: "ಪರೀಕ್ಷಾ ಪ್ರಗತಿ",
+    pictureTestProgressStatus: "{total} ರಲ್ಲಿ {current} ಪೂರ್ಣಗೊಂಡಿದೆ",
+
+    // Speech prompts - Kannada
+    speakGreatWhatIsIt: "ಅದ್ಭುತ! ಇದು ಏನು ಎಂದು ಹೇಳಬಲ್ಲಿರಾ?",
+    speakCanYouSeeThisPictureInitial: "ನೀವು ಈ ಚಿತ್ರವನ್ನು ನೋಡಬಹುದೇ?",
+
+    // Test14.jsx - Phoneme Blending Game (Blenda the Dolphin) - Kannada
+
+    // Intro Dialog
+    phonemeBlendingIntroDialog1:
+      "ಬ್ಲೆಂಡರ್ಸ್ ಬೇಗೆ ಸ್ವಾಗತ, ಇದು ಒಂದು ಮಾಂತ್ರಿಕ ಸ್ಥಳ, ಇಲ್ಲಿ ಶಬ್ದ ತರಂಗಗಳು ಮತ್ತು ಸುಳಿಯುವ ಸುಂಟರಗಾಳಿಗಳು ನಮಗೆ ಧ್ವನಿಗಳನ್ನು ಒಟ್ಟಿಗೆ ಮಿಶ್ರಣ ಮಾಡಲು ಸಹಾಯ ಮಾಡುತ್ತವೆ!",
+    phonemeBlendingIntroDialog2:
+      "ನಾನು ಬ್ಲೆಂಡಾ ಡಾಲ್ಫಿನ್, ಈ ಪಯಣದಲ್ಲಿ ನಿಮ್ಮ ಮಾರ್ಗದರ್ಶಿ. ಬನ್ನಿ, ಮೃದುವಾದ ಅಲೆಗಳಲ್ಲಿ ಧುಮುಕೋಣ ಮತ್ತು ಹೊಸ ಶಬ್ದಗಳನ್ನು ರಚಿಸಲು ಧ್ವನಿಗಳನ್ನು ಸುಳಿಯೋಣ!",
+    phonemeBlendingIntroDialog3:
+      "ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ? ಈ ಧ್ವನಿಗಳನ್ನು ಮಿಶ್ರಣ ಮಾಡಿ ನಾವು ಯಾವ ಶಬ್ದಗಳನ್ನು ಮಾಡಬಹುದು ನೋಡೋಣ!",
+    altBlendaTheDolphin: "ಬ್ಲೆಂಡಾ ಡಾಲ್ಫಿನ್",
+
+    // Game Screen UI
+    phonemeBlendingProgressBarStart: "ಪ್ರಾರಂಭ",
+    phonemeBlendingProgressBarWord: "ಪದ {total} ರಲ್ಲಿ {current}",
+    phonemeBlendingProgressBarFinish: "ಮುಕ್ತಾಯ",
+    phonemeBlendingHeaderTitle: "ಧ್ವನಿಗಳನ್ನು ಮಿಶ್ರಣ ಮಾಡಿ!",
+    phonemeBlendingPromptListen: "ಗಮನವಿಟ್ಟು ಧ್ವನಿಗಳನ್ನು ಆಲಿಸಿರಿ",
+    phonemeBlendingPromptEnterOrSay: "ನೀವು ಕೇಳಿದ ಪದವನ್ನು ನಮೂದಿಸಿ ಅಥವಾ ಹೇಳಿ",
+    phonemeBlendingPlaySoundsButton: "ಧ್ವನಿಗಳನ್ನು ಪ್ಲೇ ಮಾಡಿ",
+    phonemeBlendingPlayingSoundsButton: "ಧ್ವನಿಗಳು ಪ್ಲೇ ಆಗುತ್ತಿವೆ...",
+    phonemeBlendingPromptHeard: "ನೀವು ಯಾವ ಪದವನ್ನು ಕೇಳಿದಿರಿ?",
+    phonemeBlendingInputPlaceholder:
+      "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+    phonemeBlendingRecordButton: "ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+    phonemeBlendingStopButton: "ನಿಲ್ಲಿಸಿ",
+    phonemeBlendingSubmitButton: "ಸಲ್ಲಿಸಿ",
+    phonemeBlendingSkipButton: "ಪದವನ್ನು ಬಿಟ್ಟುಬಿಡಿ",
+    phonemeBlendingAllWordsAttempted: "ಎಲ್ಲಾ ಪದಗಳನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ!",
+    phonemeBlendingSubmitAllButton: "ಎಲ್ಲಾ ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಿ",
+
+    // Transcription Status
+    phonemeBlendingStatusRecording: "ರೆಕಾರ್ಡಿಂಗ್ ಆಗುತ್ತಿದೆ...",
+    phonemeBlendingStatusTranscribing: "ಲಿಪ್ಯಂತರಿಸಲಾಗುತ್ತಿದೆ...",
+    phonemeBlendingStatusDone: "ಮುಗಿದಿದೆ. ಸಲ್ಲಿಸಲು ಸಿದ್ಧ.",
+    phonemeBlendingStatusError: "ಲಿಪ್ಯಂತರಣ ವಿಫಲವಾಯಿತು.",
+    phonemeBlendingStatusTyped: "ಟೈಪ್ ಮಾಡಿದ ಇನ್‌ಪುಟ್",
+    phonemeBlendingStatusIdle: "ರೆಕಾರ್ಡ್ ಮಾಡಲು ಅಥವಾ ಟೈಪ್ ಮಾಡಲು ಸಿದ್ಧ",
+
+    // Error Messages
+    phonemeBlendingErrorPlaySound:
+      "ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    phonemeBlendingErrorPlayingSounds:
+      "ಧ್ವನಿಗಳನ್ನು ಪ್ಲೇ ಮಾಡುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ.",
+    phonemeBlendingErrorTranscriptionEmpty:
+      "ಲಿಪ್ಯಂತರಣ ಖಾಲಿಯಾಗಿ ಬಂದಿದೆ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorTranscriptionFailedGeneral:
+      "ಲಿಪ್ಯಂತರಣ ವಿಫಲವಾಯಿತು. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorProcessingAudio:
+      "ಆಡಿಯೋ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ.",
+    phonemeBlendingErrorRecording:
+      "ರೆಕಾರ್ಡಿಂಗ್ ದೋಷ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    phonemeBlendingErrorStartRecording:
+      "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ/ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+    phonemeBlendingErrorMicAccess:
+      "ಮೈಕ್ರೊಫೋನ್ ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    phonemeBlendingErrorNoInputSubmit:
+      "ಸಲ್ಲಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಒಂದು ಪದವನ್ನು ನಮೂದಿಸಿ ಅಥವಾ ರೆಕಾರ್ಡ್ ಮಾಡಿ.",
+    phonemeBlendingErrorSubmitNoChildId:
+      "ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: ವಿದ್ಯಾರ್ಥಿ ಐಡಿ ಕಂಡುಬಂದಿಲ್ಲ.",
+    phonemeBlendingErrorSubmitFailed:
+      "ಫಲಿತಾಂಶಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+    unknownError: "ಅಪರಿಚಿತ ದೋಷ",
+
+    // Loading Overlay / Submission
+    phonemeBlendingLoadingProcessing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+    phonemeBlendingLoadingSubmitting: "ನಿಮ್ಮ ಫಲಿತಾಂಶಗಳನ್ನು ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...",
+
+    // Results Card
+    phonemeBlendingResultCardWordLabel: "ಪದ {indexPlusOne}:",
+    phonemeBlendingResultCardYouSaid: "ನೀವು ಹೇಳಿದ್ದು:",
+    phonemeBlendingResultCardNoResponse: "ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇಲ್ಲ",
+    phonemeBlendingResultCardCorrectAnswer: "ಸರಿಯಾದ ಉತ್ತರ:",
+
+    imReady: "ನಾನು ಸಿದ್ಧ!",
   },
   mr: {
     mainMenu: "मुख्य मेनू",

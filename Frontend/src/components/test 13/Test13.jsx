@@ -909,16 +909,15 @@ function Test13({ suppressResultPage = false, onComplete }) {
                     opacity: { duration: 0.3 },
                   },
                 }}
-                exit={
-                  isFirstDigit
-                    ? {} // skip exit animation for first digit
-                    : {
-                        opacity: 0,
-                        scale: 0.3,
-                        rotateY: 90,
-                        transition: { duration: 0.4 },
-                      }
-                }
+                exit={{
+                  opacity: 0,
+                  scale: 0.3,
+                  rotateY: 90,
+                  transition: {
+                    duration: isFirstDigit ? 0.3 : 0.4, // Slightly faster for first digit
+                    delay: isFirstDigit ? 0 : 0.1, // Optional: add small delay for non-first digits
+                  },
+                }}
                 className="absolute inset-0 flex items-center justify-center"
               >
                 {/* Enhanced digit box with mystical theme */}
@@ -1717,7 +1716,7 @@ function Test13({ suppressResultPage = false, onComplete }) {
                     <span className="font-bold text-white">
                       {sequenceIndex + 1}
                     </span>{" "}
-                    / <span className="text-gray-600">{sequences.length}</span>
+                    / <span className="text-white">{sequences.length}</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-3">

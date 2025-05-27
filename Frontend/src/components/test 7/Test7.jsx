@@ -40,19 +40,19 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const navigate = useNavigate();
 
   const handleNextDialog = () => {
-    if (currentDialog < dialog.length - 1) {
+    if (currentDialog < dialogIntroTexts.length - 1) {
       setCurrentDialog((prev) => prev + 1);
     } else {
       setShowIntro(false);
       speakText(t("start_forward_instructions")); // Start the test instructions
     }
   };
-  const dialog = [
-    "🌊 Welcome, traveler, to Crystal Shoals! The tidepools here shimmer with reflections from above.",
-    "🪞 I am Mira, the mirrorfish, guardian of these hidden images. Each pool holds visions waiting to be recognized.",
-    "🐚 Your task is simple yet deep: name what you see reflected in the pools, and reveal the world they come from.",
-    "💧 In return, you shall receive the Shell of Imagery and The Reflecting Pearl, treasures of insight and clarity.",
-    "✨ Are you ready to peer beyond the ripples and unlock the secrets held in these mirrored waters?",
+  const dialogIntroTexts = [
+    t("pictureTestIntroDialog1"),
+    t("pictureTestIntroDialog2"),
+    t("pictureTestIntroDialog3"),
+    t("pictureTestIntroDialog4"),
+    t("pictureTestIntroDialog5"),
   ];
 
   const getCorrectAnswer = (image) => {
@@ -102,21 +102,21 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             setDescription(transcription);
           }
 
-          toast.success("Transcription received!");
+          toast.success(t("transcriptionReceived"));
         } else {
-          const errorMsg =
-            result.error || "Transcription failed. Please try again.";
+          const errorMsg = result.error || t("transcriptionFailedTryAgain");
           setError(errorMsg);
           toast.error(errorMsg);
         }
       } catch (error) {
-        setError("Error uploading audio. Please check connection.");
-        toast.error("Error uploading audio. Please check connection.");
+        const connectionErrorMsg = t("errorUploadingAudioCheckConnection");
+        setError(connectionErrorMsg);
+        toast.error(connectionErrorMsg);
       } finally {
         setIsTranscribing(false);
       }
     },
-    [step]
+    [step, language, t]
   );
 
   const stopListening = useCallback(() => {
@@ -128,7 +128,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         mediaRecorderRef.current.stop();
       } catch (e) {
         console.error("Error stopping MediaRecorder:", e);
-        toast.error("Error stopping recording");
+        toast.error(t("errorStoppingRecording"));
       }
     }
     if (window.stream) {
@@ -138,7 +138,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         });
       } catch (e) {
         console.error("Error stopping stream tracks:", e);
-        toast.error("Error stopping microphone");
+        toast.error(t("errorStoppingMicrophone"));
       }
       window.stream = null;
     }
@@ -146,7 +146,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     if (isRecordingRef.current) {
       setIsRecording(false);
     }
-  }, []);
+  }, [t]);
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) return;
@@ -196,15 +196,16 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           isRecordingRef.current = true;
           setIsRecording(true);
         } catch (e) {
-          toast.error("Failed to start recording.");
+          toast.error(t("failedToStartRecording"));
           stopListening();
         }
       })
       .catch((error) => {
-        setError("Could not access microphone. Please check permissions.");
-        toast.error("Could not access microphone. Please check permissions.");
+        const micErrorMsg = t("couldNotAccessMicrophoneCheckPermissions"); // CHANGED
+        setError(micErrorMsg);
+        toast.error(micErrorMsg);
       });
-  }, [uploadAudio, stopListening]);
+  }, [uploadAudio, stopListening, t]);
 
   const toggleRecording = useCallback(() => {
     if (isRecording) {
@@ -237,11 +238,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } else {
       setStep(2);
-      speakText(
-        language === "ta"
-          ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?"
-          : "Great! Can you tell me what it is?"
-      );
+      speakText(t("speakGreatWhatIsIt"));
     }
   };
 
@@ -404,7 +401,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             animate={{ y: 0, opacity: 1 }}
             className="text-blue-700 text-lg font-medium"
           >
-            Processing your results...
+            <p>{t("processingYourResults")}</p>
           </motion.p>
         </div>
       </motion.div>
@@ -437,10 +434,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     <thead className="bg-blue-100">
                       <tr>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Image
+                          {t("imageColumn")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Your Answer
+                          {t("finalScore")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
                           Correct
@@ -622,12 +619,12 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                 className="text-xl sm:text-2xl lg:text-3xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
                 style={{ textShadow: "0 0 8px rgba(173, 216, 230, 0.7)" }}
               >
-                {dialog[currentDialog]}
+                {dialogIntroTexts[currentDialog]}
               </motion.div>
 
               {/* Progress indicators as bubbles */}
               <div className="flex justify-center gap-3 mb-8">
-                {dialog.map((_, index) => (
+                {dialogIntroTexts.map((_, index) => (
                   <motion.div
                     key={index}
                     className={`w-3 h-3 rounded-full ${
@@ -656,14 +653,16 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   onClick={handleNextDialog}
                   className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-2xl font-semibold text-lg lg:text-xl shadow-lg transition-all duration-300
       ${
-        currentDialog < dialog.length - 1
+        currentDialog < dialogIntroTexts.length - 1
           ? "bg-gradient-to-r from-teal-300 via-blue-200 to-teal-400 text-blue-900 hover:from-teal-200 hover:via-blue-100 hover:to-teal-300 hover:shadow-blue-200/50"
           : "bg-gradient-to-r from-teal-400 to-blue-500 text-white hover:from-teal-500 hover:to-blue-600 hover:shadow-blue-300/50"
       }`}
                 >
-                  {currentDialog < dialog.length - 1 ? (
+                  {currentDialog < dialogIntroTexts.length - 1 ? (
                     <>
-                      <span className="drop-shadow-sm text-blue-950">Next</span>
+                      <span className="drop-shadow-sm text-blue-950">
+                        {t("pictureTestButtonNextDialog")}
+                      </span>
                       <FaChevronRight className="mt-0.5 drop-shadow-sm text-blue-950" />
                     </>
                   ) : (
@@ -716,7 +715,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         >
           <FaArrowLeft className="text-blue-600 group-hover:text-blue-700 transition-colors" />
         </motion.div>
-        {t("BacktoTests")}
+        {t("backToTests")}
       </motion.button>
 
       {/* 🌊 Crystal Shoals Themed Progress Bar */}
@@ -727,8 +726,8 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="text-center text-teal-800 font-semibold mb-3 text-lg md:text-xl drop-shadow-md">
-            {t("TestProgress")}
+          <h3 className="text-center text-blue-800 font-bold mb-3 text-lg md:text-xl">
+            {t("pictureTestProgressBarTitle")}
           </h3>
 
           {/* Oceanic Progress Bar */}
@@ -765,10 +764,6 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               ))}
             </motion.div>
           </div>
-
-          <p className="text-center text-teal-700 mt-2 font-medium drop-shadow-sm">
-            {currentIndex + 1} of {images.length} completed
-          </p>
         </motion.div>
       </div>
 

@@ -303,12 +303,12 @@ const QuestionDisplay = ({
       {/* Progress indicator */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-emerald-200 font-bold text-lg tracking-wider">
-          QUESTION <span className="text-amber-200">{index + 1}</span> /{" "}
-          {totalQuestions}
-        </div>
-        <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 text-sm font-medium">
-          {Math.round(((index + 1) / totalQuestions) * 100)}% COMPLETE
-        </div>
+  {t('question')} <span className="text-amber-200">{index + 1}</span> / {totalQuestions}
+</div>
+<div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 text-sm font-medium">
+  {Math.round(((index + 1) / totalQuestions) * 100)}% {t('complete')}
+</div>
+
       </div>
 
       {/* Progress bar */}
@@ -460,7 +460,14 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
 
   useEffect(() => {
     const langKey =
-      language === "ta" ? "tamil" : language === "hi" ? "hindi" : "english";
+      language === "ta"
+        ? "tamil"
+        : language === "hi"
+        ? "hindi"
+        : language === "kn"
+        ? "kannada"
+        : "english";
+
     // Ensure questionsData[langKey] exists and is an array
     const questionsForLang = Array.isArray(questionsData[langKey])
       ? questionsData[langKey]
