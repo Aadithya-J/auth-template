@@ -684,7 +684,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   }
   return (
     <div
-      className="h-screen w-full fixed inset-0 overflow-y-auto"
+      className="h-screen w-full fixed inset-0 overflow-y-auto flex flex-col items-center"
       style={{
         backgroundImage: `url(${tidepoolBackground})`,
         backgroundSize: "cover",
@@ -692,7 +692,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Back to Tests Button - Enhanced with wave animation */}
+      {/* Back to Tests Button */}
       <motion.button
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -719,63 +719,72 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         {t("BacktoTests")}
       </motion.button>
 
-      {/* Enhanced Progress Bar - Better positioning and styling */}
-      <div className="fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-4xl px-4">
+      {/* 🌊 Crystal Shoals Themed Progress Bar */}
+      <div className="w-full px-4 sm:px-6 pt-20 sm:pt-24 max-w-4xl mx-auto">
         <motion.div
-          className="relative p-4 bg-white/30 backdrop-blur-md rounded-2xl shadow-xl border border-blue-200/50"
+          className="relative p-4 bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl border border-teal-300/30"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="text-center text-blue-800 font-bold mb-3 text-lg md:text-xl">
+          <h3 className="text-center text-teal-800 font-semibold mb-3 text-lg md:text-xl drop-shadow-md">
             {t("TestProgress")}
           </h3>
-          <div className="relative h-4 bg-blue-900/20 rounded-full overflow-hidden border border-blue-400/30 shadow-inner">
-            {/* Water fill animation with waves */}
+
+          {/* Oceanic Progress Bar */}
+          <div className="relative h-5 bg-gradient-to-r from-blue-100/30 via-teal-100/30 to-blue-100/30 rounded-full overflow-hidden border border-blue-300/30 shadow-inner">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-teal-400 rounded-full"
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-teal-400 via-blue-400 to-teal-500 rounded-full shadow-md"
               initial={{ width: 0 }}
               animate={{
                 width: `${((currentIndex + 1) / images.length) * 100}%`,
               }}
-              transition={{ duration: 0.8, type: "spring" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
-              {/* Animated waves */}
-              <motion.div
-                className="absolute top-0 left-0 w-full h-full"
-                animate={{
-                  backgroundPositionX: ["0%", "100%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                style={{
-                  backgroundImage: `
-                  linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.3) 50%, transparent 75%)
-                `,
-                  backgroundSize: "40px 100%",
-                }}
-              />
+              {/* Animated bubbles for watery feel */}
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-white/40 backdrop-blur-sm shadow"
+                  style={{
+                    width: `${Math.random() * 6 + 4}px`,
+                    height: `${Math.random() * 6 + 4}px`,
+                    left: `${Math.random() * 95}%`,
+                    bottom: `${Math.random() * 10}px`,
+                  }}
+                  animate={{
+                    y: [0, -12, 0],
+                    opacity: [0.3, 0.7, 0.3],
+                  }}
+                  transition={{
+                    duration: Math.random() * 3 + 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
             </motion.div>
           </div>
-          <p className="text-center text-blue-600 mt-2 font-medium">
+
+          <p className="text-center text-teal-700 mt-2 font-medium drop-shadow-sm">
             {currentIndex + 1} of {images.length} completed
           </p>
         </motion.div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 pt-48 pb-12 flex flex-col items-center">
+      {/* Main Content - Now properly centered and responsive */}
+      <div className="flex-1 w-full flex items-center justify-center p-4 sm:p-6">
         <motion.div
-          className="w-full max-w-4xl bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-blue-200/50 relative"
+          className="w-full max-w-2xl bg-white/10 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-blue-300/50 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          style={{
+            boxShadow: "0 10px 30px -10px rgba(2, 132, 199, 0.3)",
+          }}
         >
           {/* Ocean wave decoration at top */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-teal-300 to-blue-400 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-400 via-teal-300 to-blue-400 overflow-hidden">
             <motion.div
               className="absolute top-0 left-0 right-0 h-full"
               animate={{
@@ -788,22 +797,22 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               }}
               style={{
                 backgroundImage: `
-              linear-gradient(90deg, 
-                transparent 20%, 
-                rgba(255,255,255,0.5) 30%, 
-                transparent 40%,
-                transparent 60%,
-                rgba(255,255,255,0.5) 70%,
-                transparent 80%
-              )
-            `,
+                linear-gradient(90deg, 
+                  transparent 20%, 
+                  rgba(255,255,255,0.5) 30%, 
+                  transparent 40%,
+                  transparent 60%,
+                  rgba(255,255,255,0.5) 70%,
+                  transparent 80%
+                )
+              `,
                 backgroundSize: "200% 100%",
               }}
             />
           </div>
 
-          {/* Question Section with animated bubbles */}
-          <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-6 text-center relative overflow-hidden">
+          {/* Question Section */}
+          <div className="bg-gradient-to-r from-blue-500/90 to-teal-500/90 p-6 text-center relative overflow-hidden">
             <motion.h2
               key={step}
               className="text-2xl md:text-3xl font-bold text-white relative z-10"
@@ -819,63 +828,34 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             </motion.h2>
           </div>
 
-          {/* Image with glowing border and reflection */}
-          <div className="p-6">
+          {/* Image Container - Improved layout */}
+          <div className="p-6 flex flex-col items-center">
             <motion.div
-              className="relative overflow-hidden rounded-lg shadow-inner"
+              className="relative rounded-xl overflow-hidden border-2 border-blue-300/50 shadow-lg"
               whileHover={{ scale: 1.01 }}
-              initial={{ boxShadow: "0 0 0 0px rgba(96, 165, 250, 0)" }}
-              animate={{
-                boxShadow: [
-                  "0 0 0 2px rgba(96, 165, 250, 0.3)",
-                  "0 0 0 4px rgba(96, 165, 250, 0.2)",
-                  "0 0 0 6px rgba(96, 165, 250, 0.1)",
-                  "0 0 0 2px rgba(96, 165, 250, 0.3)",
-                ],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
+              style={{
+                maxWidth: "100%",
+                width: "fit-content",
+                backgroundColor: "rgba(255,255,255,0.1)",
               }}
             >
               <img
                 src={currentImage.imageUrl}
                 alt="Tidepool reflection"
-                className="w-full h-auto max-h-96 object-contain mx-auto bg-gradient-to-br from-blue-50 to-blue-100"
+                className="max-h-80 sm:max-h-96 object-contain mx-auto"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                  display: "block",
+                }}
               />
 
-              {/* Enhanced reflection effect */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-900/50 to-transparent overflow-hidden">
-                <motion.div
-                  className="absolute inset-0"
-                  animate={{
-                    backgroundPositionX: ["0%", "100%"],
-                  }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  style={{
-                    backgroundImage: `
-                  linear-gradient(90deg, 
-                    transparent 20%, 
-                    rgba(255,255,255,0.2) 30%, 
-                    transparent 40%,
-                    transparent 60%,
-                    rgba(255,255,255,0.2) 70%,
-                    transparent 80%
-                  )
-                `,
-                    backgroundSize: "200% 100%",
-                  }}
-                />
-              </div>
+              {/* Subtle reflection effect */}
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-900/30 to-transparent" />
             </motion.div>
 
             {/* Response Area */}
-            <div className="mt-6 space-y-4">
+            <div className="mt-8 w-full max-w-md space-y-4">
               {step === 1 ? (
                 <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
                   <motion.button
@@ -891,17 +871,6 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                       <FaEye className="text-white/90" />
                       {t("yesICan")}
                     </span>
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-700 opacity-0"
-                      animate={{
-                        opacity: [0, 0.3, 0],
-                        left: ["-100%", "100%"],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                      }}
-                    />
                   </motion.button>
                   <motion.button
                     whileHover={{
@@ -916,17 +885,6 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                       <FaEyeSlash className="text-white/90" />
                       {t("noICan")}
                     </span>
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-700 opacity-0"
-                      animate={{
-                        opacity: [0, 0.3, 0],
-                        left: ["-100%", "100%"],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                      }}
-                    />
                   </motion.button>
                 </div>
               ) : (
@@ -945,41 +903,16 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                             ? setAnswer(e.target.value)
                             : setDescription(e.target.value)
                         }
-                        className="w-full p-4 border-2 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-lg bg-white/95"
+                        className="w-full p-4 border-2 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-lg bg-white/90 backdrop-blur-sm"
                         placeholder={
                           step === 2
                             ? t("typeWhatYouSee")
                             : t("describeThePicture")
                         }
                       />
-                      {/* Animated cursor */}
-                      <motion.div
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                        animate={{
-                          opacity: [0, 1, 0],
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                        }}
-                      >
-                        <svg
-                          className="w-5 h-5 text-blue-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                          />
-                        </svg>
-                      </motion.div>
                     </div>
 
-                    {/* Enhanced Voice Input Button with wave animation */}
+                    {/* Voice Input Button */}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -1011,97 +944,31 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                             </div>
                             {t("stopRecording")}
                           </div>
-                          <motion.div
-                            className="absolute inset-0 bg-white/10"
-                            animate={{
-                              scale: [1, 1.2, 1],
-                              opacity: [0.1, 0, 0.1],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                            }}
-                          />
-                          {/* Pulsing rings */}
-                          <motion.div
-                            className="absolute inset-0 rounded-xl border-2 border-white/30"
-                            animate={{
-                              scale: [1, 1.2, 1.4],
-                              opacity: [0.5, 0.3, 0],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                            }}
-                          />
                         </>
                       ) : (
                         <>
                           <div className="relative z-10 flex items-center gap-2">
-                            <motion.div
-                              animate={{
-                                scale: [1, 1.1, 1],
-                                rotate: [0, 5, -5, 0],
-                              }}
-                              transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                              }}
+                            <svg
+                              className="w-6 h-6"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
                             >
-                              <svg
-                                className="w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                                />
-                              </svg>
-                            </motion.div>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                              />
+                            </svg>
                             {t("useVoiceInput")}
                           </div>
-                          <motion.div
-                            className="absolute inset-0 bg-white/10"
-                            animate={{
-                              scale: [1, 1.1, 1],
-                              opacity: [0, 0.1, 0],
-                            }}
-                            transition={{
-                              duration: 3,
-                              repeat: Infinity,
-                            }}
-                          />
-                          {/* Subtle wave pattern */}
-                          <motion.div
-                            className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-white/10 to-transparent overflow-hidden"
-                            animate={{
-                              backgroundPositionX: ["0%", "100%"],
-                            }}
-                            transition={{
-                              duration: 6,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                            style={{
-                              backgroundImage: `
-                              linear-gradient(90deg, 
-                                transparent 20%, 
-                                rgba(255,255,255,0.3) 50%, 
-                                transparent 80%
-                            )`,
-                              backgroundSize: "200% 100%",
-                            }}
-                          />
                         </>
                       )}
                     </motion.button>
                   </motion.div>
 
-                  {/* Next/Submit Button with enhanced wave animation */}
+                  {/* Next/Submit Button */}
                   <motion.button
                     whileHover={{
                       scale: 1.02,
@@ -1119,43 +986,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                       {currentIndex === images.length - 1
                         ? t("submitTest")
                         : t("continue")}
-                      {currentIndex === images.length - 1 && (
-                        <motion.div
-                          animate={{
-                            x: [0, 5, 0],
-                            y: [0, -5, 0],
-                          }}
-                          transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                          }}
-                        >
-                          <svg
-                            className="w-5 h-5 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M14 5l7 7m0 0l-7 7m7-7H3"
-                            />
-                          </svg>
-                        </motion.div>
-                      )}
                     </span>
-                    <motion.div
-                      className="absolute inset-0 bg-white/10"
-                      animate={{
-                        x: ["-100%", "100%"],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                      }}
-                    />
                   </motion.button>
                 </>
               )}
