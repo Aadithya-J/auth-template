@@ -786,7 +786,7 @@ export default function PhonemeGame({
         );
       case "done":
         return (
-          <div className="flex items-center justify-center gap-2 text-green-600 h-6">
+          <div className="flex items-center justify-center gap-2 text-white h-6">
             <Check className="h-4 w-4" /> Done. Ready to submit.
           </div>
         );

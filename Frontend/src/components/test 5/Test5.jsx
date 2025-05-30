@@ -6,9 +6,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 import PropTypes from "prop-types";
+import {
+  FaChevronRight,
+  FaCheck,
+  FaArrowLeft,
+  FaPlay,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import { Loader2, Mic, MicOff, Check } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext.jsx";
 import graphemeLetters from "./graphemeLetters.json";
+import birdImage from "../../assets/grapheme-test/characterImage.png";
+import backgroundImage from "../../assets/grapheme-test/backgroundImage.png";
+import { useNavigate } from "react-router-dom";
 const Button = ({
   onClick,
   disabled,
@@ -50,7 +61,7 @@ Button.propTypes = {
 
 const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const LETTER_TIMER_DURATION = 8;
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Get letters and confusion pairs based on language
   const langKey =
@@ -78,6 +89,25 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
 
   const childId = localStorage.getItem("childId");
   const token = localStorage.getItem("access_token");
+  const [showIntro, setShowIntro] = useState(true);
+  const [currentDialog, setCurrentDialog] = useState(0);
+  const navigate = useNavigate();
+
+  const handleNextDialog = () => {
+    if (currentDialog < dialog.length - 1) {
+      setCurrentDialog((prev) => prev + 1);
+    } else {
+      setShowIntro(false);
+      speakText(t("start_forward_instructions")); // Start the test instructions
+    }
+  };
+  const dialog = [
+    "🎶 Welcome, traveler, to Phoneme Point! The singing cliffs echo with melodies of sound and letter.",
+    "🐦 We are Riff & Raff, twin songbirds and guardians of these luminous cliffs. Here, each note carries the spark of a letter's sound.",
+    "🔤 Your task is to match the letters with the sounds they sing (or the other way around). Let the music of the cliffs guide you.",
+    "🎼 In return, we shall grant you the Shell of Soundcraft and the Tune Torch, which reveals the silent letters in any word.",
+    "🎵 Are you ready to let the cliffs sing you their secrets and find the harmony of letters and sounds?",
+  ];
 
   useEffect(() => {
     isRecordingRef.current = isRecording;
@@ -533,239 +563,513 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const canGoNext =
     inputStatus[currentIndex] === "done_voice" ||
     inputStatus[currentIndex] === "done_typed";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6"
-    >
-      {showResults && (
-        <Confetti
-          width={width}
-          height={height}
-          recycle={false}
-          numberOfPieces={200}
-          colors={["#2563EB", "#60A5FA", "#93C5FD", "#FFFFFF"]}
-        />
-      )}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-100"
-      >
-        {/* Header & Progress Bar (remain the same) */}
-        <div className="text-center mb-8">
-          <motion.h1
-            initial={{ y: -10 }}
-            animate={{ y: 0 }}
-            className="text-4xl font-bold text-blue-600 mb-2"
-          >
-            Letter Challenge
-          </motion.h1>
+  if (showIntro) {
+    return (
+      <>
+        {/* Blurred background with water-like overlay */}
+        <div className="fixed inset-0 z-40">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: "cover",
+              filter: "blur(8px)",
+            }}
+          />
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            className="absolute inset-0 bg-blue-900/30"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+
+        {/* Main content container */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
+            transition={{ duration: 0.5, type: "spring" }}
+            className="relative max-w-7xl w-full flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-12"
           >
-            <p className="text-lg text-blue-600/80">
-              Type or say the letter you see!
-            </p>
+            {/* Mirrorfish character on the left */}
+            <motion.div
+              animate={{
+                y: [0, -10, 0],
+                rotate: [0, 2, -2, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+                rotate: {
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+              className="flex-shrink-0 order-2 lg:order-1"
+            >
+              <img
+                src={birdImage}
+                alt="Mira the Mirrorfish"
+                className="h-64 sm:h-80 lg:h-96 object-contain"
+              />
+            </motion.div>
+
+            {/* Water-like glass dialog box */}
+            <motion.div
+              className="bg-gradient-to-br from-blue-900/80 via-blue-800/60 to-blue-700/80 backdrop-blur-lg rounded-3xl p-6 sm:p-8 border-2 border-blue-400/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, type: "spring" }}
+            >
+              {/* Water ripple decorative elements */}
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"></div>
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-2xl"></div>
+
+              {/* Dialog text with water reflection effect */}
+              <motion.div
+                key={currentDialog}
+                className="text-xl sm:text-2xl lg:text-3xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
+                style={{ textShadow: "0 0 8px rgba(173, 216, 230, 0.7)" }}
+              >
+                {dialog[currentDialog]}
+              </motion.div>
+
+              {/* Progress indicators as bubbles */}
+              <div className="flex justify-center gap-3 mb-8">
+                {dialog.map((_, index) => (
+                  <motion.div
+                    key={index}
+                    className={`w-3 h-3 rounded-full ${
+                      index <= currentDialog
+                        ? "bg-blue-300 shadow-[0_0_10px_2px_rgba(100,200,255,0.7)]"
+                        : "bg-blue-300/30"
+                    }`}
+                    animate={{
+                      scale: index === currentDialog ? [1, 1.3, 1] : 1,
+                      y: index === currentDialog ? [0, -5, 0] : 0,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatType: "loop",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Continue button with water ripple effect */}
+              <div className="flex justify-center">
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleNextDialog}
+                  className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-2xl font-semibold text-lg lg:text-xl shadow-lg transition-all duration-300
+        ${
+          currentDialog < dialog.length - 1
+            ? "bg-gradient-to-r from-teal-300 via-blue-200 to-teal-400 text-blue-900 hover:from-teal-200 hover:via-blue-100 hover:to-teal-300 hover:shadow-blue-200/50"
+            : "bg-gradient-to-r from-teal-400 to-blue-500 text-white hover:from-teal-500 hover:to-blue-600 hover:shadow-blue-300/50"
+        }`}
+                >
+                  {currentDialog < dialog.length - 1 ? (
+                    <>
+                      <span className="drop-shadow-sm text-blue-950">Next</span>
+                      <FaChevronRight className="mt-0.5 drop-shadow-sm text-blue-950" />
+                    </>
+                  ) : (
+                    <>
+                      <span className="drop-shadow-sm text-blue-950">
+                        {t("imReady")}
+                      </span>
+                      <FaCheck className="mt-0.5 drop-shadow-sm text-blue-950" />
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
+      </>
+    );
+  }
+  return (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+    style={{
+      backgroundImage: `url(${backgroundImage})`,
+    }}
+  >
+    {/* Overlay for better text visibility */}
+    <div className="absolute inset-0 bg-gradient-to-b from-orange-900/40 via-purple-900/30 to-blue-900/50" />
+    
+    {/* Confetti */}
+    {showResults && (
+      <Confetti
+        width={width}
+        height={height}
+        recycle={false}
+        numberOfPieces={200}
+        colors={["#FB923C", "#A855F7", "#3B82F6", "#F59E0B", "#FFFFFF"]}
+      />
+    )}
+
+    {/* Main Container */}
+    <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+      
+      {/* Header with Cliff Theme */}
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, type: "spring" }}
+        className="text-center mb-6"
+      >
+        <motion.h1
+          animate={{ 
+            textShadow: [
+              "0 0 20px rgba(251, 146, 60, 0.8)",
+              "0 0 30px rgba(168, 85, 247, 0.8)",
+              "0 0 20px rgba(251, 146, 60, 0.8)"
+            ]
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-300 via-purple-300 to-blue-300 bg-clip-text text-transparent mb-2"
+        >
+          🎵 Phoneme Point 🎵
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-lg md:text-xl text-orange-200 font-medium"
+        >
+          The Harmony of Sound and Letter
+        </motion.p>
+      </motion.div>
+
+      {/* Floating Birds Animation */}
+      <motion.div
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -20, 0],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 right-20 text-4xl opacity-80"
+      >
+        🕊️
+      </motion.div>
+      
+      <motion.div
+        animate={{
+          x: [0, -80, 0],
+          y: [0, -15, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+        className="absolute top-32 left-20 text-4xl opacity-80"
+      >
+        🕊️
+      </motion.div>
+
+      {/* Main Test Container */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, type: "spring" }}
+        className="w-full max-w-2xl bg-gradient-to-br from-orange-900/80 via-purple-900/70 to-blue-900/80 backdrop-blur-lg rounded-3xl p-8 border-2 border-orange-400/30 shadow-2xl relative overflow-hidden"
+      >
+        
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500"></div>
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-400/20 rounded-full filter blur-2xl animate-pulse"></div>
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full filter blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+        {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between mb-2">
-            <span className="text-md font-medium text-blue-700">
-              Progress: {Math.min(currentIndex, letters.length)}/
-              {letters.length}
+          <div className="flex justify-between mb-3">
+            <span className="text-sm font-medium text-orange-200">
+              🎼 Cliff Progress: {Math.min(currentIndex, letters.length)}/{letters.length}
             </span>
-            <span className="text-md font-medium text-blue-700">
-              {Math.round(
-                (Math.min(currentIndex, letters.length) / letters.length) * 100
-              )}
-              %
+            <span className="text-sm font-medium text-orange-200">
+              {Math.round((Math.min(currentIndex, letters.length) / letters.length) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-blue-100 rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-purple-900/50 rounded-full h-4 overflow-hidden border border-orange-400/30">
             <motion.div
               initial={{ width: 0 }}
               animate={{
-                width: `${
-                  (Math.min(currentIndex, letters.length) / letters.length) *
-                  100
-                }%`,
+                width: `${(Math.min(currentIndex, letters.length) / letters.length) * 100}%`,
               }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="bg-blue-600 h-3 rounded-full"
-            ></motion.div>
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 h-4 rounded-full relative"
+            >
+              <motion.div
+                animate={{ x: [-10, 10, -10] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 bg-white/20 rounded-full"
+              />
+            </motion.div>
           </div>
         </div>
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
-          {/* Loading Submit / Submit Screen / Results Screen (remain the same) */}
+          {/* Processing Submit State */}
           {isProcessingSubmit ? (
             <motion.div
               key="processing-submit"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-8 min-h-[400px] flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="text-center py-12 min-h-[400px] flex items-center justify-center"
             >
-              <div className="flex flex-col items-center gap-4">
-                <Loader2 size={40} className="text-blue-600 animate-spin" />
-                <p className="text-xl text-blue-600">Submitting results...</p>
+              <div className="flex flex-col items-center gap-6">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="text-6xl"
+                >
+                  🎵
+                </motion.div>
+                <Loader2 size={48} className="text-orange-400 animate-spin" />
+                <p className="text-2xl text-orange-200 font-medium">
+                  The cliffs are harmonizing your melody...
+                </p>
               </div>
             </motion.div>
           ) : showSubmit ? (
+            /* Submit Screen */
             <motion.div
               key="submit"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center py-8 min-h-[400px] flex flex-col items-center justify-center"
+              className="text-center py-12 min-h-[400px] flex flex-col items-center justify-center"
             >
-              <motion.h2
-                initial={{ y: -10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="text-2xl font-bold text-blue-700 mb-4"
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-8xl mb-6"
               >
-                Ready to Submit?
+                🏔️
+              </motion.div>
+              <motion.h2
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="text-3xl font-bold text-orange-200 mb-4"
+              >
+                Ready to Unlock the Cliffs' Secrets?
               </motion.h2>
               <motion.p
-                initial={{ y: -10, opacity: 0 }}
+                initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-                className="text-blue-600 mb-6"
+                transition={{ delay: 0.2 }}
+                className="text-orange-300 mb-8 text-lg"
               >
-                You've attempted all letters. Click below.
+                You've completed your journey through all the resonant stones!
               </motion.p>
               <Button
                 onClick={handleSubmit}
                 variant="primary"
-                className="px-6 py-3 text-base"
+                className="px-8 py-4 text-lg bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 border-none shadow-lg"
               >
-                Submit Responses
+                🎼 Submit Your Melody
               </Button>
             </motion.div>
           ) : showResults ? (
+            /* Results Screen */
             <motion.div
               key="results"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center py-8 min-h-[400px] flex flex-col items-center justify-center"
+              className="text-center py-12 min-h-[400px] flex flex-col items-center justify-center"
             >
               <motion.div
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-5xl mb-6"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 1, type: "spring" }}
+                className="text-8xl mb-6"
               >
-                🎉
+                🏆
               </motion.div>
               <motion.h2
-                initial={{ y: -10, opacity: 0 }}
+                initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-2xl font-bold text-blue-700 mb-2"
+                className="text-3xl font-bold text-orange-200 mb-4"
               >
-                Test Complete!
+                The Cliffs Sing Your Victory!
               </motion.h2>
               <motion.p
-                initial={{ y: -10, opacity: 0 }}
+                initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-blue-600 mb-6"
+                className="text-orange-300 mb-6 text-xl"
               >
-                You scored {score} out of {letters.length}!
+                You harmonized {score} out of {letters.length} cliff songs!
               </motion.p>
-              <div className="w-full bg-blue-100 rounded-full h-4 mb-6 overflow-hidden">
+              
+              {/* Animated Score Bar */}
+              <div className="w-full bg-purple-900/50 rounded-full h-6 mb-8 overflow-hidden border border-orange-400/30">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(score / letters.length) * 100}%` }}
-                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-4 rounded-full"
-                ></motion.div>
+                  transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
+                  className="bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500 h-6 rounded-full relative flex items-center justify-center"
+                >
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={ { opacity: 1 }}
+                    transition={{ delay: 2.5 }}
+                    className="text-white font-bold text-sm"
+                  >
+                    {Math.round((score / letters.length) * 100)}%
+                  </motion.span>
+                </motion.div>
               </div>
+              
               <Button
                 onClick={restartTest}
                 variant="primary"
-                className="px-6 py-3 text-base"
+                className="px-8 py-4 text-lg bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 border-none shadow-lg"
               >
-                Try Again
+                🎵 Sing Again
               </Button>
             </motion.div>
           ) : currentIndex < letters.length ? (
+            /* Main Test Interface */
             <motion.div
               key={`letter-${currentIndex}`}
-              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              initial={{ scale: 0.8, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
+              exit={{ scale: 0.8, opacity: 0, y: -30 }}
+              transition={{ duration: 0.5, type: "spring" }}
               className="flex flex-col items-center min-h-[400px]"
             >
-              {/* Letter Box and Timer */}
-              <div className="relative mb-4">
+              
+              {/* Glowing Letter Cliff Stone */}
+              <div className="relative mb-6">
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="w-56 h-56 md:w-64 md:h-64 bg-blue-50 rounded-2xl flex items-center justify-center shadow-lg border-2 border-blue-200"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  animate={{ 
+                    boxShadow: [
+                      "0 0 30px rgba(251, 146, 60, 0.5)",
+                      "0 0 50px rgba(168, 85, 247, 0.7)",
+                      "0 0 30px rgba(59, 130, 246, 0.5)",
+                      "0 0 50px rgba(251, 146, 60, 0.7)"
+                    ]
+                  }}
+                  transition={{ 
+                    boxShadow: { duration: 4, repeat: Infinity },
+                    hover: { type: "spring", stiffness: 300 }
+                  }}
+                  className="w-64 h-64 md:w-72 md:h-72 bg-gradient-to-br from-orange-200/90 via-purple-200/90 to-blue-200/90 backdrop-blur-sm rounded-3xl flex items-center justify-center border-4 border-orange-400/50 relative overflow-hidden"
                 >
-                  <span className="text-8xl md:text-9xl font-extrabold text-blue-700 select-none">
+                  {/* Stone texture overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-300/20 via-transparent to-purple-300/20 rounded-3xl" />
+                  
+                  {/* Resonating ripples */}
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute inset-0 border-4 border-orange-400/30 rounded-3xl"
+                  />
+                  
+                  {/* Letter */}
+                  <motion.span
+                    animate={{ 
+                      textShadow: [
+                        "0 0 20px rgba(251, 146, 60, 0.8)",
+                        "0 0 30px rgba(168, 85, 247, 0.8)",
+                        "0 0 20px rgba(59, 130, 246, 0.8)"
+                      ]
+                    }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="text-8xl md:text-9xl font-extrabold bg-gradient-to-br from-orange-700 via-purple-700 to-blue-700 bg-clip-text text-transparent select-none relative z-10"
+                  >
                     {letters[currentIndex]}
-                  </span>
+                  </motion.span>
                 </motion.div>
-                <div className="absolute -top-4 -right-4 md:-top-5 md:-right-5">
-                  <div className="relative w-16 h-16 md:w-20 md:h-20">
+                
+                {/* Timer Compass */}
+                <div className="absolute -top-6 -right-6 md:-top-8 md:-right-8">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="relative w-20 h-20 md:w-24 md:h-24"
+                  >
                     <svg className="w-full h-full" viewBox="0 0 36 36">
                       <path
                         d="M18 2.0845a15.9155 15.9155 0 0 1 0 31.831a15.9155 15.9155 0 0 1 0-31.831"
                         fill="none"
-                        stroke="#DBEAFE"
+                        stroke="#FB923C40"
                         strokeWidth="3"
                       />
                       <motion.path
                         d="M18 2.0845a15.9155 15.9155 0 0 1 0 31.831a15.9155 15.9155 0 0 1 0-31.831"
                         fill="none"
-                        stroke="#2563EB"
+                        stroke="#FB923C"
                         strokeWidth="3"
                         strokeLinecap="round"
                         initial={{ strokeDasharray: "100, 100" }}
                         animate={{
-                          strokeDasharray: `${
-                            (timeLeft / LETTER_TIMER_DURATION) * 100
-                          }, 100`,
+                          strokeDasharray: `${(timeLeft / LETTER_TIMER_DURATION) * 100}, 100`,
                         }}
                         transition={{ duration: 1, ease: "linear" }}
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg md:text-xl font-bold text-blue-700">
+                      <motion.span 
+                        animate={{ scale: timeLeft <= 3 ? [1, 1.2, 1] : 1 }}
+                        transition={{ duration: 0.5, repeat: timeLeft <= 3 ? Infinity : 0 }}
+                        className={`text-lg md:text-xl font-bold ${timeLeft <= 3 ? 'text-red-400' : 'text-orange-200'}`}
+                      >
                         {timeLeft}s
-                      </span>
+                      </motion.span>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
 
-              {/* Input Status Indicator */}
-              {renderCurrentInputStatus()}
+              {/* Status Indicator with Cliff Theme */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="h-12 mb-6 flex items-center justify-center"
+              >
+                {renderCurrentInputStatus()}
+              </motion.div>
 
               {/* Input Area */}
-              <div className="w-full max-w-xs mb-3 flex flex-col items-center gap-2">
-                {/* Text Input */}
-                <input
+              <div className="w-full max-w-sm mb-6 flex flex-col items-center gap-4">
+                {/* Text Input with Cliff Styling */}
+                <motion.input
+                  whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(251, 146, 60, 0.5)" }}
                   ref={inputRef}
                   type="text"
                   value={userInputs[currentIndex]}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-center text-xl border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  placeholder="Type or Record"
+                  className="w-full px-6 py-4 text-center text-xl bg-gradient-to-r from-orange-100/90 to-purple-100/90 backdrop-blur-sm border-2 border-orange-400/50 rounded-2xl focus:outline-none focus:border-orange-400 disabled:bg-gray-400/20 disabled:cursor-not-allowed placeholder-orange-600/60 text-orange-900 font-medium"
+                  placeholder="🎵 Type the letter..."
                   maxLength={10}
                   disabled={
                     isRecording ||
@@ -774,7 +1078,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                     isProcessingSubmit
                   }
                 />
-                {/* Record Button */}
+                
+                {/* Record Button with Cliff Styling */}
                 <Button
                   onClick={handleRecordButtonClick}
                   disabled={
@@ -783,11 +1088,14 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                     inputStatus[currentIndex] === "done_voice" ||
                     isProcessingSubmit
                   }
-                  variant={isRecording ? "danger" : "secondary"}
-                  className="w-full"
+                  className={`w-full py-4 text-lg font-semibold border-2 rounded-2xl transition-all duration-300 ${
+                    isRecording 
+                      ? 'bg-gradient-to-r from-red-500 to-red-600 border-red-400 text-white shadow-lg shadow-red-500/30' 
+                      : 'bg-gradient-to-r from-orange-400/80 to-purple-500/80 backdrop-blur-sm border-orange-400/50 text-white hover:from-orange-500/90 hover:to-purple-600/90 shadow-lg'
+                  }`}
                 >
-                  {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
-                  {isRecording ? "Stop Recording" : "Record Letter"}
+                  {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+                  {isRecording ? "🎤 Stop the Song" : "🎵 Sing the Letter"}
                 </Button>
               </div>
 
@@ -800,35 +1108,64 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                   isRecording ||
                   isTranscribing
                 }
-                className="mt-4 px-8 py-3 text-base"
-                variant="primary"
+                className="px-10 py-4 text-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-none shadow-lg disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
               >
-                {currentIndex === letters.length - 1 ? "Finish" : "Next Letter"}
+                {currentIndex === letters.length - 1 ? "🏔️ Complete Journey" : "🎼 Next Cliff"}
+                <FaChevronRight className="ml-2" />
               </Button>
             </motion.div>
           ) : null}
         </AnimatePresence>
       </motion.div>
 
-      {/* Footer Hint */}
+      {/* Footer Hint with Floating Animation */}
       {!showResults &&
         !showSubmit &&
         currentIndex < letters.length &&
         !isProcessingSubmit && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-6 text-center"
+            transition={{ delay: 0.8 }}
+            className="mt-8 text-center"
           >
-            <p className="text-blue-500 font-medium">
-              {["✨", "🎯", "💡", "🎤", "👏"][currentIndex % 5]} Type or speak
-              the letter clearly!
-            </p>
+            <motion.p
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-orange-200 font-medium text-lg bg-purple-900/30 backdrop-blur-sm px-6 py-3 rounded-full border border-orange-400/30"
+            >
+              🎵 Listen to the cliff's song and echo it back! 🎵
+            </motion.p>
           </motion.div>
         )}
-    </motion.div>
-  );
+      
+      {/* Decorative Musical Notes */}
+      <motion.div
+        animate={{ y: [0, -20, 0], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+        className="absolute bottom-20 left-10 text-3xl"
+      >
+        🎵
+      </motion.div>
+      
+      <motion.div
+        animate={{ y: [0, -15, 0], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 2.5, repeat: Infinity, delay: 2 }}
+        className="absolute bottom-32 right-16 text-2xl"
+      >
+        🎶
+      </motion.div>
+      
+      <motion.div
+        animate={{ y: [0, -25, 0], opacity: [0.3, 0.8, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity }}
+        className="absolute top-40 left-1/4 text-4xl"
+      >
+        🎼
+      </motion.div>
+    </div>
+  </motion.div>
+);
 };
 
 GraphemeTest.propTypes = {
