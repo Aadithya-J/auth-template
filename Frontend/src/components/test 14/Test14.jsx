@@ -25,7 +25,6 @@ import backgroundImage from "../../assets/sound-blending/background.png";
 import characterImage from "../../assets/sound-blending/dolphin.png";
 import { useNavigate } from "react-router-dom";
 
-
 const WORDS = [
   {
     id: 1,
@@ -186,7 +185,7 @@ const ProgressBar = ({ progress }) => (
 );
 ProgressBar.propTypes = { progress: PropTypes.number.isRequired };
 
-const ResultCard = ({ item, index,t }) => (
+const ResultCard = ({ item, index, t }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -199,7 +198,8 @@ const ResultCard = ({ item, index,t }) => (
   >
     <div className="flex justify-between items-center">
       <span className="font-medium text-blue-900">
-        {t("phonemeBlendingResultCardWordLabel", { indexPlusOne: index + 1 })} <span className="font-bold">{item.word}</span>
+        {t("phonemeBlendingResultCardWordLabel", { indexPlusOne: index + 1 })}{" "}
+        <span className="font-bold">{item.word}</span>
       </span>
       <span
         className={`flex items-center font-bold ${
@@ -238,7 +238,8 @@ const ResultCard = ({ item, index,t }) => (
       </p>
       {!item.isCorrect && (
         <p className="text-blue-700 mt-1">
-          {t("phonemeBlendingResultCardCorrectAnswer")} <span className="font-medium">{item.word}</span>
+          {t("phonemeBlendingResultCardCorrectAnswer")}{" "}
+          <span className="font-medium">{item.word}</span>
         </p>
       )}
     </div>
@@ -261,7 +262,7 @@ const Button = ({
   className = "",
   isLoading = false,
   loadingTextKey = "phonemeBlendingLoadingProcessing", // Default loading text key
-  t // ADD t as a prop
+  t, // ADD t as a prop
 }) => {
   const baseStyle =
     "py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm";
@@ -310,12 +311,15 @@ Button.propTypes = {
   className: PropTypes.string,
   isLoading: PropTypes.bool,
 };
-const LoadingOverlay = ({ messageKey = "phonemeBlendingLoadingProcessing", t }) => ( 
+const LoadingOverlay = ({
+  messageKey = "phonemeBlendingLoadingProcessing",
+  t,
+}) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50"
   >
     <div className="bg-white rounded-xl p-6 shadow-xl flex flex-col items-center max-w-xs">
       <div className="relative">
@@ -333,7 +337,10 @@ const LoadingOverlay = ({ messageKey = "phonemeBlendingLoadingProcessing", t }) 
   </motion.div>
 );
 
-LoadingOverlay.propTypes = {messageKey: PropTypes.string, t: PropTypes.func.isRequired,};
+LoadingOverlay.propTypes = {
+  messageKey: PropTypes.string,
+  t: PropTypes.func.isRequired,
+};
 
 export default function PhonemeGame({
   onComplete,
@@ -367,17 +374,17 @@ export default function PhonemeGame({
   const childId = localStorage.getItem("childId") || (student && student.id);
   const token = localStorage.getItem("access_token");
 
-const dialogIntroTexts = [
-  t("phonemeBlendingIntroDialog1"),
-  t("phonemeBlendingIntroDialog2"),
-  t("phonemeBlendingIntroDialog3"),
-];
+  const dialogIntroTexts = [
+    t("phonemeBlendingIntroDialog1"),
+    t("phonemeBlendingIntroDialog2"),
+    t("phonemeBlendingIntroDialog3"),
+    t("phonemeBlendingIntroDialog4"),
+    t("phonemeBlendingIntroDialog5"),
+  ];
   const navigate = useNavigate();
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
-
-  
 
   const playSound = (src) => {
     return new Promise((resolve, reject) => {
@@ -500,7 +507,7 @@ const dialogIntroTexts = [
         setIsTranscribing(false);
       }
     },
-    [childId, currentWordIndex, backendURL,language,t]
+    [childId, currentWordIndex, backendURL, language, t]
   );
 
   const stopListening = useCallback(() => {
@@ -530,7 +537,7 @@ const dialogIntroTexts = [
         return "idle";
       });
     }
-  }, [isRecordingRef,currentTranscriptionStatus]);
+  }, [isRecordingRef, currentTranscriptionStatus]);
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) {
@@ -591,7 +598,7 @@ const dialogIntroTexts = [
         setCurrentTranscriptionStatus("error");
         setIsRecording(false);
       });
-  }, [stopListening, uploadAudio,t, isTranscribing]);
+  }, [stopListening, uploadAudio, t, isTranscribing]);
   useEffect(() => {
     return () => {
       if (audioRef.current) audioRef.current.pause();
@@ -618,7 +625,7 @@ const dialogIntroTexts = [
     setIsRecording(false);
     setIsTranscribing(false);
     stopListening();
-  }, [currentWordIndex,stopListening]);
+  }, [currentWordIndex, stopListening]);
 
   const handleInputChange = (e) => {
     const typedValue = e.target.value;
@@ -773,19 +780,21 @@ const dialogIntroTexts = [
       case "recording":
         return (
           <div className="flex items-center justify-center gap-2 text-red-600 h-6">
-            <Mic className="h-4 w-4 animate-pulse" /> {t("phonemeBlendingStatusRecording")}
+            <Mic className="h-4 w-4 animate-pulse" />{" "}
+            {t("phonemeBlendingStatusRecording")}
           </div>
         );
       case "pending":
         return (
           <div className="flex items-center justify-center gap-2 text-blue-600 h-6">
-            <Loader2 className="h-4 w-4 animate-spin" /> {t("phonemeBlendingStatusTranscribing")}
+            <Loader2 className="h-4 w-4 animate-spin" />{" "}
+            {t("phonemeBlendingStatusTranscribing")}
           </div>
         );
       case "done":
         return (
           <div className="flex items-center justify-center gap-2 text-green-600 h-6">
-            <Check className="h-4 w-4" />  {t("phonemeBlendingStatusDone")}
+            <Check className="h-4 w-4" /> {t("phonemeBlendingStatusDone")}
           </div>
         );
       case "error":
@@ -796,14 +805,14 @@ const dialogIntroTexts = [
         );
       case "typed":
         return (
-          <div className="flex items-center justify-center gap-2 text-black-600 h-6 text-sm">
-             {t("phonemeBlendingStatusTyped")}
+          <div className="flex items-center justify-center gap-2 text-white h-6 text-sm">
+            {t("phonemeBlendingStatusTyped")}
           </div>
         );
       case "idle":
       default:
         return (
-          <div className="h-6 text-black-500 text-lg text-center">
+          <div className="h-6 text-white text-lg text-center">
             {t("phonemeBlendingStatusIdle")}
           </div>
         );
@@ -832,7 +841,7 @@ const dialogIntroTexts = [
               }}
             />
             <motion.div
-              className="absolute inset-0 bg-black/20"
+              className="absolute inset-0 bg-white/20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
@@ -970,7 +979,7 @@ const dialogIntroTexts = [
                 backgroundPosition: "center",
               }}
             />
-            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-white/20" />
           </div>
 
           {/* Main game content */}
@@ -988,14 +997,16 @@ const dialogIntroTexts = [
               {t("BacktoTests")}
             </motion.button>
             <AnimatePresence>
-              {isSubmittingAll && <LoadingOverlay messageKey={loadingMessageKey} t={t} />}
+              {isSubmittingAll && (
+                <LoadingOverlay messageKey={loadingMessageKey} t={t} />
+              )}
             </AnimatePresence>
 
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: "spring", damping: 10 }}
-              className="w-full max-w-2xl bg-gradient-to-br from-cyan-600/80 to-white/30 rounded-3xl shadow-2xl p-8 space-y-8 backdrop-blur-md border-2 border-white/40 relative overflow-hidden"
+              className="w-full max-w-2xl bg-gradient-to-br from-cyan-600/80 to-blue-500/30 rounded-3xl shadow-2xl p-8 space-y-8 backdrop-blur-md border-2 border-white/40 relative overflow-hidden"
             >
               {/* Progress Bar with Wave Design */}
               <div className="space-y-3 relative z-10">
@@ -1010,10 +1021,11 @@ const dialogIntroTexts = [
                     <div className="absolute inset-0 bg-[url('/images/wave-pattern.png')] bg-[length:20px_10px] opacity-40" />
                   </motion.div>
                 </div>
-                <div className="flex justify-between text-lg font-medium text-black-900">
+                <div className="flex justify-between text-lg font-medium text-white">
                   <span>{t("phonemeBlendingProgressBarStart")}</span>
-                  <span className="text-black-900 font-bold">
-                    {t("phonemeBlendingProgressBarWord", { current: currentWordIndex + 1, total: WORDS.length })}
+                  <span className="text-white font-bold">
+                    {t("phonemeBlendingProgressBarWord") +
+                      ` ${currentWordIndex + 1} / ${WORDS.length}`}
                   </span>
                   <span>{t("phonemeBlendingProgressBarFinish")}</span>
                 </div>
@@ -1046,7 +1058,7 @@ const dialogIntroTexts = [
                   </motion.div>
                 </motion.div>
                 <motion.p
-                  className="text-black-700 font-semibold text-xl"
+                  className="text-white font-semibold text-xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
@@ -1186,7 +1198,7 @@ const dialogIntroTexts = [
                     className="bg-gradient-to-brfrom-[#093B54]/80 via-[#0E5A75]/50 to-[#1289A7]/40
  rounded-xl p-5 shadow-lg border border-[#3FB8AF]/40"
                   >
-                    <p className="text-center text-xl text-black font-semibold">
+                    <p className="text-center text-xl text-white font-semibold">
                       {t("phonemeBlendingPromptListen")} {/* Reusing the key */}
                     </p>
                   </motion.div>
@@ -1206,11 +1218,13 @@ const dialogIntroTexts = [
                           transition={{ duration: 1.5, repeat: Infinity }}
                           className="flex items-center justify-center gap-3"
                         >
-                          <Volume2 className="h-6 w-6" /> {t("phonemeBlendingPlayingSoundsButton")}
+                          <Volume2 className="h-6 w-6" />{" "}
+                          {t("phonemeBlendingPlayingSoundsButton")}
                         </motion.span>
                       ) : (
                         <span className="flex items-center justify-center gap-3">
-                          <Volume2 className="h-6 w-6" /> {t("phonemeBlendingPlaySoundsButton")}
+                          <Volume2 className="h-6 w-6" />{" "}
+                          {t("phonemeBlendingPlaySoundsButton")}
                         </span>
                       )}
                     </Button>
@@ -1228,7 +1242,7 @@ const dialogIntroTexts = [
                     transition={{ delay: 0.1 }}
                     className="bg-blue/20 rounded-xl p-5 shadow-lg border border-[#00D4FF]/40"
                   >
-                    <p className="text-center text-xl font-semibold text-black">
+                    <p className="text-center text-xl font-semibold text-white">
                       {t("phonemeBlendingPromptHeard")}
                     </p>
                   </motion.div>
@@ -1249,7 +1263,7 @@ const dialogIntroTexts = [
                       value={userInput}
                       onChange={handleInputChange}
                       placeholder={t("phonemeBlendingInputPlaceholder")}
-                      className="w-full px-5 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-200/70 focus:border-transparent text-center font-semibold text-lg text-black-700 placeholder-blue-700 shadow-lg"
+                      className="w-full px-5 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-200/70 focus:border-transparent text-center font-semibold text-lg text-white placeholder-blue-700 shadow-lg"
                       onKeyPress={(e) => {
                         if (
                           e.key === "Enter" &&
@@ -1306,11 +1320,13 @@ const dialogIntroTexts = [
                           transition={{ duration: 0.5, repeat: Infinity }}
                           className="flex items-center justify-center gap-3"
                         >
-                          <MicOff className="h-6 w-6" /> {t("phonemeBlendingStopButton")}
+                          <MicOff className="h-6 w-6" />{" "}
+                          {t("phonemeBlendingStopButton")}
                         </motion.span>
                       ) : (
                         <span className="flex items-center justify-center gap-3">
-                          <Mic className="h-6 w-6" /> {t("phonemeBlendingRecordButton")}
+                          <Mic className="h-6 w-6" />{" "}
+                          {t("phonemeBlendingRecordButton")}
                         </span>
                       )}
                     </Button>
@@ -1318,7 +1334,7 @@ const dialogIntroTexts = [
                     {/* Submit Button */}
                     <Button
                       onClick={handleSubmitResponse}
-                      className="text-white bg-gradient-to-r from-teal-600 to-green-500 hover:from-green-300 hover:to-teal-400 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg transition-all disabled:opacity-50"
+                      className="bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-cyan-500 hover:to-sky-600 font-bold py-4 text-xl rounded-xl shadow-lg transition-all text-white drop-shadow-lg"
                       disabled={
                         !userInput.trim() ||
                         isRecording ||
@@ -1327,13 +1343,14 @@ const dialogIntroTexts = [
                         isSubmittingAll
                       }
                     >
-                      <Check className="h-6 w-6" /> {t("phonemeBlendingSubmitButton")}
+                      <Check className="h-6 w-6" />{" "}
+                      {t("phonemeBlendingSubmitButton")}
                     </Button>
 
                     {/* Skip Button - Full width */}
                     <Button
                       onClick={skipWord}
-                      className="col-span-2 bg-gradient-to-r from-sky-800 to-cyan-500 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg hover:from-cyan-100 hover:to-sky-200 transition-all transform hover:scale-[1.01]"
+                      className="col-span-2 bg-gradient-to-r from-sky-800 to-cyan-500 text-slate-900 font-bold py-4 text-xl rounded-xl shadow-lg hover:from-cyan-600 hover:to-sky-700 transition-all transform hover:scale-[1.01]"
                       disabled={
                         isPlayingSound ||
                         isRecording ||
@@ -1341,7 +1358,8 @@ const dialogIntroTexts = [
                         isSubmittingAll
                       }
                     >
-                      <SkipForward className="h-6 w-6" /> {t("phonemeBlendingSkipButton")}
+                      <SkipForward className="h-6 w-6" />{" "}
+                      {t("phonemeBlendingSkipButton")}
                     </Button>
                   </motion.div>
                 </div>
@@ -1373,7 +1391,8 @@ const dialogIntroTexts = [
                       t={t}
                     >
                       <span className="relative z-10 flex items-center justify-center gap-3">
-                        <Send className="h-6 w-6" /> {t("phonemeBlendingSubmitAllButton")}
+                        <Send className="h-6 w-6" />{" "}
+                        {t("phonemeBlendingSubmitAllButton")}
                       </span>
                       <motion.div
                         animate={{
