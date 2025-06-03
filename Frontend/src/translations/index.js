@@ -56,7 +56,7 @@ export const translations = {
     // Common labels
     estimatedTime: "Estimated time : 5-10 minutes",
     minutes: "minutes",
-    seconds: "seconds",
+    seconds: " seconds",
     hours: "hours",
     description: "Description",
     testNumber: "Test Number",
@@ -298,6 +298,7 @@ export const translations = {
     sameSounds: "Same Sounds",
     differentSounds: "Different Sounds",
     imReady: "🏴‍☠️ Aye, I'm Ready!",
+    imReadysound: "🌬️ My ears are open, and I am ready.",
     //Symbol Sequence Game
     symbolSequenceTitle: "Symbol Sequence Memory Game",
     symbolSequenceDescription:
@@ -499,17 +500,17 @@ export const translations = {
 
     //Added new words for Visual Descrimination Test
 
-    visualTestBlinkDialogWelcome:
-      "👁️ Hello, explorer... I am Blink, the Eye of Vision Rock.",
-    visualTestBlinkDialogSneakyShapes:
-      "🌀 This place is full of sneaky shapes. Some look almost the same… but only one is a perfect match.",
-    visualTestBlinkDialogLookCarefully:
-      "🔍 Use your eyes. Look carefully. Find the one that matches exactly.",
-    visualTestBlinkDialogReward:
-      "🏆 If you choose right, I'll reward you with the Shell of Sight 🐚 and the Lens of Truth 🔮. They will help you see things others can't!",
-    visualTestBlinkDialogReadyPrompt:
-      "⚔️ Are you ready? Let's see how sharp your eyes really are!",
-    altBlinkTheGuardian: "Blink the Guardian",
+    visualTestGhadiyakshDialogWelcome:
+      "🕰️ Namaste, traveler... I am Ghadiyaksh, the clockwork guardian of Yantra Kanan.",
+    visualTestGhadiyakshDialogShiftingPatterns:
+      "🌿 This grove is alive with moving parts and shifting patterns. Not all that ticks belongs together...",
+    visualTestGhadiyakshDialogWatchClosely:
+      "👁️ Watch closely. Some pieces may trick your eyes. Only one fits perfectly.",
+    visualTestGhadiyakshDialogReward:
+      "🎁 Solve the riddles of sight, and I shall gift you the Feather of Focus 🪶 and the Mirror Gear 🔍—tools to see beyond the obvious.",
+    visualTestGhadiyakshDialogReadyPrompt:
+      "🦚 Are your eyes steady and your mind sharp? Then let the challenge begin!",
+    altGhadiyakshTheGuardian: "Ghadiyaksh the Guardian",
     buttonImReady: "I'm Ready!",
 
     // --- Visual Test (In-Game UI) ---
@@ -521,15 +522,31 @@ export const translations = {
     visualTestCompleted: "Test Completed!",
     visualTestScoreOutOfTotal: "You got {score} out of {total} correct", // Placeholders
 
-    soundTestEchoDialogAhoy: "👋 Ahoy there, little explorer!",
-    soundTestEchoDialogIntro: "I'm Sir Echo, the echo crab! 🦀✨",
+    //sound discrimination
+
+    correctAnswerGreatJob: "Correct! Great job! 🎉",
+    youGotItRight: "You got it right! 👍",
+    perfectScore: "Perfect! You're amazing! 🌟",
+    wellDone: "Well done! Keep it up! 💪",
+    excellentWork: "Excellent work! 🏆",
+    almostThere: "Almost there! Try again! 🤔",
+    goodTry: "Good try! Next one! 👏",
+    keepPracticing: "Keep practicing! 🎧",
+    nextTimeBetter: "Next time better! 💯",
+    dontGiveUp: "Don't give up! 🚀",
+
+    soundTestEchoDialogAhoy: "🌬️ Greetings, young voyager...",
+    soundTestEchoDialogIntro: "I am Goonjarishi — the Listener of Echoes. 🐚👂",
     soundTestEchoDialogIsleDescription:
-      "This is Whispering Isle... where sounds bounce and secrets hide! 🌫️👂",
-    soundTestEchoDialogTwoSounds: "I'll play two sounds for you 🎧🎧",
-    soundTestEchoDialogYourJob: "Your job is to tell me…",
-    soundTestEchoDialogAreTheySame: "Are they the SAME? ✅",
-    soundTestEchoDialogOrDifferent: "Or DIFFERENT? ❌",
-    soundTestEchoDialogReadyPirate: "Ready to listen like a pirate pro? 🏴‍☠️🦜",
+      "You've reached Goonj Tapu, the Whispering Island... where every sound has a secret. 🌫️✨",
+    soundTestEchoDialogTwoSounds: "I shall share two sounds with you... 🎧🎧",
+    soundTestEchoDialogYourJob:
+      "Your task is to listen carefully and tell me...",
+    soundTestEchoDialogAreTheySame: "Were they the SAME? ✅",
+    soundTestEchoDialogOrDifferent: "Or were they DIFFERENT? ❌",
+    soundTestEchoDialogReadyPirate:
+      "Close your eyes, open your ears... Are you ready to begin your sonic journey? 🌀👦👧",
+
     altSirEchoTheCrab: "Sir Echo the Crab",
 
     buttonPlayingAudio: "Playing...",
@@ -561,18 +578,26 @@ export const translations = {
     statusProcessing: "Processing...",
 
     pictureTestIntroDialog1:
-      "🌊 Welcome, traveler, to Crystal Shoals! The tidepools here shimmer with reflections from above.",
+      "🌺 Welcome to Chitra Sarovar, the Picture Lake. Its still waters hold stories waiting to be seen.",
+
     pictureTestIntroDialog2:
-      "🪞 I am Mira, the mirrorfish, guardian of these hidden images. Each pool holds visions waiting to be recognized.",
+      "🐍 I am Chitrani, the naga guardian of this sacred place. I can summon images from the depths of memory and imagination.",
+
     pictureTestIntroDialog3:
-      "🐚 Your task is simple yet deep: name what you see reflected in the pools, and reveal the world they come from.",
+      "🌊 Your task, dear traveler, is to name each image that appears—and tell how it is used in the world above.",
+
     pictureTestIntroDialog4:
-      "💧 In return, you shall receive the Shell of Imagery and The Reflecting Pearl, treasures of insight and clarity.",
+      "💎 Complete this challenge, and you will earn the Dewdrop Amulet and the Eye of Clarity—gifts of perception and insight.",
+
     pictureTestIntroDialog5:
-      "✨ Are you ready to peer beyond the ripples and unlock the secrets held in these mirrored waters?",
+      "✨ Are you ready to gaze into the rippling waters and uncover what lies beneath the surface of the seen?",
     pictureTestButtonNextDialog: "Next",
-    altMiraTheMirrorfish: "Mira the Mirrorfish",
-    altTidepoolReflection: "Tidepool reflection",
+    altChitraniTheNaga: "Chitrani the Naga",
+    altLakeReflection: "Magical lake reflection",
+
+    pictureTestButtonNextDialog: "Next",
+    altMiraTheMirrorfish: "Chitrani the Naga",
+    altTidepoolReflection: "Magical lake reflection",
 
     // UI Elements & Test Flow (New or specifically for this UI)
     pictureTestProgressBarTitle: "Test Progress", // If "TestProgress" key doesn't exist or is too generic

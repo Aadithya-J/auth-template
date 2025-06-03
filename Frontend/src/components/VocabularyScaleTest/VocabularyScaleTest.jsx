@@ -188,7 +188,7 @@ const WordDisplay = ({
     >
       {/* Decorative elements */}
       <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-400/10 rounded-full filter blur-xl"></div>
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-sky-500"></div>
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500"></div>
 
       <motion.p
         className="text-lg text-white/80 mb-4 flex justify-between items-center"
@@ -243,28 +243,6 @@ const WordDisplay = ({
   );
 };
 
-const Waveform = () => {
-  const bars = [0.4, 0.6, 1, 0.6, 0.4];
-  return (
-    <div className="flex items-end gap-[2px] h-5">
-      {bars.map((scale, i) => (
-        <motion.div
-          key={i}
-          className="w-[3px] bg-white rounded-sm"
-          animate={{ scaleY: [1, scale, 1] }}
-          transition={{
-            duration: 0.6,
-            repeat: Infinity,
-            repeatDelay: 0.1,
-            delay: i * 0.1,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
 const RecordingButton = ({
   isRecording,
   isSubmitting,
@@ -275,30 +253,31 @@ const RecordingButton = ({
 }) => {
   return (
     <div className="w-full flex flex-col items-center mt-6 gap-3">
-      {" "}
-      {/* flex-col + gap */}
       <motion.button
-        whileHover={{ scale: isSubmitting || isTranscribing ? 1 : 1.08, y: -3 }}
+        whileHover={{
+          scale: isSubmitting || isTranscribing ? 1 : 1.08,
+          y: -3,
+        }}
         whileTap={{ scale: 0.92 }}
         onClick={isRecording ? stopListening : startListening}
         disabled={isSubmitting || isTranscribing}
         className={`relative flex items-center justify-center rounded-full w-32 h-32 focus:outline-none transition-all duration-300 ${
           isRecording
-            ? "bg-red-500 shadow-red-500/30"
-            : "bg-gradient-to-r from-blue-700/80 to-sky-400/80 shadow-[0_8px_30px_rgba(59,130,246,0.3)]"
+            ? "bg-yellow-500 shadow-yellow-500/40"
+            : "bg-gradient-to-br from-[#b59a2e] to-[#eb9501] shadow-[0_8px_30px_rgba(250,204,21,0.4)]"
         } ${
           isSubmitting || isTranscribing ? "opacity-70 cursor-not-allowed" : ""
         }`}
         style={{
           boxShadow: isRecording
-            ? "0 0 20px rgba(239, 68, 68, 0.6)"
-            : "0 6px 20px rgba(59, 130, 246, 0.5), 0 0 10px rgba(59, 130, 246, 0.7)", // added extra glow here
+            ? "0 0 20px rgba(253, 224, 71, 0.6)"
+            : "0 6px 20px rgba(251, 191, 36, 0.6), 0 0 12px rgba(245, 158, 11, 0.8)",
         }}
       >
-        {/* Pulsing glow effect when recording */}
+        {/* Pulsing aura when recording */}
         {isRecording && (
           <motion.span
-            className="absolute inset-0 rounded-full bg-red-400/50"
+            className="absolute inset-0 rounded-full bg-amber-300/40"
             animate={{
               scale: [1, 1.3, 1],
               opacity: [0.4, 0.8, 0.4],
@@ -311,7 +290,7 @@ const RecordingButton = ({
           />
         )}
 
-        {/* Inner circle with microphone image (rotated anticlockwise) */}
+        {/* Inner circle with microphone */}
         <motion.div
           className="relative z-10 rounded-full flex items-center justify-center w-24 h-24"
           animate={{
@@ -323,17 +302,15 @@ const RecordingButton = ({
             ease: "easeInOut",
           }}
           style={{
-            border: isRecording
-              ? "1.5px solid rgba(255, 255, 255, 0.6)"
-              : "1px solid rgba(255, 255, 255, 0.3)",
-            background: "rgba(255, 255, 255, 0.15)", // translucent white
-            backdropFilter: "blur(10px)", // glass blur effect
-            WebkitBackdropFilter: "blur(10px)", // for Safari support
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)", // subtle shadow for depth
+            border: "1.5px solid rgba(255, 255, 255, 0.3)",
+            background: "rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            boxShadow: "inset 0 2px 4px rgba(255,255,255,0.2)",
           }}
         >
           <motion.img
-            src={microphone} // transparent PNG recommended
+            src={microphone}
             alt="Microphone"
             className="w-16 h-16 object-contain"
           />
@@ -341,13 +318,17 @@ const RecordingButton = ({
           {/* Wave animation when recording */}
           {isRecording && (
             <div className="absolute -bottom-8 flex space-x-1">
-              {[1, 1.2, 1.5, 1.2, 1].map((scale, i) => (
+              {[1, 1.2, 1.5, 1.2, 1].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="w-2 h-2 bg-red-500 rounded-full"
+                  className="w-2 h-2 rounded-full bg-yellow-400"
                   animate={{
                     height: [4, 12, 4],
-                    backgroundColor: ["#ef4444", "#f87171", "#ef4444"],
+                    backgroundColor: [
+                      "#facc15", // gold
+                      "#fde047", // lighter gold
+                      "#facc15",
+                    ],
                   }}
                   transition={{
                     duration: 1.2,
@@ -360,24 +341,20 @@ const RecordingButton = ({
           )}
         </motion.div>
 
-        {/* Loading spinner (thinner border) */}
+        {/* Spinner animation */}
         {(isTranscribing || isSubmitting) && (
           <motion.div
-            className="absolute inset-0 rounded-full border-[3px] border-white/30 border-t-white" // Thinner border
+            className="absolute inset-0 rounded-full border-[3px] border-yellow-100/30 border-t-yellow-100"
             animate={{ rotate: 360 }}
             transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
           />
         )}
       </motion.button>
-      {!isRecording ? (
-        <div className="text-white text-lg font-semibold select-none">
-          Click to Speak!
-        </div>
-      ) : (
-        <div className="text-white text-lg mt-3 font-semibold select-none">
-          Click to Stop!
-        </div>
-      )}
+
+      {/* Text label */}
+      <div className="text-yellow-100 text-lg mt-3 font-semibold select-none">
+        {isRecording ? "Click to Stop!" : "Click to Speak!"}
+      </div>
     </div>
   );
 };
@@ -534,7 +511,7 @@ const NavigationButton = ({
       className={`relative overflow-hidden py-3 px-8 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center gap-2 ${
         isDisabled || isSubmitting || isRecording || isTranscribing
           ? "opacity-70 cursor-not-allowed bg-gray-500/30"
-          : "bg-gradient-to-r from-blue-500 to-sky-700 hover:from-blue-600 hover:to-sky-800"
+          : "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-orange-600 hover:to-yellow-800"
       }`}
     >
       {/* Animated background */}
@@ -727,11 +704,12 @@ const VocabularyScaleTest = () => {
     }
   };
   const dialog = [
-    "Ahoy, young wordsmith!",
-    "Welcome to the Tower of Tides — a place where every word you understand lifts the tower higher into the clouds.",
-    "I am the Archivist, keeper of meanings and guardian of the final Codex fragment.",
-    "Are you ready to build your tower of understanding? Let's begin!",
+    "🙏 Namaste, young wordsmith!",
+    "🏛️ Welcome to Shabd Mandir — a sacred place where every new word you grasp 📚 raises the temple closer to the stars ✨.",
+    "🐍 I am Vani Naga, serpent of knowledge and guardian of the final Codex fragment 📖.",
+    "🗝️ Are you ready to awaken the power of words and complete your journey? Let's begin! 🚀",
   ];
+
   const DialogIntro = ({ currentDialog, dialog, handleNext, t }) => (
     <>
       <motion.div
@@ -740,7 +718,7 @@ const VocabularyScaleTest = () => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.4 }}
-        className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+        className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-yellow-100 mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
       >
         <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
       </motion.div>
@@ -751,8 +729,8 @@ const VocabularyScaleTest = () => {
             key={index}
             className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
               index <= currentDialog
-                ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
-                : "bg-white/30"
+                ? "bg-gradient-to-r from-yellow-200 to-orange-300 shadow-md"
+                : "bg-yellow-100/30"
             }`}
             initial={{ scale: 0.8 }}
             animate={{
@@ -771,8 +749,8 @@ const VocabularyScaleTest = () => {
           onClick={handleNext}
           className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
             currentDialog < dialog.length - 1
-              ? "bg-gradient-to-r from-white to-teal-100 text-teal-900 hover:from-blue-50 hover:to-teal-200 hover:shadow-cyan-200/50"
-              : "bg-gradient-to-r from-cyan-500 to-sky-600 text-white hover:from-cyan-600 hover:to-sky-800 hover:shadow-blue-400/50"
+              ? "bg-gradient-to-r from-yellow-50 to-amber-100 text-amber-900 hover:from-orange-50 hover:to-amber-200 hover:shadow-amber-300/50"
+              : "bg-gradient-to-r from-orange-500 to-amber-600 text-white hover:from-orange-600 hover:to-amber-700 hover:shadow-yellow-400/50"
           }`}
         >
           {currentDialog < dialog.length - 1 ? (
@@ -973,9 +951,9 @@ const VocabularyScaleTest = () => {
           }}
         />
         <motion.div
-          className="absolute inset-0 bg-black/20"
+          className="absolute inset-0 bg-yellow-950/30"
           initial={{ opacity: 0 }}
-          animate={{ opacity: showTest ? 0.3 : 0.5 }}
+          animate={{ opacity: showTest ? 0.2 : 0.45 }}
           transition={{ duration: 0.5 }}
         />
       </div>
@@ -984,7 +962,7 @@ const VocabularyScaleTest = () => {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8">
         <button
           onClick={() => navigate("/taketests")}
-          className="text-white/80 hover:text-white flex items-center gap-1 border border-white/20 rounded-full px-4 py-2 transition-colors duration-300 shadow-lg absolute top-4 left-4 z-50 backdrop-blur-md hover:bg-white/10"
+          className="text-white hover:text-amber-100 text-lg flex items-center gap-1 border border-amber-800/20 rounded-full px-4 py-2 transition-colors duration-300 shadow-lg absolute top-4 left-4 z-50 backdrop-blur-md hover:bg-white/10"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("backToTests")}
@@ -1024,7 +1002,7 @@ const VocabularyScaleTest = () => {
             >
               <img
                 src={characterImage}
-                alt="The Archivist"
+                alt="Vani Naga"
                 className="h-64 sm:h-80 lg:h-96 xl:h-112 object-contain"
               />
             </motion.div>
@@ -1032,26 +1010,26 @@ const VocabularyScaleTest = () => {
 
           {/* Main content area */}
           <motion.div
-            className={`bg-gradient-to-br from-sky-600/70 to-teal-800/60 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-amber-200/30 shadow-[0_8px_30px_rgba(0,183,235,0.25)] flex-1 relative overflow-hidden w-full ${
+            className={`bg-gradient-to-br from-amber-800/60 to-yellow-900/30 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-yellow-400/30 shadow-[0_8px_30px_rgba(252,211,77,0.25)] flex-1 relative overflow-hidden w-full ${
               showTest ? "lg:max-w-3xl mx-auto" : "lg:max-w-4xl"
             }`}
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
-            {/* 🌊 Horizon Line */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-100/60 via-white/30 to-teal-200/50"></div>
+            {/* 🪔 Temple Glow Line */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-200/60 via-amber-100/30 to-orange-100/40" />
 
-            {/* 🌀 Ocean Mist Orbs */}
-            <div className="absolute -bottom-20 -right-20 w-44 h-44 bg-cyan-200/20 rounded-full blur-3xl"></div>
-            <div className="absolute -top-20 -left-20 w-44 h-44 bg-sky-300/20 rounded-full blur-3xl"></div>
+            {/* ✨ Magical Orbs */}
+            <div className="absolute -bottom-20 -right-20 w-44 h-44 bg-yellow-300/20 rounded-full blur-3xl" />
+            <div className="absolute -top-20 -left-20 w-44 h-44 bg-orange-200/20 rounded-full blur-3xl" />
 
-            {/* ☀️ Sun sparkle/magic aura */}
-            <div className="absolute top-1/2 right-8 w-24 h-24 bg-amber-100/20 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-8 left-8 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+            {/* 🔆 Aura Glows */}
+            <div className="absolute top-1/2 right-8 w-24 h-24 bg-yellow-100/30 rounded-full blur-2xl" />
+            <div className="absolute bottom-8 left-8 w-32 h-32 bg-white/20 rounded-full blur-2xl" />
 
-            {/* 🌤️ Drift shimmer */}
-            <div className="absolute -top-12 right-1/3 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+            {/* 🌤️ Ambient shimmer */}
+            <div className="absolute -top-12 right-1/3 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-pulse" />
 
             <ToastContainer position="top-center" autoClose={3000} />
 
@@ -1088,13 +1066,13 @@ const VocabularyScaleTest = () => {
                   {/* Progress bar and back button */}
                   <div className="w-full mb-6">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-white/80">
+                      <span className="text-white/80 text-md">
                         {t("progress")}: {currentWordIndex + 1}/{words.length}
                       </span>
                     </div>
-                    <div className="w-full bg-white/20 rounded-full h-3">
+                    <div className="w-full bg-yellow-200/20 rounded-full h-3">
                       <motion.div
-                        className="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full"
+                        className="bg-gradient-to-r from-yellow-400 to-amber-600 h-3 rounded-full"
                         initial={{ width: 0 }}
                         animate={{
                           width: `${

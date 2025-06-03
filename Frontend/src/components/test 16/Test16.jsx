@@ -18,23 +18,26 @@ import AudioPlayer from "react-h5-audio-player";
 import speakerbirdAnimation from "../../assets/sound-test/speakerbird.json";
 // Images
 import backgroundImage from "../../assets/sound-test/whispering-isle.png";
-import echoCharacter from "../../assets/sound-test/echo-crab.png";
+import echoCharacter from "../../assets/sound-test/Goonjarishi.png";
 
 const CharacterDialog = ({ onComplete }) => {
-  const { t } = useLanguage(); 
+  const { t } = useLanguage();
   const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
 
-  const dialogs = useMemo(() => [
-    t("soundTestEchoDialogAhoy"),
-    t("soundTestEchoDialogIntro"),
-    t("soundTestEchoDialogIsleDescription"),
-    t("soundTestEchoDialogTwoSounds"),
-    t("soundTestEchoDialogYourJob"),
-    t("soundTestEchoDialogAreTheySame"),
-    t("soundTestEchoDialogOrDifferent"),
-    t("soundTestEchoDialogReadyPirate"),
-    t("imReady"),
-  ], [t]);
+  const dialogs = useMemo(
+    () => [
+      t("soundTestEchoDialogAhoy"),
+      t("soundTestEchoDialogIntro"),
+      t("soundTestEchoDialogIsleDescription"),
+      t("soundTestEchoDialogTwoSounds"),
+      t("soundTestEchoDialogYourJob"),
+      t("soundTestEchoDialogAreTheySame"),
+      t("soundTestEchoDialogOrDifferent"),
+      t("soundTestEchoDialogReadyPirate"),
+      t("imReadysound"),
+    ],
+    [t]
+  );
 
   const handleNext = () => {
     if (currentDialogIndex < dialogs.length - 1) {
@@ -102,16 +105,19 @@ const CharacterDialog = ({ onComplete }) => {
             />
           </motion.div>
           <motion.div
-            className="bg-gradient-to-br from-blue-900/70 to-teal-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+            className="bg-gradient-to-br from-yellow-800/60 to-indigo-900/60 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-500 to-teal-500"></div>
-            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-teal-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
-            <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-400/10 rounded-full filter blur-lg"></div>
+            {/* Top accent strip: saffron to deep maroon to indigo */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-300 via-rose-500 to-indigo-600"></div>
+
+            {/* Soft aura orbs */}
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-orange-100/30 rounded-full filter blur-xl"></div>
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-yellow-200/30 rounded-full filter blur-xl"></div>
+            <div className="absolute top-1/2 right-8 w-24 h-24 bg-rose-300/10 rounded-full filter blur-lg"></div>
+            <div className="absolute bottom-8 left-8 w-32 h-32 bg-indigo-300/10 rounded-full filter blur-lg"></div>
             <motion.div
               key={currentDialogIndex}
               initial={{ opacity: 0, x: 20 }}
@@ -120,7 +126,9 @@ const CharacterDialog = ({ onComplete }) => {
               transition={{ duration: 0.4 }}
               className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 xl:min-h-72 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
             >
-              <span className="drop-shadow-lg">{dialogs[currentDialogIndex]}</span>
+              <span className="drop-shadow-lg">
+                {dialogs[currentDialogIndex]}
+              </span>
             </motion.div>
             <div className="flex justify-center gap-3 mb-8 lg:mb-10">
               {dialogs.map((_, index) => (
@@ -158,7 +166,7 @@ const CharacterDialog = ({ onComplete }) => {
                   </>
                 ) : (
                   <>
-                    <span className="drop-shadow-sm">{t("imReady")}</span>
+                    <span className="drop-shadow-sm">{t("imReadysound")}</span>
                     <FaCheck className="mt-0.5 drop-shadow-sm" />
                   </>
                 )}
@@ -172,7 +180,7 @@ const CharacterDialog = ({ onComplete }) => {
 };
 
 const SoundPlayer = ({ pair, onTimeout }) => {
-  const { t } = useLanguage(); 
+  const { t } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [playCount, setPlayCount] = useState(0);
   const lottieRef = useRef(null);
@@ -303,14 +311,55 @@ const SoundQuestion = ({
   const { t } = useLanguage(); // t is now fetched here
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasAnswered, setHasAnswered] = useState(false);
-
+  const [feedback, setFeedback] = useState({
+    show: false,
+    message: "",
+    isCorrect: false,
+  });
   const handleAnswer = (isSame) => {
     if (hasAnswered) return;
+
+    const correctAnswer = pair[0] === pair[1];
+    const isUserCorrect = isSame === correctAnswer;
+
+    // Show motivational feedback using translations
+    if (isUserCorrect) {
+      const successMessages = [
+        t("correctAnswerGreatJob"),
+        t("youGotItRight"),
+        t("perfectScore"),
+        t("wellDone"),
+        t("excellentWork"),
+      ];
+      setFeedback({
+        show: true,
+        message:
+          successMessages[Math.floor(Math.random() * successMessages.length)],
+        isCorrect: true,
+      });
+    } else {
+      const tryAgainMessages = [
+        t("almostThere"),
+        t("goodTry"),
+        t("keepPracticing"),
+        t("nextTimeBetter"),
+        t("dontGiveUp"),
+      ];
+      setFeedback({
+        show: true,
+        message:
+          tryAgainMessages[Math.floor(Math.random() * tryAgainMessages.length)],
+        isCorrect: false,
+      });
+    }
+
     setSelectedOption(isSame);
     setHasAnswered(true);
+    // Hide feedback after delay
     setTimeout(() => {
+      setFeedback({ ...feedback, show: false });
       onAnswer(isSame);
-    }, 500);
+    }, 1500);
   };
 
   // Reset state when pair changes (new question)
@@ -320,55 +369,114 @@ const SoundQuestion = ({
   }, [pair]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
-      className="bg-black/50 backdrop-blur-md rounded-3xl p-8 shadow-2xl w-full max-w-3xl mx-auto border-2 border-white/40"
+    <>
+      {/* Feedback message in bottom center */}
+
+      {/* Main card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.5 }}
+        className="bg-black/50 backdrop-blur-md rounded-3xl p-8 shadow-2xl w-full max-w-3xl mx-auto border-2 border-white/40"
+      >
+        <div className="text-center mb-4 text-white font-semibold text-2xl">
+          {t("question")} {index + 1} {t("of")} {totalQuestions}
+        </div>
+
+        {pair && <SoundPlayer pair={pair} onTimeout={onTimeout} />}
+
+        <div className="flex justify-center gap-6 mt-10">
+          <motion.button
+            whileHover={!hasAnswered && { scale: 1.05 }}
+            whileTap={!hasAnswered && { scale: 0.95 }}
+            onClick={() => handleAnswer(true)}
+            disabled={hasAnswered}
+            className={`py-4 px-6 rounded-xl text-xl font-bold transition-all ${
+              hasAnswered
+                ? selectedOption === true
+                  ? "bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 text-white shadow-lg"
+                  : "bg-gray-500 text-gray-300"
+                : "bg-gradient-to-r from-green-700 via-lime-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white shadow-lg"
+            }`}
+          >
+            {t("sameSounds")}
+          </motion.button>
+
+          <motion.button
+            whileHover={!hasAnswered && { scale: 1.05 }}
+            whileTap={!hasAnswered && { scale: 0.95 }}
+            onClick={() => handleAnswer(false)}
+            disabled={hasAnswered}
+            className={`py-4 px-6 rounded-xl text-xl font-bold transition-all ${
+              hasAnswered
+                ? selectedOption === false
+                  ? "bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 text-white shadow-lg"
+                  : "bg-gray-500 text-gray-300"
+                : "bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 hover:from-red-600 hover:to-orange-500 text-white shadow-lg"
+            }`}
+          >
+            {t("differentSounds")}
+          </motion.button>
+        </div>
+      </motion.div>
+      {feedback.show && (
+  <motion.div
+    initial={{ y: 100, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    exit={{ y: 100, opacity: 0 }}
+    transition={{ type: "spring", damping: 18 }}
+    className="fixed inset-x-0 bottom-6 mx-auto z-50 flex justify-center"
+  >
+    <div
+      className={`rounded-xl p-4 shadow-lg text-center max-w-md w-full mx-4 ${
+        feedback.isCorrect
+          ? "bg-gradient-to-r from-yellow-600 via-amber-500 to-orange-600 border border-yellow-100 text-white"
+          : "bg-gradient-to-r from-red-700 via-rose-600 to-pink-600 border border-red-200 text-white"
+      }`}
     >
-      <div className="text-center mb-4 text-white font-semibold text-2xl">
-        {t("question")} {index + 1} {t("of")} {totalQuestions}
+      <div className="flex items-center justify-center gap-2">
+        {feedback.isCorrect ? (
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        ) : (
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        )}
+        <span className="text-lg font-bold">{feedback.message}</span>
       </div>
-      {pair && <SoundPlayer pair={pair} onTimeout={onTimeout} />} {/* Ensure pair is defined */}
-      <div className="flex justify-center gap-6 mt-10">
-        <motion.button
-          whileHover={!hasAnswered && { scale: 1.05 }}
-          whileTap={!hasAnswered && { scale: 0.95 }}
-          onClick={() => handleAnswer(true)}
-          disabled={hasAnswered}
-          className={`py-4 px-6 rounded-xl text-xl font-bold transition-all ${
-            hasAnswered
-              ? selectedOption === true
-                ? "bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 text-white shadow-lg"
-                : "bg-gray-500 text-gray-300"
-              : "bg-gradient-to-r from-green-700 via-lime-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white shadow-lg"
-          }`}
-        >
-          {t("sameSounds")}
-        </motion.button>
-        <motion.button
-          whileHover={!hasAnswered && { scale: 1.05 }}
-          whileTap={!hasAnswered && { scale: 0.95 }}
-          onClick={() => handleAnswer(false)}
-          disabled={hasAnswered}
-          className={`py-4 px-6 rounded-xl text-xl font-bold transition-all ${
-            hasAnswered
-              ? selectedOption === false
-                ? "bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 text-white shadow-lg"
-                : "bg-gray-500 text-gray-300"
-              : "bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 hover:from-red-600 hover:to-orange-500 text-white shadow-lg"
-          }`}
-        >
-          {t("differentSounds")}
-        </motion.button>
-      </div>
-    </motion.div>
+    </div>
+  </motion.div>
+)}
+    </>
   );
 };
 
-const ProgressBarComponent = ({ current, total }) => { // Renamed ProgressBar to avoid conflicts
-  const { t } = useLanguage(); 
+const ProgressBarComponent = ({ current, total }) => {
+  // Renamed ProgressBar to avoid conflicts
+  const { t } = useLanguage();
   const progress = total > 0 ? (current / total) * 100 : 0;
 
   return (
@@ -383,7 +491,7 @@ const ProgressBarComponent = ({ current, total }) => { // Renamed ProgressBar to
       </div>
       <div className="w-full h-8 bg-gray-300/50 rounded-full overflow-hidden shadow-inner">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-teal-600 relative"
+          className="h-full rounded-full bg-gradient-to-r from-orange-300 via-rose-500 to-indigo-600 relative"
           initial={{ width: "0%" }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.7, ease: "easeOut" }}
@@ -404,14 +512,32 @@ const SoundDiscriminationTest = ({
   onComplete,
 }) => {
   const { t, language } = useLanguage();
-  
-  const wordPairs = useMemo(() => [ 
-    ["dog", "hog"], ["gate", "cake"], ["bun", "bun"], ["let", "net"],
-    ["ride", "ride"], ["man", "man"], ["pit", "bit"], ["thing", "sing"],
-    ["nut", "ton"], ["big", "big"], ["no", "mow"], ["pot", "top"],
-    ["pat", "pat"], ["shut", "just"], ["name", "game"], ["raw", "war"],
-    ["feet", "seat"], ["fun", "fun"], ["day", "bay"], ["in", "on"],
-  ], []);
+
+  const wordPairs = useMemo(
+    () => [
+      ["dog", "hog"],
+      ["gate", "cake"],
+      ["bun", "bun"],
+      ["let", "net"],
+      ["ride", "ride"],
+      ["man", "man"],
+      ["pit", "bit"],
+      ["thing", "sing"],
+      ["nut", "ton"],
+      ["big", "big"],
+      ["no", "mow"],
+      ["pot", "top"],
+      ["pat", "pat"],
+      ["shut", "just"],
+      ["name", "game"],
+      ["raw", "war"],
+      ["feet", "seat"],
+      ["fun", "fun"],
+      ["day", "bay"],
+      ["in", "on"],
+    ],
+    []
+  );
 
   const [score, setScore] = useState(0);
   const [showCharacter, setShowCharacter] = useState(true);
@@ -430,7 +556,7 @@ const SoundDiscriminationTest = ({
   };
 
   const handleAnswer = (isSame) => {
-    if (currentQuestionIndex >= wordPairs.length) return; 
+    if (currentQuestionIndex >= wordPairs.length) return;
 
     const currentPair = wordPairs[currentQuestionIndex];
     const correctAnswer = currentPair[0] === currentPair[1];
@@ -457,7 +583,7 @@ const SoundDiscriminationTest = ({
     if (currentQuestionIndex >= wordPairs.length) return; // Safety check
 
     const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[currentQuestionIndex] = null; 
+    newSelectedOptions[currentQuestionIndex] = null;
     setSelectedOptions(newSelectedOptions);
 
     if (currentQuestionIndex < wordPairs.length - 1) {
@@ -499,7 +625,8 @@ const SoundDiscriminationTest = ({
         if (suppressResultPage && typeof onComplete === "function") {
           onComplete(score);
         } else {
-          toast.success(t("testSubmittedSuccessfully"), { // Using existing key
+          toast.success(t("testSubmittedSuccessfully"), {
+            // Using existing key
             position: "top-center",
             onClose: () => navigate("/"), // Or to a results page
           });
@@ -509,7 +636,10 @@ const SoundDiscriminationTest = ({
       }
     } catch (error) {
       console.error("Error submitting test:", error);
-      toast.error(t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") || t("errorOccurred")); // Using existing key
+      toast.error(
+        t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") ||
+          t("errorOccurred")
+      ); // Using existing key
     } finally {
       setIsSubmitting(false);
     }
@@ -550,7 +680,7 @@ const SoundDiscriminationTest = ({
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <ProgressBarComponent 
+              <ProgressBarComponent
                 current={currentQuestionIndex + 1}
                 total={wordPairs.length}
               />
@@ -605,7 +735,11 @@ const SoundDiscriminationTest = ({
                   <span className="flex items-center justify-center">
                     <motion.span
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                       className="inline-block mr-2"
                     >
                       ↻
