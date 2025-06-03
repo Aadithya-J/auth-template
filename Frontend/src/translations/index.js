@@ -607,17 +607,17 @@ export const translations = {
     speakGreatWhatIsIt: "Great! Can you tell me what it is?",
     speakCanYouSeeThisPictureInitial: "Can you see this picture?",
 
-    phonemeBlendingIntroDialog1:
-      "Welcome to Blender’s Bay, a magical place where word waves and swirling whirlpools help us blend sounds together!",
-    phonemeBlendingIntroDialog2:
-      "I’m Blenda the Dolphin, your guide on this journey. Let’s dive into the gentle waves and swirl the sounds to create new words!",
-    phonemeBlendingIntroDialog3:
-      "Are you ready? Let’s see what words we can make by blending these sounds together!",
-    altBlendaTheDolphin: "Blenda the Dolphin",
+    phonemeBlendingIntroDialog1: "Namaste, young voyagers! 🙏🌊",
+phonemeBlendingIntroDialog2: "I am Shabdamitra 🐬, your dolphin friend from the Sound Waves.",
+phonemeBlendingIntroDialog3: "Here in Shabd Sagar, the waves don’t just splash... 🌊✨",
+phonemeBlendingIntroDialog4: "They sing with mantras, rhymes, and playful sounds! 🎶🪷",
+phonemeBlendingIntroDialog5: "Let’s blend those sounds into magical words—are you ready to make waves with your voice? 🗣️🔤💫",
+
+altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
 
     // Game Screen UI
     phonemeBlendingProgressBarStart: "Start",
-    phonemeBlendingProgressBarWord: "Word {current} of {total}",
+    phonemeBlendingProgressBarWord: "Word",
     phonemeBlendingProgressBarFinish: "Finish",
     phonemeBlendingHeaderTitle: "Blend the Sounds!",
     phonemeBlendingPromptListen: "Listen carefully to the sounds", // Also used for "Listen to the sounds and combine them to form a word"
