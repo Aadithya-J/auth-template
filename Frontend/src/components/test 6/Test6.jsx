@@ -266,26 +266,39 @@ const useTestSubmission = (onTestComplete) => {
 
 // Main Component
 function Test6({ suppressResultPage = false, onComplete }) {
-  const [selectedFile, setSelectedFile] = useState(null);
   const { language, t } = useLanguage();
+
+  // File Upload State
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  // UI Element Visibility & Animation States
   const [showEels, setShowEels] = useState(false);
   const [showReward, setShowReward] = useState(false);
   const [showSpyglass, setShowSpyglass] = useState(false);
   const [coralineVisible, setCoralineVisible] = useState(false);
   const [coralineAnimationState, setCoralineAnimationState] = useState("idle");
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(true);
+
+  // Game Logic & Progress States
   const [introMessage, setIntroMessage] = useState("");
   const [gameProgress, setGameProgress] = useState(0);
   const [gameState, setGameState] = useState("intro");
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [collectedTreasures, setCollectedTreasures] = useState([]);
+  const [tutorialPhase, setTutorialPhase] = useState(0);
+  const [isTutorialComplete, setIsTutorialComplete] = useState(false);
+
+  // Word, Page & Transcription States for the Test
   const [currentWords, setCurrentWords] = useState([]);
   const [wordShells, setWordShells] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordsPerBatch, setWordsPerBatch] = useState(12); // Changed from 16 to 12
+  const [wordsPerBatch] = useState(12);
+  const [allTranscriptions, setAllTranscriptions] = useState([]);
+  const [completedPages, setCompletedPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Refs
   const wordIntervalRef = useRef(null);
-  const [tutorialPhase, setTutorialPhase] = useState(0);
-  const [showTutorial, setShowTutorial] = useState(true);
-  const [isTutorialComplete, setIsTutorialComplete] = useState(false);
 
   const tutorialMessages = useMemo(
     () => [
@@ -328,11 +341,10 @@ function Test6({ suppressResultPage = false, onComplete }) {
       );
       setGameProgress((wordsPerBatch / words.length) * 100);
     }
-  }, [language, showTutorial, gameState, wordsPerBatch]); // Added wordsPerBatch
+  }, [language, showTutorial, gameState, wordsPerBatch]);
 
   const startWordBatches = (words) => {
     setCurrentWordIndex(0);
-    setWordsPerBatch(12); // Changed from 4 to 12, ensure this aligns with your intent or remove if not needed
   };
 
   useEffect(() => {
@@ -365,7 +377,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
     };
 
     introSequence();
-  }, [showTutorial, tutorialMessages]); // Added tutorialMessages dependency
+  }, [showTutorial, tutorialMessages]);
 
   const handleNextTutorialStep = () => {
     if (tutorialPhase < tutorialMessages.length - 1) {
@@ -387,9 +399,17 @@ function Test6({ suppressResultPage = false, onComplete }) {
       const currentTranscript = await transcribeAudio(file);
 
       if (currentTranscript) {
+        // Store the transcription for the current page
+        setAllTranscriptions((prev) => {
+          const newTranscriptions = [...prev];
+          newTranscriptions[currentPage] = currentTranscript;
+          return newTranscriptions;
+        });
+
         setCoralineAnimationState("happy");
         setIntroMessage(t("coralineHeardClearly"));
-        setGameProgress((prev) => Math.min(prev + 30, 70));
+        const progress = ((currentPage + 1) / Math.ceil(currentWords.length / wordsPerBatch)) * 85;
+        setGameProgress(progress);
         glowCorrectWords(currentTranscript);
       } else {
         setCoralineAnimationState("confused");
@@ -437,54 +457,78 @@ function Test6({ suppressResultPage = false, onComplete }) {
       return;
     }
 
-    setCoralineAnimationState("focused");
-    setIntroMessage(t("coralineCheckingPronunciation"));
-    setGameProgress(85);
+    // Store current transcription and mark page as completed
+    setAllTranscriptions((prev) => [...prev, transcript]);
+    setCompletedPages((prev) => [...prev, currentPage]);
 
-    const { success, score } = await submitTest(
-      transcript,
-      suppressResultPage,
-      language
-    );
+    // Check if this is the last page
+    const isLastPage = (currentPage + 1) * wordsPerBatch >= currentWords.length;
 
-    if (success) {
-      setGameProgress(100);
-      if (score >= 70) {
-        setGameState("success");
-        setCoralineAnimationState("celebrating");
-        setIntroMessage(t("coralineAmazingScore").replace("{score}", score));
-        const newTreasure = {
-          id: Date.now(),
-          name: `${t("shellNamePrefix")}${collectedTreasures.length + 1}`,
-          image: shellImage,
-          score,
-        };
-        setCollectedTreasures([...collectedTreasures, newTreasure]);
-        setTimeout(() => {
+    if (isLastPage) {
+      // Submit all transcriptions
+      setCoralineAnimationState("focused");
+      setIntroMessage(t("coralineCheckingPronunciation"));
+      setGameProgress(85);
+
+      const combinedTranscript = allTranscriptions.join(" ") + " " + transcript;
+      const { success, score } = await submitTest(
+        combinedTranscript.trim(),
+        suppressResultPage,
+        language
+      );
+
+      if (success) {
+        setGameProgress(100);
+        if (onComplete) {
+          onComplete(combinedTranscript, score);
+        }
+        if (score >= 70) {
+          setGameState("success");
+          setCoralineAnimationState("celebrating");
           setShowReward(true);
+          setIntroMessage(t("coralineExcellentJob"));
           setTimeout(() => {
-            setShowReward(false);
-            setShowSpyglass(true);
-            setTimeout(() => setShowSpyglass(false), 4000);
+            setCoralineAnimationState("happy");
+            setIntroMessage(t("coralineRewardUnlocked"));
           }, 3000);
-        }, 1500);
+        } else {
+          setCoralineAnimationState("encouraging");
+          setIntroMessage(t("coralineGoodEffort"));
+        }
       } else {
-        setGameState("failure");
-        setCoralineAnimationState("encouraging");
-        setIntroMessage(
-          t("coralineScoreKeepPracticing").replace("{score}", score)
-        );
+        setCoralineAnimationState("confused");
+        setIntroMessage(t("coralineReefMagicError"));
       }
     } else {
-      setCoralineAnimationState("confused");
-      setIntroMessage(t("coralineReefMagicError"));
+      // Move to next page
+      setCurrentPage((prev) => prev + 1);
+      // Reset transcription for the new page
+      setTranscriptionReady(false);
+      setTranscript("");
+      // Update progress
+      const newProgress = ((currentPage + 1) * wordsPerBatch / currentWords.length) * 100;
+      setGameProgress(Math.min(newProgress, 85));
+
+      // Show message for next page
+      setCoralineAnimationState("happy");
+      setIntroMessage(t("coralineNextPage"));
+      
+      setTimeout(() => {
+        setCoralineAnimationState("idle");
+        setIntroMessage("");
+      }, 2000);
     }
   };
 
-  const visibleWords = wordShells.slice(
-    currentWordIndex,
-    currentWordIndex + wordsPerBatch
-  );
+  const visibleWords = useMemo(() => {
+    const start = currentPage * wordsPerBatch;
+    const end = start + wordsPerBatch;
+    return wordShells.slice(start, end).map((shell, idx) => ({
+      ...shell,
+      word: shell.word || shell,
+      index: start + idx
+    }));
+  }, [currentPage, wordShells, wordsPerBatch]);
 
   return (
     <div
@@ -658,9 +702,14 @@ function Test6({ suppressResultPage = false, onComplete }) {
           <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-8">
             <div className="mb-8 w-full px-4 sm:px-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-green-400 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                  {t("labelReefProgress")}
-                </span>
+                <div className="flex items-center gap-4">
+                  <span className="text-green-400 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                    {t("labelReefProgress")}
+                  </span>
+                  <span className="text-white text-sm">
+                    Page {currentPage + 1} of {Math.ceil(currentWords.length / wordsPerBatch)}
+                  </span>
+                </div>
                 <span className="text-teal-600 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                   {gameProgress}%
                 </span>
@@ -696,36 +745,26 @@ function Test6({ suppressResultPage = false, onComplete }) {
             <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 w-full">
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="w-full md:w-auto">
-                  {/* Assuming RecordingControls will get 't' prop if needed inside it */}
                   <RecordingControls
                     isRecording={isRecording}
                     onStartRecording={startRecording}
                     onStopRecording={stopRecording}
                     showEels={showEels}
                     largeSize={true}
-                    t={t} // Pass t if RecordingControls uses it internally
+                    t={t}
                   />
                 </div>
-                {currentWordIndex + wordsPerBatch < currentWords.length && (
+                {currentPage * wordsPerBatch + wordsPerBatch < currentWords.length ? (
                   <motion.button
-                    onClick={() => {
-                      const newIndex = currentWordIndex + wordsPerBatch;
-                      setCurrentWordIndex(newIndex);
-                      const progress = Math.min(
-                        100,
-                        (newIndex / currentWords.length) * 100
-                      );
-                      setGameProgress(progress);
-                    }}
-                    className="mt-4 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-700 to-cyan-500 text-white rounded-full shadow-lg mx-auto"
+                    onClick={handleSubmit}
+                    disabled={!transcriptionReady}
+                    className="mt-4 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-700 to-cyan-500 text-white rounded-full shadow-lg mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    {t("buttonNextWords")} <ChevronRight className="h-5 w-5" />
+                    Next Words <ChevronRight className="h-5 w-5" />
                   </motion.button>
-                )}
-                <div className="flex flex-col md:flex-row gap-6 w-full sm:w-auto">
-                  <FileUploadButton onFileUpload={handleFileUpload} t={t} />
+                ) : (
                   <SubmitButton
                     isTranscribing={isTranscribing}
                     transcriptionReady={transcriptionReady}
@@ -733,6 +772,9 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     t={t}
                     largeSize={true}
                   />
+                )}
+                <div className="flex flex-col md:flex-row gap-6 w-full sm:w-auto">
+                  <FileUploadButton onFileUpload={handleFileUpload} t={t} />
                 </div>
               </div>
             </div>
