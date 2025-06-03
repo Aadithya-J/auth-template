@@ -81,12 +81,10 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
 
   const dialog = [
-    "Ahoy there, sailor! Welcome to Spiral Sands!",
-    "Time is all mixed up here. The sands keep spinning and changing!",
-    "I need your help to fix the order of things!",
-    "Watch the cards closely. Remember the order!",
-    "Then, put them back the same way you saw them.",
-    "Let's untangle time together! Are you ready?",
+    "🐚 Hello, young traveler! I am Kaalnath, the crab who guards the River of Time.",
+    "🌊 Here, the river flows not just through space but through moments long past and yet to come.",
+    "⏳ Your challenge is to arrange the events of time in the right order.",
+    "🦀 Are you ready to journey through the currents of the past and future with me?",
   ];
 
   // Initialize available cards (shuffled with some extras)
@@ -664,7 +662,7 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
                 whileHover={{ scale: 1.05, x: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/taketests")}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-yellow-400"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-700/80  to-yellow-600/80 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-yellow-400"
               >
                 <motion.span
                   animate={{ x: [-2, 0, -2] }}
