@@ -454,22 +454,25 @@ export const translations = {
     transcriptionNotReady: "Please record or upload audio before submitting.", // For toast.info(t("transcriptionNotReady"))
 
     // Test6 - Tutorial Messages (Coraline's dialogue)
-    tutorialHelloExplorer: "👋 Hello there, young explorer!",
+    tutorialHelloExplorer: "🙏 Namaste, little seeker of stories!",
     tutorialCoralineIntro:
-      "🦑 I'm Coraline the Kraken, the friendly librarian of Glyph Reef.",
+      "🌺 I am Varnika Devi, the scribe of this sacred forest.",
     tutorialGlyphReefDescription:
-      "🌊 This is a special place where words grow like coral!",
+      "🌿 Each letter you see here is alive with ancient magic.",
     tutorialReadingTask:
-      "📖 Your job is to read each word on the glowing shells out loud.",
+      "👻 But beware... playful spirits love to twist the truth!",
     tutorialDifficulty:
-      "✨ They'll start easy and get a little harder — but I believe in you!",
+      "👁️‍🗨️ Look closely, read wisely — and the forest will light your path.",
     tutorialShellOfFluency:
-      "🏆 Read carefully and you'll earn the Shell of Fluency 🐚",
+      "🏆 Read with care, and you shall earn the Shell of Fluency 🐚",
     tutorialCoralSpyglass:
-      "🔭 and my magical Coral Spyglass to help you on your journey.",
-    tutorialLetsGetReading: "📚 Let's get reading!",
-    tutorialReadyForMission: "🚀 Are you ready to attempt the mission?",
-    buttonTutorialConfirmReady: "🧭 Aye, I'm ready!", // Specific for tutorial button
+      "🔮 I will grant you the enchanted Forest Spyglass to guide your quest.",
+    tutorialLetsGetReading:
+      "📚 Come — let us awaken the power of words together!",
+    tutorialReadyForMission: "🚀 Are you ready to begin your sacred journey?",
+    buttonTutorialConfirmReady: "🧭 Yes, lead me through the forest!",
+
+    // Specific for tutorial button
 
     // Test6 - Coraline's dynamic messages during the test
     coralineExcellentRecording: "Excellent! Let me listen to that recording...",
@@ -487,7 +490,7 @@ export const translations = {
 
     // Test6 - UI Labels, Alts, Aria-Labels
     altCoralineCharacter: "Coraline",
-    labelReefProgress: "Reef Progress",
+    labelReefProgress: "Progress",
     altAncientPaperBackground: "Ancient paper background",
     buttonNextWords: "Next Words",
     altEarnedShellImage: "Earned Shell",
@@ -615,12 +618,16 @@ export const translations = {
     speakCanYouSeeThisPictureInitial: "Can you see this picture?",
 
     phonemeBlendingIntroDialog1: "Namaste, young voyagers! 🙏🌊",
-phonemeBlendingIntroDialog2: "I am Shabdamitra 🐬, your dolphin friend from the Sound Waves.",
-phonemeBlendingIntroDialog3: "Here in Shabd Sagar, the waves don’t just splash... 🌊✨",
-phonemeBlendingIntroDialog4: "They sing with mantras, rhymes, and playful sounds! 🎶🪷",
-phonemeBlendingIntroDialog5: "Let’s blend those sounds into magical words—are you ready to make waves with your voice? 🗣️🔤💫",
+    phonemeBlendingIntroDialog2:
+      "I am Shabdamitra 🐬, your dolphin friend from the Sound Waves.",
+    phonemeBlendingIntroDialog3:
+      "Here in Shabd Sagar, the waves don’t just splash... 🌊✨",
+    phonemeBlendingIntroDialog4:
+      "They sing with mantras, rhymes, and playful sounds! 🎶🪷",
+    phonemeBlendingIntroDialog5:
+      "Let’s blend those sounds into magical words—are you ready to make waves with your voice? 🗣️🔤💫",
 
-altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
+    altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
 
     // Game Screen UI
     phonemeBlendingProgressBarStart: "Start",
@@ -1366,15 +1373,15 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     phonemeBlendingResultCardYouSaid: "நீங்கள் சொன்னது:",
     phonemeBlendingResultCardNoResponse: "பதில் இல்லை",
     phonemeBlendingResultCardCorrectAnswer: "சரியான பதில்:",
-  },
     allTestsView: "அனைத்து சோதனைகள்",
     individualTestsView: "தனிப்பட்ட சோதனைகள்",
     continuousAssessmentsView: "தொடர்ச்சியான மதிப்பீடுகள்",
     individualTestResults: "தனிப்பட்ட சோதனை முடிவுகள்",
     continuousAssessmentResults: "தொடர்ச்சியான மதிப்பீட்டு முடிவுகள்",
     noTestResultsFoundAtAll: "சோதனை முடிவுகள் எதுவும் கிடைக்கவில்லை.",
-    noTestResultsFoundForFilter: "தற்போதைய வடிகட்டிக்கு முடிவுகள் எதுவும் பொருந்தவில்லை.",
-      },
+    noTestResultsFoundForFilter:
+      "தற்போதைய வடிகட்டிக்கு முடிவுகள் எதுவும் பொருந்தவில்லை.",
+  },
   hi: {
     question: "प्रश्न",
     complete: "पूर्ण",
@@ -2323,7 +2330,8 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     individualTestResults: "വ്യക്തിഗത ടെസ്റ്റ് ഫലങ്ങൾ",
     continuousAssessmentResults: "തുടർച്ചയായ വിലയിരുത്തൽ ഫലങ്ങൾ",
     noTestResultsFoundAtAll: "ടെസ്റ്റ് ഫലങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.",
-    noTestResultsFoundForFilter: "നിലവിലെ ഫിൽട്ടറുമായി ഫലങ്ങൾ ഒന്നും പൊരുത്തപ്പെടുന്നില്ല.",
+    noTestResultsFoundForFilter:
+      "നിലവിലെ ഫിൽട്ടറുമായി ഫലങ്ങൾ ഒന്നും പൊരുത്തപ്പെടുന്നില്ല.",
   },
   te: {
     mainMenu: "ప్రధాన మెనూ",
@@ -2607,7 +2615,8 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     individualTestResults: "వ్యక్తిగత పరీక్షా ఫలితాలు",
     continuousAssessmentResults: "నిరంతర మూల్యాంకన ఫలితాలు",
     noTestResultsFoundAtAll: "పరీక్షా ఫలితాలు ఏవీ కనుగొనబడలేదు.",
-    noTestResultsFoundForFilter: "ప్రస్తుత ఫిల్టర్‌కు సరిపోయే ఫలితాలు ఏవీ లేవు.",
+    noTestResultsFoundForFilter:
+      "ప్రస్తుత ఫిల్టర్‌కు సరిపోయే ఫలితాలు ఏవీ లేవు.",
   },
   kn: {
     question: "ಪ್ರಶ್ನೆ",
@@ -3243,7 +3252,8 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     individualTestResults: "ವೈಯಕ್ತಿಕ ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶಗಳು",
     continuousAssessmentResults: "ನಿರಂತರ ಮೌಲ್ಯಮಾಪನ ಫಲಿತಾಂಶಗಳು",
     noTestResultsFoundAtAll: "ಯಾವುದೇ ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
-    noTestResultsFoundForFilter: "ಪ್ರಸ್ತುತ ಫಿಲ್ಟರ್‌ಗೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ.",
+    noTestResultsFoundForFilter:
+      "ಪ್ರಸ್ತುತ ಫಿಲ್ಟರ್‌ಗೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ.",
   },
   mr: {
     mainMenu: "मुख्य मेनू",
@@ -4094,7 +4104,8 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     individualTestResults: "વ્યક્તિગત પરીક્ષા પરિણામો",
     continuousAssessmentResults: "સતત મૂલ્યાંકન પરિણામો",
     noTestResultsFoundAtAll: "કોઈ પરીક્ષા પરિણામ મળ્યું નથી.",
-    noTestResultsFoundForFilter: "વર્તમાન ફિલ્ટર સાથે કોઈ પરિણામ મેળ ખાતું નથી.",
+    noTestResultsFoundForFilter:
+      "વર્તમાન ફિલ્ટર સાથે કોઈ પરિણામ મેળ ખાતું નથી.",
   },
   pa: {
     mainMenu: "ਮੁੱਖ ਮੈਨੂ",
@@ -4938,7 +4949,8 @@ altBlendaTheDolphin: "Shabdamitra the Dolphin 🐬",
     individualTestResults: "ବ୍ୟକ୍ତିଗତ ପରୀକ୍ଷା ଫଳାଫଳ",
     continuousAssessmentResults: "ନିରନ୍ତର ମୂଲ୍ୟାଙ୍କନ ଫଳାଫଳ",
     noTestResultsFoundAtAll: "କୌଣସି ପରୀକ୍ଷା ଫଳାଫଳ ମିଳିଲା ନାହିଁ।",
-    noTestResultsFoundForFilter: "ପ୍ରଚଳିତ ଫିଲ୍ଟର୍ ସହିତ କୌଣସି ଫଳାଫଳ ମେଳ ଖାଉନାହିଁ।",
+    noTestResultsFoundForFilter:
+      "ପ୍ରଚଳିତ ଫିଲ୍ଟର୍ ସହିତ କୌଣସି ଫଳାଫଳ ମେଳ ଖାଉନାହିଁ।",
   },
 };
 
