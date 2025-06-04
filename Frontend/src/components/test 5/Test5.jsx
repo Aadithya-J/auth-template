@@ -75,7 +75,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [isProcessingSubmit, setIsProcessingSubmit] = useState(false);
-  const [userInputs, setUserInputs] = useState(Array(letters.length).fill(""));
+  const [userInputs, setUserInputs] = useState({}); // Changed from Array to Object
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [inputStatus, setInputStatus] = useState({});
@@ -175,15 +175,15 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
 
         if (response.ok && result.transcription != null) {
           const transcribedText = result.transcription.trim().toLowerCase();
-
+          const currentLetter = letters[indexToUpdate];
           const currentStatusBeforeUpdate = inputStatus[indexToUpdate];
 
           if (transcribedText) {
             setUserInputs((prevInputs) => {
-              const newInputs = [...prevInputs];
+              const newInputs = { ...prevInputs };
 
               if (currentStatusBeforeUpdate !== "done_typed") {
-                newInputs[indexToUpdate] = transcribedText;
+                newInputs[currentLetter] = transcribedText; // Store with letter as key
 
                 setInputStatus((prev) => ({
                   ...prev,
@@ -244,12 +244,12 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
         }
       }
     },
-    [childId, letters, currentIndex, inputStatus, stopListening]
+    [childId, letters, currentIndex, inputStatus, stopListening, language] // Added language
   );
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current || currentIndex >= letters.length) return;
-
+    const currentLetter = letters[currentIndex];
     const currentStatus = inputStatus[currentIndex] || "idle";
     if (currentStatus === "done_voice" || currentStatus === "pending") {
       toast.info("Already processing voice input for this letter.");
@@ -257,8 +257,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
     }
 
     setUserInputs((prev) => {
-      const newInputs = [...prev];
-      newInputs[currentIndex] = "";
+      const newInputs = { ...prev };
+      newInputs[currentLetter] = ""; // Clear input for current letter
       return newInputs;
     });
     setInputStatus((prev) => ({ ...prev, [currentIndex]: "recording" }));
@@ -310,7 +310,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
         setInputStatus((prev) => ({ ...prev, [currentIndex]: "error" }));
         setIsRecording(false);
       });
-  }, [currentIndex, letters.length, stopListening, uploadAudio, inputStatus]);
+  }, [currentIndex, letters, stopListening, uploadAudio, inputStatus]); // Added letters
 
   const handleNext = useCallback(() => {
     if (currentIndex >= letters.length) return;
@@ -345,6 +345,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
         !isProcessingSubmit
       ) {
         const currentStatus = inputStatus[currentIndex] || "idle";
+        const currentLetter = letters[currentIndex];
 
         if (isRecordingRef.current) {
           stopListening(currentIndex);
@@ -354,8 +355,8 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
           currentStatus === "recording"
         ) {
           setUserInputs((prev) => {
-            const ni = [...prev];
-            if (!ni[currentIndex]) ni[currentIndex] = "";
+            const ni = { ...prev };
+            if (ni[currentLetter] === undefined) ni[currentLetter] = ""; // Ensure key exists
             return ni;
           });
           setInputStatus((prev) => ({ ...prev, [currentIndex]: "error" }));
@@ -413,6 +414,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     const currentStatus = inputStatus[currentIndex] || "idle";
+    const currentLetter = letters[currentIndex];
 
     if (
       currentStatus === "pending" ||
@@ -425,9 +427,10 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
       return;
     }
 
-    const newInputs = [...userInputs];
-    newInputs[currentIndex] = value;
-    setUserInputs(newInputs);
+    setUserInputs(prevInputs => ({
+      ...prevInputs,
+      [currentLetter]: value // Store with letter as key
+    }));
     setInputStatus((prev) => ({
       ...prev,
       [currentIndex]: value ? "done_typed" : "idle",
@@ -462,27 +465,35 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
     stopListening(-1);
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const finalUserInputs = [...userInputs];
-    while (finalUserInputs.length < letters.length) finalUserInputs.push("");
+    // Ensure all letters have an entry in userInputs, even if empty
+    const finalResponses = { ...userInputs };
+    letters.forEach(letter => {
+      if (!(letter in finalResponses)) {
+        finalResponses[letter] = "";
+      }
+    });
 
     try {
+      // Using the new proposed API route and payload structure
       const evalResponse = await axios.post(
-        `${backendURL}/evaluate-grapheme-test`,
+        `${backendURL}/evaluate-grapheme-responses`, // New API route
         {
           childId,
-          letters,
-          transcriptions: finalUserInputs.slice(0, letters.length),
+          userResponses: finalResponses, // Send the object of responses
           language:
             language === "ta"
               ? "tamil"
               : language === "hi"
               ? "hindi"
               : "english",
+          // Optionally, you might still want to send the original letters array
+          // if the backend needs it for ordering or to know all expected letters.
+          // expectedLetters: letters,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.dismiss();
-      setScore(evalResponse.data.score);
+      setScore(evalResponse.data.totalScore); // Changed from evalResponse.data.score
       setIsProcessingSubmit(false);
 
       if (suppressResultPage && typeof onComplete === "function") {
@@ -502,7 +513,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
   const restartTest = () => {
     stopListening(-1);
     setCurrentIndex(0);
-    setUserInputs(Array(letters.length).fill(""));
+    setUserInputs({}); // Reset to empty object
     setShowResults(false);
     setShowSubmit(false);
     setScore(0);
@@ -514,6 +525,9 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
 
   const renderCurrentInputStatus = () => {
     const status = inputStatus[currentIndex] || "idle";
+    const currentLetter = letters[currentIndex];
+    const currentResponse = userInputs[currentLetter] || "";
+
     switch (status) {
       case "recording":
         return (
@@ -532,7 +546,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
           <div className="flex items-center justify-center gap-2 text-green-600 h-6 mb-4">
             <Check size={16} /> Heard:{" "}
             <span className="bg-green-100 px-2 py-0.5 rounded font-medium">
-              {userInputs[currentIndex]}
+              {currentResponse}
             </span>
           </div>
         );
@@ -541,7 +555,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
           <div className="flex items-center justify-center gap-2 text-green-600 h-6 mb-4">
             <Check size={16} /> Typed:{" "}
             <span className="bg-green-100 px-2 py-0.5 rounded font-medium">
-              {userInputs[currentIndex]}
+              {currentResponse}
             </span>
           </div>
         );
@@ -1018,7 +1032,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                     }}
                     ref={inputRef}
                     type="text"
-                    value={userInputs[currentIndex]}
+                    value={userInputs[letters[currentIndex]] || ""} // Read from object
                     onChange={handleInputChange}
                     className="w-full px-6 py-4 text-center text-xl bg-white/90 backdrop-blur-sm border-2 border-orange-400/50 rounded-2xl focus:outline-none focus:border-orange-400 disabled:bg-gray-400/20 disabled:cursor-not-allowed placeholder-black-800/30 text-black-800/30 font-medium"
                     placeholder="Type the letter..."
@@ -1164,7 +1178,7 @@ const GraphemeTest = ({ suppressResultPage = false, onComplete }) => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleNextDialog}
+                  onClick={handleNext}
                   className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-2xl font-semibold text-lg lg:text-xl shadow-lg transition-all duration-300
     ${
       currentDialog < dialog.length - 1

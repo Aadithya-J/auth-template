@@ -1,11 +1,10 @@
 import { Router } from "express";
 import {
-  evaluateResults,
   getTestResults,
+  evaluateResponses
 } from "../controllers/graphemeController.js";
 const router = Router();
 
 router.get("/getGraphemeByChild/:childId", getTestResults);
-router.post("/evaluate-grapheme-test", evaluateResults);
-
+router.post("/evaluate-grapheme-responses", evaluateResponses);
 export default router;
