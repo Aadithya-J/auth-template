@@ -616,7 +616,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               {/* Dialog text with water reflection effect */}
               <motion.div
                 key={currentDialog}
-                className="text-xl sm:text-2xl lg:text-3xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
+                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
                 style={{ textShadow: "0 0 8px rgba(163, 216, 208, 0.7)" }}
               >
                 {dialogIntroTexts[currentDialog]}

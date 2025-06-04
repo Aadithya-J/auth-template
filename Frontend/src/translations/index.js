@@ -297,7 +297,7 @@ export const translations = {
     takeTest: "Take Test",
     sameSounds: "Same Sounds",
     differentSounds: "Different Sounds",
-    imReady: "🏴‍☠️ Aye, I'm Ready!",
+    imReady: "🌟 I’m Ready, O Guardian!",
     imReadysound: "🌬️ My ears are open, and I am ready.",
     //Symbol Sequence Game
     symbolSequenceTitle: "Symbol Sequence Memory Game",

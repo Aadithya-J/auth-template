@@ -81,14 +81,6 @@ const TakeTests = ({ tests = [] }) => {
 
         <div className="flex justify-end mb-6">
           <button
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 text-lg font-semibold mr-4"
-            onClick={() => {
-              navigate("/continuous");
-            }}
-          >
-            Continous Assessment
-          </button>
-          <button
             onClick={() => {
               localStorage.setItem("selectedTestId", "all");
               navigate("/selectstudent");
