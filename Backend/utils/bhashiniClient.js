@@ -17,7 +17,7 @@ export const getTTSAudio = async (text) => {
           },
           serviceId: "ai4bharat/indic-tts-coqui-misc-gpu--t4",
           gender: "female",
-          samplingRate: 8000,
+          samplingRate: 22050,
         },
       },
     ],
