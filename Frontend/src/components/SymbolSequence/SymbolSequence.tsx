@@ -9,7 +9,7 @@ import backgroundImage from "../../assets/symbol-sequence/Mystical-Runescape.png
 // Fix for NodeJS.Timeout issue
 import { useNavigate } from "react-router-dom";
 type Timeout = ReturnType<typeof setTimeout>;
-
+import { useTTS } from "../../hooks/useTTS";
 const symbols = [
   "★",
   "●",
@@ -62,17 +62,21 @@ interface SymbolSequenceProps {
 
 const CharacterDialog = ({ onComplete, t }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
+  const { speak } = useTTS();
   const dialog = [
-    "👋 Welcome to Rune Rock!",
-    "🪨✨ These floating stones are full of glowing runes.",
-    "👁️‍🗨️ Watch the runes light up in a special order.",
-    "🧠🔢 Then, tap them in the same order to solve the puzzle.",
-    "🎯 Stay focused and have fun!",
-    "🚀 Are you ready?",
+    "🙏 Namaste, young voyagers!",
+    "🧱 I am Shilpi, guardian of Runa Pathar—made from river clay and ancient tales.",
+    "🪨 These stones don’t just sit quietly… they speak through glowing runes!",
+    "✨ Watch as the runes light up in special patterns passed down by time.",
+    "🧠 Your task is to remember and repeat the sequence to unlock their secrets.",
+    "🌟 Are you ready to let the rhythm of the runes guide your journey?",
   ];
-
+  useEffect(() => {
+    speak(dialog[0]);
+  }, []);
   const handleNext = () => {
     if (currentDialog < dialog.length - 1) {
+      speak(dialog[currentDialog + 1]);
       setCurrentDialog(currentDialog + 1);
     } else {
       onComplete();
@@ -143,15 +147,15 @@ const CharacterDialog = ({ onComplete, t }) => {
 
           {/* Dialog box */}
           <motion.div
-            className="bg-gradient-to-br from-blue-900/70 to-teal-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+            className="bg-gradient-to-br from-[#1a2a3a] to-[#3b2f1d] backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-[#d9a24b]/50 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
           >
             {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-500 to-teal-500"></div>
-            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-teal-400/20 rounded-full filter blur-xl"></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#d9a24b] via-[#f3c969] to-[#d9a24b]"></div>
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[#d9a24b]/20 rounded-full filter blur-xl"></div>
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#f3c969]/20 rounded-full filter blur-xl"></div>
 
             <motion.div
               key={currentDialog}
@@ -159,7 +163,7 @@ const CharacterDialog = ({ onComplete, t }) => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.4 }}
-              className="text-2xl sm:text-3xl lg:text-4xl text-white mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
+              className="text-2xl sm:text-3xl lg:text-4xl text-[#f7f1e3] mb-8 lg:mb-12 min-h-48 sm:min-h-56 lg:min-h-64 flex items-center justify-center font-serif font-medium leading-relaxed text-center px-4"
             >
               <span className="drop-shadow-lg">{dialog[currentDialog]}</span>
             </motion.div>
@@ -171,8 +175,8 @@ const CharacterDialog = ({ onComplete, t }) => {
                   key={index}
                   className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
                     index <= currentDialog
-                      ? "bg-gradient-to-r from-white to-blue-200 shadow-lg"
-                      : "bg-white/30"
+                      ? "bg-gradient-to-r from-[#f3c969] to-[#d9a24b] shadow-lg"
+                      : "bg-[#f7f1e3]/30"
                   }`}
                   initial={{ scale: 0.8 }}
                   animate={{
@@ -192,8 +196,8 @@ const CharacterDialog = ({ onComplete, t }) => {
                 onClick={handleNext}
                 className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
                   currentDialog < dialog.length - 1
-                    ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
-                    : "bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 text-white hover:from-blue-600 hover:via-purple-600 hover:to-teal-600 hover:shadow-purple-500/50"
+                    ? "bg-gradient-to-r from-[#f3c969] to-[#d9a24b] text-[#3b2f1d] hover:from-[#f7d87c] hover:to-[#ddb94e] hover:shadow-[#d9a24b]/50"
+                    : "bg-gradient-to-r from-[#d9a24b] via-[#e3b84d] to-[#f3c969] text-[#1a2a3a] hover:from-[#f5d25c] hover:via-[#e8b750] hover:to-[#ddb94e] hover:shadow-[#d9a24b]/70"
                 }`}
               >
                 {currentDialog < dialog.length - 1 ? (
@@ -556,7 +560,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
         whileHover={{ scale: 1.05, x: -5 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => navigate("/taketests")}
-        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/90 to-blue-500/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-400/50 ml-4 mt-4"
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-600/90 to-yellow-800/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-400/50 ml-4 mt-4"
       >
         <motion.span
           animate={{ x: [-2, 0, -2] }}
@@ -619,64 +623,62 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
       <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center ">
         <AnimatePresence mode="wait">
           {gameState === "welcome" && (
-            <motion.div
-              className="fixed inset-0 flex items-center justify-center p-4 z-10" // Full screen centered
-            >
+            <motion.div className="fixed inset-0 flex items-center justify-center p-4 z-10">
               <motion.div
-                className="bg-gradient-to-br from-purple-900/70 to-blue-900/70 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.5)] p-10 w-full max-w-2xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                className="bg-gradient-to-br from-[#1a2a3a]/70 to-[#3b2f1d]/70 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(217,162,75,0.5)] p-10 w-full max-w-5xl min-h-[600px] text-center border-2 border-[#d9a24b]/30 relative overflow-hidden text-2xl"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
               >
                 {/* Add magical glow elements */}
-                <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full filter blur-3xl"></div>
-                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full filter blur-3xl"></div>
+                <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#d9a24b]/20 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[#f3c969]/20 rounded-full filter blur-3xl"></div>
 
                 {/* Header with animated rune */}
                 <motion.div className="relative">
-                  <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-6 pt-8">
+                  <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#f3c969] to-[#d9a24b] mb-6 pt-8">
                     {t("symbolSequenceAssessment")}
                   </h2>
 
-                  <p className="text-blue-100/90 mb-8 leading-relaxed text-lg">
+                  <p className="text-[#f7f1e3]/90 mb-8 leading-relaxed text-2xl">
                     {t("symbolSequenceDescription")}
                   </p>
                 </motion.div>
 
                 {/* Difficulty buttons with enhanced styling */}
                 <motion.div className="mt-12">
-                  <h3 className="text-xl font-semibold mb-8 text-purple-200/90 tracking-wider">
+                  <h3 className="text-xl font-semibold mb-8 text-[#f7f1e3]/90 tracking-wider">
                     {t("chooseDifficulty").toUpperCase()}
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {difficultyLevels.map((level, index) => (
                       <motion.button
                         key={index}
                         onClick={() => startGame(index)}
-                        className="relative overflow-hidden group px-8 py-5 rounded-xl font-bold text-lg"
+                        className="relative overflow-hidden group px-12 py-10 rounded-xl font-bold text-xl"
                         style={{
                           background:
-                            "linear-gradient(135deg, rgba(44,0,62,0.7), rgba(70,30,100,0.7))",
-                          border: "1px solid rgba(138, 43, 226, 0.5)",
+                            "linear-gradient(135deg, rgba(26,42,58,0.7), rgba(59,47,29,0.7))",
+                          border: "1px solid rgba(217, 162, 75, 0.5)",
                         }}
                         whileHover={{
                           scale: 1.05,
-                          boxShadow: "0 0 25px rgba(138, 43, 226, 0.8)",
+                          boxShadow: "0 0 30px rgba(217, 162, 75, 0.8)",
                           y: -5,
                         }}
                         whileTap={{ scale: 0.98 }}
                       >
                         {/* Animated border */}
                         <motion.div
-                          className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-purple-400/50"
+                          className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#d9a24b]/50"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3 }}
                         />
 
-                        <span className="relative z-10 text-white tracking-wider flex flex-col items-center">
-                          <span className="text-2xl mb-1">
+                        <span className="relative z-10 text-[#f7f1e3] tracking-wider flex flex-col items-center">
+                          <span className="text-3xl mb-1">
                             {symbols[index + 5]}
                           </span>{" "}
                           {/* Decorative symbol */}
@@ -685,7 +687,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
 
                         {/* Hover effect */}
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 rounded-xl"
+                          className="absolute inset-0 bg-gradient-to-r from-[#f3c969]/10 to-[#d9a24b]/10 opacity-0 group-hover:opacity-100 rounded-xl"
                           transition={{ duration: 0.4 }}
                         />
                       </motion.button>
@@ -704,35 +706,35 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                className="bg-gradient-to-br from-[#1a2a3a]/80 to-[#3b2f1d]/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(217,162,75,0.7)] p-16 w-full max-w-4xl text-center border-2 border-[#d9a24b]/30 relative overflow-hidden h-[500px]"
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
               >
                 {/* Glow effects */}
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#d9a24b]/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#f3c969]/10 rounded-full filter blur-3xl"></div>
 
-                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-10 tracking-wider">
+                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#f3c969] to-[#d9a24b] mb-10 tracking-wider">
                   {t("lookCarefully")}
                 </h2>
 
                 {/* Enhanced Progress Bar */}
                 <div className="relative pt-1 mb-12 w-3/4 mx-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-purple-200">
+                    <span className="text-sm font-semibold text-[#f7f1e3]">
                       Round {currentRound} of 10
                     </span>
-                    <span className="text-sm font-semibold text-blue-300">
+                    <span className="text-sm font-semibold text-[#f3c969]">
                       {Math.round((currentRound / 10) * 100)}% Complete
                     </span>
                   </div>
-                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-purple-900/50">
+                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-[#1a2a3a]/50">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(currentRound / 10) * 100}%` }}
                       transition={{ duration: 0.7 }}
-                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg"
+                      className="h-full bg-gradient-to-r from-[#d9a24b] to-[#f3c969] shadow-lg"
                     />
                   </div>
                 </div>
@@ -742,25 +744,25 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                   {currentSequence.map((symbol, index) => (
                     <motion.div
                       key={index}
-                      className="w-32 h-32 flex items-center justify-center relative" // Increased size
+                      className="w-32 h-32 flex items-center justify-center relative"
                       whileHover={{ scale: 1.05 }}
                     >
                       {/* Symbol Container */}
                       <motion.div
-                        className="w-full h-full flex items-center justify-center text-6xl rounded-2xl relative overflow-hidden" // Larger text
+                        className="w-full h-full flex items-center justify-center text-6xl rounded-2xl relative overflow-hidden"
                         style={{
                           background:
-                            "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
-                          border: "2px solid rgba(0, 191, 255, 0.7)",
+                            "radial-gradient(circle, rgba(26,42,58,0.8), rgba(59,47,29,0.8))",
+                          border: "2px solid rgba(217, 162, 75, 0.7)",
                           boxShadow:
                             showingIndex === index
-                              ? "0 0 30px rgba(0, 191, 255, 0.9)"
-                              : "0 0 15px rgba(0, 191, 255, 0.5)",
-                          color: "#FFD700",
+                              ? "0 0 30px rgba(217, 162, 75, 0.9)"
+                              : "0 0 15px rgba(217, 162, 75, 0.5)",
+                          color: "#f7f1e3",
                           textShadow:
                             showingIndex === index
-                              ? "0 0 20px rgba(255, 215, 0, 0.9)"
-                              : "0 0 10px rgba(255, 215, 0, 0.7)",
+                              ? "0 0 20px rgba(247, 241, 227, 0.9)"
+                              : "0 0 10px rgba(247, 241, 227, 0.7)",
                         }}
                         animate={{
                           scale: showingIndex === index ? [1, 1.2, 1] : 1,
@@ -774,7 +776,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                         {symbol}
                         {showingIndex === index && (
                           <motion.div
-                            className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-2xl"
+                            className="absolute inset-0 bg-gradient-to-br from-[#f3c969]/30 to-[#d9a24b]/30 rounded-2xl"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: [0, 0.4, 0] }}
                             transition={{ duration: 1 }}
@@ -793,7 +795,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                           {[...Array(6)].map((_, i) => (
                             <motion.span
                               key={i}
-                              className="absolute text-yellow-300 text-2xl"
+                              className="absolute text-[#f3c969] text-2xl"
                               initial={{
                                 x: 0,
                                 y: 0,
@@ -823,9 +825,9 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 </div>
 
                 {/* Timer Bar */}
-                <div className="w-3/4 mx-auto bg-purple-900/30 rounded-full h-4 mt-10 overflow-hidden">
+                <div className="w-3/4 mx-auto bg-[#1a2a3a]/30 rounded-full h-4 mt-10 overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-blue-400 to-purple-500 shadow-lg"
+                    className="h-full bg-gradient-to-r from-[#f3c969] to-[#d9a24b] shadow-lg"
                     initial={{ width: "100%" }}
                     animate={{ width: "0%" }}
                     transition={{
@@ -835,7 +837,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                   />
                 </div>
 
-                <p className="mt-6 text-xl text-purple-200 font-medium tracking-wider">
+                <p className="mt-6 text-xl text-[#f7f1e3] font-medium tracking-wider">
                   {t("waitUntilDisappear")}
                 </p>
               </motion.div>
@@ -850,74 +852,74 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                className="bg-gradient-to-br from-[#1a2a3a]/80 to-[#3b2f1d]/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(217,162,75,0.7)] p-12 w-full max-w-4xl text-center border-2 border-[#d9a24b]/30 relative overflow-hidden"
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
               >
                 {/* Glow effects */}
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#d9a24b]/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#f3c969]/10 rounded-full filter blur-3xl"></div>
 
-                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300 mb-10 tracking-wider">
+                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#f3c969] to-[#d9a24b] mb-10 tracking-wider">
                   {t("recreateSequence")}
                 </h2>
 
                 {/* Enhanced Progress Bar */}
                 <div className="relative pt-1 mb-12 w-3/4 mx-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-purple-200">
+                    <span className="text-sm font-semibold text-[#f7f1e3]">
                       Round {currentRound} of 10
                     </span>
-                    <span className="text-sm font-semibold text-blue-300">
+                    <span className="text-sm font-semibold text-[#f3c969]">
                       {Math.round((currentRound / 10) * 100)}% Complete
                     </span>
                   </div>
-                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-purple-900/50">
+                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-[#1a2a3a]/50">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(currentRound / 10) * 100}%` }}
                       transition={{ duration: 0.7 }}
-                      className="h-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg"
+                      className="h-full bg-gradient-to-r from-[#d9a24b] to-[#f3c969] shadow-lg"
                     />
                   </div>
                 </div>
 
                 {/* User Sequence Area - Larger */}
                 <div className="mb-16">
-                  <h3 className="text-2xl font-semibold mb-8 text-purple-200 tracking-wider">
+                  <h3 className="text-2xl font-semibold mb-8 text-[#f7f1e3] tracking-wider">
                     YOUR SEQUENCE
                   </h3>
                   <div className="flex justify-center flex-wrap gap-8 my-10">
                     {userSequence.map((symbol, index) => (
                       <motion.div
                         key={index}
-                        className="relative w-28 h-28" // Increased size
+                        className="relative w-28 h-28"
                         whileHover={{ scale: 1.05 }}
                         onHoverStart={() => setHoveredCardIndex(index)}
                         onHoverEnd={() => setHoveredCardIndex(-1)}
                       >
                         <motion.div
-                          className="w-full h-full flex items-center justify-center text-6xl rounded-2xl" // Larger text
+                          className="w-full h-full flex items-center justify-center text-6xl rounded-2xl"
                           style={{
                             background:
-                              "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
-                            border: "2px solid rgba(0, 191, 255, 0.7)",
-                            boxShadow: "0 0 20px rgba(0, 191, 255, 0.5)",
-                            color: "#FFD700",
-                            textShadow: "0 0 10px rgba(255, 215, 0, 0.7)",
+                              "radial-gradient(circle, rgba(26,42,58,0.8), rgba(59,47,29,0.8))",
+                            border: "2px solid rgba(217, 162, 75, 0.7)",
+                            boxShadow: "0 0 20px rgba(217, 162, 75, 0.5)",
+                            color: "#f7f1e3",
+                            textShadow: "0 0 10px rgba(247, 241, 227, 0.7)",
                           }}
                         >
                           {symbol}
                         </motion.div>
                         {hoveredCardIndex === index && (
                           <motion.div
-                            className="absolute inset-0 bg-red-500/80 rounded-2xl flex items-center justify-center cursor-pointer"
+                            className="absolute inset-0 bg-[#3b2f1d]/80 rounded-2xl flex items-center justify-center cursor-pointer"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             onClick={() => removeSymbol(index)}
                           >
-                            <span className="text-white text-lg font-bold tracking-wider">
+                            <span className="text-[#f7f1e3] text-lg font-bold tracking-wider">
                               {t("remove")}
                             </span>
                           </motion.div>
@@ -933,14 +935,14 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                           className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl"
                           style={{
                             background:
-                              "radial-gradient(circle, rgba(44,0,62,0.5), rgba(70,30,100,0.5))",
-                            border: "2px dashed rgba(0, 191, 255, 0.5)",
+                              "radial-gradient(circle, rgba(26,42,58,0.5), rgba(59,47,29,0.5))",
+                            border: "2px dashed rgba(217, 162, 75, 0.5)",
                           }}
                           animate={{
                             boxShadow: [
-                              "0 0 0 rgba(0,191,255,0)",
-                              "0 0 20px rgba(0,191,255,0.7)",
-                              "0 0 0 rgba(0,191,255,0)",
+                              "0 0 0 rgba(217,162,75,0)",
+                              "0 0 20px rgba(217,162,75,0.7)",
+                              "0 0 0 rgba(217,162,75,0)",
                             ],
                           }}
                           transition={{ repeat: Infinity, duration: 2 }}
@@ -951,7 +953,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
 
                 {/* Available Symbols - Enhanced */}
                 <div className="mt-12">
-                  <h3 className="text-2xl font-semibold mb-8 text-purple-200 tracking-wider">
+                  <h3 className="text-2xl font-semibold mb-8 text-[#f7f1e3] tracking-wider">
                     {t("availableSymbols").toUpperCase()}
                   </h3>
                   <div className="flex justify-center flex-wrap gap-6 my-8">
@@ -959,23 +961,23 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                       <motion.button
                         key={index}
                         onClick={() => selectSymbol(symbol)}
-                        className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl relative group" // Larger size
+                        className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl relative group"
                         style={{
                           background:
-                            "radial-gradient(circle, rgba(44,0,62,0.8), rgba(70,30,100,0.8))",
-                          border: "2px solid rgba(0, 191, 255, 0.5)",
-                          color: "#FFD700",
-                          textShadow: "0 0 10px rgba(255, 215, 0, 0.7)",
+                            "radial-gradient(circle, rgba(26,42,58,0.8), rgba(59,47,29,0.8))",
+                          border: "2px solid rgba(217, 162, 75, 0.5)",
+                          color: "#f7f1e3",
+                          textShadow: "0 0 10px rgba(247, 241, 227, 0.7)",
                         }}
                         whileHover={{
                           scale: 1.1,
-                          boxShadow: "0 0 30px rgba(0,191,255,0.8)",
+                          boxShadow: "0 0 30px rgba(217,162,75,0.8)",
                         }}
                         whileTap={{ scale: 0.95 }}
                       >
                         {symbol}
                         <motion.div
-                          className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-white/50"
+                          className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-[#f7f1e3]/50"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3 }}
@@ -996,48 +998,41 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(138,43,226,0.7)] p-12 w-full max-w-4xl text-center border-2 border-purple-400/30 relative overflow-hidden"
+                className="bg-gradient-to-br from-[#1a2a3a]/80 to-[#3b2f1d]/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(217,162,75,0.7)] p-12 w-full max-w-4xl text-center border-2 border-[#d9a24b]/30 relative overflow-hidden"
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
               >
                 {/* Glow effects */}
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#d9a24b]/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#f3c969]/10 rounded-full filter blur-3xl"></div>
 
                 {/* Result Feedback */}
                 <motion.h2
                   className={`text-4xl font-bold mb-12 tracking-wider ${
                     feedback.includes(t("correct"))
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-[#f3c969]"
+                      : "text-[#d9a24b]"
                   }`}
                   initial={{ y: -20 }}
                   animate={{ y: 0 }}
                   style={{
                     textShadow: feedback.includes(t("correct"))
-                      ? "0 0 20px rgba(100, 255, 100, 0.7)"
-                      : "0 0 20px rgba(255, 100, 100, 0.7)",
+                      ? "0 0 20px rgba(243, 201, 105, 0.7)"
+                      : "0 0 20px rgba(217, 162, 75, 0.7)",
                   }}
                 >
                   {feedback}
                 </motion.h2>
 
                 {/* Comparison Grid */}
-                {/* Replace the grid with stacked rows */}
                 <div className="space-y-16 mt-10 mb-16">
-                  {" "}
-                  {/* Increased vertical spacing */}
                   {/* User Sequence Row */}
                   <div className="space-y-8">
-                    {" "}
-                    {/* Vertical spacing for title and symbols */}
-                    <h3 className="text-2xl font-semibold text-purple-200 tracking-wider">
+                    <h3 className="text-2xl font-semibold text-[#f7f1e3] tracking-wider">
                       {t("yourSequence").toUpperCase()}
                     </h3>
                     <div className="flex justify-center flex-wrap gap-8">
-                      {" "}
-                      {/* Increased gap */}
                       {userSequence.map((symbol, index) => (
                         <motion.div
                           key={index}
@@ -1049,15 +1044,15 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                           <div
                             className={`w-28 h-28 flex items-center justify-center text-6xl rounded-2xl ${
                               symbol === currentSequence[index]
-                                ? "bg-green-500/20 border-2 border-green-400 shadow-[0_0_20px_rgba(0,255,0,0.3)]"
-                                : "bg-red-500/20 border-2 border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.3)]"
+                                ? "bg-[#3b2f1d]/20 border-2 border-[#f3c969] shadow-[0_0_20px_rgba(243,201,105,0.3)]"
+                                : "bg-[#1a2a3a]/20 border-2 border-[#d9a24b] shadow-[0_0_20px_rgba(217,162,75,0.3)]"
                             }`}
                           >
                             {symbol}
                           </div>
                           {symbol !== currentSequence[index] && (
                             <motion.div
-                              className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"
+                              className="absolute -top-3 -right-3 w-8 h-8 bg-[#d9a24b] rounded-full flex items-center justify-center text-[#3b2f1d] text-sm font-bold shadow-lg"
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ delay: index * 0.1 + 0.3 }}
@@ -1071,14 +1066,14 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                   </div>
                   {/* Correct Sequence Row */}
                   <div className="space-y-8">
-                    <h3 className="text-2xl font-semibold text-purple-200 tracking-wider">
+                    <h3 className="text-2xl font-semibold text-[#f7f1e3] tracking-wider">
                       {t("correctSequence").toUpperCase()}
                     </h3>
                     <div className="flex justify-center flex-wrap gap-8">
                       {currentSequence.map((symbol, index) => (
                         <motion.div
                           key={index}
-                          className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl bg-blue-500/20 border-2 border-blue-400 shadow-[0_0_20px_rgba(0,191,255,0.3)]"
+                          className="w-28 h-28 flex items-center justify-center text-6xl rounded-2xl bg-[#3b2f1d]/20 border-2 border-[#f3c969] shadow-[0_0_20px_rgba(243,201,105,0.3)]"
                           initial={{ scale: 0.9 }}
                           animate={{ scale: 1 }}
                           transition={{ delay: index * 0.1 }}
@@ -1101,7 +1096,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                         onComplete(score);
                       }
                     }}
-                    className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-12 rounded-xl text-lg shadow-lg hover:shadow-purple-500/50"
+                    className="mt-8 bg-gradient-to-r from-[#f3c969] to-[#d9a24b] text-[#3b2f1d] font-bold py-4 px-12 rounded-xl text-lg shadow-lg hover:shadow-[#d9a24b]/50"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
                   >

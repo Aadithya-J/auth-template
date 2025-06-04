@@ -17,6 +17,7 @@ import symbolSequenceRoutes from "./routes/symbolSequenceRoutes.js";
 import vocabularyRoutes from "./routes/vocabularyRoutes.js";
 import geminiInferenceRoutes from "./utils/geminiInference.js";
 import continuousAssessmentRoutes from "./routes/continuousAssessment.js";
+import ttsRoutes from "./routes/ttsRoutes.js";
 import { mkdirSync } from "fs";
 import { transcribeAudio } from "./controllers/speechController.js";
 
@@ -25,13 +26,17 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
 mkdirSync("uploads", { recursive: true });
-
 
 app.use(
   cors({
-    origin: ["https://jiveesha.vercel.app", "http://localhost:5173", "http://localhost:3000","https://jiveesha.onrender.com","https://jiveeshadeployed.onrender.com"],
+    origin: [
+      "https://jiveesha.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://jiveesha.onrender.com",
+      "https://jiveeshadeployed.onrender.com",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -51,7 +56,7 @@ app.use("/api", symbolSequenceRoutes);
 app.use("/api/vocabulary", vocabularyRoutes);
 app.use("/api", geminiInferenceRoutes);
 app.use("/api", continuousAssessmentRoutes);
-
+app.use("/api", ttsRoutes);
 // Multer memory storage for uploads
 const upload = multer({
   storage: multer.memoryStorage(),

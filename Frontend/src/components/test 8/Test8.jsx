@@ -23,11 +23,11 @@ const CharacterDialog = ({ onComplete }) => {
 
   const dialogs = useMemo(
     () => [
-      t("visualTestBlinkDialogWelcome"),
-      t("visualTestBlinkDialogSneakyShapes"),
-      t("visualTestBlinkDialogLookCarefully"),
-      t("visualTestBlinkDialogReward"),
-      t("visualTestBlinkDialogReadyPrompt"),
+      t("visualTestGhadiyakshDialogWelcome"),
+      t("visualTestGhadiyakshDialogShiftingPatterns"),
+      t("visualTestGhadiyakshDialogWatchClosely"),
+      t("visualTestGhadiyakshDialogReward"),
+      t("visualTestGhadiyakshDialogReadyPrompt"),
     ],
     [t]
   );
@@ -222,7 +222,7 @@ const QuestionTimer = ({ duration, onComplete }) => {
           transition={{ type: "spring", stiffness: 500 }}
         >
           {timeLeft}
-          {t("seconds")}
+          {t(" seconds")}
         </motion.span>
       </div>
       <div className="relative h-3 w-full rounded-full bg-gray-200/80 overflow-hidden">
@@ -293,28 +293,28 @@ const QuestionDisplay = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="relative bg-gradient-to-br from-emerald-900/30 via-gray-900/50 to-amber-900/30 backdrop-blur-md rounded-3xl p-8 shadow-2xl w-full max-w-3xl mx-auto border-2 border-emerald-400/20 overflow-hidden"
+      className="relative bg-gradient-to-br from-yellow-50/10 via-emerald-950/60 to-amber-800/30 backdrop-blur-xl rounded-3xl p-10 md:p-14 shadow-[0_10px_40px_rgba(0,0,0,0.4)] w-full max-w-4xl mx-auto border-4 border-amber-500/30 overflow-hidden font-sans text-lg md:text-xl leading-relaxed tracking-wide text-yellow-100"
     >
       {/* Glowing decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-60" />
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-emerald-400/10 blur-xl" />
-      <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-amber-400/10 blur-xl" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-60" />
+      <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl" />
+      <div className="absolute -bottom-24 -left-24 w-48 h-48 rounded-full bg-amber-300/10 blur-2xl" />
 
       {/* Progress indicator */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-emerald-200 font-bold text-lg tracking-wider">
-          QUESTION <span className="text-amber-200">{index + 1}</span> /{" "}
-          {totalQuestions}
+      <div className="flex justify-between items-center mb-8">
+        <div className="text-amber-300 font-bold text-xl md:text-2xl tracking-wide">
+          {t("question")} <span className="text-emerald-200">{index + 1}</span>{" "}
+          / {totalQuestions}
         </div>
-        <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 text-sm font-medium">
-          {Math.round(((index + 1) / totalQuestions) * 100)}% COMPLETE
+        <div className="px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-amber-400/30 text-emerald-100 text-sm md:text-base font-medium">
+          {Math.round(((index + 1) / totalQuestions) * 100)}% {t("complete")}
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="mb-8 relative h-2 bg-gray-800/50 rounded-full overflow-hidden">
+      <div className="mb-10 relative h-3 bg-gray-800/50 rounded-full overflow-hidden">
         <motion.div
-          className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-400 to-amber-300"
+          className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-300 to-yellow-400"
           initial={{ width: "0%" }}
           animate={{ width: `${((index + 1) / totalQuestions) * 100}%` }}
           transition={{ duration: 0.7, ease: "easeOut" }}
@@ -331,23 +331,23 @@ const QuestionDisplay = ({
       <QuestionTimer
         duration={8}
         onComplete={onTimeout}
-        colorStart="#4CAF50" // green
+        colorStart="#2E8B57" // peacock green
         colorEnd="#FFD700" // gold
       />
 
       {/* Word display */}
-      <div className="flex justify-center my-10 relative">
+      <div className="flex justify-center my-12">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="absolute -inset-3 bg-yellow-300/10 blur-xl rounded-2xl" />
+          <div className="absolute -inset-4 bg-amber-200/10 blur-xl rounded-2xl" />
           <motion.div
-            whileHover={{ scale: 1.03, rotate: 0.5 }}
+            whileHover={{ scale: 1.04, rotate: 0.5 }}
             whileTap={{ scale: 0.98 }}
-            className="relative py-8 px-16 rounded-xl text-5xl font-bold border-2 border-yellow-400/30 bg-slate-800/90 text-yellow-100 shadow-2xl shadow-amber-500/20 backdrop-blur-md"
+            className="relative py-10 px-20 rounded-2xl text-6xl md:text-7xl font-bold border-4 border-yellow-400/40 bg-[#1c1f1e]/90 text-amber-100 shadow-[0_10px_30px_rgba(255,191,0,0.1)] backdrop-blur-xl"
           >
             {questionData.word}
             <div className="absolute top-0 left-0 w-full h-full border border-white/10 rounded-xl pointer-events-none" />
@@ -355,8 +355,8 @@ const QuestionDisplay = ({
         </motion.div>
       </div>
 
-      {/* Options grid with better visibility */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Options Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {questionData.options.map((option, optionIndex) => (
           <OptionButton
             key={optionIndex}
@@ -368,8 +368,8 @@ const QuestionDisplay = ({
         ))}
       </div>
 
-      {/* Bottom accent */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-40" />
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-30" />
     </motion.div>
   );
 };
@@ -460,7 +460,14 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
 
   useEffect(() => {
     const langKey =
-      language === "ta" ? "tamil" : language === "hi" ? "hindi" : "english";
+      language === "ta"
+        ? "tamil"
+        : language === "hi"
+        ? "hindi"
+        : language === "kn"
+        ? "kannada"
+        : "english";
+
     // Ensure questionsData[langKey] exists and is an array
     const questionsForLang = Array.isArray(questionsData[langKey])
       ? questionsData[langKey]

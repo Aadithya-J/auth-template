@@ -40,19 +40,19 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
   const navigate = useNavigate();
 
   const handleNextDialog = () => {
-    if (currentDialog < dialog.length - 1) {
+    if (currentDialog < dialogIntroTexts.length - 1) {
       setCurrentDialog((prev) => prev + 1);
     } else {
       setShowIntro(false);
       speakText(t("start_forward_instructions")); // Start the test instructions
     }
   };
-  const dialog = [
-    "🌊 Welcome, traveler, to Crystal Shoals! The tidepools here shimmer with reflections from above.",
-    "🪞 I am Mira, the mirrorfish, guardian of these hidden images. Each pool holds visions waiting to be recognized.",
-    "🐚 Your task is simple yet deep: name what you see reflected in the pools, and reveal the world they come from.",
-    "💧 In return, you shall receive the Shell of Imagery and The Reflecting Pearl, treasures of insight and clarity.",
-    "✨ Are you ready to peer beyond the ripples and unlock the secrets held in these mirrored waters?",
+  const dialogIntroTexts = [
+    t("pictureTestIntroDialog1"),
+    t("pictureTestIntroDialog2"),
+    t("pictureTestIntroDialog3"),
+    t("pictureTestIntroDialog4"),
+    t("pictureTestIntroDialog5"),
   ];
 
   const getCorrectAnswer = (image) => {
@@ -102,21 +102,21 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             setDescription(transcription);
           }
 
-          toast.success("Transcription received!");
+          toast.success(t("transcriptionReceived"));
         } else {
-          const errorMsg =
-            result.error || "Transcription failed. Please try again.";
+          const errorMsg = result.error || t("transcriptionFailedTryAgain");
           setError(errorMsg);
           toast.error(errorMsg);
         }
       } catch (error) {
-        setError("Error uploading audio. Please check connection.");
-        toast.error("Error uploading audio. Please check connection.");
+        const connectionErrorMsg = t("errorUploadingAudioCheckConnection");
+        setError(connectionErrorMsg);
+        toast.error(connectionErrorMsg);
       } finally {
         setIsTranscribing(false);
       }
     },
-    [step]
+    [step, language, t]
   );
 
   const stopListening = useCallback(() => {
@@ -128,7 +128,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         mediaRecorderRef.current.stop();
       } catch (e) {
         console.error("Error stopping MediaRecorder:", e);
-        toast.error("Error stopping recording");
+        toast.error(t("errorStoppingRecording"));
       }
     }
     if (window.stream) {
@@ -138,7 +138,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         });
       } catch (e) {
         console.error("Error stopping stream tracks:", e);
-        toast.error("Error stopping microphone");
+        toast.error(t("errorStoppingMicrophone"));
       }
       window.stream = null;
     }
@@ -146,7 +146,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
     if (isRecordingRef.current) {
       setIsRecording(false);
     }
-  }, []);
+  }, [t]);
 
   const startListening = useCallback(() => {
     if (isRecordingRef.current) return;
@@ -196,15 +196,16 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           isRecordingRef.current = true;
           setIsRecording(true);
         } catch (e) {
-          toast.error("Failed to start recording.");
+          toast.error(t("failedToStartRecording"));
           stopListening();
         }
       })
       .catch((error) => {
-        setError("Could not access microphone. Please check permissions.");
-        toast.error("Could not access microphone. Please check permissions.");
+        const micErrorMsg = t("couldNotAccessMicrophoneCheckPermissions"); // CHANGED
+        setError(micErrorMsg);
+        toast.error(micErrorMsg);
       });
-  }, [uploadAudio, stopListening]);
+  }, [uploadAudio, stopListening, t]);
 
   const toggleRecording = useCallback(() => {
     if (isRecording) {
@@ -237,11 +238,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
       }
     } else {
       setStep(2);
-      speakText(
-        language === "ta"
-          ? "நல்லது! அது என்ன என்று சொல்ல முடியுமா?"
-          : "Great! Can you tell me what it is?"
-      );
+      speakText(t("speakGreatWhatIsIt"));
     }
   };
 
@@ -404,7 +401,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             animate={{ y: 0, opacity: 1 }}
             className="text-blue-700 text-lg font-medium"
           >
-            Processing your results...
+            <p>{t("processingYourResults")}</p>
           </motion.p>
         </div>
       </motion.div>
@@ -437,10 +434,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                     <thead className="bg-blue-100">
                       <tr>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Image
+                          {t("imageColumn")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                          Your Answer
+                          {t("finalScore")}
                         </th>
                         <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
                           Correct
@@ -563,7 +560,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             }}
           />
           <motion.div
-            className="absolute inset-0 bg-blue-900/30"
+            className="absolute inset-0 bg-[#3C6E71]/30"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -607,33 +604,33 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
 
             {/* Water-like glass dialog box */}
             <motion.div
-              className="bg-gradient-to-br from-blue-900/80 via-blue-800/60 to-blue-700/80 backdrop-blur-lg rounded-3xl p-6 sm:p-8 border-2 border-blue-400/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+              className="bg-gradient-to-br from-[#3C6E71]/80 via-[#6CB4A3]/60 to-[#A3D8D0]/80 backdrop-blur-lg rounded-3xl p-6 sm:p-8 border-2 border-[#FFE57F]/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, type: "spring" }}
             >
               {/* Water ripple decorative elements */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"></div>
-              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-2xl"></div>
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#A3D8D0] via-[#6CB4A3] to-[#3C6E71]"></div>
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[#A3D8D0]/20 rounded-full filter blur-2xl"></div>
 
               {/* Dialog text with water reflection effect */}
               <motion.div
                 key={currentDialog}
-                className="text-xl sm:text-2xl lg:text-3xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
-                style={{ textShadow: "0 0 8px rgba(173, 216, 230, 0.7)" }}
+                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-white mb-8 min-h-48 flex items-center justify-center font-serif leading-relaxed text-center px-4"
+                style={{ textShadow: "0 0 8px rgba(163, 216, 208, 0.7)" }}
               >
-                {dialog[currentDialog]}
+                {dialogIntroTexts[currentDialog]}
               </motion.div>
 
               {/* Progress indicators as bubbles */}
               <div className="flex justify-center gap-3 mb-8">
-                {dialog.map((_, index) => (
+                {dialogIntroTexts.map((_, index) => (
                   <motion.div
                     key={index}
                     className={`w-3 h-3 rounded-full ${
                       index <= currentDialog
-                        ? "bg-blue-300 shadow-[0_0_10px_2px_rgba(100,200,255,0.7)]"
-                        : "bg-blue-300/30"
+                        ? "bg-[#FFE57F] shadow-[0_0_10px_2px_rgba(255,229,127,0.7)]"
+                        : "bg-[#FFE57F]/30"
                     }`}
                     animate={{
                       scale: index === currentDialog ? [1, 1.3, 1] : 1,
@@ -656,22 +653,24 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   onClick={handleNextDialog}
                   className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-2xl font-semibold text-lg lg:text-xl shadow-lg transition-all duration-300
       ${
-        currentDialog < dialog.length - 1
-          ? "bg-gradient-to-r from-teal-300 via-blue-200 to-teal-400 text-blue-900 hover:from-teal-200 hover:via-blue-100 hover:to-teal-300 hover:shadow-blue-200/50"
-          : "bg-gradient-to-r from-teal-400 to-blue-500 text-white hover:from-teal-500 hover:to-blue-600 hover:shadow-blue-300/50"
+        currentDialog < dialogIntroTexts.length - 1
+          ? "bg-gradient-to-r from-[#FFCAD4] via-[#FDF6E3] to-[#FFE57F] text-[#3E2F2F] hover:from-[#FFCAD4] hover:via-[#FDF6E3] hover:to-[#FFE57F] hover:shadow-[#FFE57F]/50"
+          : "bg-gradient-to-r from-[#FFCAD4] to-[#6CB4A3] text-white hover:from-[#FFCAD4] hover:to-[#3C6E71] hover:shadow-[#6CB4A3]/50"
       }`}
                 >
-                  {currentDialog < dialog.length - 1 ? (
+                  {currentDialog < dialogIntroTexts.length - 1 ? (
                     <>
-                      <span className="drop-shadow-sm text-blue-950">Next</span>
-                      <FaChevronRight className="mt-0.5 drop-shadow-sm text-blue-950" />
+                      <span className="drop-shadow-sm text-[#3E2F2F]">
+                        {t("pictureTestButtonNextDialog")}
+                      </span>
+                      <FaChevronRight className="mt-0.5 drop-shadow-sm text-[#3E2F2F]" />
                     </>
                   ) : (
                     <>
-                      <span className="drop-shadow-sm text-blue-950">
+                      <span className="drop-shadow-sm text-[#3E2F2F]">
                         {t("imReady")}
                       </span>
-                      <FaCheck className="mt-0.5 drop-shadow-sm text-blue-950" />
+                      <FaCheck className="mt-0.5 drop-shadow-sm text-[#3E2F2F]" />
                     </>
                   )}
                 </motion.button>
@@ -698,10 +697,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.5 }}
         onClick={() => navigate("/taketests")}
-        className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition-all group"
+        className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-[#FDF6E3]/90 hover:bg-[#FDF6E3] text-[#3E2F2F] font-semibold py-2 px-4 rounded-lg shadow-md transition-all group"
         whileHover={{
           scale: 1.05,
-          boxShadow: "0 5px 15px rgba(59, 130, 246, 0.3)",
+          boxShadow: "0 5px 15px rgba(108, 180, 163, 0.3)",
         }}
         whileTap={{ scale: 0.95 }}
       >
@@ -714,27 +713,27 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
             },
           }}
         >
-          <FaArrowLeft className="text-blue-600 group-hover:text-blue-700 transition-colors" />
+          <FaArrowLeft className="text-[#6CB4A3] group-hover:text-[#3C6E71] transition-colors" />
         </motion.div>
-        {t("BacktoTests")}
+        {t("backToTests")}
       </motion.button>
 
       {/* 🌊 Crystal Shoals Themed Progress Bar */}
       <div className="w-full px-4 sm:px-6 pt-20 sm:pt-24 max-w-4xl mx-auto">
         <motion.div
-          className="relative p-4 bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl border border-teal-300/30"
+          className="relative p-4 bg-[#FDF6E3]/20 backdrop-blur-lg rounded-2xl shadow-2xl border border-[#6CB4A3]/30"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="text-center text-teal-800 font-semibold mb-3 text-lg md:text-xl drop-shadow-md">
-            {t("TestProgress")}
+          <h3 className="text-center text-[#fefefe] font-bold mb-3 text-lg md:text-xl">
+            {t("pictureTestProgressBarTitle")}
           </h3>
 
           {/* Oceanic Progress Bar */}
-          <div className="relative h-5 bg-gradient-to-r from-blue-100/30 via-teal-100/30 to-blue-100/30 rounded-full overflow-hidden border border-blue-300/30 shadow-inner">
+          <div className="relative h-5 bg-gradient-to-r from-[#FDF6E3]/30 via-[#A3D8D0]/30 to-[#FDF6E3]/30 rounded-full overflow-hidden border border-[#6CB4A3]/30 shadow-inner">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-teal-400 via-blue-400 to-teal-500 rounded-full shadow-md"
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#4B7F52] via-[#3C6E71] to-[#6CB4A3] rounded-full shadow-md"
               initial={{ width: 0 }}
               animate={{
                 width: `${((currentIndex + 1) / images.length) * 100}%`,
@@ -745,7 +744,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               {[...Array(6)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute rounded-full bg-white/40 backdrop-blur-sm shadow"
+                  className="absolute rounded-full bg-[#FDF6E3]/40 backdrop-blur-sm shadow"
                   style={{
                     width: `${Math.random() * 6 + 4}px`,
                     height: `${Math.random() * 6 + 4}px`,
@@ -765,54 +764,22 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               ))}
             </motion.div>
           </div>
-
-          <p className="text-center text-teal-700 mt-2 font-medium drop-shadow-sm">
-            {currentIndex + 1} of {images.length} completed
-          </p>
         </motion.div>
       </div>
 
       {/* Main Content - Now properly centered and responsive */}
       <div className="flex-1 w-full flex items-center justify-center p-4 sm:p-6">
         <motion.div
-          className="w-full max-w-2xl bg-white/10 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-blue-300/50 relative"
+          className="w-full max-w-3xl bg-[#FDF6E3]/10 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-[#6CB4A3]/50 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           style={{
-            boxShadow: "0 10px 30px -10px rgba(2, 132, 199, 0.3)",
+            boxShadow: "0 10px 30px -10px rgba(60, 110, 113, 0.3)",
           }}
         >
-          {/* Ocean wave decoration at top */}
-          <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-400 via-teal-300 to-blue-400 overflow-hidden">
-            <motion.div
-              className="absolute top-0 left-0 right-0 h-full"
-              animate={{
-                backgroundPositionX: ["0%", "100%"],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              style={{
-                backgroundImage: `
-                linear-gradient(90deg, 
-                  transparent 20%, 
-                  rgba(255,255,255,0.5) 30%, 
-                  transparent 40%,
-                  transparent 60%,
-                  rgba(255,255,255,0.5) 70%,
-                  transparent 80%
-                )
-              `,
-                backgroundSize: "200% 100%",
-              }}
-            />
-          </div>
-
           {/* Question Section */}
-          <div className="bg-gradient-to-r from-blue-500/90 to-teal-500/90 p-6 text-center relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#3C6E71]/90 to-[#4B7F52]/90 p-6 text-center relative overflow-hidden">
             <motion.h2
               key={step}
               className="text-2xl md:text-3xl font-bold text-white relative z-10"
@@ -831,12 +798,12 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
           {/* Image Container - Improved layout */}
           <div className="p-6 flex flex-col items-center">
             <motion.div
-              className="relative rounded-xl overflow-hidden border-2 border-blue-300/50 shadow-lg"
+              className="relative rounded-xl overflow-hidden border-2 border-[#6CB4A3]/50 shadow-lg"
               whileHover={{ scale: 1.01 }}
               style={{
                 maxWidth: "100%",
                 width: "fit-content",
-                backgroundColor: "rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(253, 246, 227, 0.1)",
               }}
             >
               <img
@@ -851,7 +818,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
               />
 
               {/* Subtle reflection effect */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-900/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#3C6E71]/30 to-transparent" />
             </motion.div>
 
             {/* Response Area */}
@@ -861,10 +828,10 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   <motion.button
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 5px 15px rgba(16, 185, 129, 0.4)",
+                      boxShadow: "0 5px 15px rgba(75, 127, 82, 0.4)",
                     }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-green-400 to-green-600 text-white font-bold rounded-xl shadow-lg relative overflow-hidden"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#4B7F52] to-[#6CB4A3] text-white font-bold rounded-xl shadow-lg relative overflow-hidden"
                     onClick={() => handleCanSeeSelection(true)}
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
@@ -875,14 +842,14 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   <motion.button
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 5px 15px rgba(239, 68, 68, 0.4)",
+                      boxShadow: "0 5px 15px rgba(255, 202, 212, 0.4)",
                     }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-400 to-red-600 text-white font-bold rounded-xl shadow-lg relative overflow-hidden"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#FFCAD4] to-[#FFE57F] text-[#3E2F2F] font-bold rounded-xl shadow-lg relative overflow-hidden"
                     onClick={() => handleCanSeeSelection(false)}
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                      <FaEyeSlash className="text-white/90" />
+                      <FaEyeSlash className="text-[#3E2F2F]/90" />
                       {t("noICan")}
                     </span>
                   </motion.button>
@@ -903,7 +870,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                             ? setAnswer(e.target.value)
                             : setDescription(e.target.value)
                         }
-                        className="w-full p-4 border-2 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-lg bg-white/90 backdrop-blur-sm"
+                        className="w-full p-4 border-2 border-[#A3D8D0] rounded-xl focus:border-[#3C6E71] focus:ring-2 focus:ring-[#A3D8D0] outline-none transition-all text-lg bg-[#FDF6E3]/90 backdrop-blur-sm"
                         placeholder={
                           step === 2
                             ? t("typeWhatYouSee")
@@ -919,8 +886,8 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                       onClick={toggleRecording}
                       className={`w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl font-bold relative overflow-hidden ${
                         isRecording
-                          ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
-                          : "bg-gradient-to-r from-blue-500 to-teal-500 text-white"
+                          ? "bg-gradient-to-r from-[#FFCAD4] to-[#FFE57F] text-[#3E2F2F]"
+                          : "bg-gradient-to-r from-[#3C6E71] to-[#4B7F52] text-white"
                       }`}
                     >
                       {isRecording ? (
@@ -930,7 +897,7 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                               {[1, 2, 3].map((i) => (
                                 <motion.div
                                   key={i}
-                                  className="w-2 h-2 bg-white rounded-full"
+                                  className="w-2 h-2 bg-[#3E2F2F] rounded-full"
                                   animate={{
                                     height: [2, 10, 2],
                                   }}
@@ -972,14 +939,14 @@ const PictureRecognition = ({ suppressResultPage = false, onComplete }) => {
                   <motion.button
                     whileHover={{
                       scale: 1.02,
-                      boxShadow: "0 5px 20px rgba(59, 130, 246, 0.5)",
+                      boxShadow: "0 5px 20px rgba(60, 110, 113, 0.5)",
                     }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleNext}
                     className={`w-full py-4 px-6 rounded-xl font-bold text-white relative overflow-hidden ${
                       currentIndex === images.length - 1
-                        ? "bg-gradient-to-r from-blue-600 to-blue-700"
-                        : "bg-gradient-to-r from-blue-500 to-teal-500"
+                        ? "bg-gradient-to-r from-[#3C6E71] to-[#4B7F52]"
+                        : "bg-gradient-to-r from-[#3C6E71] to-[#6CB4A3]"
                     }`}
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
