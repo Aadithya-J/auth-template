@@ -556,13 +556,6 @@ export const translations = {
     buttonPlayAudio: "Play Audio",
     labelListeningCarefully: "Listening carefully...",
     soundTestApiName: "Test 16: Sound Discrimination",
-    allTestsView: "All Tests",
-    individualTestsView: "Individual Tests",
-    continuousAssessmentsView: "Continuous Assessments",
-    individualTestResults: "Individual Test Results",
-    continuousAssessmentResults: "Continuous Assessment Results",
-    noTestResultsFoundAtAll: "No test results found.",
-    noTestResultsFoundForFilter: "No results match the current filter.",
 
     //Picture Recognition Test
     transcriptionReceived: "Transcription received!",
