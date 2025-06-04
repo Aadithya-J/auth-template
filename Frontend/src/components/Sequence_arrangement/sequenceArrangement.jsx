@@ -8,12 +8,14 @@ import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import clockAnimation from "../../assets/sequence-test/clockAnimation.json";
+import { useTTS } from "../../hooks/useTTS";
 // Images
 import backgroundImage from "../../assets/sequence-test/Mystical-TimeIsland.png";
 import captainCharacter from "../../assets/sequence-test/Pirate-crab.png";
 //import swirlImage from "../../assets/sequence-test/swirlBackground.png";
 const Test7 = ({ onComplete, suppressResultPage, student }) => {
   const { t } = useLanguage();
+  const { speak } = useTTS();
   const navigate = useNavigate();
   const animals = {
     fish: "🐟",
@@ -257,12 +259,15 @@ const Test7 = ({ onComplete, suppressResultPage, student }) => {
 
   const handleNextDialog = () => {
     if (currentDialog < dialog.length - 1) {
+      speak(dialog[currentDialog + 1]);
       setCurrentDialog(currentDialog + 1);
     } else {
       setGameState("instructions");
     }
   };
-
+  useEffect(() => {
+    speak(dialog[0]);
+  }, []);
   return (
     <div
       className="fixed inset-0 overflow-y-auto bg-cover bg-center"

@@ -9,7 +9,7 @@ import backgroundImage from "../../assets/symbol-sequence/Mystical-Runescape.png
 // Fix for NodeJS.Timeout issue
 import { useNavigate } from "react-router-dom";
 type Timeout = ReturnType<typeof setTimeout>;
-
+import { useTTS } from "../../hooks/useTTS";
 const symbols = [
   "★",
   "●",
@@ -62,6 +62,7 @@ interface SymbolSequenceProps {
 
 const CharacterDialog = ({ onComplete, t }) => {
   const [currentDialog, setCurrentDialog] = useState(0);
+  const { speak } = useTTS();
   const dialog = [
     "🙏 Namaste, young voyagers!",
     "🧱 I am Shilpi, guardian of Runa Pathar—made from river clay and ancient tales.",
@@ -70,9 +71,12 @@ const CharacterDialog = ({ onComplete, t }) => {
     "🧠 Your task is to remember and repeat the sequence to unlock their secrets.",
     "🌟 Are you ready to let the rhythm of the runes guide your journey?",
   ];
-
+  useEffect(() => {
+    speak(dialog[0]);
+  }, []);
   const handleNext = () => {
     if (currentDialog < dialog.length - 1) {
+      speak(dialog[currentDialog + 1]);
       setCurrentDialog(currentDialog + 1);
     } else {
       onComplete();
