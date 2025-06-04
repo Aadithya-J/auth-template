@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import TestReportPopup from "../components/TestReportPopup"; // Existing popup
 import ContinuousAssessmentDetailPopup from "../components/ContinuousAssessmentDetailPopup"; // New popup
@@ -37,6 +37,8 @@ const TestResultsTable = () => {
 
   const [userDetails, setUserDetails] = useState({});
   const [showCumulativeReport, setShowCumulativeReport] = useState(false); // For TestReportPopup's cumulative view
+  const [currentView, setCurrentView] = useState("all"); // 'all', 'individual', 'continuous'
+
   const childId = localStorage.getItem("childId");
   const tokenId = localStorage.getItem("access_token");
   const { t } = useLanguage();
@@ -287,7 +289,7 @@ const TestResultsTable = () => {
       test_name: "Cumulative Assessment Report",
       created_at: new Date().toISOString(),
       report_view_type: "main_cumulative",
-      allTests: allTests, // Pass the grand list of all tests
+      allTests: allTests, // Pass the grand list of all tests (unfiltered)
     });
     setShowCumulativeReport(true); // This flag is used by TestReportPopup for its 'isCumulative' prop
     setShowReportPopup(true);
@@ -305,66 +307,90 @@ const TestResultsTable = () => {
     setSelectedContinuousAssessment(null);
   };
 
-  const allTests = [
-    ...data.map((test) => ({
-      ...test,
-      type: "reading",
-      test_name: test.test_name || "Reading Proficiency Test",
-    })),
-    ...visualTestData.map((test) => ({
-      ...test,
-      type: "visual",
-      test_name: test.test_name || "Visual Discrimination",
-    })),
-    ...soundTestData.map((test) => ({
-      ...test,
-      type: "sound",
-      test_name: test.test_name || "Sound Discrimination",
-    })),
-    ...auditoryTestData.map((test) => ({
-      ...test,
-      type: "auditory",
-      test_name: test.test_name || "Auditory Memory",
-    })),
-    ...graphemeTestData.map((test) => ({
-      ...test,
-      type: "grapheme",
-      test_name: test.test_name || "Grapheme Matching",
-    })),
-    ...pictureTestData.map((test) => ({
-      ...test,
-      type: "picture",
-      test_name: test.test_name || "Picture Recognition",
-    })),
-    ...sequenceTestData.map((test) => ({
-      ...test,
-      type: "sequence",
-      test_name: test.test_name || "Sequence Arrangement",
-    })),
-    ...soundBlendingTestData.map((test) => ({
-      ...test,
-      type: "soundBlending",
-      test_name: test.test_name || "Sound Blending",
-    })),
-    ...symbolSequenceTestData.map((test) => ({
-      ...test,
-      type: "symbol",
-      test_name: test.test_name || "Symbol Sequence",
-    })),
-    ...vocalTestData.map((test) => ({
-      ...test,
-      type: "vocabulary",
-      test_name: test.test_name || "Vocabulary Scale Test",
-    })),
-    ...(Array.isArray(continuousAssessmentData)
-      ? continuousAssessmentData.map((test) => ({
-          ...test, // This includes 'id', 'created_at', 'child_id', 'test_results', 'total_score'
-          type: "continuous",
-          test_name: "Continuous Assessment", // Name for the table
-          score: test.total_score, // Score for the table (overall score of the continuous assessment)
-        }))
-      : []),
-  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const allTests = useMemo(
+    () => [
+      ...data.map((test) => ({
+        ...test,
+        type: "reading",
+        test_name: test.test_name || "Reading Proficiency Test",
+      })),
+      ...visualTestData.map((test) => ({
+        ...test,
+        type: "visual",
+        test_name: test.test_name || "Visual Discrimination",
+      })),
+      ...soundTestData.map((test) => ({
+        ...test,
+        type: "sound",
+        test_name: test.test_name || "Sound Discrimination",
+      })),
+      ...auditoryTestData.map((test) => ({
+        ...test,
+        type: "auditory",
+        test_name: test.test_name || "Auditory Memory",
+      })),
+      ...graphemeTestData.map((test) => ({
+        ...test,
+        type: "grapheme",
+        test_name: test.test_name || "Grapheme Matching",
+      })),
+      ...pictureTestData.map((test) => ({
+        ...test,
+        type: "picture",
+        test_name: test.test_name || "Picture Recognition",
+      })),
+      ...sequenceTestData.map((test) => ({
+        ...test,
+        type: "sequence",
+        test_name: test.test_name || "Sequence Arrangement",
+      })),
+      ...soundBlendingTestData.map((test) => ({
+        ...test,
+        type: "soundBlending",
+        test_name: test.test_name || "Sound Blending",
+      })),
+      ...symbolSequenceTestData.map((test) => ({
+        ...test,
+        type: "symbol",
+        test_name: test.test_name || "Symbol Sequence",
+      })),
+      ...vocalTestData.map((test) => ({
+        ...test,
+        type: "vocabulary",
+        test_name: test.test_name || "Vocabulary Scale Test",
+      })),
+      ...(Array.isArray(continuousAssessmentData)
+        ? continuousAssessmentData.map((test) => ({
+            ...test,
+            type: "continuous",
+            test_name: "Continuous Assessment", // Name for the table
+            score: test.total_score, // Score for the table (overall score of the continuous assessment)
+          }))
+        : []),
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    [
+      data,
+      visualTestData,
+      soundTestData,
+      auditoryTestData,
+      graphemeTestData,
+      pictureTestData,
+      sequenceTestData,
+      soundBlendingTestData,
+      symbolSequenceTestData,
+      vocalTestData,
+      continuousAssessmentData,
+    ]
+  );
+
+  const displayedTests = useMemo(() => {
+    if (currentView === "continuous") {
+      return allTests.filter((test) => test.type === "continuous");
+    } else if (currentView === "individual") {
+      return allTests.filter((test) => test.type !== "continuous");
+    }
+    return allTests; // 'all' view
+  }, [allTests, currentView]);
 
   return (
     <div className="h-screen flex flex-col  h-full bg-gradient-to-b from-blue-50/80 to-white p-4 md:p-8 overflow-auto">
@@ -451,7 +477,7 @@ const TestResultsTable = () => {
                   <div className="flex items-center">
                     <span className="text-blue-100">{t("testsCount")}</span>
                     <span className="ml-2 font-semibold">
-                      {allTests.length}
+                      {allTests.length} {/* This shows total tests available */}
                     </span>
                   </div>
                 </div>
@@ -462,14 +488,50 @@ const TestResultsTable = () => {
 
         {/* Results Table */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-blue-100 bg-blue-50 flex flex-col md:flex-row justify-between items-center gap-3">
+          <div className="px-6 py-4 border-b border-blue-100 bg-blue-50 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center">
               <h2 className="font-semibold text-blue-700">
-                {t("allTestResults")}
+                {currentView === "all" && t("allTestResults")}
+                {currentView === "individual" && t("individualTestResults")}
+                {currentView === "continuous" && t("continuousAssessmentResults")}
               </h2>
               <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
-                {allTests.length}
+                {displayedTests.length}
               </span>
+            </div>
+
+            {/* View Toggle Buttons */}
+            <div className="flex flex-wrap gap-2 my-2 md:my-0">
+              <button
+                onClick={() => setCurrentView("all")}
+                className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                  currentView === "all"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                {t("allTestsView")}
+              </button>
+              <button
+                onClick={() => setCurrentView("individual")}
+                className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                  currentView === "individual"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                {t("individualTestsView")}
+              </button>
+              <button
+                onClick={() => setCurrentView("continuous")}
+                className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                  currentView === "continuous"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                {t("continuousAssessmentsView")}
+              </button>
             </div>
 
             {/* Cumulative Report Button */}
@@ -511,8 +573,17 @@ const TestResultsTable = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-blue-100">
-                {allTests.length > 0 ? (
-                  allTests.map((test, index) => {
+                {allTests.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="px-6 py-10 text-center text-gray-500"
+                    >
+                      {t("noTestResultsFoundAtAll")}
+                    </td>
+                  </tr>
+                ) : displayedTests.length > 0 ? (
+                  displayedTests.map((test, index) => {
                     const { datePart, timePart } = formatDateTime(
                       test.created_at
                     );
@@ -558,7 +629,7 @@ const TestResultsTable = () => {
                       colSpan="5"
                       className="px-6 py-10 text-center text-gray-500"
                     >
-                      {t("noTestResultsFound")}
+                      {t("noTestResultsFoundForFilter")}
                     </td>
                   </tr>
                 )}

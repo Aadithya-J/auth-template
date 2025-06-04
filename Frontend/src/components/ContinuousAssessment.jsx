@@ -574,7 +574,7 @@ export default function ContinuousAssessment() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="fixed bottom-4 right-4 z-20 flex items-center space-x-4 p-3 bg-white/80 backdrop-blur-sm rounded-lg shadow-md"
+          className="fixed bottom-4 right-4 z-[60] flex items-center space-x-4 p-3 bg-white/80 backdrop-blur-sm rounded-lg shadow-md"
         >
           <div className="text-sm font-medium flex items-center bg-gray-100 px-3 py-1 rounded-full">
             <svg
@@ -601,7 +601,7 @@ export default function ContinuousAssessment() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSkipTest}
-            className="px-4 py-2 text-sm bg-red-500 text-white hover:bg-red-600 rounded-md transition flex items-center shadow"
+            className="px-4 py-2 text-sm bg-red-500 text-white hover:bg-red-600 rounded-md transition flex items-center shadow z-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
