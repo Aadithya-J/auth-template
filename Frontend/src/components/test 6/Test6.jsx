@@ -408,7 +408,9 @@ function Test6({ suppressResultPage = false, onComplete }) {
 
         setCoralineAnimationState("happy");
         setIntroMessage(t("coralineHeardClearly"));
-        const progress = ((currentPage + 1) / Math.ceil(currentWords.length / wordsPerBatch)) * 85;
+        const progress =
+          ((currentPage + 1) / Math.ceil(currentWords.length / wordsPerBatch)) *
+          85;
         setGameProgress(progress);
         glowCorrectWords(currentTranscript);
       } else {
@@ -506,13 +508,14 @@ function Test6({ suppressResultPage = false, onComplete }) {
       setTranscriptionReady(false);
       setTranscript("");
       // Update progress
-      const newProgress = ((currentPage + 1) * wordsPerBatch / currentWords.length) * 100;
+      const newProgress =
+        (((currentPage + 1) * wordsPerBatch) / currentWords.length) * 100;
       setGameProgress(Math.min(newProgress, 85));
 
       // Show message for next page
       setCoralineAnimationState("happy");
       setIntroMessage(t("coralineNextPage"));
-      
+
       setTimeout(() => {
         setCoralineAnimationState("idle");
         setIntroMessage("");
@@ -526,7 +529,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
     return wordShells.slice(start, end).map((shell, idx) => ({
       ...shell,
       word: shell.word || shell,
-      index: start + idx
+      index: start + idx,
     }));
   }, [currentPage, wordShells, wordsPerBatch]);
 
@@ -585,12 +588,12 @@ function Test6({ suppressResultPage = false, onComplete }) {
                 />
               </motion.div>
               <motion.div
-                className="bg-gradient-to-br from-blue-900/70 to-purple-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
+                className="bg-gradient-to-br from-brown-700/70 to-brown-900/70 backdrop-blur-lg rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 border-2 border-white/20 shadow-2xl flex-1 relative overflow-hidden w-full max-w-none lg:max-w-4xl order-1 lg:order-2"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, type: "spring" }}
               >
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 to-amber-500"></div>
                 <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-400/20 rounded-full filter blur-xl"></div>
                 <div className="absolute -top-20 -left-20 w-40 h-40 bg-purple-400/20 rounded-full filter blur-xl"></div>
                 <div className="absolute top-1/2 right-8 w-24 h-24 bg-purple-400/10 rounded-full filter blur-lg"></div>
@@ -641,8 +644,8 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     }
                     className={`flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 ${
                       tutorialPhase < tutorialMessages.length - 1
-                        ? "bg-gradient-to-r from-white to-blue-100 text-blue-900 hover:from-blue-50 hover:to-blue-200 hover:shadow-blue-200/50"
-                        : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 hover:shadow-purple-500/50"
+                        ? "bg-gradient-to-r from-white to-amber-100 text-black hover:from-green-50 hover:to-green-200 hover:shadow-amber-200/50"
+                        : "bg-gradient-to-r from-amber-300 to-amber-500 text-black hover:from-amber-600 hover:to-amber-700 hover:shadow-amber-500/50"
                     }`}
                   >
                     {tutorialPhase < tutorialMessages.length - 1 ? (
@@ -672,45 +675,22 @@ function Test6({ suppressResultPage = false, onComplete }) {
         <ChevronLeft className="h-5 w-5" />
         {t("backToTests")}
       </Link>
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {Array.from({ length: 15 }).map((_, i) => (
-          <motion.div
-            key={`bubble-${i}`}
-            className="absolute rounded-full bg-blue-300/20 pointer-events-none"
-            style={{
-              width: `${Math.random() * 25 + 8}px`,
-              height: `${Math.random() * 25 + 8}px`,
-              left: `${Math.random() * 100}%`,
-              bottom: "-60px",
-            }}
-            animate={{
-              y: -window.innerHeight - 120,
-              x: [0, Math.random() * 40 - 20, Math.random() * 40 - 20, 0],
-              opacity: [0, 0.6, 0.6, 0],
-            }}
-            transition={{
-              duration: Math.random() * 20 + 15,
-              delay: Math.random() * 10,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
+
       {!showTutorial && (
         <>
           <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-8">
             <div className="mb-8 w-full px-4 sm:px-6">
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-4">
-                  <span className="text-green-400 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                  <span className="text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                     {t("labelReefProgress")}
                   </span>
                   <span className="text-white text-sm">
-                    Page {currentPage + 1} of {Math.ceil(currentWords.length / wordsPerBatch)}
+                    Page {currentPage + 1} of{" "}
+                    {Math.ceil(currentWords.length / wordsPerBatch)}
                   </span>
                 </div>
-                <span className="text-teal-600 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                <span className="text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                   {gameProgress}%
                 </span>
               </div>
@@ -754,7 +734,8 @@ function Test6({ suppressResultPage = false, onComplete }) {
                     t={t}
                   />
                 </div>
-                {currentPage * wordsPerBatch + wordsPerBatch < currentWords.length ? (
+                {currentPage * wordsPerBatch + wordsPerBatch <
+                currentWords.length ? (
                   <motion.button
                     onClick={handleSubmit}
                     disabled={!transcriptionReady}
@@ -837,7 +818,7 @@ function Test6({ suppressResultPage = false, onComplete }) {
 const ProgressBar = ({ progress }) => (
   <div className="w-full bg-teal-100/60 rounded-full h-6 overflow-hidden border-2 border-teal-200/70 shadow-inner relative">
     <motion.div
-      className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 flex items-center justify-end text-xs font-bold text-white pr-2 relative"
+      className="h-full bg-gradient-to-r from-amber-400 to-yellow-400 flex items-center justify-end text-md font-bold text-white pr-2 relative"
       initial={{ width: "0%" }}
       animate={{ width: `${progress}%` }}
       transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}

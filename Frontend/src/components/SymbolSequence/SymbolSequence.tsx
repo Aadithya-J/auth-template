@@ -706,30 +706,30 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="bg-gradient-to-br from-[#1a2a3a]/80 to-[#3b2f1d]/80 backdrop-blur-xl rounded-3xl shadow-[0_0_40px_rgba(217,162,75,0.7)] p-16 w-full max-w-4xl text-center border-2 border-[#d9a24b]/30 relative overflow-hidden h-[500px]"
+                className="bg-gradient-to-br from-[#1a2a3a]/80 to-[#3b2f1d]/80 backdrop-blur-xl rounded-3xl shadow-[0_0_60px_rgba(217,162,75,0.8)] px-16 py-20 w-full max-w-6xl text-center border-2 border-[#d9a24b]/30 relative overflow-hidden h-[700px] max-h-[90vh]"
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
               >
-                {/* Glow effects */}
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#d9a24b]/10 rounded-full filter blur-3xl"></div>
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#f3c969]/10 rounded-full filter blur-3xl"></div>
+                {/* Glow Effects */}
+                <div className="absolute -top-32 -left-32 w-72 h-72 bg-[#d9a24b]/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-32 -right-32 w-72 h-72 bg-[#f3c969]/10 rounded-full filter blur-3xl"></div>
 
-                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#f3c969] to-[#d9a24b] mb-10 tracking-wider">
+                <h2 className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#f3c969] to-[#d9a24b] mb-12 tracking-wider">
                   {t("lookCarefully")}
                 </h2>
 
-                {/* Enhanced Progress Bar */}
-                <div className="relative pt-1 mb-12 w-3/4 mx-auto">
+                {/* Progress Bar */}
+                <div className="relative pt-1 mb-14 w-4/5 mx-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-[#f7f1e3]">
+                    <span className="text-base sm:text-lg font-semibold text-[#f7f1e3]">
                       Round {currentRound} of 10
                     </span>
-                    <span className="text-sm font-semibold text-[#f3c969]">
+                    <span className="text-base sm:text-lg font-semibold text-[#f3c969]">
                       {Math.round((currentRound / 10) * 100)}% Complete
                     </span>
                   </div>
-                  <div className="overflow-hidden h-3 mb-6 rounded-full bg-[#1a2a3a]/50">
+                  <div className="overflow-hidden h-4 rounded-full bg-[#1a2a3a]/50">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(currentRound / 10) * 100}%` }}
@@ -739,17 +739,16 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                   </div>
                 </div>
 
-                {/* Larger Symbol Grid */}
-                <div className="flex justify-center flex-wrap gap-8 my-12">
+                {/* Symbol Grid */}
+                <div className="flex justify-center flex-wrap gap-10 my-12">
                   {currentSequence.map((symbol, index) => (
                     <motion.div
                       key={index}
-                      className="w-32 h-32 flex items-center justify-center relative"
+                      className="w-40 h-40 flex items-center justify-center relative"
                       whileHover={{ scale: 1.05 }}
                     >
-                      {/* Symbol Container */}
                       <motion.div
-                        className="w-full h-full flex items-center justify-center text-6xl rounded-2xl relative overflow-hidden"
+                        className="w-full h-full flex items-center justify-center text-6xl sm:text-7xl lg:text-8xl rounded-2xl relative overflow-hidden"
                         style={{
                           background:
                             "radial-gradient(circle, rgba(26,42,58,0.8), rgba(59,47,29,0.8))",
@@ -784,7 +783,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                         )}
                       </motion.div>
 
-                      {/* Floating rune particles around active symbol */}
+                      {/* Floating Particles */}
                       {showingIndex === index && (
                         <motion.div
                           className="absolute -inset-4 pointer-events-none"
@@ -795,21 +794,14 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                           {[...Array(6)].map((_, i) => (
                             <motion.span
                               key={i}
-                              className="absolute text-[#f3c969] text-2xl"
-                              initial={{
-                                x: 0,
-                                y: 0,
-                                opacity: 0.8,
-                              }}
+                              className="absolute text-[#f3c969] text-xl sm:text-2xl"
+                              initial={{ x: 0, y: 0, opacity: 0.8 }}
                               animate={{
                                 x: Math.random() * 60 - 30,
                                 y: Math.random() * 60 - 30,
                                 opacity: 0,
                               }}
-                              transition={{
-                                duration: 1.5,
-                                ease: "easeOut",
-                              }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
                             >
                               {
                                 symbols[
@@ -825,7 +817,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                 </div>
 
                 {/* Timer Bar */}
-                <div className="w-3/4 mx-auto bg-[#1a2a3a]/30 rounded-full h-4 mt-10 overflow-hidden">
+                <div className="w-4/5 mx-auto bg-[#1a2a3a]/30 rounded-full h-5 overflow-hidden">
                   <motion.div
                     className="h-full bg-gradient-to-r from-[#f3c969] to-[#d9a24b] shadow-lg"
                     initial={{ width: "100%" }}
@@ -837,7 +829,7 @@ const SymbolSequence: React.FC<SymbolSequenceProps> = ({
                   />
                 </div>
 
-                <p className="mt-6 text-xl text-[#f7f1e3] font-medium tracking-wider">
+                <p className="mt-6 text-lg sm:text-xl lg:text-2xl text-[#f7f1e3] font-medium tracking-wider">
                   {t("waitUntilDisappear")}
                 </p>
               </motion.div>
