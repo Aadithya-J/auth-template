@@ -11,7 +11,7 @@
     { "word": "help", "options": ["hlep", "hple", "help", "pleh", "hlpe"], "correct": "help" },
     { "word": "fast", "options": ["staf", "fats", "fast", "taps", "saft"], "correct": "fast" }
   ],
-"tamil": [
+  "tamil": [
     { "word": "அம்மா", "options": ["அம்மு", "அப்பா", "அம்மா", "அம்மி", "அம்ம", "அம்மாள்"], "correct": "அம்மா" },
     { "word": "நாய்", "options": ["நானை", "தாய்", "பாய்", "நாய்", "காய்", "மாய்"], "correct": "நாய்" },
     { "word": "பூ", "options": ["பூ", "பூமி", "பூபா", "பூசி", "பூந்", "பூவா"], "correct": "பூ" },
@@ -46,5 +46,27 @@
   { "word": "ಪುಸ್ತಕ", "options": ["ಪುಟಕ", "ಪುಸ್ತಕ", "ಪೂರ್ಣಕ", "ಪುಷ್ಪಕ", "ಪೂರ್ಣ", "ಪೂರ್ಣಕ"], "correct": "ಪುಸ್ತಕ" },
   { "word": "ಚಕ್ರ", "options": ["ಚಕ್ರಿ", "ಚಕ್ರಾ", "ಚಕ್ರ", "ಚಕೃತ", "ಚಕ್ರದ", "ಚಕ್ರಹ"], "correct": "ಚಕ್ರ" },
   { "word": "ಪದ", "options": ["ಪದಾ", "ಪದನ", "ಪದ", "ಪದತ", "ಪದಹ", "ಪದಿ"], "correct": "ಪದ" }
-]
+],
+  "practiceRound": {
+    "english": {
+      "itemToFind": "ο",
+      "options": ["x", "p", "m", "ο", "q", "s"],
+      "correctAnswer": "ο"
+    },
+    "tamil": {
+      "itemToFind": "ಓ",
+      "options": ["ಅ", "ಆ", "ಇ", "ಓ", "ಉ", "ಊ"],
+      "correctAnswer": "ಓ"
+    },
+    "hindi": {
+      "itemToFind": "ओ",
+      "options": ["अ", "आ", "इ", "ओ", "उ", "ऊ"],
+      "correctAnswer": "ओ"
+    },
+    "kannada": {
+      "itemToFind": "ಒ",
+      "options": ["ಅ", "ಆ", "ಇ", "ಒ", "ಉ", "ಊ"],
+      "correctAnswer": "ಒ"
+    }
+  }
 }

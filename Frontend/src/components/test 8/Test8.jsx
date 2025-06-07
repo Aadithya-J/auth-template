@@ -176,6 +176,149 @@ const CharacterDialog = ({ onComplete }) => {
   );
 };
 
+const PracticeRound = ({ question, onComplete }) => {
+  const { t } = useLanguage();
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isAttempted, setIsAttempted] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+
+  useEffect(() => {
+    if (!question || !question.options || !question.itemToFind) {
+      toast.warn(t("visualTestPracticeError") || "Practice question data is missing. Proceeding to test.");
+      onComplete(); // This directly calls onComplete which sets stage to 'test'
+    }
+  }, [question, onComplete, t]);
+
+
+  if (!question || !question.options || !question.itemToFind) {
+    return null; // Render nothing if question data is invalid, useEffect will handle progression
+  }
+
+  const handleOptionClick = (option) => {
+    if (isCorrect) return; // Don't allow changes if already correct
+    setSelectedOption(option);
+    setIsAttempted(true);
+    if (option === question.correctAnswer) {
+      setFeedbackMessage(t("visualTestPracticeCorrectFeedback") || "That's right! Well done.");
+      setIsCorrect(true);
+    } else {
+      setFeedbackMessage(t("visualTestPracticeIncorrectFeedback") || "Not quite. Try to find the correct one!");
+      setIsCorrect(false);
+    }
+  };
+
+  const handleTryAgain = () => {
+    setSelectedOption(null);
+    setFeedbackMessage("");
+    setIsAttempted(false);
+    setIsCorrect(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }} // Changed from y:20 to scale:0.9 to match VisualTest's initial loading style
+      animate={{ opacity: 1, scale: 1 }} // Changed from y:0 to scale:1
+      transition={{ duration: 0.5 }}
+      className="relative bg-gradient-to-br from-yellow-50/10 via-emerald-950/60 to-amber-800/30 backdrop-blur-xl rounded-3xl p-10 md:p-14 shadow-[0_10px_40px_rgba(0,0,0,0.4)] w-full max-w-4xl mx-auto border-4 border-amber-500/30 overflow-hidden font-sans text-lg md:text-xl leading-relaxed tracking-wide text-yellow-100"
+    >
+      {/* Glowing decorative elements (copied from QuestionDisplay) */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-60" />
+      <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl" />
+      <div className="absolute -bottom-24 -left-24 w-48 h-48 rounded-full bg-amber-300/10 blur-2xl" />
+
+      {/* Title and Instruction */}
+      <div className="text-center mb-8">
+        <h2 className="text-amber-300 font-bold text-3xl md:text-4xl tracking-wide drop-shadow-lg">
+          {t("visualTestPracticeRoundTitle") || "Practice Round"}
+        </h2>
+        <p className="text-emerald-100 text-lg md:text-xl mt-2">
+          {t("visualTestPracticeInstruction") || "Find the item shown below. Select the correct option."}
+        </p>
+      </div>
+
+      {/* Item to Find display (styled like QuestionDisplay's word display) */}
+      {question.itemToFind && (
+        <div className="flex justify-center my-12">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative"
+          >
+            <div className="absolute -inset-4 bg-amber-200/10 blur-xl rounded-2xl" />
+            <motion.div
+              className="relative py-10 px-20 rounded-2xl text-6xl md:text-7xl font-bold border-4 border-yellow-400/40 bg-[#1c1f1e]/90 text-amber-100 shadow-[0_10px_30px_rgba(255,191,0,0.1)] backdrop-blur-xl"
+            >
+              {question.itemToFind}
+              <div className="absolute top-0 left-0 w-full h-full border border-white/10 rounded-xl pointer-events-none" />
+            </motion.div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Options Grid (styled like QuestionDisplay) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+        {question.options.map((option, index) => (
+          <OptionButton
+            key={index}
+            option={option}
+            isSelected={selectedOption === option}
+            // Disable other options if correct one is selected. Otherwise, all are enabled until correct one is hit.
+            isDisabled={isCorrect && selectedOption !== option}
+            onClick={() => handleOptionClick(option)}
+          />
+        ))}
+      </div>
+
+      {/* Feedback Message */}
+      {isAttempted && feedbackMessage && (
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`text-xl text-center mb-6 font-medium ${ // Matched font-size with QuestionDisplay text-lg/md:text-xl base, used medium weight
+            isCorrect ? "text-emerald-300" : "text-red-400" // Adjusted colors
+          }`}
+        >
+          {feedbackMessage}
+        </motion.p>
+      )}
+
+      {/* Action buttons */}
+      <div className="flex justify-center mt-8">
+        {isCorrect ? (
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onComplete}
+            className="flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700 hover:shadow-green-500/50"
+          >
+            <span className="drop-shadow-sm">{t("visualTestPracticeButtonStartTest") || "Start Test"}</span>
+            <FaArrowRight className="mt-0.5 drop-shadow-sm" />
+          </motion.button>
+        ) : isAttempted && !isCorrect ? ( // Show Try Again only if attempted and incorrect
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleTryAgain}
+            className="py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:from-amber-600 hover:to-yellow-600 hover:shadow-yellow-500/50"
+          >
+            {t("visualTestPracticeButtonTryAgain") || "Try Again"}
+          </motion.button>
+        ) : (
+          // Placeholder for spacing if no button is shown initially, to prevent layout jump
+          // Or, remove this if a button should always be visible or if jump is acceptable.
+          // For now, if not attempted, no button will show, which is fine.
+          <div className="h-[60px] lg:h-[68px]"></div> // Approximate height of a button
+        )}
+      </div>
+      {/* Bottom accent line (copied from QuestionDisplay) */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-30" />
+    </motion.div>
+  );
+};
+
+
 const QuestionTimer = ({ duration, onComplete }) => {
   const { t } = useLanguage();
   const [timeLeft, setTimeLeft] = useState(duration);
@@ -331,8 +474,8 @@ const QuestionDisplay = ({
       <QuestionTimer
         duration={8}
         onComplete={onTimeout}
-        colorStart="#2E8B57" // peacock green
-        colorEnd="#FFD700" // gold
+        // colorStart="#2E8B57" // peacock green - These props are not used by QuestionTimer
+        // colorEnd="#FFD700" // gold
       />
 
       {/* Word display */}
@@ -362,7 +505,7 @@ const QuestionDisplay = ({
             key={optionIndex}
             option={option}
             isSelected={selectedOption === option}
-            isDisabled={selectedOption !== null}
+            isDisabled={selectedOption !== null} // In main test, disable all after one selection
             onClick={() => handleAnswer(option)}
           />
         ))}
@@ -374,39 +517,6 @@ const QuestionDisplay = ({
   );
 };
 
-const ProgressBarComponent = ({ current, total }) => {
-  // Renamed to avoid conflict if imported elsewhere
-  const { t } = useLanguage();
-  const progress = total > 0 ? (current / total) * 100 : 0;
-
-  return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-xl font-semibold text-white/90">
-          {t("labelProgress")}
-        </span>
-        <span className="text-xl font-bold text-white">
-          {current}/{total} ({Math.round(progress)}%)
-        </span>
-      </div>
-      <div className="w-full h-8 bg-gray-300/50 rounded-full overflow-hidden shadow-inner">
-        <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 relative"
-          initial={{ width: "0%" }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-white/20"
-            animate={{ opacity: [0, 0.3, 0], x: ["-100%", "100%"] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          />
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
 // Enhanced OptionButton component
 const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
   return (
@@ -415,13 +525,13 @@ const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
       whileTap={!isDisabled ? { scale: 0.98 } : {}}
       onClick={onClick}
       disabled={isDisabled}
-      className={`p-5 rounded-xl text-xl font-semibold transition-all duration-200 relative overflow-hidden
+      className={`p-5 rounded-xl text-xl font-semibold transition-all duration-200 relative overflow-hidden text-center
         ${
           isSelected
             ? "bg-gradient-to-br from-emerald-300 to-amber-300 text-gray-900 shadow-lg ring-2 ring-amber-200 shadow-amber-300/30"
             : "bg-gray-800/80 backdrop-blur-sm border border-emerald-400/30 text-emerald-100 hover:bg-gray-800/60"
         }
-        ${isDisabled && !isSelected ? "opacity-70" : ""}`}
+        ${isDisabled && !isSelected ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`} // Added cursor-not-allowed
     >
       {option}
       {isSelected && (
@@ -445,18 +555,16 @@ const OptionButton = ({ option, isSelected, isDisabled, onClick }) => {
   );
 };
 
-// Assuming the main component is for a Visual Test, filename AudioQuiz.jsx might be a misnomer
 const VisualTest = ({ suppressResultPage = false, onComplete }) => {
-  const { language, t } = useLanguage(); // t is available here
+  const { language, t } = useLanguage();
   const [quizQuestions, setQuizQuestions] = useState([]);
+  const [practiceQuestion, setPracticeQuestion] = useState(null);
   const [score, setScore] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCharacter, setShowCharacter] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [quizCompleted, setQuizCompleted] = useState(false);
   const navigate = useNavigate();
+  const [currentStage, setCurrentStage] = useState('characterDialog');
 
   useEffect(() => {
     const langKey =
@@ -468,13 +576,47 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
         ? "kannada"
         : "english";
 
-    // Ensure questionsData[langKey] exists and is an array
     const questionsForLang = Array.isArray(questionsData[langKey])
       ? questionsData[langKey]
       : [];
     setQuizQuestions(questionsForLang);
-    setSelectedOptions(Array(questionsForLang.length).fill(null));
-  }, [language]);
+    // Initialize selected options only when questions are set, not on every language change if questions remain same
+    if (questionsForLang.length > 0) {
+      setSelectedOptions(Array(questionsForLang.length).fill(null));
+    }
+
+
+    const practiceQData = questionsData.practiceRound?.[langKey];
+    if (practiceQData && practiceQData.itemToFind && practiceQData.options && practiceQData.correctAnswer) {
+      setPracticeQuestion(practiceQData);
+    } else {
+      setPracticeQuestion(null);
+      console.warn(`Practice question not found or incomplete for language: ${langKey}.`);
+    }
+  }, [language]); // Removed quizQuestions from dependency array to avoid re-init of selectedOptions unnecessarily
+
+  const handleDialogComplete = () => {
+    if (practiceQuestion) {
+      setCurrentStage('practice');
+    } else {
+      toast.info(t("visualTestPracticeSkipped") || "Practice round not available, starting test.");
+      setCurrentStage('test');
+      setCurrentQuestionIndex(0);
+      setScore(0);
+      if (quizQuestions.length > 0) { // Ensure quizQuestions is populated before setting selectedOptions
+         setSelectedOptions(Array(quizQuestions.length).fill(null));
+      }
+    }
+  };
+
+  const handlePracticeComplete = () => {
+    setCurrentStage('test');
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    if (quizQuestions.length > 0) { // Ensure quizQuestions is populated
+      setSelectedOptions(Array(quizQuestions.length).fill(null));
+    }
+  };
 
   const handleAnswer = (option) => {
     const newSelectedOptions = [...selectedOptions];
@@ -492,7 +634,7 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
       if (currentQuestionIndex < quizQuestions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
-        setQuizCompleted(true);
+        setCurrentStage('results');
       }
     }, 500);
   };
@@ -500,21 +642,15 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
   const handleTimeout = () => {
     const newSelectedOptions = [...selectedOptions];
     if (currentQuestionIndex < newSelectedOptions.length) {
-      // Boundary check
-      newSelectedOptions[currentQuestionIndex] = null;
+      newSelectedOptions[currentQuestionIndex] = "timeout"; // Or some other indicator for timeout
       setSelectedOptions(newSelectedOptions);
     }
 
     if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      setQuizCompleted(true);
+      setCurrentStage('results');
     }
-  };
-
-  const startTest = () => {
-    setShowCharacter(false);
-    setQuizStarted(true);
   };
 
   const handleSubmit = async () => {
@@ -530,7 +666,7 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
 
     try {
       const response = await axios.post(
-        `${backendURL}/addVisual`, // Endpoint for visual test
+        `${backendURL}/addVisual`,
         {
           child_id: childId,
           options: selectedOptions,
@@ -549,104 +685,117 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
           onComplete(score);
         } else {
           toast.success(t("testSubmittedSuccessfully"), {
-            // Existing key
             position: "top-center",
-            onClose: () => navigate("/"), // Or to a results page
+            onClose: () => navigate("/"),
           });
         }
       } else {
-        toast.error(t("failedToSubmitTestPleaseTryAgain")); // Existing key
+        toast.error(t("failedToSubmitTestPleaseTryAgain"));
       }
     } catch (error) {
       console.error("Error submitting test:", error);
       toast.error(
         t("anErrorOccurredWhileSubmittingTheTestPleaseTryAgain") ||
           t("errorOccurred")
-      ); // Existing keys
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (showCharacter) {
-    return <CharacterDialog onComplete={startTest} />;
+  if (currentStage === 'characterDialog') {
+    return <CharacterDialog onComplete={handleDialogComplete} />;
   }
 
-  // Ensure quizQuestions and currentQuestionIndex are valid before rendering QuestionDisplay
   const currentQuestionData = quizQuestions[currentQuestionIndex];
-  if (!quizStarted && !quizCompleted) {
-    // Initial loading or pre-start state
-    return (
-      <div
-        className="fixed inset-0 overflow-y-auto flex items-center justify-center p-4 md:p-8 bg-cover bg-center"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
-        {/* Optional: Loading spinner or message */}
-      </div>
-    );
-  }
 
   return (
     <div
       className="fixed inset-0 overflow-y-auto flex items-center justify-center p-4 md:p-8 bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <motion.button
+      {(currentStage === 'test' || currentStage === 'results' || currentStage === 'practice') && ( // Added practice stage for back button
+         <motion.button
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.5 }}
-        onClick={() => navigate("/taketests")}
-        className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition-all"
+        onClick={() => navigate("/taketests")} // Or to a more appropriate previous screen
+        className="fixed top-4 left-4 z-[60] flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md transition-all"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <FaArrowLeft className="text-blue-600" />
-        {t("backToTests")} {/* Existing key */}
-      </motion.button>
+           <FaArrowLeft className="text-blue-600" />
+           {t("backToTests")}
+         </motion.button>
+      )}
 
-      {quizStarted &&
-        !quizCompleted &&
-        currentQuestionData && ( // Check currentQuestionData
-          <div className="w-full max-w-4xl mx-auto">
-            <AnimatePresence mode="wait">
+      {currentStage === 'practice' && ( // practiceQuestion is checked inside PracticeRound now
+        <PracticeRound question={practiceQuestion} onComplete={handlePracticeComplete} />
+      )}
+
+      {currentStage === 'test' && (
+        <>
+          {currentQuestionData && quizQuestions.length > 0 ? (
+            <div className="w-full max-w-4xl mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentQuestionIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full"
+                >
+                  <QuestionDisplay
+                    questionData={currentQuestionData}
+                    index={currentQuestionIndex}
+                    totalQuestions={quizQuestions.length}
+                    onAnswer={handleAnswer}
+                    onTimeout={handleTimeout}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          ) : (
+            <div className="w-full max-w-4xl mx-auto">
               <motion.div
-                key={currentQuestionIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="w-full"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-black/40 backdrop-blur-sm rounded-2xl p-8 shadow-2xl text-center border-2 border-white/30"
               >
-                <QuestionDisplay
-                  questionData={currentQuestionData}
-                  index={currentQuestionIndex}
-                  totalQuestions={quizQuestions.length}
-                  onAnswer={handleAnswer}
-                  onTimeout={handleTimeout}
-                />
+                <h2 className="text-2xl font-bold text-white">
+                  {quizQuestions.length === 0 && language ? (t("noQuestionsAvailable") || "No questions available for this test.") : (t("loadingQuestions") || "Loading questions...")}
+                </h2>
               </motion.div>
-            </AnimatePresence>
-          </div>
-        )}
-
-      {quizCompleted && (
+            </div>
+          )}
+        </>
+      )}
+      
+      {currentStage === 'results' && (
         <div className="w-full max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-black/40 backdrop-blur-sm rounded-2xl p-8 shadow-2xl text-center border-2 border-white/30"
+            className="bg-gradient-to-br from-yellow-50/10 via-emerald-950/60 to-amber-800/30 backdrop-blur-xl rounded-3xl p-10 md:p-14 shadow-[0_10px_40px_rgba(0,0,0,0.4)] w-full border-4 border-amber-500/30 text-yellow-100" // Matched styling
           >
+             {/* Decorative elements from QuestionDisplay */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-60" />
+            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl" />
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 rounded-full bg-amber-300/10 blur-2xl" />
+
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="mb-6"
+              className="mb-6 text-center"
             >
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold text-amber-200 mb-2 drop-shadow-lg">
                 {t("visualTestCompleted")}
               </h2>
-              <p className="text-xl text-blue-300">
+              <p className="text-xl md:text-2xl text-emerald-100">
                 {t("visualTestScoreOutOfTotal")
                   .replace("{score}", score)
                   .replace("{total}", quizQuestions.length)}
@@ -656,35 +805,32 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex justify-center"
+              className="flex justify-center mt-10" // Added margin-top
             >
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y:-2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl text-xl shadow-lg hover:bg-blue-700"
+                className="flex items-center justify-center gap-3 py-4 px-8 lg:px-12 rounded-xl font-bold text-lg lg:text-xl shadow-2xl transition-all duration-300 bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700 hover:shadow-green-500/50" // Matched style with PracticeRound's "Start Test"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
-                    <motion.span
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="inline-block mr-2"
-                    >
-                      ↻
-                    </motion.span>
-                    {t("submitting")} {/* Existing key */}
+                    <motion.svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </motion.svg>
+                    {t("submitting")}
                   </span>
                 ) : (
-                  t("submitResults") // Existing key
+                  <>
+                  <span className="drop-shadow-sm">{t("submitResults")}</span>
+                  <FaCheck className="mt-0.5 drop-shadow-sm" />
+                  </>
                 )}
               </motion.button>
             </motion.div>
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-30" />
           </motion.div>
         </div>
       )}
@@ -704,4 +850,4 @@ const VisualTest = ({ suppressResultPage = false, onComplete }) => {
   );
 };
 
-export default VisualTest; // Changed export name to reflect component's purpose
+export default VisualTest;
